@@ -1,0 +1,107 @@
+Linux File Hierarchy (Common)
+
+/dev/shm - shared memory implementation. Also known as tmpfs. It can be configured through /etc/fstab.
+man 5 proc - man page for /proc
+
+Delete cached ram pages by the kernel:
+sync; echo 1 > /proc/sys/vm/drop_caches
+
+http://www.2uo.de/myths-about-urandom/
+
+=======================================================================================================
+Common:
+
+/etc/services - referrence for default ports for a number of services, according to RFCs. Used by inetd and xinetd.
+
+/etc/resolv.conf
+	specify default nameserver
+
+Fonts location:
+/usr/share/fonts/
+/usr/share/fonts/truetype/
+
+/usr/libexec
+	includes internal binaries that are not intended to be executed directly by users or shell scripts.
+	Applications may use a single subdirectory under /usr/libexec
+
+/usr/lib/debug
+
+/var/log/secure - security messages
+/var/log/maillog
+
+=======================================================================================================
+
+Proc
+
+/proc/filesystems - the filesystems that the current kernel supports
+/proc/modules - kernel module information
+/proc/kallsyms - symbol table of dynamically and statically loaded modules. System.map is a symbol
+table of only statically loaded modules.
+
+Maximum number of pids on a system:
+/proc/sys/kernel/pid_max
+
+Networking:
+/proc/sys/net/ipv4
+
+Get interface config info:
+/proc/sys/net/ipv4/config/eth0
+
+Get RAID array information:
+/proc/mdstat
+
+Networking information:
+/proc/net/
+/proc/net/routing
+
+=======================================================================================================
+
+Debian specific
+
+Get current kernel module paths:
+/lib/modules/$(uname -r)
+
+=======================================================================================================
+
+CentOS specific
+
+=======================================================================================================
+
+Gentoo specific
+
+=======================================================================================================
+
+FreeBSD specific
+
+/usr/ports - contains Makefiles for ports to be downloaded, built and installed with autoconf
+
+	Sample installation of port package:
+
+	cd /usr/ports/net-mgmt/nsca
+	make config
+	make install clean clean-depends
+
+/usr/local/etc/rc.d/ -> similar to /etc/init.d/ in Linux
+
+=======================================================================================================
+
+OpenBSD
+
+/bsd - a directory for the OpenBSD kernels
+/bsd.mp - multiprocessor kernel
+/bsd.rd - installation kernel. Contains utilities which can be run without an external filesystem
+
+/etc/myname - default hostname
+/etc/hostname.if - configuration foreach hostname, e.g. /etc/hostname.bge0
+/etc/mygate - default gateway
+/etc/resolv.conf - Resolver DNS
+
+Restart networking:
+/etc/netstart
+
+## Configure static IP address for re0 interface
+## file: /etc/hostname.re0
+inet 192.168.0.58 255.255.255.0
+
+/etc/examples - example configuration files for base system daemons
+/etc/signify - key files used for signify(1)

@@ -1,0 +1,240 @@
+GCC
+
+gcc -S hello.c - "convert" C code to Assembly instructions
+
+Setup C compiler flags for make to pass:
+CFLAGS="-Wall"
+Using indentations in Makefiles is preferred. Some make variants may throw errors if we use spaces.
+
+Make exit statuses:
+http://www.opussoftware.com/manual/appendices/B1.htm
+
+make command cheatsheet:
+
+make -B - unconditionaly make all targets
+make -C - specify working directory
+
+	In case multiple directories are specified, each one is interpreted as a child of the previous one.
+
+make -C / -C etc hello.c - this would be the same as
+
+						 make -C /etc hello.c
+
+make -d - print debugging information
+
+make --debug=FLAG - print additional debugging information
+
+	 --debug (without flags) - same as make -d
+	 --debug=a - all debugging output - same as make -d
+	 --debug=b - basic debugging
+	 --debug=v - more verbose basic debugging
+	 --debug=i - show implicit rules
+	 --debug=j - show details on command invocations
+	 --debug=m - for debugging while remaking makefiles
+
+make -e - environment variables override Makefile equivalents
+
+make -f - specify makefile
+
+make -i - ignore errors
+
+make -s, --silent, --quiet - do not print commands as they are executed
+
+make -l 5, --load-average=5 - no new jobs should start if there are other jobs running at the specified load average
+
+make -n - dry run
+
+	make -n
+	make --just-print
+	make --dry-run
+	make --recon
+
+make -w - print working directory before command
+
+How to install Objective-C compiler on a Debian-based system:
+apt-get install gobjc gnustep-devel
+
+objdump
+
+nm
+
+-- Building the Linux kernel
+
+Useful commands:
+
+make help - display options
+make nconfig - ncurses-based build menu\
+the kernel records data to .config when we save options	
+make defconfig - allegedly the needed setup for current architecture
+make localyesconfig - build local modules as builtins to core
+make silentoldconfig - same as oldconfig but enables most default options
+
+For tests:
+make allnoconfig - unselect each module that can be selected
+make allyesconfig - select each module that can be selected
+make randomconfig - select random options
+
+make allmodconfig - most used by dist kernels. Builds drivers as modules and the needed one for the current system are enabled.
+make alldefconfig - restore .config to default targets
+make listnewconfig - list all new options
+
+Before compiling the kernel gather information for the following:
+
+CPU - Intel Corporation Xeon E3-1200/2nd Generation Core Processor Family PCI Express Root Port
+Memory - we can set up a specific amount or RAM the kernel can handle. 
+	If we physically have at our disposal more than we've set it up to handle, the free command
+	will show us wrong information.
+Storage
+
+	For old Parallel ATA / IDE HDDs:
+	ATA/ATAPI/NFM/RLL support
+
+	For SAS:
+	Fusion MPT device support
+
+	The loopback device should be enabled from "Block Devices"
+	
+
+USB
+	To get information about a USB device:
+	lsusb|less - search for iProduct
+	most certainly googling the iProduct ID will give us information about the needed
+		kernel module
+Video
+Networking
+	we can use ethtool to check networking hardware information
+File Systems
+	check if we have LVM or MD partitions(software RAID partitions)
+	NB!!! 
+	We can't have LVM without initrd
+
+We can gather this information with lshw, dmidecode and lspci.
+
+lspci -v - displays also the kernel modules for different devices.
+
+Menus in menuconfig:
+
+We can fully disable the ability to load kernel modules for the new kernel(use it as a monolithic kernel).
+This can be used for security measurements if we're sure we won't be needing any modules to be loaded.
+
+With "module unloading" from "Enable loadable module support" we can enable and disable the ability to unload modules.
+Module versioning support - add a version tag to each module.
+
+We can also use crypto keys to verify that modules are valid to be enabled = "Module signature verification".
+This option can be a problem when we need to enable third-party proprietary modules.
+
+"Enable the block layer" - enable and disable the support of block devices. We can select the partition types the kernel
+will support from this menu in "Partition types".
+
+Partition types:
+
+	In order to manage Windows partitions in a dual-booted environment, that
+	are on an LVM we have to enable the following:
+	"Windows Logical Disk Manager (Dynamic Disk) support"
+
+	If we are using an SSD disk:
+	IO Scheulers -> "Deadline I/O Scheduler"
+
+	If we need to have throttling per process for Disk I/O we need to enable
+	"CFQ I/O scheduler". We can then manage I/O throttling with ionice in userspace.
+
+	Default I/O scheduler is set to be CFQ by default. We can then manage through sysfs
+	the kernel I/O scheduler per hdd device.
+
+"Executable file formats" - enable 32 bit ELF binaries - IA32 Emulation.
+
+"Networking support" - enable and disable networking support
+
+Cryptographic API - the kernel checks if the hardware has the needed flags to support a particular algorythm.
+
+"Virtualization" - enable KVM
+
+"Processor type and features" -> "Linux guest support" - virtualization options connected with the processor features.
+							  -> Maximum number of CPUs -> setup how much cores can the system use.
+							  -> "Processor Family" -> select processor family to include optimized code for it
+							  -> "Symmetric multiprocessing support" - hyper-threading support
+							  -> SMT (Hyperthreading) scheduler support
+							  -> High memory support - better to set it to 64G - in this way we can specify how much
+							  memory can the kernel use
+							  -> Memory split - setup how much memory can the kernel use and how much - the user-land
+							  binaries
+
+							  -> Memory model
+							  -> CPU microcode loading support - enable in case we would need to update CPU firmware
+							  -> /dev/cpu/*/msr - Model-specific register
+							  -> Allow for ballon memory compaction / migration - needed if we're making a kernel for a
+							  KVM host
+
+							  Memory compaction
+
+							  ->Enable seccomp... - manage the syscalls a process can perform against the kernel
+							  -> kexec - setup an address space where to load a "spare" kernel
+							  in case the current kernel is not responding
+
+"Networking"
+
+	-> "Netfilter" - Linux firewall settings (iptables is a front-end tool to netfilter)
+
+Pressing "/" will start the search in menuconfig.
+
+"Library routines" - kernel libraries - usually selected automatically.
+
+Compilation routine:
+
+make -j8 - flag for using multiple cores. It is multiplied by two. We can check the number of cores in /proc/cpuinfo
+and set this compile time flag. Not very recommended on machines with less RAM.
+make modules_install -> compiles modules and places them in /lib/modules/$(uname -r)
+make firmware_install -> /lib/firmware/x.xx.xx/
+depmod -a kernel-version - generate module dependencies.
+
+After we build the kernel the image can be found in arch/$ARCH
+bzImage - the actual kernel image.
+
+Powermanagement and ACPI option
+	
+	In case of laptop:
+	->ACPI - select all
+	->CPU Frequency scaling - select all
+	->CPU idle - also recommended
+
+	The CPU frequency scaling needs to be disabled if we're compiling a server kernel.
+
+Build initrd:
+mkinitrd /boot/initrd-x.xx.xx.img x.xx.xx
+dracut /boot/initrd-x.xx.xx.img x.xx.xx - dracut is a newer tool, created in Python.
+
+We need to pass the kernel version, so that mkinitrd / dracut will now where to find the kernel modules
+(/lib/modules/x.xx.xx/)
+
+How to setup local version - append custon kernel name to version:
+General setup - Local version - append to kernel release
+
+Enable .config to be saved on the new system to /proc/config.gz:
+General setup - Enable access to .config through /proc/config.gz. We can list the modules the with lsmod
+and see if the module named "config" is enabled to check if this module is working.
+
+	-- Output files after compilation
+	bzImage -> located in arch/$ARCH/
+	vmlinux
+	System.map - symbol table - lookup table between functions or variables that can be used for debuggin
+				kernel oopses. Usually is copied to /boot/
+
+	The SVGA video library may need it to be copied to /lib/modules/$(uname -r)/build/System.map
+
+idea: build kernel for other architectures and test with QEMU.
+
+To research:
+Memory compaction
+Memory ballooning
+KSM - Kernel Samepage Merging
+Seccomp
+Pre-emptive kernel, preemtion
+SysRQ
+B.A.T.M.A.N. mesh networking
+DCCP, RCP, SCTP
+Networking options -> QoS and/or fair queueing
+				   -> Data Center Bridging support
+TUN/TAP
+A PPP VPN creates a device driver
+Watchdog - reboots machine of a hardware device isn't respinsive for a particular time
+vDSO - virtual DSO -> /lib/modules/$(uname -r)/vdso

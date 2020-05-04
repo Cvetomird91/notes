@@ -1,0 +1,567 @@
+=======================================================================================================
+-- AWK --
+
+How to pass shell variables to awk and vice versa:
+
+http://www.cyberciti.biz/faq/linux-unix-appleosx-bsd-bash-passing-variables-to-awk/
+
+command | awk '{print $0}' - $0 stores the whole unfilterred input
+
+We can specify a space as delimiter between the columns with , :
+command | awk '{print $1, $2}'
+
+Concatenation:
+command | awk '{print $2", "$1}'
+
+awk '{print NF}' filename - print number of fields in a line
+
+Apply an AWK expression only for lines that match a regular expression:
+awk '/up/{print $1}' filename
+
+We can use it with multiple matches:
+awk '/up/{print $1} /down/{print $1}' filename
+
+Apply an AWK expression only for lines that have a particular number of fields:
+awk 'NF==5{print $1}' filename.txt
+
+Apply an AWK expression only for lines that have a particular number of records:
+awk 'NR==5{print $1}' filename.txt
+
+BEGIN statement - all actions in a BEGIN statement are executed before any other
+else
+
+!!!NB
+
+awk '{FS=","; print $1}' - in this way the field separator will not be changed for the first resource and will be changed for the subsequent resources.
+This is why it is better to specify such options in a BEGIN statement.
+
+awk 'BEGIN{RS="";FS="\n"} {name=$1;address=$2;citystatezip=$3;print name "," address "," citystatezip}' multiaddress.txt
+
+Print lines that have six fields:
+awk 'NF==6' filename
+awk 'NF==6{print $0}' filename
+
+Each line passed to AWK is considered a 'record', each 'record' is separated into fields.
+By default records are divided by a new line (\n).
+By default fields are divided by tabs and/or spaces.
+We can specify the record separator in AWK expressions with the RS special variable
+
+echo one,two,three!four,five,six!seven,eight,nine! | awk 'BEGIN{RS="!",FS=","} {print $2}'
+
+RS="" - in this way we can set the RS to a blank line
+
+Specify field separator for AWK input through a command option:
+awk -F , '{print $2}'
+
+We can use a regex charset to have multiple field separators:
+awk -F '[!,]' '{print $2}'
+
+Use tab as a separator:
+awk -F t '{print $1}' file.txt
+
+We can use strings and regexes as separators:
+awk -F ABC '{print $1}' file.txt
+awk -F /ab[cd]/ '{print $1}' file.txt
+
+Set and pass AWK variables:
+awk -v hi=HELLO '{print $1, hi}'
+
+We can pass shell variables to awk with this option:
+awk -v hi=$HELLO '{print $1, hi}'
+
+With this syntax we can also manipulate AWK variables:
+awk -v OFS=, '{print $0}'
+
+We can use 1 as a shorthand replacement for { print $0 }
+
+We can specify the field separator inside AWK expressions:
+awk -F 'BEGIN{FS=","} {print $2}' textfile.txt
+
+Perform a search and replace:
+awk '{ sub(/1$/, "IT", $5) }' filename.txt
+
+-- Special Variables
+FS - input file separator
+OFS - output file separator
+RS - input record separator
+ORS - output record separator
+NF - number of fields
+NR - number of records
+FILENAME
+FNR - file record number
+RSTART - set by the match function
+RLENGTH - set by the match function
+$0 - the whole input
+
+We can substract from the special variables:
+awk '{print $NF-1}' dukeofyork.txt
+
+awk '{print $($1)}' - variable expansion - if the first field contains '2' it will print the second
+field etc
+
+We can assign a value to a field that doesn't yet exist:
+awk '{$11="ELEVEN"; printf NF, $0}' dukeofyork.txt - this makes the resourse have 11 fields
+
+We can change the values of built in variables:
+awk '{$0="one two three"; print NF, $2}' dukeofyork.txt - this will output "3 two" for each line
+in the parsed file
+
+AWK user-defined variables have case-sensitive identifiers.
+
+Operators supported by AWK:
+++, +, -, *, /, %, ^, --, =, +=, -=, *=, /=, %=, ^=
+==, !=, <, <=, >, >=
+~, !~ - regex operators
+[] - array subscript
+
+
+AWK allows only single-dimensional arrays. AWK supports associative arrays.
+awk '{a["first"]=$1; a["second"]=$2; a["third"]=$3; print a["first"]}' file.txt
+
+AWK supports for...in which iterates through the keys of an array.
+
+FS and RS variables can be charsets with multiple characters as separators.
+FS="[<>]"
+
+-- string functions
+
+length([string])
+index(string, target) - zero-based - returns the position where the first match of target starts
+match(string, regexp) - same as index; uses regexes instead of literal strings
+substr(string, start[, legth]) - returns the rest of the string from the specified position
+
+sub(regexp, newval[, string]) - replaces the first occurence of a regex
+gsub(regexp, newval[, string]) - replaces all the occurences in a record ("global substitute")
+split(string, array[, regex])
+
+printf - is present in AWK and has similar semantics as in the C printf
+
+-- math functions
+
+int()
+rand() - runs a number from 0 to 1
+srand([x])
+sqrt(x)
+sin(x)
+cos(x)
+atan2(y, x) - returns the arctangent of y over x in radiance
+exp(x) - exponent number
+
+=======================================================================================================
+-- SED
+
+Sed works with lines, not whole strings of output.
+
+sed 's_pattern_newpattern_' - we can use whatever delimiter we want insted of /.
+this is useful in order not to escape / if we need
+to make substitutions that include it.
+
+sed -n - supress output
+extract a sequence of lines from output/file:
+
+sed 's/pattern/new/2' - replace only the second occurence in each line.
+
+sed -n 2,4p filename - display from the 2nd to the 4th line of input
+sed -e - specify multiple sed commands
+sed -r - use the more modern regex engine (e.g. with quantifiers ({3}) and so on)
+
+sed -e 's|pattern|newpattern|' -e 's|pattern_1|newpattern_1|' -e 's|pattern_2|newpattern_2|'
+
+the same can be achieved with the following syntax:
+
+sed '-es/pattern/new_pattern/' '-es/pattern/new_pattern/' '-es/pattern/new_pattern/'
+sed 's/pattern/new_pattern/;s/pattern/new_pattern/;s/pattern/new_pattern/'
+
+sed -f file - reads sed commands from a file
+sed -i 's|pattern|new_pattern|g' filename - write changes to the filename
+
+Comments in sed scripts start with a "#".
+
+How to replace the \n special character:
+
+sed ':a;N;$!ba;s/\n/ /g' file
+
+-- Flags:
+
+sed -n 's|pattern|new_pattern|p' - print only the lines on which the occurence took place
+
+sed 's|pattern|new_pattern|g' - substitute each occurence of the pattern,
+								not only the first one
+
+Copy input from one file to another:
+sed -n '1w output.txt' original-file - copy the first line from original-file to output.txt
+
+-- Modifiers
+
+sed 's/pattern/new_pattern/1' - substitute the specified number of the occurence
+sed 's/pattern/new_pattern/g3' - substitute the third and subsequent occurences
+sed 's/pattern/new_pattern/p' - print only the lines where the substitution occured
+sed 's/pattern/new_pattern/d' - delete the specified lines
+sed 's/pattern/new_pattern/r' - read a file at the specified line
+sed 's/pattern/new_pattern/w' - write the lines to a file
+sed 's/pattern/new_pattern/y' - transforms characters (similar to the tr command)
+
+NB!!!
+The first expression in the sed syntax (the one we want to match) is a regular expression.
+The second is not. Nevertheless, we can use special string replacement characters in the second
+expression. They are two types.
+
+These are the following:
+& - this replaces found text
+\n - where n is a number - similar to backreferences in regular expressions
+
+For example this expression will replace 'the' with 'their':
+The following expression will place each match in parentheses:
+sed 's/self/'&'/g' filename.txt
+
+Also, expressions separated by spaces can be aliased with numeric signs in the second expression:
+sed 's/\(were\) \(there\)/\2 \1/g' filename.txt - this will replace "were there" with "there were".
+To be considered separate expressions, those need to be enclosed in parentheses that are escaped.
+
+Prepend line at the beginning of a file:
+sed -i "0,/^/s//line content\n/" filename
+
+-- Commands
+
+p - print the specified line
+	sed p filename.txt - similar to cat
+	sed -n 3p filename.txt - the number three here is a SED address
+	sed -n '$p' filename.txt - print last line from a file
+
+	Print multiple patterns:
+	sed -n '/when/,/marched/p' - they need to be surrounded by slashes
+
+	print from specific line to the first occurence of a pattern:
+	sed -n '2,/down/p' filename.txt
+
+	print a range of lines:
+	sed -n '2,5p' filename.txt
+
+	exclude a range of lines:
+	sed -n '2,5!p' filename.txt
+
+	exclude lines containing a pattern:
+	sed -n '/down/!p' filename.txt
+
+When we pass two filenames to sed, it glues their content and works with it as if it were a single
+file.
+
+sed -n '$p' filename_1.txt filename_2.txt - this will print only one line (the last line of the joined
+output, not the last lines of each file)
+
+d - delete specified lines
+
+	delete a line:
+	sed '4d' filename.txt
+	sed '2,5d' filename.txt
+
+	delete lines containing a pattern or patterns:
+	sed '/up/d' filename.txt
+	sed '/up/,/thousand/,/down/d' filename.txt
+
+	delete lines not containing a pattern
+	sed '/up/!d' filename.txt
+
+	delete lines except those in the specified range of lines
+	sed '2,5!d' filename.txt
+
+r - read a file at the specified line
+
+	Print file content after line(s) that includes a specific pattern
+	sed '/down/r file' filename.txt - prints the content of file after the line with the first
+									  occurence of 'down' in filename.txt
+	The r command is one of the few commands that cannot be used with a range of addresses. It
+	can only be used with a single line number, pattern or the $ sign, indicating the end of the input
+
+w - write lines to a file
+
+	write a range of lines from a file to another file:
+	sed '1,3w top' dukeofyork.txt - write the first three lines from dukeofyork.txt to the file top
+	sed 's/up/UP/gw top' dukeofyork.txt - perform a global substitution and
+									write the first three lines from dukeofyork.txt to the file top
+	sed 's/up/UP/wg top' dukeofyork.txt - this is not identical as the previous; it performs a regular
+										search and replace and writes changes to the file 'g top'
+
+a - append a line or lines after a line matching a pattern
+
+	sed '/down/ a\   	 
+		==> My new line
+		' dukeofyork.txt
+
+	the a option must always be followed by a backslash to escape the \n symbol that is hidden
+
+i - prepend a line or lines after a line matching a pattern (the semantics are similar to the a command)
+
+c - exchange a range of lines with another set of lines
+
+	sed '/top/,/again/ c\
+		First line\
+		Second line\
+		Third line
+	' dukeofyork.txt - exchange all lines from the first one containing the top pattern to the first
+		one containing the again pattern with the specified lines
+
+y - translate characters (similar to tr)
+
+sed 'y/abc/qwe/' dukeofyork.txt - replaces a with q, b with w and c with e
+
+-- Sed scripting
+
+Execute the following statements in the braces only for lines which contain the pattern /when/
+/when/ {
+	s/up/UP/g
+	s/down/DOWN/g
+}
+
+Execute the following statements in the braces only for lines which don't contain the pattern /when/
+
+/when/ ! {
+	s/up/UP/g
+	s/down/DOWN/g
+}
+
+Execute sed statements only in a particular line range:
+
+3,6 {
+	/when/ {
+		s/up/UP/g
+		s/down/DOWN/g
+	}
+}
+
+Use the n command to refer to the next line:
+
+/matched/ {
+	n
+	s/up/UP/g
+	n
+	s/down/DOWN/g
+} # perform substitutions on the next two lines after the ones containing the /matched/ pattern
+
+q - print the current line and exit the sed script completely
+d - delete a line matching a pattern
+
+/matched/ {
+	d			# delete all lines which match the /matched/ pattern and stop processing;
+				# it moves the line pointer to the next line
+}
+
+= - prints the current line (useful for debugging)
+l - print a $ at the end of the current line and special characters
+
+-- How sed works
+
+When SED reads a line from the input, it first copies the line into an internal butter
+called the pattern space. Sed examines all the commands in the script to see which apply.
+The applicable commands are executed in order. Then the content of the pattern space is printed
+(unless the -n option is in effect).
+
+-- Pattern space commands
+
+N - appends a newline and reads in the next input line
+P - prints up to the first newline
+D - deletes up to and including the first newline
+	D stops processing, but doesn't get the next line unless it leaves the pattern space empty
+
+-- Managing program flow control
+: - defines a label
+b - branches to a label
+t - branches only if any substitutions have occured
+
+sample sed script with branching:
+
+s/the/THE/g
+b next
+s/up/UP/g
+: next
+s/down/DOWN/g
+b 					# not specifying a label in branching goes to the end of the file
+s/marched/MARCHED/g
+
+============================================================================================================
+-- UNIX FILTERS --
+
+Text filters and text manipulation tools
+
+wc - word count
+
+	Without arguements:
+	lines	words	characters/byte-count
+
+	wc -l - print the lines of output
+	wc -c - print the characters/byte-count for a file
+	wc -m - print the number of characters
+	wc -L - the length of the longest line
+
+uniq - return unique occurences from output
+
+	uniq -c - return number of occurences of separate lines
+	uniq -d - return only lines with more than one subsequent occurence
+	uniq -i - ignore case
+	uniq -u - only print unique lines (those with only a signle occurence)
+	uniq -f - avoid comparing the first N fields
+
+tr - replace sequence occurence with another string
+
+	tr -s - 'squeeze' all occurences of a string to one
+	tr -d - delete a character from output
+
+replace - replace string 'a' occurences with string 'b' in a file
+
+	replace a b -- filename
+
+nl - display file content and number of lines.
+	 nl doesn't consider empty lines by default
+
+xargs
+
+	echo "   foo bar   " | xargs - using xargs in such a way will trim the string
+				and "foo bar" will be returned
+
+less
+
+	we can read pdfs with the less pager, as well as the content of zip archives
+
+tee - read from standard input and write to standard output and files
+	http://linuxaria.com/pills/linux-terminal-the-tee-command
+
+	using tee with vim and sudo to workaround insufficient write permission
+	:w !sudo tee % (same as SudoWrite % from the SudoVim plugin)
+
+	command | tee -a file_1 file_2 file_3
+
+	tee -a - append to the given files, do not overwrite
+	tee -i - ignore interrupt signals (ignore only SIGINT)
+	it can be useful if we want to interupt the stdin provider, but we want tee
+	to exit gracefully.
+
+	Use tee with dd to write an iso file to multiple peripheral devices:
+	dd if=/dev/sda bs=64k | tee >(dd of=/dev/sdb bs=64k) | dd of=/dev/sdc bs=64k
+	dd if=/dev/sda | tee >(dd of=/dev/sdb) >(dd of=/dev/sdc) >(dd of=/dev/sdd) | dd of=/dev/sde
+
+	Execute a command through SSH and tee on multiple hosts:
+	echo “uptime” | tee >(ssh host1) >(ssh host2) >(ssh host3)
+
+cut
+
+	-d - specify delimiter (default one is tab)
+	-f - specify columns to be printed, as well as lines that don't contain a delimiter character
+	-s - do not print lines not containing any delimiter
+	-c - specify characters to be printed according to their position
+
+	cut -d: -f1,3 /etc/passwd - first and third colulmn
+	cut -d: -f1-3 - from first to third column
+	cut -d: -f1-4,6,7 /etc/passwd
+	cut -d: -f2- /etc/passwd - from the second column to the last
+	cut -d: -f1-4,6,7 /etc/passwd
+
+	--output-delimiter=$'\n' - specify a delimiter for cut's output
+
+	cut -c2-7 /etc/passwd - display the second to the seventh character
+	cut -c2- /etc/passwd - display from the second character to the end of the line
+
+paste - merge lines of files
+
+	paste -s - paste one file at a time, instead of parallel
+
+	paste in three column:
+	cat data | paste - - -
+
+	use custom delimiter:
+	cat data | paste -d','
+
+join - join lines of files in a common field
+
+head - print the beginning lines of output (10 by default)
+
+	head -c 20 - print the first 20 characters of the first line
+	head --bytes=1024 - print the specified number of bytes at the beginning of a file
+	head -v - print the filename in the first line of output
+	head --lines=5,
+	head -n 5 - print the specified number of first lines instead 10 as by default
+
+tail
+
+	tail --follow=name filename_1,
+	tail --follow=descriptor filename_1 - display the last lines of output, as the file or file descriptor changes
+
+	--retry - keep on retrying to open a file if it isn't accessible
+	-v - display standard output name (most commonly the filename being parsed)
+	-F - same as --follow=name --retry
+
+	tail -f /var/log/messages - we can use this to monitor various system events in 'real-time'
+
+	tail -c 20 - display last 20 characters of the last line
+
+multitail - tool with a split screen TUI for viewing real-time tails of multiple files
+
+sort
+
+	sort -n - sort in numeric order
+	sort -d - sort in alphabetical order
+	sort -o - write result to file, not STDout
+	sort -t - change delimiter
+	sort -r - sort in reverse order
+
+		sort -t. - changes the delimiter to a dot
+		sort -t\| - changes the delimiter to slash
+
+	sort -k - change column depending on which the sorting is performed
+
+		sort -k +2n - the sorting of lines is performend according to the second column
+
+comm - compare streams or files
+
+column
+
+	mount | column -t
+
+pg
+
+diff
+
+od - dump files in octal and other formats
+
+xargs - allows using the output of one command as arguments to another
+	    it's useful to manage arguments between commands
+
+nl - list numbers of lines
+
+fold - reduce the number of characters per line of output
+
+	fold -w 5 - show 5 characters per line from stdin
+	fold -b
+	fold -s
+
+rev - revert each lines from a file
+
+cat
+
+	cat > file - edit a new file with cat as an editor
+	cat -n file - show line numbers
+	cat -E file - show line ends as '$'
+	cat -v file - show non-printing
+	cat -e file - equivalent to cat -vE
+	cat -s file - supress multiple subsequent empty lines to a single empty line
+	cat -T file - show tabs as 'I^'
+	cat -t file - same as cat -vT
+
+	We can copy/clone/backup whole linux partitions with cat:
+	cat /dev/sda1 > /dev/sdb1
+
+tac - the opposite of cat
+
+split
+
+	split -l 3500 example.csv - split a text file into smaller files of up to 3500 lines
+	split -d example.csv - add digits to the names of the files (default names are xaa, xab etc)
+
+shuf - select randomly a line, file or folder from a file or folder
+
+expand - convert tabs to spaces
+
+unexpand - convert spaces to tabs
+
+rename - rename file by translating characters
+
+	rename ' ' '_' <filename> - exchanges spaces with '_' in the filename

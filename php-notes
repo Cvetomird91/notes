@@ -1,0 +1,155 @@
+exit - can accept an integer and a string as a parameter.
+When we pass an integer to it, this would become the exit status of the PHP process.
+If we pass a string, it will be printed upon exiting the PHP script. The die() keyword
+behaves in the second way.
+
+require_once and include_once will ignore any further attemts to include a file
+which is already included.
+
+
+Directives that can be set with the declare keyword:
+encoding and tick functions.
+
+A tick function can be triggered in a block of code passed to declare
+after a number of executions:
+
+declare(ticks = 3) {
+	for ($i = 0; $i < 10; $i++) {
+		//do something
+	}
+}
+
+A tick function is registered with register_tick_function().
+
+declare(encoding = "UTF-8"); - it can be used only if you
+compile PHP with the --enable-zend-multibyte.
+
+Functions are compiled only once when a script is initialized
+
+page 64 - we can include HTML code in function declarations, similarly to
+using shorthand PHP tags in templates.
+
+page 70 - we cannot pass a complex expression as a default value of a
+function, only a scalar expression.
+
+page 70 contains a typo - count_list().
+page 71 - type hinting of function declaration.
+
+The range of the integer type in PHP depends on the range of the long data type of the C compiler
+with whom the PHP execuitalbe was built. Most commonly it is in the following range:
+−2,147,483,648 to +2,147,483,647
+
+Classes cannot be redeclared in PHP or "reopened" as in Ruby. A fatal error will be thrown after
+attempting to do so.
+
+NB!!!
+In PHP only functions are scope gates. Loops aren't. Index variables remain in the local
+scope after loop execution.
+
+"binary safe" - in the context of PHP this means that strings can't contain null bytes.
+
+https://github.com/facebookarchive/phpsh
+PHP shell written in Python
+
+=======================================================================================================
+
+Compile time options
+
+--enable-short-tags - disabled by default
+--enable-asp-tags - disabled by default
+--enable-trans-id - add the PHP session id to each HTML file
+--with-xmlrpc - add support for XML-RPC extensions
+
+=======================================================================================================
+
+PHP INI
+
+allow_url_include - allows the inclusion of PHP files over HTTP (bad security practise)
+allow_url_fopen - allows  the opening of files with fopen over HTTP or FTP
+ini_set('html_errors', false); - make HTML PHP errors to be displayed into plain text
+session.save_path - each PHP session is saved in a file. We can specify it with this directive.
+disable_functions - disable builtin PHP functions
+
+PHP programming (O'Reilly) page 351 - error reporting directives
+
+variables_order - the order in which the superglobal arrays are preloaded with information.
+The default order is EGPCS($_ENV, $_GET, $_POST, $_COOKIE and $_SERVER).
+
+request_order - describes the way PHP registers POST, GET and Cookie variables into the $_REQUEST
+array.
+
+ignore_repeated_errors - supresses repeating errors being logged, but only from the same line on the
+same PHP script
+
+=======================================================================================================
+
+PHP Pitfals
+
+$asd = false;
+
+if (isset($asd)) {
+    echo 'ok';
+}
+
+// This will output 'ok'!
+
+$asd = null;
+
+if (isset($asd)) {
+	echo 'ok';
+}
+
+// This will not output the string
+
+=======================================================================================================
+
+PHP OOP
+
+We can use the following sintax to call a parent's constructor:
+
+class Grandpa
+{
+    public function __construct()
+    {
+
+    }
+
+}
+
+class Papa extends Grandpa
+{
+    public function __construct()
+    {
+        // call Grandpa's constructor
+        Grandpa::__construct(); #this is the same as parent::__construct();
+    }
+}
+
+PHP doesn't call the parent class'es construct except when stated explicitly.
+
+Implement method chaining:
+http://stackoverflow.com/questions/3724112/php-method-chaining
+
+=======================================================================================================
+Debugging techniques
+
+get_included_lines();
+
+get_included_files() - returns an array with the included files (files with
+Parse error are excluded).
+=======================================================================================================
+
+PHP CLI
+
+php --ri pdo - get settings for extension
+
+=======================================================================================================
+
+PHP Tutorials:
+http://php.codeindepth.com/
+
+=======================================================================================================
+
+PHP Books
+
+PHP Programming - O'Reilly

@@ -1,0 +1,182 @@
+Ansible "slang" - playbooks, tasks, modules, group vars files, templates, roles, host
+var files
+
+Playbooks are divided into plays. Plays are a set of tasks to be performed on a
+host.
+
+Tags - some plays or tasks may be run separately without needing to run the whole playbook.
+	   this is the reason tags are created. tags may be placed in tasks for the purpose,
+	   so that they can be called via them separately, without running the whole playbook
+
+Ansible uses the Jinja2 Python templating system.
+
+group variables can be assigned inline with the ansible-playbooks command as well as in other
+places.
+
+ansible --version
+	outputs also the ansible config file
+
+Ansible searches for additional variables in directories with names 'group_vars' and
+'host_vars'. Ansible will search for those files even if they aren't created:
+
+	group_vars/linux
+	group_vars/ubuntu
+	host_vars/host0.example.org
+
+To disable cowsay:
+export ANSIBLE_NOCOWS=1
+
+task status:
+host1.example.org          : ok=2    changed=1    unreachable=0    failed=0
+changed=1 means it changed something on the node.
+
+Ansible includes files named main.yml automatically.
+
+Controller machine - the machine from which we run ansible playbooks
+Inventory - INI file which map IPs to hostnames
+Task
+Module - abstractions of system tasks (e.g. package installation, copying files etc)
+Role
+Play - a provisioning executed from start to finish is called a play
+Facts - variables containing global information about the system
+
+configuration priority (highest to lowest):
+ANSIBLE_CONFIG environment variable
+$PWD/ansible.cfg
+~/.ansible.cfg
+/etc/ansible/ansible.cfg
+
+=======================================================================================================
+
+Ansible modules
+
+http://docs.ansible.com/ansible/list_of_all_modules.html
+
+ping - check machine state
+shell - run shell command over nodes
+	ansible -m shell -a 'uname -a' host0.example.org
+copy - copy file module. Copy a file from the host to the node.
+	src=/etc/config
+	dest=/tmp
+	mode=0640
+	state=link
+
+	ansible -m copy -a 'src=/etc/motd dest=/tmp/' host0.example.org
+
+setup - retrieve information about node parameters
+
+	ansible -m setup -a 'filter=ansible_memtotal_mb' all
+
+	When using the setup module we can use * in the filter expression. It will act as a shell glob.
+
+service - work with SysV init scripts
+
+command - execute command
+
+git 
+	repo=http://github.com/user/repository
+	dest=/var/www/doc-root
+
+=======================================================================================================
+
+Ansible inventories
+
+Sample inventory directives:
+
+#aliases:		  #ips						 #ssh user to log with. User running ansible if not defined
+host0.example.org ansible_host=192.168.33.10 ansible_user=root
+host1.example.org ansible_host=192.168.33.11 ansible_user=root
+host2.example.org ansible_host=192.168.33.12 ansible_user=root
+											#specify SSH port
+host3.example.org ansible_host=192.168.0.12 ansible_port=2222
+
+We can specify groups:
+[web]
+host0.example.org
+host1.example.org
+host2.example.org
+
+This can be expressed shorter:
+[web]
+host[0:2].example.org
+
+We can use child groups
+[linux:children]
+ubuntu
+debian
+
+The ubuntu and debian groups will be grouped together in the linux parent group.
+
+The ansible user can be specified in ~/.ansible.cfg with the remote_user directive
+
+Default ansible inventory:
+/etc/ansible/hosts
+
+We can specify an ansible inventory inline upon using ansible:
+ansible -i hosts
+
+We can limit the execution to a single host in the inventory file:
+ansible -i hosts -l host0.example.org
+
+We can also use the ANSIBLE_HOSTS environment variable for this purpose.
+
+host variables
+
+=======================================================================================================
+
+Ansible playbooks
+
+Playbooks are collections of tasks, for various modules to be executed on the remote
+machines(similarly to tasks executed with "ansible -m").
+
+Set extra variables upon parsing playbooks:
+ansible-playbook --extra-vars
+ansible-playbook -e
+
+Sample playbook:
+
+- hosts: web # can be a group or a hostname
+  tasks:
+  	- name: Installs apache web server
+  	  apt: pkg=apache2 state=installed update_cache=true
+
+Playbooks are divided into plays. Plays are a set of tasks to be performed on a
+host. Each directive below the task name is actually a module that we can run with
+"ansible -m".
+
+Before each play ansible runs the setup module. This can be disabled with the gather_facts 
+directive, placed on the level of tasks:
+
+- hosts: web
+  tasks:
+  - name: Install MySQL
+    apt: pkg=apache2 state=installed update_cache=true
+    command: service apache2 status
+    register: result
+
+  gather_facts: no
+
+We can use loops in tasks:
+
+ - name: Install stuff
+   apt: pkg={{ item }} state=latest
+   with_items:
+      - vim
+      - git
+      - curl
+
+ - hosts: all
+   sudo: true
+   vars:
+     packages: ['vim', 'git', 'curl']
+   tasks:
+   	 - name: Install Package
+   	   apt: name={{ item }} state=latest
+   	   with_items: packages
+
+=======================================================================================================
+
+Ansible Resources
+
+Deploying a Rails application with Ansible:
+http://coderify.com/preparing-ruby-on-rails-production-server-with-ansible-part-2/

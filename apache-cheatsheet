@@ -1,0 +1,140 @@
+Apache Web Server
+
+MPM - Multi-processing Module - defines how the server handles requests by setting the relationship
+between child processes, threads and users running them
+
+Apache on different OSs - http://wiki.apache.org/httpd/DistrosDefaultLayout It includes different
+directories and configuration files locations
+
+Apache 2.0 directories - bin, build, cgi-bin, conf, error, htdocs, icons, include, lib, logs, man
+manual, modules
+
+ApacheToolbox: a shell script which assists on the configuration and installation of Apache
+http://apachetoolbox.com/
+
+http://apache-server.com/tutorials/
+
+Apache w/ CPanel configuration and log files:
+
+https://www.liquidweb.com/kb/locations-of-common-log-files-on-cpanel-servers/
+
+http://apache-server.com/tutorials/
+
+Virtual hosts for Dummies:
+http://www.tecmint.com/apache-ip-based-and-name-based-virtual-hosting/
+http://httpd.apache.org/docs/current/vhosts/examples.html
+
+-- mod_rewrite rules and options --
+
+[QSA,NC,L]
+NC - case insensitive URLs
+
+Apache Portable Runtime
+
+http://httpd.apache.org/docs/2.0/install.html
+
+apxs - Apache Extensions CLI Tool
+
+http://modules.apache.org/
+
+http://linux-training.be/files/books/LinuxSrv.pdf
+	page 23 - basic VirtualHost configuration
+
+htdigest - manage user files for digest authentication
+
+htcacheclean - a "front-end" for mod_cache_disk which can be used to review cached content,
+			   clear cached content or to set limits for disk caching of HTTP responses.
+
+htpasswd - generate password hash for digest autenthication
+
+	htpasswd -c .htpasswd_dev username
+
+LogFormat
+
+Any file that has the handler cgi-script will be treated as a CGI script, and run by the server,
+ with its output being returned
+to the client. Files acquire this handler either by having a name containing an extension
+defined by the AddHandler directive, or by being in a ScriptAlias directory.
+
+
+ErrorLog - when assigned to a VirtualHost, the errors returned from it will be stored in a separate
+	   text file, rather than the default global error log.
+
+=======================================================================================================
+
+Notable Apache modules:
+
+*mod_security
+	-Apache auditing tool. Web Application Firewal.
+	 Works on a per request basis. Has no way to compare one request to another
+	to build a multiple request profile.
+	https://github.com/SpiderLabs/ModSecurity/wiki/Reference-Manual#ModSecurityreg_Reference_Manual
+
+*mod_dumpio
+	- allows the complete input and output of each HTTP transaction to be logged
+
+*mod_rewrite
+	http://code.tutsplus.com/tutorials/using-htaccess-files-for-pretty-urls--net-6049
+	http://httpd.apache.org/docs/2.0/misc/rewriteguide.html
+	http://www.branded3.com/blogs/htaccess-mod_rewrite-ultimate-guide/
+
+*mod_log_config
+	- Apache Web servers standart activity logging module. Allows the admin to create his
+	own formats for structuring the logs.
+
+	LogLevel directive - the default LogLevel is warn
+
+	CustomLog - we can use this directive to assign the format of the logged request. We can
+	assign the usage of the rotatelogs program which rotates the logs at a particular time
+	automatically.
+
+*mod_logio - enhances mod_log_config. Allows to log the number of bytes transferred over the web
+
+*mod_log_mysql - allows  logging to be done into a MySQL database
+
+*mod_vhost_alias - allows mass virtual hosting - configuring multiple virtual hosts with similar
+	settings
+
+*mod_spelling - regulates URL case sensitivity and can give access to a document if a misspelling occurs
+
+*mod_ssl - enable SSL encryption for HTTPS access on a host
+
+*mod_userdir - allows user-specific directories to be accessed using the following URL syntax:
+http://example.com/~username/ syntax
+
+*mod_cache
+
+*mod_cache_disk - mod_cache must be loaded first to use this module. Enables the storing of headers
+				  and bodies are stored separately on disk.
+
+Directory for the cache on a Debian-based system:
+/var/cache/apache2/mod_cache_disk/
+
+Enable mod_userdir for only a few users:
+UserDir disabled
+UserDir enabled user1 user2 user3
+
+disable only for specific users:
+UserDir disabled user4 user5 user6
+
+Set a specific directory name as document root in a user's directory:
+
+UserDir public_html - this will set /home/*/public_html/ to be the document
+		root for http://example.com/~username/
+
+UserDir /var/html/ - this will set the document root for http://example.com/~username/ to be /var/html/username/
+
+*mod_proxy
+
+Apache::BruteWatch - watches the logfile and sends a notification when an account is being
+	targetet for a brute force attack. It requires mod_perl to work.
+
+SetEnvIfNoCase - we can use this directive to turn off logging of requests. For example to prevent
+		logging of those requests from our own pages. This is useful for keeping logfile
+		size for example. Same as SetEnvIf, but Case insensitive
+
+Best PHP Security practises:
+http://www.cyberciti.biz/tips/php-security-best-practices-tutorial.html
+
+List of Apache modules
+http://www.cs.ucc.ie/~dgb/courses/svr/table.pdf

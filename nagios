@@ -1,0 +1,115 @@
+NCSA - Nagios Service Check Acceptor
+NRPE - Nagios Remote Plugin Executor
+
+Steps for setting up Nagios:
+
+0. Create nagios user:
+
+   sudo useradd nagios
+
+00. Create nagios group:
+
+   groupadd nagcmd
+
+1. Enable external commands:
+
+	vim /etc/nagios3/nagios.cfg
+
+	Set check_external_comamnds to 1
+
+=======================================================================================================
+
+Nagios directories:
+
+	-- Debian/Ubuntu
+	/etc/nagios-plugins	- Customizable scripts used for monitoring
+	/etc/nagios3		- Configuration files to add hosts, services,
+						  define checks and timers
+	/etc/nagios 		- NRPE configurations on remote host
+	/usr/lib/nagios/plugins - Executable binary files used for monitoring
+	/etc/nagios3/httpasswd.users
+		To add a user:
+		htpasswd /etc/nagios3/htpasswd.users username
+	/var/lib/nagios - contains SMTP messages sent for checks
+
+How to install NRPE server:
+apt-get install nagios-nrpe-plugin nagios-nrpe-server
+https://help.ubuntu.com/lts/serverguide/nagios.html
+
+=======================================================================================================
+
+NSCA
+
+http://nagios.sourceforge.net/download/contrib/documentation/misc/NSCA_Setup.pdf
+
+How to setup NSCA:
+https://wiki.gutzmann.com/confluence/pages/viewpage.action?pageId=12681387
+
+Two syntaxes in which send_nsca can send data - service-based and host-based:
+	Service Checks:
+	<host_name>[tab]<svc_description>[tab]<return_code>[tab]<plugin_output>[newline]
+
+	Host Checks:
+	<host_name>[tab]<return_code>[tab]<plugin_output>[newline]
+
+=======================================================================================================
+
+Links:
+http://technosophos.com/2010/01/13/nagios-fixing-error-could-not-stat-command-file-debian.html
+
+How to setup Nagios Graph:
+http://www.linuxfunda.com/2013/04/02/steps-to-configure-nagiosgraph-with-nagios-core/
+
+How to fix cannot stat cmd file error:
+http://www.ghacks.net/2010/04/05/nagios-enable-external-commands/
+
+Introduction to Nagios:
+http://users.telenet.be/mydotcom/howto/nagios/index.html
+
+Nagios and SNMP traps:
+http://xavier.dusart.free.fr/nagios/en/snmptraps.html
+
+=======================================================================================================
+
+We can have Nagios without the CGI interface.
+
+We can use # and ; for comments
+
+log_file - path to logfile. This directive needs to be the  first one to be setup
+cfg_file - specify an object file; We can specify multiple cfg_file directives
+cfg_dir - specify a directory with configuration files for Nagios to process; only files with .cfg extension will be parsed.  Additionally, Nagios will 		recursively process all config files in subdirectories of the directory you specify here. We can have multiple cfg_dir directories
+object_cache_file - a cached copy of object definitions, that is used by the CGI scripts
+precached_object_file - This directive is used to specify a file in which a pre-processed, pre-cached copy of object definitions should be stored.
+resource_file - a file that contains $USERn$ user-defined macros. They are useful for storing usernames, passwords and directory paths.
+temp_file - temporary file that Nagios generates periodically before updating data. The file is deleted when it is no longer needed.
+temp_path - path where temporary files, created by Nagios are stored
+status_file - This is the file that Nagios uses to store the current status, comment, and downtime information. This file is used by the CGIs so that 			current monitoring status can be reported via a web interface. The CGIs must have read access to this file in order to function properly. This 			file is deleted every time Nagios stops and recreated when it starts. 
+nagios_user - the user with which the nagios process is run
+nagios_group - the group with which the nagios porcess is run
+status_update_interval - the time in second during which nagios will update status in the status file. The minimal level is 1
+enable_notifications - This option determines whether or not Nagios will send out notifications when it initially (re)starts.
+execute_service_checks - This option determines whether or not Nagios will execute service checks when it initially (re)starts.  This option is most 		often used when configuring backup monitoring servers, as described in the documentation on redundancy, or when setting up a distributed monitoring 	environment.
+accept_passive_service_checks - This option determines whether or not Nagios will accept passive service checks when it initially (re)starts.
+
+enable_event_handlers - This option determines whether or not Nagios will run event handlers when it initially (re)starts. If this option is disabled, Nagios will not run any host or service event handlers.
+
+log_rotation_method - specify log rotation period
+
+	d - daily
+	h - hourly
+	n - none (disable log rotation)
+	w - weekly
+	m - monthly
+
+log_archive_path - path to directory where archives of rotated logs will be stored (ignored if we disable log rotation)
+check_for_updates - check for nagios updates
+lock_file - path to lock file in case Nagios run as a daemon
+retain_state_information - This option determines whether or not Nagios will retain state information for hosts and services between program restarts. 	 	If you enable this option, you should supply a value for the state_retention_file variable.
+state_retention_file - the file where nagios stores status, downtime and comment information before it shuts down
+use_syslog - setup Nagios to use the syslog facility for logging
+
+sanity check - configuration status check
+
+http://pubs.vmware.com/vsphere-65/index.jsp?topic=%2Fcom.vmware.vsphere.install.doc%2FGUID-7C9A1E23-7FCD-4295-9CB1-C932F2423C63.html
+https://doc.pfsense.org/index.php/Main_Page
+https://assets.nagios.com/downloads/nagioscore/docs/nagioscore/3/en/toc.html

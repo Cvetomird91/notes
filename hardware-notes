@@ -1,0 +1,7 @@
+IPMI - Supermicro's KVM. Each vendor has a different name for KVM.
+SATA 3 ports are white, SATA II ports are black.
+
+Each NIC has only one networking port. There isn't a NIC with two
+or more Ethernet ports.
+
+crucial.com

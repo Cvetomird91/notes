@@ -1,0 +1,724 @@
+Git and GitHub:
+
+Configuration hierarchy:
+/etc/gitconfig
+~/.gitconfig
+$GIT_REPOSITORY/.git/config
+
+.git/index - files added to the staging area. Git status actially parses and displays this file.
+
+File states:
+- Untracked
+- Unmodified - added to staging/the index with git add
+- Modified
+- Staged
+
+How to exclude certain file extensions from the project:
+.git/info/exclude
+
+How to contribute to an open source project on github:
+https://egghead.io/lessons/javascript-introduction-to-github?series=how-to-contribute-to-an-open-source-project-on-github
+
+http://fmi.ruby.bg/lectures/15/file-states.png
+
+Every git object is identified with a sha1 hash of its content.
+Git objects can be rewieved with git show.
+
+Types of git objects (they can be viewed in .git/objects):
+blob(file) - compressed, snapshot of a file
+tree - list of hashes of files and trees
+commit
+	Contains the following:
+	- unique identifier
+	- author and commiter
+	- commit message
+	- time of commit
+	- hash of previous commit
+	- hash of the tree to which it relates to
+	- other metadata
+tag - contains the identifier of a commit
+branch tip - the last commit from the branch
+
+.git/refs/heads/branch_name
+Origin/master is also a local branch, matching the remote one in the local working copy.
+
+WIP - work in progress
+index - alias for the staging area
+HEAD - alias for the current branch
+
+tig - ncurses git client
+
+=======================================================================================================
+
+Git add
+
+git add -p - stage the changes in a file chunk by chunk interactively (not the whole file)
+git add -i - interactive mode
+
+=======================================================================================================
+
+Git status
+
+git status -s - short format
+
+git status -s -b - show the branch information in short format
+
+=======================================================================================================
+
+Git apply
+
+git aply --stat 0001-changes.patch - output stats for patch
+
+=======================================================================================================
+
+Git branch
+
+List all local and remote branches:
+git branch -a
+
+Verbose mode (useful to check if a local branch is behind the remote):
+git branch -v
+git branch -vv
+
+Create branch from another branch:
+git checkout -b myNewBranch stable - creates 'myNewBranch' from the code in 'stable' branch
+similar to: git branch myNewBranch stable (in the previous example we'll checkout automatically
+into the new branch)
+
+Delete remote branch:
+git push origin --delete branch_name
+
+or
+
+git push origin :branch_name
+
+Rename current branch:
+git branch -m new-name
+
+Rename branch:
+git branch -m old-name new-name
+
+Rename remote branch with the new name (actually deletes the one with the old name and creates a
+copy of the same branch with different name):
+git push origin :old-name new-name
+
+Porcelain v2 output:
+git status --porcelain=v2 --branch
+
+=======================================================================================================
+
+Git pull
+
+In case of 'fatal: refusing to merge unrelated histories':
+
+git pull --allow-unrelated-histories origin master
+
+Pull and rebase diverged remote branch:
+git pull --rebase
+
+=======================================================================================================
+
+Git checkout
+
+checkout a remote branch into local repository:
+git checkout -b jobs origin/jobs
+
+We can achieve the same with the --track option:
+git fetch origin
+git checkout --track origin/remote_branch
+
+git checkout -- filename.c - revert untracked changes
+
+git checkout \- - return to previous branch
+
+git checkout @{-1} - return to a previously used branch
+
+Apply changes from a specific previous commit:
+git checkout <commit-ish> <filename> - applies the changes made only to that particular file
+									   in the particular commit
+git checkout <commit-ish>	- applies the changes from all files changed in that commit
+
+We can create a new branch whose tip is on a specific branch:
+git checkout -b old-state <commit-ish>
+
+=======================================================================================================
+
+Git push
+
+Delete a remote branch:
+git push origin --delete remote-branch
+
+in older versions:
+git push origin :remote-branch
+
+How to create a branch on the remote repository upon pushing the first commit from it:
+git push -u origin branch_name
+
+Push to the current remote branch:
+git push origin HEAD
+
+=======================================================================================================
+
+Git fetch
+
+git fetch remote repository content, ignoring local changes:
+git fetch origin master
+git reset --hard FETCH_HEAD
+git clean -df
+
+=======================================================================================================
+
+Git clean
+
+Removes unstaged files. It may remove files ignored by gitignore.
+
+git clean -n - dry-run
+git clean -i - interactive
+
+=======================================================================================================
+
+Git reset
+
+git reset <commit> <files>
+
+Remove a file from the staging area/unstage a file:
+git reset HEAD db/connection.php
+git reset filename.c
+
+Unstage all staged files in current directory:
+git reset .
+
+Uncommit the last commit and revert the changes in it into staging:
+git reset --soft HEAD^
+
+Soft resets are useful for squashing commits.
+
+Uncommit the last commit with destroying the changes in it:
+git reset --hard HEAD^
+
+Reset chunks of line changes interactively, not the whole changes:
+git reset -p filename.txt
+
+=======================================================================================================
+
+Git clone
+
+git clone --depth=50 - clone only 50 revisions back
+
+Checkout a specific tag:
+
+git clone http://github.com/user/repository
+git checkout tags/tagname
+
+=======================================================================================================
+Pull request steps
+
+Fork repository on GitHub.
+Clone the newly forked repository locally.
+
+Push the commit in the following way to create the same branch on the remote repository.
+git push -u origin branch_name
+
+After changes from the local repository have been commited to the forked one, we should go to the page
+of the repository to which we would like to submit a pull request.
+Then click on "New pull request".
+Click "compare across forks" and select the branches and repositories.
+
+NB!!!
+Pull Requests are per branch, not per commit. They include all the commits that haven't been merged
+to the upstream branch.
+
+=======================================================================================================
+
+Git diff
+
+git diff --staged - display a diff with the changes in the current staging area
+
+=======================================================================================================
+
+Git rm
+
+git rm index.rb - removed the files from the local working copy and from staging
+git rm --cached filename.c - remove the file from the repository, but keep it on the filesystem
+
+=======================================================================================================
+
+Git symbolic-ref
+
+e.g. HEAD is a symbolic ref. We can review and modify symbolic refs with this command.
+
+=======================================================================================================
+
+Git reset
+
+git reset filename.c - remove file from stage area
+
+=======================================================================================================
+
+Git stash
+
+git stash show - list stashed commits
+git stash show -p stash@{0} - show changes in stash
+
+git stash pop - insert the changes from the last stash-like commit into the current branch
+
+Stash a single file (by default git stash stashes all the unstaged files in the current directory):
+
+git stash push -- my_file.sh
+
+By default git stash stashes also the staged changes. We can ommit stashing them with this
+option:
+git stash --keep-index
+
+Undo a git stash pop(the popped stash is preserved in the stack):
+git reset --hard HEAD
+
+See the changes of a file in a stash commit:
+git diff stash@{0}^1 stash@{0}  -- Gruntfile.coffee
+
+Pop the changes from a stash for a single file:
+git checkout stash@{0} -- Gruntfile.coffee
+
+Apply changes from a stashed commit / pop a specific stash:
+git stash apploy stash@{1}
+
+=======================================================================================================
+
+GitHub
+
+Delete GitHub repository:
+Settings -> Danger Zone -> Delete repository
+
+Delete branch on Github:
+Open the repository page -> Branches -> Select and remove the branch (left icon)
+
+**error: The requested URL returned error: 403 Forbidden while accessing https://github.com/Cvetomird91/info/refs
+fatal: HTTP request failed*
+
+git clone https://username:password@github.com/username/repository.git
+
+=======================================================================================================
+
+Squash commits with rebase (make last number of commits appear as one commit on the current branch):
+
+git rebase -i HEAD~5 - in case we would like to rebase 5 commits
+
+After that the default editor will open. To squash previous commits into the last one, you'll
+have to set the last commit's status to pick and the rest one's status to squash.
+Then another instance of the default editor will appear to edit the message of the
+new commit.
+
+Commiting to remote repository after squashing commits:
+git push origin +master
+
+=======================================================================================================
+
+Difference between "git push origin +master" and "git push --force origin master":
+
+Note that --force applies to all the refs that are pushed, hence using it with push.default
+set to matching or with multiple push destinations configured with remote.*.push may overwrite
+refs other than the current branch (including local refs that are strictly behind their remote
+counterpart). To force a push to only one branch, use a + in front of the refspec to push (e.g
+git push origin +master to force a push to the master branch).
+
+Squashing commits with rebase:
+http://gitready.com/advanced/2009/02/10/squashing-commits-with-rebase.html
+
+NB!!!
+When creating a new branch its files are going to be copied from the branch you are running
+the git branch command from.
+
+Permission denied (public key) issue while using the SSH:
+https://help.github.com/articles/error-permission-denied-publickey
+
+GitHub cheatsheet:
+https://github.com/tiimgreen/github-cheat-sheet#emojis
+
+Git as SVN client cheatsheet:
+https://git.wiki.kernel.org/images-git/7/78/Git-svn-cheatsheet.pdf
+
+In case of the following error while cloning on another workstation:
+
+GitLab Vagrant Box:
+http://portalstack.blogspot.com/2014/09/vagrant-gitlab.html
+It requires NFSD to be installed on Host machine.
+
+List of useful .gitignore files
+https://github.com/YavorIvanov/gitignore
+
+When we need to include a JavaScript file from Git:
+
+Change raw.githubusercontent.com to rawgit.com (non-production) or cdn.rawgit.com (production)
+
+Otherwise, an error message about the file's MIME type will be thrown.
+
+=======================================================================================================
+
+Restoring a file, deleted in a previous commit:
+
+git checkout <commit_hash>^ -- <file_path> - here commit_hash is the hash of the commit before the
+file was deleted
+
+=======================================================================================================
+
+Git Config
+
+Enable and disable colorful output in git commands:
+git config color.ui true/false
+
+Enable Unix-style line endings:
+git config --global core.autocrlf true
+
+Get remote origin repository URL:
+git config --get remote.origin.url
+
+Disable tracking of file attributes changes (e.g. with chmod and chattr):
+git config core.fileMode false
+
+Setup a global gitignore file:
+git config --global core.excludesfile ~/.gitignore_global
+
+Git Var
+
+git var -l - list all local variables
+git var <variable> - get local variable value
+
+=======================================================================================================
+Git Log
+
+Pretty Git commit tree:
+https://coderwall.com/p/4-itow/nice-terminal-git-tree-graph
+
+git config --global alias.tree 'log --graph --full-history --all --color --date=short
+--pretty=format:"%Cred%x09%h %Creset%ad%Cblue%d %Creset %s %C(bold)(%an)%Creset"'
+
+git log -p -2 - displays a diff between the last two commits; this is a way to check the content
+of previous commits
+git log --pretty=oneline --abbrev-commit
+
+git log --oneline
+
+Show merge graph:
+git log --graph
+
+Show commits whose diff contains a certain string:
+git log -Sfunction_name
+
+Show last 3 commits:
+git log -3
+
+Get all commits including a file:
+git log --follow filename
+
+Get all commits, in which a file was deleted
+git log --diff-filter=D --summary
+
+Output the names of the files:
+git log --name-status
+git log --name-only
+
+git log
+git log --stat
+git log --since=2.weeks
+git log --since=5.days.15.minutes
+git log --until=2013-11-30
+git log --grep 'Proc.new'
+git log --author 'Dimitar Dimitrov'
+git log lectures/01-introduction-to-ruby.slim
+
+git log --oneline --graph --decorate --remotes --branches
+
+Show merge stats for files which had to change in a merge:
+git log --stat -c
+git log --stat --cc
+git log --stat -m
+
+=======================================================================================================
+
+Git grep
+
+=======================================================================================================
+
+Git rev-list - Lists commit objects in reverse chronological order
+
+git rev-list --all module.cpp - print in reverse chronological order the commit hashes of a file
+
+=======================================================================================================
+
+Git show - review GIT objects
+
+git show 5fae69568cd5420e13a34c06f6f495ea9bcb9a4e
+git show 5fae695
+git show HEAD
+git show HEAD^ - view the state of HEAD one commit back
+git show HEAD^^^ - view the state of HEAD three commits back
+git show HEAD~3 - view the current HEAD and the previous three commits
+git show $revision:$file - view the state of $file in the specified $revision
+
+=======================================================================================================
+
+Git cat-file - show object type and information
+
+Show the type of the git object:
+git cat-file -t <hash>
+
+Show git object data:
+git cat-file -p <hash>
+
+=======================================================================================================
+
+Git Filter-branch
+
+=======================================================================================================
+Git commit
+
+Change commit message
+
+git commit --amend - will open the last commit with core.editor to edit the message
+git commit --amend -m "message"
+git commit --amend - this will open the system editor for editing the message in its buffer
+Technically, this creates a new commit with the same predecessor in the current repository.
+The old commit can still be restored.
+
+Then we can push the commit with the changed message in the following way:
+git push --force origin branch
+
+We should avoid it if we've already pushed the commit, because someone may have pulled it and
+conflicts may occur.
+
+Learn Git the Hard Way:
+https://gitorious.org/~easel/learn-x-the-hard-way/learn-git-the-hard-way
+
+Add a file to an already created commit (in case you've missed to add it with git add). Adding a file
+in such a way to an already pushed commit is not recommended.
+git add omitted-file.py
+git commit --ammend --no-edit
+
+=======================================================================================================
+
+Git reflog
+
+The reflog records information about the time when branches are updated.
+With this command we can manage the information recorded in the reflog.
+
+Without arguments it prints the reflog for the last 30 days
+
+=======================================================================================================
+
+Git revert
+
+git revert <commit> - removes the changes caused by <commit>
+Acutally, creates a new commit which reverts the changes of the previous commit
+
+A revert commit can be reverted.
+
+Revert the change in the specified commit but add it to staging and don't create the commit yet:
+git revert --no-commit <commit>
+
+Revert the last three commits:
+git revert --no-commit HEAD~3..
+
+=======================================================================================================
+
+How to force "git pull" to override local files:
+
+git fetch --all
+git reset --hard origin/master
+
+All local changes in this branch and missing changes on the remote will be lost
+
+=======================================================================================================
+
+How to synchronize a forked repository with the original upstream repository:
+http://stackoverflow.com/questions/7244321/how-to-update-a-github-forked-repository
+
+1.
+Add the original repository to the local fork's remotes:
+git remote add upstream https://github.com/whoever/whatever.git
+
+2.
+Fetch all the branches of the upstream repository into remote tracking branches,
+such as upstream master
+
+git fetch upstream
+
+3.
+Checkout your local repository's master branch.
+
+git checkout master
+
+4.
+Rewrite master branch with upstream master branch with rebase:
+git rebase upstream/master
+
+5.
+Push the changes to the remote fork:
+git push -f origin master
+
+Alternative way(not tested yet):
+
+git checkout master && git fetch origin -v && git fetch upstream -v && git merge upstream/master
+
+=======================================================================================================
+
+How to move a repository subdirectory into a separate directory:
+
+1. Make a fresh clone of the repository:
+git clone http://github.com/Username/repository
+cd repository
+
+2. Filter out the directory from the rest of the repository:
+git filter-branch --prune-empty --subdirectory-filter FOLDER-NAME  BRANCH-NAME
+
+3. Change the remote URL to the location of the new repository:
+git remote set-url origin http://github.com/Username/new-repository
+
+4. Push the refs into the new repository:
+git push -u origin BRANCH-NAME
+
+=======================================================================================================
+
+Git gc (Git Garbage Collector)
+
+Cleans up and optimizes the local repository by compressing various files
+
+=======================================================================================================
+
+Git merge
+
+Merge a branch locally and then commit the changes remotely:
+
+git checkout master
+git merge branch-to-merge-into-master
+git add --all
+git push origin master
+
+Branching and merging strategies
+Fast-Forward - when the branches are subsequent
+Recursive
+
+http://git-scm.com/docs/merge-strategies
+
+How to make a dry run before git merge:
+
+git merge --no-commit -no-ff $BRANCH
+git diff --cached
+We can then undo the merge if we aren't satisfied with the eventual outcome:
+git merge --abort
+
+=======================================================================================================
+
+Git cherry-pick
+
+We cannot cherry pick a merge commit!
+
+Cherry picking is actually merge commiting a single commit from another repository. It creates
+a new commit generated from the commit we are merging into the current branch.
+
+=======================================================================================================
+
+Git ignore
+
+The .gitignore file
+/.svn/ - ommit .svn/ directory on the root of repository
+.svn/ - ommit all directories named .svn recursively
+
+git check-ignore - command for debugging and inspectig .gitignore settings
+
+.gitignore:
+# no .a or .o files
+*.[oa]
+# but do track lib.a, even though you're ignoring .a files above
+!lib.a
+# only ignore the TODO directory in the current directory, not subdir/TODO
+/TODO
+# ignore all files in the build/ directory
+build/
+# ignore doc/notes.txt, but not doc/server/arch.txt
+doc/*.txt
+# ignore all .pdf files in the doc/ directory
+doc/**/*.pdf
+
+=======================================================================================================
+
+How to git revert a merge commit:
+The -m option specifies the parent number. This is because a merge commit has more than one parent,
+and Git does not know automatically which parent was the mainline, and which parent was the branch
+you want to un-merge.
+
+When you view a merge commit in the output of git log, you will see its parents listed on the
+line that begins with Merge:
+
+commit 8f937c683929b08379097828c8a04350b9b8e183
+Merge: 8989ee0 7c6b236
+Author: Ben James <ben@example.com>
+Date:   Wed Aug 17 22:49:41 2011 +0100
+
+Merge branch 'gh-pages'
+
+Conflicts:
+    README
+In this situation, git revert 8f937c6 -m 1 will get you the tree as it was in 8989ee0,
+and git revert -m 2 will reinstate the tree as it was in 7c6b236.
+
+To better understand the parent IDs, you can run:
+
+git log 8989ee0 
+and
+git log 7c6b236
+
+=======================================================================================================
+
+Github
+
+Branch protect a branch - it cannot be deleted or force pushed or merged into before status checks pass
+https://help.github.com/articles/about-protected-branches/
+
+Create a GitHub repository through the web API:
+
+curl -H "X-GitHub-OTP: XXXXX" -u 'LoginName' https://api.github.com/user/repos \
+	-d '{"name":"Repo-To-Create"}'
+
+
+=======================================================================================================
+
+Git daemon setup
+
+Init remote repository:
+git init --bare --shared
+
+the shared options allows multiple users to push to this repository.
+The bare option is needed to setup a repository from which
+commits won't be pushed.
+
+The git users will be actually the UNIX users on the remote machine.
+We need to setup git user accounts with the same names on the remote
+machine.
+
+Also, we need to create a group on the machine, to which those
+users should belong and the directory of the remote repository should
+be owned by the group. The sticky bit should also be added to the
+directory.
+
+adduser username
+addgroup developers
+usermod -a -G developers username
+chgrp developers repository.git/
+chmod g+rws repository.git/
+
+We'll have to write the path to the directory when we add the
+repository with git remote:
+git remote add repository-alias username@git.example.com:/var/git/repository.git
+
+=======================================================================================================
+
+Git sparse checkout
+
+How to checkout only a specific directory:
+
+git init <repo>
+cd <repo>
+git remote add origin <url>
+git config core.sparsecheckout true
+echo "finisht/*" >> .git/info/sparse-checkout
+git pull --depth=1 origin master

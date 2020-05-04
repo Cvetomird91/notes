@@ -1,0 +1,51 @@
+Indexers - they process incoming machine data storing it in indexes as events. As the indexer indexes data it creates a number of files organized in sets of directories by age.
+Search Heads - allows users to search the Splunk language to search the directories with indexed data. They handle search requests from users and distribute the requests to the indexers, which perform the actual search. After that search heads then consolidate and return the result. 
+Forwarders - Splunk Enterprise instances. They are installed on remote machines. They collect data and send it to the indexes.
+
+Those three aren't all the components of splunk.
+
+Input
+Parsing
+Indexing
+Searching
+
+Roles determine what the user can see and interact with. The user roles in Splunk are:
+
+- Admin
+- Power
+- User
+
+Source types - Splunk uses these to identify the type of data being processed.
+
+Transforming commands
+
+Types of search:
+-fast
+-verbose
+-default
+
+AND
+OR
+NOT
+
+We can add and remove fields to source types.
+
+SPL
+
+Search terms
+commands
+functions
+arguments
+clauses
+
+Top command:
+Limit = int
+count field = int 
+Percent field
+showcount
+showperc
+
+Transforming commands: top, rare, stats, count, dc(distinct count), sum, avg, list, value
+
+Start splunk docker container:
+docker run -e SPLUNK_START_ARGS=--accept-license -e SPLUNK_PASSWORD splunk/splunk

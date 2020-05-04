@@ -1,0 +1,72 @@
+Nginx Configuration file structure:
+https://www.digitalocean.com/community/tutorials/understanding-the-nginx-configuration-file-structure-and-configuration-contexts
+
+nginx cli:
+
+	nginx -t - test and check for errors the nginx configuration file
+	nginx -g - set global directives out of the configuration file
+	nginx -c - load a specific configuration file
+	nginx -V - get compile time options for the nginx executable
+
+HTTP2 And Nginx:
+https://www.nginx.com/wp-content/uploads/2015/09/NGINX_HTTP2_White_Paper_v4.pdf
+
+If construct in configuration files:
+http://wiki.nginx.org/IfIsEvil
+
+http://nginx.org/en/docs/dirindex.html
+
+http://nginx.org/en/docs/ngx_core_module.html#accept_mutex
+
+Enable symlinks:
+
+http {
+	disable_symlinks off; # enabled by default
+}
+
+Increase limit for opened file descriptors on nginx level:
+worker_rlimit_nofile 30000;
+
+-- How HTTP request headers are changed by an Nginx proxying server before
+	being passed to the upstream
+
+Nginx removes any empty header directives.
+
+Nginx considers each request containing underscores as invalid by default.
+It removes those symbols from the proxied request, passed on to the upstream
+servers. To set it to consider those requests as valid:
+
+underscores_in_headers on
+
+$proxy_host - the HTTP requests Host header to an Nginx proxying server is
+overriden by this directive when based to the upstream servers.
+
+The Connection header is set to close to indicate to the upstream server that
+the connection should be closed after the innitial request is answered.
+
+proxy_set_header - used for setting proxy response HTTP headers
+
+proxy_set_header $variable value
+
+Advices on troubleshooting PHP-FPM:
+http://blog.martinfjordvald.com/2011/01/no-input-file-specified-with-php-and-nginx/
+
+Directives for using PHP-FPM:
+
+        location ~ \.php$ {
+            root   /usr/share/nginx/html;
+            fastcgi_pass   127.0.0.1:9000;
+            fastcgi_index  index.php;
+            fastcgi_param  SCRIPT_FILENAME $request_filename;
+            include        fastcgi_params;
+        }
+
+-- SSL install
+
+add the following to the server block for the particular website:
+
+listen 443 ssl;
+
+server_name example.com;
+ssl_certificate /etc/nginx/ssl/nginx.crt; # path to certificate
+ssl_certificate_key /etc/nginx/ssl/nginx.key # path to key

@@ -1,0 +1,683 @@
+https://docs.oracle.com/javase/tutorial/essential/
+https://hackr.io/tutorials/learn-java
+
+Java values always have a default value. E.g. integer types have a default value of 0.
+
+Adding annotations:
+
+public @interface AnnotationClass {
+
+	String defaultMethod();
+
+}
+
+@Retention - annotations set to annotation classes to notify when the annotation is going to become valid.
+
+RetentionPolicy.SOURCE: Discard during the compiler. These annotations don't make any sense after the compile has completed, so they aren't written to the bytecode.
+Example: @Override, @SuppressWarnings
+RetentionPolicy.CLASS: Discard during class load. Useful when doing bytecode-level post-processing. Somewhat surprisingly, this is the default.
+RetentionPolicy.RUNTIME: Do not discard. The annotation should be available for reflection at runtime. Example: @Deprecated
+
+Null referrence:
+
+Flight f1; //this is the equivalent to:
+Flight f1 = null; //the object is declared but not referrencing anywhere
+
+accessor/mutator pattern - setters and getters
+
+In Java the contstructors must bare the name of the class.
+In Java we can have multiple constructors in a class. Those constructors can be chained:
+
+public class Passenger {
+
+	public Passenger() {
+
+	}
+
+	public Passenger(int bags) {
+		this.FreeBags = bags;
+	}
+
+	public Passenger(int freeBags, int checkedBags) {
+
+		//this is how we chain constructos. the constructor which accepts one integer argument is called here:
+		this(freeBags); //this is the syntax for calling a constructor
+		//the call to the constructor must be the first expression in the method
+
+		this.checkedBags = checkedBags;
+	}
+
+}
+
+Initialization blocks - ways to share code within all constructors. They are wrapped in brackets:
+
+public class Flight {
+	private int passenger, flightNumber, seats = 150;
+	private char flightClass;
+	private boolean[] isSeatAvailable;
+
+	//this block of code will be called in every constructor
+	{
+		isSeatAvailable = new boolean[seats];
+		for (int i = 0; i < seats; i++)
+			isSeatAvailable[i] = true;
+	}
+
+	public Flight() { }
+
+	public Flight(int flightNumber) {
+		this.flightNumber = flightNumber;
+	}
+
+	public Flight(char flightClass) {
+		this.flightClass = flightClass;
+	}
+
+}
+
+Initialization and constructor order - the order in which properties are set and
+methods are called
+
+1. Field initialization - the properties are set first that have simple initializaitons
+2. Initialization block - the initializaiton block is executed first when the constructor is called
+3. Constructor - the rest of the code in the constructor is called
+
+If we don't declare a constructor, Java automatically creates an empty one. We can check this
+with
+
+$ javap JavaClass
+
+Parameter immutability
+constructor & method overloading
+
+In java parameters are passed as a copy to the method. Changes made to the passed value are not visible outside the method. However, any changes that we make to members of classes that we
+pass as parameters do stay.
+
+A class may have multiple versions of its constructor or methods. Each constructor and method must have a unique signature. The signature is made up of three parts:
+- number of parameters
+- type of each parameter
+- name - the name always has to match the classname
+
+Method overloading - similarly we can overload any other method - the same as we overloaded the
+constructor:
+
+public class Flight {
+	
+	public void add1Passenger() {
+		if(hasSeathing())
+			passengers += 1;
+		else
+			handleTooMany();
+	}
+
+	public void add1Passenger(int bags) {
+		if (hasSeating()) {
+		//
+			add1Passenger();
+			totalCheckedBags += 1;
+		 }
+	}
+
+	public void add1Passenger(Passenger p) {
+		add1Passenger(p.getCheckedBags());
+	}
+
+	public void add1Passenger(int bags, int carryOns) {
+		if (hasSeating() && hasCarryOnSpace(carryOns)) {
+			add1Passenger(bags());
+			totalCarryOns += carryOns;
+		}
+	}
+
+	public void add1Passenger(Passenger p, int carryOns) {
+		add1Passenger(p.getCheckedBags(), carryOns);
+	}
+}
+
+In JAVA methods can be declared to accept a varying number of parameters. The operator is called an
+"elipsis". It can be set only upon the last parameter:
+
+public void addPassengers(Passenger... list) {
+	
+}
+
+Similar to argument unpacking in C++ and PHP.
+
+Passenger jane = new Passenger();
+
+Passenger john = new Passenger();
+
+p.addPassengers(new Passenger[] { jane, john});
+
+We can also use this syntax:
+
+p.addPassengers(jane, john);
+
+Member hiding and overriding
+Object equality
+
+public class CargoFlight extends Flight {
+	
+}
+
+The following will be a valid object of class CargoFlight. But only methods and
+properties from Flight will be accessible. 
+
+Flight flight = new CargoFlight();
+
+Methods in child classes override methods in the parents only if they have the same signature.
+
+@Override - annotation to override a method from the parent class
+
+Every object in Java inherits from the Object class.
+
+Here's an array of objects:
+
+Object[] stuff = new Object[3];
+stuff[0] = new Flight();
+stuff[1] = new Passenger(0, 2);
+stuff[2] = new CargoFlight();
+
+if (o instanceof CargoFlight) {
+	CargoFlight cf = (CargoFlight) o;
+}
+
+//resizable arrays in Java
+import java.util.*;
+
+List<String> resizable = new ArrayList<String>();
+
+Methods from Object 
+
+clone - creates a new object that is a copy of another object
+hashCode
+getClass - return type information for current instance
+finalize - Handle special resource cleanup scenarios
+toString
+equals
+
+We can override any of those methods in our classes.
+
+The following are different syntax for the same thing:
+
+public final class Passenger() {}
+final public class Passenger() {}
+
+The parent constructor doesn't get called automatically. We can call it with the super() construct but it must be called on the first line of the constructor.
+
+JAVA chars and Strings use UTF-16.
+
+Strings in JAVA are immutable. Once a String object is created, a new instance of the String class
+needs to be created, so that the variable can start pointing to it.
+
+Some common string methods:
+length
+valueOf
+concat
+replace
+toLowerCase
+toUpperCase
+trim
+split
+format
+charAt
+substring
+contains
+endsWith
+startsWith
+indexOf
+lastIndexOf
+compareTo
+compareToIgnoreCase
+isEmpty
+equals
+equalsIgnoreCase
+intern - returns a canonycalized value - returns the exact same object (deep copy)
+
+JAVA doesn't support C-style structs. Lightweight classes are the Java equivalent of them.
+
+Comparing strings pecularity:
+String s1 = "I love JAVA";
+String s2 = "I love JAVA";
+
+if (s1 == s2) //returns false
+if (s1.equals(sq)) //returns true
+
+FQCN - fully qualified class name - includes package name and address hash code, obtained with hashCode()
+
+StringBuilder - a class for dynamically manipulating strings with a string buffer. Upon initiation we
+give the constructor the size of the buffer.
+
+StringBuilder sb = new StringBuilder(40);
+sb.capacity(); //returns 40
+sb.append("a string to append at the beginning of the buffer");
+sb.length() // how much space is used
+sb.insert(pos, "string");
+sb.toString();
+
+Primitive types cannot be treated as objects.
+Classes have a lot more overhead than primitives.
+
+There are classes that represent Primitive types. They "wrap" the primitive in an
+object.
+The compiler boxes the primitive or unboxes the object when needed.
+
+		Boolean
+Object /________Number (wrapper class) ---> Byte, Integer, Short, Long, Float, Double - all inherit from Number
+	   \
+	    Character
+
+
+All of those wrapper classes are immutable - a given instance always has the same value inside of it.
+
+Integer a = 100;
+int b = a;
+Integer c = b;
+
+wrapper types provide methods for explicit conversion from and to primitive types:
+
+- boxing - primitive to wrapper
+- unboxing - wrapper to primitive - xxxValue (intValue, doubleValue etc)
+	Integer d = Integer.valueOf(100);
+	int e = d.intValue();
+- to and from strings - String to primitive (parseInt, parseFloat etc)
+	String to wrapper - valueOf
+
+Object[] stuff = new Object[3];
+
+The following values for wrapper type classes and primitive values will return true if compared with
+the '==' operator. Also wrapper classes within that range will return true when compared with '==' even if they don't reference to the same object:
+
+int 	-128 - 127
+short	-128 - 127
+byte	-128 - 127
+char	\u0000 - \u00ff
+boolean true, false
+
+
+byte  - 1 byte  - -2^7 to 2^7-1
+short - 2 bytes - -2^15 to 2^15-1
+int   - 4 bytes - -2^31 to 2^31-1
+long  - 8 bytes - -2^63 to 2^63-1
+
+Outside those ranges we need to use Object.equals to compare those values
+
+public int final freeBags - the value cannot be changed once it has been set
+
+BigInteger - referential data type, that can store values larger than the long
+primitive data type
+BigDecimal - referential data type, that can store values larger than the double
+and float data type. It can be used to sum up float and double values.
+
+The default value of boolean is false.
+Characters in JAVA are 16-bit Unicode Characters.
+
+Char type:
+minimum value of '\u0000' (or 0)
+Maximum value of '\uffff' (or 65 535)
+Default value of '\u0000'.
+
+Literals in JAVA:
+- null
+- Boolean
+- real
+- character
+- string
+- integer
+
+A static field cannot be changed upon assignment.
+
+We need to name static final values with CAPS_LOCK.
+
+Enumeration types are useful for declaring a type with a finite list of valid values.
+
+There are two types of classes in JAVA:
+Relational and Nullable types
+
+public enum FlightCrewJob {
+	Pilot,
+	CoPilot,
+	FlightAttendant,
+	AirMarshal
+}
+
+public class CrewMember {
+	private FlightCrewJob job;
+
+	public CrewMember(FlightCrewJob job) {
+		this.job = job;
+	}
+
+	public void setJob(FlightCrewJob job) {
+		this.job = job;
+	}
+}
+
+All exceptions in JAVA are children of the Error class, whose parent is the Throwable class.
+					  Error
+Object -> Throwable /
+					\Exception 
+								\ Runtime Exception -> NullPointerException
+
+Thrown errors are usually related to JVM errors(e.g. LinkageError ) and are seldomly handled.
+Most commonly, in application development, we use exceptions that inherit directly from the exception class(e.g. IOException). Most of those exceptions are concidered checked exceptions - the compiler looks and any time one of these is thrown, the compiler checks if it can be handled.
+
+Unchecked exception - if not handled, they are not going to raise an error (e.g. NullPointerException).
+
+We can have multiple catch block with each catch block handling a different type of exception.
+
+Exception -> RuntimeException -> NumberFormatException
+Exception -> IOException -> FileNotFoundException
+
+Exceptions propagate in the call stack
+
+The throws clause of an overriding method must be compatible with the throws clause of the
+overriden method.
+
+All exception classes have a method initCalls() which allows us to associate an exception with
+an instance of another exception. Many provide a constructor that accepts the originating exception.
+
+We must create an exception instance before throwing it.
+
+When exceptions directly inherit from Exception they become a checked exception.
+
+Most commonly the only member that an exception class has is the constructor, because most of
+the required funcitonality is inherited.
+
+Most commonly:
+- a constructor that accepts required detail
+- a constructor that accepts required detail and originating exception
+
+public class InvalidStatementException extends Exception {
+	public InvalidStatementException (String reason, String statement) {
+		super(reason + ": " + statement);
+	}
+
+	public InvalidStatementException (String reason, String statement, Throwable clause) {
+		super(reason + ": " + statement, cause);
+	}
+}
+
+The 'throws' language construct:
+
+We can throw exceptions without try/catch/finally blocks:
+
+public void process(String statement) throws InvalidStatementException {
+	
+}
+
+packages:
+
+package declaration must appear before any type declaration.
+
+Packages create a namespace. The convention for their names is a revers domain name structure (e.g. com.pluralsight).
+
+The package name becomes part of the type name.
+
+package exec;
+
+public class Flight {
+	// members
+}
+
+com.pluralsight.travel.Flight lax175 = new com.pluralsight.travel.Flight(175);
+
+Types in current package don't need to be qualified.
+Types in the java.lang package don't need to be qualified. (Object, primitive wrapper classes,
+String, StringBuilder etc - http://bit.ly/javalang)
+
+Type imports
+
+The access modifiers before class names are used for packaging.
+
+no access modifier/private - accessible only within its package
+
+public - can be used everywhere
+protected - only within its own class and subclasses
+
+jar files optionally include a manifest. Contans a list of name/value pairs and is
+commonly used to define a startup class: http://bit.ly/jarmanifest
+
+Interfaces don't provide implementation, they provide a contract.
+
+JAVA generics:
+public interface Comparable<T> {
+	
+	public int compareTo(T val) {
+		//
+	}
+}
+
+There are class-level and method-level generics.
+
+Bounded types
+
+Signature of a method with a generic:
+public <T> void methodWithGeneric(int arg1);
+
+all method inherited from the interface should take as argument values with type T.
+A class can extend a single other class.
+A class can implement multiple interfaces.
+
+"base class" - the parent class of an object. If there isn't specified any the 
+base class is Object.
+
+public class Flight implements Comparable<Flight>, Iterable<Person> {
+	
+}
+
+The Iterator is also an interface. It has two methods:
+
+public interface Iterator<T> {
+	boolean hasNext();
+	T next();
+}
+
+Interfaces can have constants. They implicitly have to be public, final and static.
+Methods in an interface need implicitly to be public.
+An interface can extend another interface.
+
+We can import static methods with packages:
+
+import static com.packagename.Class.method;
+
+Static initialization blocks - executed before type's first use.
+They cannot access instance members.
+
+Inside static initialization blocks we must handle all checked exceptions.
+
+Nested types are members of the enclosing type. Private members of the enclosing type
+are visible to the nested type. They can also be static classes.
+
+Passenger.RewardProgram platinum = new Passenger.RewardProgram();
+
+Streams provide an abstraction, a common model to interface with the outer enviornment.
+Streams either provide a way for input or output, no single stream does both.
+
+Two types of streams:
+- byte streams - interact as binary data
+- text streams - interact as Unicode (UTF-16) characters
+
+InputStream - the base class for reading binary data
+Reader - the base class for reading character data
+
+InputStream input = // create stream
+int intVal;
+while ((intVal = input.read()) >= 0) {
+	byte byteVal = (byte) intVal;
+}
+
+Reader reader = //create reader
+int intVal;
+while ((intVal = reader.read() >= 0) {
+	char charVal = (char) intVal;
+}
+
+input.stream() returns -1 when there's no more data. 
+
+OutputStream - base type for writing to byte streams
+
+ByteArrayInputStream
+ByteArrayOutputStream
+
+PipeInputStream
+PipeOutputStream
+
+FileInputStream
+FileOutputStream
+
+Reader/Writer derived:
+
+CharArrayReader
+CharArrayWriter
+StringReader
+StringWriter
+PipedReader
+PipedWriter
+InputStreamReader - read from InputStream as text
+OutputStreamWriter - read from OutputStream as text	
+
+A resource is any type that implements AutoClosable.
+Each stream implements Closeable which provides the close method.
+
+AutoClosable implements Closable
+
+interface AutoClosable {
+	void close() throws Exception;
+}
+
+interface Closable extends AutoClosable {
+	voud close() throws IOException;
+}
+
+Try-with-resources - syntax to automate the cleanup of a resource
+
+Abstract Classes available to simplify customization of stream chaining:
+FilterReader
+FilterWriter
+FilterInputStream
+FilterOutputStream
+
+Some of the java.io classes are now deprecated! Some of them are widely used. Those include:
+FileReader
+FileWriter
+FileInputStream
+FilterOutputStream
+
+BufferedWriter
+
+Path and Paths static methods - used to parse file paths and URLS
+
+The Files class from java.nio provides a syntax to create various streams to work with files.
+We can use the static methods of the Files class to do so.
+
+FileSystem - represents an individual file system.
+
+File systems identified by URIs
+jar:file:/var/www/data/bar.zip
+
+File system support custom properties, different for each file system
+- string encoding, whether to create if it doesn't exist.
+
+URI zipUri = new URI("jar:file", zipPath.toUri().getPath(), null);
+
+SecurityManager - java.lang.SecurityManager - we can impose security policies in our applicaiton with this class.
+
+StringJoiner - type for string concatenation
+
+StringJoiner sj = new StringJoiner(",", "{", "}"); // the second and third parameters are the first and last character from the resulting string
+
+sj.add("alhpa");
+sj.add("beta");
+String resultStr = sj.toString(); //toString() will return an empty string if no values added
+
+Methods to use format specifiers:
+String.format
+System.out.printf
+Formatter.format
+
+Formatter - class that is used for formatting data
+
+We can use format specifiers to do the following things:
+- positioning
+- decimal places
+- representation
+
+%d
+%.1f
+
+Parts of a format specifier:
+%[argument index][flags][width][precision] conversion
+
+A format specifier can minimally contain the following:
+%conversion
+
+precision - decimal places we want to display
+width - minimum characters to display
+
+int, Integer, short - integral types
+
+They can be used for format conversions:
+         Meaning				Type 			Example Value 		Result
+d 		 Decimal				Integral		32					32
+o    	 Octal					Integral		32					40
+x/X 	 Hex 					Integral		32 					20
+f 		 Decimal				Floating Point  123.0				123.000000
+e/E 	 Scientific Notation 	Floating Point  123.0 				1.230000e+02
+
+float - single-precision 32-bit IEEE 754 floating point. Default value is 0.0f
+double - double-precision 64-bit IEEE 754 floating point. Default value is 0.0d
+
+When we initialize float we have to use the f modifier in the value.
+Otherwise, it will be cast to double.
+
+Ommiting the f and d modifiers in the values creates the value with a double type
+by default.
+
+Format tags
+# - include radix (notation that specifies the numeral system)
+
+%#d -> 010
+%#x -> 0x10
+%#o -> 0o8
+
+0 - zero padding
+- - left justify
+space
++ - ALWAYS show + or - sign
+( - surround negative values in parentheses
+,
+$1 - argument index
+
+Width:
+%4d
+
+s = String.format("W:%4d X:%4d", 5, 235) - this will output 'W:   5' and 'X: 235'
+s1 = String.format("W:%04d X:%04d", 5, 235) - this will output 'W:0005' and 'X:0235'
+s2 = String.format("W:%-4d X:%-4d", 5, 235) - this will output 'W:5   ' and 'X:235 '
+s3 = String.format("%,d", 1234567) - this will output 1,234,567
+s4 = String.format("%$2d %$1d", 100, 200) - this will output "200 100"
+
+http://www.javapractices.com/home/HomeAction.do
+
+java -jar - run jar file
+jar cfm - create jar file from manifest
+manifest files always end with two new lines. Otherwise, they aren't valid
+
+SLF4J - facade/abstraction for creating logging APIs
+Logback - SLF4J implementation
+
+Logback can have some of the 3 config file formats:
+        logback-test.xml
+        logback.groovy
+        logback.xml
+LoggerContext - responsible for creating loggers and arraging them in a hierarchy
+Logback architecture
+- Logger - what do you want to log?
+- Appender - where do you want to log?
+	ConsoleAppender
+	FileAppender
+	RollingFileAppender - it is being used in cases where we want in a certain period of time to split logs by date
+	Custom appenders
+- Layout - How do I log?
+Log4j - another slf4j implementation

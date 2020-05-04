@@ -1,0 +1,70 @@
+net-setup - Gentoo network setup script
+
+http://www.tecmint.com/gentoo-linux-installation-guide-part-2/
+
+fdisk commands:
+
+fdisk -l
+fdisk /dev/sda
+
+n - new drive
+	primary, extended (p, e)
+	+2G
+d - delete partition
+w - write partition table to disk
+
+mkfs.ext4 /dev/sda1
+mkswap /dev/sda2
+swapon
+
+mount /dev/sda1 /mnt/gentoo ( future root directory )
+cd /mnt/gentoo
+links http://gentoo.org/main/en/mirrors.xml -> select mirror -> releases/amd64/autobuilds/current-stage3-amd64/stage3-amd64-${date}.tar.gz
+links http://gentoo.org/main/en/mirrors.xml -> snapshots -> portage-latest.tar.bz2
+cd /mnt/gentoo && tar xf stage3*
+tar xf portage-latest.tar.bz2 -C /mnt/gentoo/usr/
+vi /mnt/gentoo/etc/portage/make.conf
+	Example configuration:
+	/usr/share/portage/config/make.conf.example
+
+cp -L /etc/resolv.conf /mnt/gentoo/etc/resolv.conf
+
+mount -t proc none /mnt/gentoo/proc/
+mount --rbind /sys /mnt/gentoo/sys/
+mount --rbind /dev /mnt/gentoo/dev/
+
+chroot /mnt/gentoo /bin/bash
+
+env-update
+
+source /etc/profile
+
+emerge mirrorselect
+emerge --sync - sync portage tree through rsync with the latest difference
+
+The following option is an alternative:
+emerge-webrsync - sync portage
+
+eselect profile list
+eselect profile set 4 - for GNOME Shell
+
+emerge gentoo-sources - download available kernels' source code
+emerge genkernel - generate generic kernel configuration without configuring manually the whole kernel
+
+genkernel all - build and install kernel in boot
+
+to disable the 64-bit architecture from a menuconfig dialog, use the following option:
+genkernel --menuconfig all
+We can enable and disable different options with "Y" or "N".
+
+verify the kernel and initrd image have been built:
+ls /boot/kernel*
+ls /boot/initramfs*
+
+The kernel modules can be found in /lib/modules/$(uname -r)/.
+Their filenames should end in .o and .ko.
+
+We can specify each of these options to be used in /etc/conf.d/modules.
+
+/etc/conf.d/keymaps
+/etc/conf.d/hwclock

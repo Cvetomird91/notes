@@ -1,0 +1,452 @@
+-- User Administration --
+
+CREATE USER 'cvetomir'@'localhost' IDENTIFIED BY 'password';
+GRANT ALL PRIVILEGES ON *.* TO 'cvetomir'@'localhost';
+GRANT ALL PRIVILEGES ON database.* TO 'cvetomir'@'localhost';
+GRANT ALL PRIVILEGES ON database.table TO 'cvetomir'@'localhost';
+DROP USER ‘demo’@‘localhost’;
+
+GRANT [type of permission] ON [database name].[table name] TO '[username]'@'localhost';
+REVOKE [type of permission] ON [database name].[table name] FROM '[username]'@'localhost';
+
+	ALL PRIVILEGES- all access to a designated database or to the whole system if no db is specified
+	CREATE- create new tables or databases
+	DROP-  them to delete tables or databases
+	DELETE-  delete rows from tables
+	INSERT-  insert rows into tables
+	SELECT-  use the Select command to read through databases
+	UPDATE- allow them to update table rows
+	GRANT OPTION-  grant or remove other users' privileges
+
+Reload privileges after granting new ones:
+FLUSH PRIVILEGES;
+
+Get all table relations:
+SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS;
+
+-- Alter table
+ALTER TABLE t1 RENAME t2;
+ALTER TABLE t1 MODIFY column-name TINYINT NOT NULL;
+Rename and change type:
+ALTER TABLE CHANGE a b CHAR(20); -- rename table a to b and change its type to CHAR(20)
+ALTER TABLE t1 ADD column-name VARCHAR(50) NOT NULL;
+ALTER TABLE t1 ADD column-name VARCHAR(50) NOT NULL AFTER id;
+ALTER TABLE t1 ADD column-name VARCHAR(50) NOT NULL FIRST; -- the column will become first
+ALTER TABLE t1 ADD column-name VARCHAR(50) NOT NULL LAST; -- the column will become last
+ALTER TABLE t1 DROP COLUMN a;
+
+ALTER VIEW:
+http://www.java2s.com/Tutorial/MySQL/0180__View/ALTERVIEWstatement.htm
+ALTER [<algorithm attributes>] VIEW [<database>.]< name> [(<columns>)] AS
+<SELECT statement> [<check options>]
+
+-- rename table
+RENAME TABLE tb1 TO tb2;
+
+How MySQL joins work:
+http://cvetomir-denchev.info/sql_joins.jpg
+
+-- MySQL Insert
+
+INSERT INTO people SET first_name='...', last_name='...', number='0899123456';
+
+INSERT INTO people (first_name, last_name, birthday, home_id) VALUES ('John', 'Smith', '1998-04-07', 4),
+('John', 'Smith', '1998-04-07', 4), ('John', 'Smith', '1998-04-07', 4)
+ON DUPLICATE KEY UPDATE
+home_id=VALUES(home_id);
+
+INSERT INTO people (first_name, last_name, birthday, home_id) VALUES ('John', 'Smith', '1998-04-07', 4),
+('John', 'Smith', '1998-04-07', 4), ('John', 'Smith', '1998-04-07', 4)
+ON DUPLICATE KEY UPDATE
+home_id=VALUES(home_id), last_name=LEFT(mobile,3);
+
+In MySQL ON DUPLICATE KEY UPDATE is of the ways that an upsert is implemented.
+
+-- MySQL Joins
+
+SELECT * FROM users INNERT JOIN ON tickets WHERE tickets.user_id = users.id;
+
+The using clause can shorten this query:
+SELECT * FROM users INNERT JOIN USING tickets;
+
+We can get all rows and fields in tickets:
+SELECT users.`first_name`, users.`last_name`, tickets.* FROM users INNERT JOIN ON tickets WHERE tickets.user_id = users.id;
+
+How MySQL joins work:
+http://cvetomir-denchev.info/sql_joins.jpg
+
+A full outer join is not possible in MySQL.
+We can achieve something similar with the UNION clause:
+(SELECT `id`,`department_id`,`product_id` FROM department_activities LIMIT 5) UNION (SELECT `id`,`user_id`,`department` FROM timesheets LIMIT 6);
+
+UNION
+UNION ALL
+
+-- MySQL Create DATABASE/TABLE
+
+CREATE DATABASE IF NOT EXISTS another DEFAULT CHARACTER SET utf8; -- all the tables
+in the database will be with utf8 if not specified explicitly otherwise
+
+The cs and ci predixes of collations tell if a table will be case sensitive or
+case insensitive.
+
+CREATE TABLE example (
+	id smallint(5) unsigned NOT NULL PRIMARY KEY AUTO_INCREMENT -- minimum display width - the digit in the brackets notifies the maximum number of characters
+	-- for the value to be padded to when displayed by clients (not all clients use this value)
+);
+
+-- Constraints and keys
+
+UNIQUE
+
+PRIMARY KEY - provides both NOT NULL and UNIQUE and indexes the table
+with the PRIMARY index. Only one PRIMARY KEY column is allowed per table.
+
+CREATE TABLE init (
+	a INTEGER NOT NULL,
+	b VARCHAR(250) DEFAULT 'hello',
+	c CHAR(50) UNIQUE,
+	d VARCHAR(300) UNIQUE NOT NULL,
+	e BIGINT AUTO_INCREMENT PRIMARY KEY,
+	-- the same can be achieved in the same way: e SERIAL, (this is mysql specific)
+	INDEX(a)
+) Engine=InnoDB COMMENT='init'
+
+Junction table - 'middle' table that acts as a junction between two or more other tables
+
+We can use the foreign key contstrait to create a junction table
+
+CREATE TABLE lend (
+	id INT PRIMARY KEY AUTO_INCREMENT,
+	stamp TIMESTAMP,
+	client_id INT,
+	book_id INT,
+	FOREIGN KEY (client_id) REFERENCES client(id),
+	FOREIGN KEY (book_id) REFERENCES book(id)
+);
+
+INSERT INTO people (first_name, last_name, birthday, home_id) VALUES ('John', 'Smith', '1998-04-07', 4),
+('John', 'Smith', '1998-04-07', 4), ('John', 'Smith', '1998-04-07', 4)
+ON DUPLICATE KEY UPDATE
+home_id=VALUES(home_id);
+
+-- MySQL upserts
+
+INSERT INTO people (first_name, last_name, birthday, home_id) VALUES ('John', 'Smith', '1998-04-07', 4),
+('John', 'Smith', '1998-04-07', 4), ('John', 'Smith', '1998-04-07', 4)
+ON DUPLICATE KEY UPDATE
+home_id=VALUES(home_id), last_name=LEFT(mobile,3);
+
+In MySQL ON DUPLICATE KEY UPDATE is of the ways that an upsert is implemented. When we use it either an
+update happens or an insert happens.
+
+We can create an upsert using REPLACE.
+
+REPLACE INTO 
+
+REPLACE INTO people (first_name, last_name, birthday, home_id) VALUES ('John', 'Smith', '1998-04-07', 4),
+('John', 'Smith', '1998-04-07', 4);
+
+REPLACE works exactly like INSERT, except that if an old row in the table has the same value as a new row for a PRIMARY KEY or a UNIQUE index, the old row is deleted before the new row is inserted. 
+
+INSERT IGNORE INTO people (first_name, last_name, birthday, home_id) VALUES ('John', 'Smith', '1998-04-07', 4) - 
+the opposite of REPLACE
+
+-- MySQL table and database status and info
+
+SHOW TABLE STATUS;
+SHOW TABLE STATUS LIKE 'City';
+SHOW CREATE TABLE 'City';
+SHOW CREATE TABLE 'City'\g
+SHOW CREATE TABLE 'City'\G
+SHOW INDEXES FROM 'City';
+SELECT DISTINCT
+    TABLE_NAME,
+    INDEX_NAME
+FROM INFORMATION_SCHEMA.STATISTICS
+
+-- get the current auto increment values for a table:
+SELECT `AUTO_INCREMENT`
+FROM  INFORMATION_SCHEMA.TABLES
+WHERE TABLE_SCHEMA = 'DatabaseName'
+AND   TABLE_NAME   = 'TableName';
+
+WHERE TABLE_SCHEMA = 'your_schema';
+SHOW INDEX FROM 'City'; -- alias of the previous
+DESCRIBE 'City';
+SELECT LAST_INSERT_ID(); -- global for all databases; not for a particular database
+SHOW VARIABLES;
+SHOW VARIABLES LIKE '%time_zone%';
+SET time_zone = 'US/Eastern';
+SELECT DATABASE(), VERSION(), USER();
+
+-- MySQL locks
+
+LOCK TABLES `events` WRITE;
+UNLOCK TABLES;
+
+-- MySQL data types
+	integer - TINYINT, SMALLINT, MEDIUMINT, INTEGER, BIGINT
+	fixed point type - DECIMAL(precision, scale)
+		e.g. DECIMAL (9,2) => 1234567.89 (9 digits total, 2 after the precision point)
+	NUMERIC - alias for decimal and doest exactly the same thing
+	If we ommit the precision and scale in the definiton DECIMAL(10, 0) will be used
+	by default
+	floating point types
+	FLOAT
+	REAL - alias of FLOAT
+	Variable length strings:
+	VARCHAR(50)
+	CHAR(5)
+
+	Binary strings - they use binary collation
+	BINARY(length)
+	VARBINARY(length)
+
+	BLOB (Binary large object)
+	TEXT - similar to BLOB, but is not binary and has charset and collation
+	TINYBLOB, TINYTEXT
+	BLOB, TEXT
+	MEDIUMBLOB, MEDIUMTEXT
+	LONGBLOB, LONGTEXT
+
+	TIME
+	TIMESTAM
+	YEAR
+	DATE
+	DATETIME
+
+	IANA TZ Database
+
+	Mysql doesn't have a boolean type, it has a BOOLEAN keyword which maps to an
+	TINYINT type which then works as a BOOLEAN
+	BOOL - alias of BOOLEAN
+	TRUE - alias of 1
+	FALSE - alias of 0
+
+	ENUM - for single value of list
+	CREATE TABLE test (
+		id SERIAL,
+		a ENUM('Pablo', 'Henri', 'Jackson') -- we can have only one of those values inserted here
+	);
+	INSERT INTO test(1, 1); -- this would be the same as INSERT INTO test(1, 'Pablo');
+	SET - special value that operates on a list of strings; stored as a bitmap
+	ENUM - for single value of list
+	CREATE TABLE test (
+		id SERIAL,
+		a SET('Pablo', 'Henri', 'Jackson') -- we can have only one of those values inserted here
+	);
+	INSERT INTO test(1, 'Pablo'); -- this would be the same as INSERT INTO test(1, 'Pablo');
+	INSERT INTO test(2, 'Henri,Pablo'); -- this is allowed in sets, they work similarly to ENUMs;
+		If the values aren't present in the table definition the row will be truncated to empty
+	65,535 - maximum storage per row
+
+-- MySQL functions
+	LENGTH - return bytes length of a string
+	CHAR_LENGTH - return length of a string in characters
+	LEFT(Name, 3) - get the first three characters of a string
+	RIGHT(Name, 3) - get the last three characters of a string
+	SELECT first_name FROM people WHERE RIGHT(first_name,1)='e';
+	MID(Name, 2, 3) - get a subset from a string
+	CONCAT(Name, LocalName)
+	CONCAT(', ', Name, LocalName) - concat with separator
+	GROUP_CONCAT(column_name)
+	LOCATE('bar', 'foobarbaz') - locates the starting position of a substring in a string
+	REVERSE - reverse a string
+	LOWER - make each character lower case
+	UPPER - make each character upper case
+	REPEAT('hello', 3);
+	REPLACE(last_name, 'a', 'e');
+
+	DIV - integer division - the result will be always a round number
+	MOD - modulo division with reminder
+	POWER(7,3)
+	POW - alias of POWER
+	SQRT
+	LOG10
+	LOG2
+	EXP
+	SIN
+	COS
+	ABS
+	SIGN - returns -1 if the number is negative, 1 if it is positive
+	CONV - convert numbers between numberic systems
+	CONV(57, 10, 16) - convert 57 to decimal
+	PI
+	ROUND
+	FLOOR
+	CEIL
+
+	NOW
+	CURRENT_TIMESTAMP - alias of NOW (MySQL specific)
+	UNIX_TIMESTAMP
+	DATEDIFF
+	CURRENT_DATE
+	CURRENT_TIME
+	UTC_TIMESTAMP
+	SYSDATE
+	FROM_DAYS
+	DAYOFMONTH(date) - return day of month
+	DAYOFWEEK
+	DAYOFTHEYEAR
+	MONTHNAME
+	TIME_TO_SEC
+	SEC_TO_TIME
+	ADDTIME
+	SUBTIME - substract time
+	SELECT ADDDATE('2008-01-02', INTERVAL 31 day);
+	SELECT SUBDATE('2008-01-02', INTERVAL 31 day);
+	SELECT DATE_FORMAT(NOW(), '%Y-%m-%d);
+
+	SELECT GROUP_CONCAT(Name) FROM Country;
+	SELECT GROUP_CONCAT(Name SEPARATOR '/') FROM Country;
+	SELECT GROUP_CONCAT(DISTINCT Continent ORDER BY Continent SEPARATOR '/')FROM Country;
+	AVG - average
+	STD - standard diviation
+
+-- MySQL scripting
+
+SELECT
+	CASE WHEN a THEN 'true' ELSE 'false' END AS boolA,
+    CASE WHEN b THEN 'true' ELSE 'false' END AS boolB
+    FROM scratch.`booltest`;
+
+SELECT
+	CASE a WHEN 1 THEN 'true' ELSE 'false' END AS boolA,
+    CASE b WHEN 1 THEN 'true' ELSE 'false' END AS boolB
+    FROM scratch.`booltest`;
+
+SIGNAL (for MySQL >= 5.5) - way to throw 'exceptions' (set the SQLSTATE error code)
+in a MySQL script.
+@var - global variables
+
+-- MySQL transactions
+
+START TRANSACTION;
+UPDATE widgetSale SET quan = quan + 9 WHERE id = 2;
+COMMIT;
+rollback
+
+-- MySQL GROUP By
+
+	ORDER BY NULL - explicitly tell mysql not to order the values
+
+-- MySQL ORDER BY
+
+	ORDER BY 3 - order by index id
+
+-- LIKE
+
+	_ - matches a single char
+	% - wildcard
+
+-- MySQL VIEWS
+
+CREATE VIEW trackview AS
+	SELECT id, album_id, title, track_number, duration DIV 60 AS m, duration MOD 60 AS s FROM track;
+
+-- MySQL Query optimization
+
+Using a NULL value makes queries slower. We can use empty values (e.g. or 0, depending on the data type)
+as default values to optimize this.
+
+-- MySQL client
+
+	pager:
+	https://www.percona.com/blog/2013/01/21/fun-with-the-mysql-pager-command/
+
+-- MySQL Administration Tools --
+
+msql2mysql
+mysql
+mysql_client_test
+mysql_config
+mysql_convert_table_format
+mysql_find_rows
+mysql_fix_extensions
+mysql_install_db
+mysql_plugin
+mysql_secure_installation
+mysql_setpermission
+mysql_tzinfo_to_sql
+mysql_upgrade
+mysql_waitpid
+mysql_zap
+mysqlaccess
+mysqladmin
+mysqlanalyze
+mysqlbinlog
+mysqlbug
+mysqlcheck
+mysqld_multi
+mysqld_safe
+mysqldump
+mysqldumpslow
+mysqlhotcopy
+mysqlimport
+mysqloptimize
+mysqlrepair
+mysqlreport
+mysqlshow
+mysqlslap
+mysqltest
+innotop - top-like utility for monitoring MySQL performance
+
+-- my.cnf directives --
+
+socket - define path to mysql Unix domain socket
+
+How to enable general log to log each query made to the server:
+https://mariadb.com/kb/en/mariadb/general-query-log/
+
+-- PHP functions --
+
+mysqli_connect();
+
+-- Stored functions and procedures
+
+	Differences:
+	http://stackoverflow.com/questions/3744209/mysql-stored-procedure-vs-function-which-would-i-use-when
+
+Flush logs:
+cd /var/log/mysql
+mv mysql.log mysql.old
+mv mysql-slow.log mysql-slow.old
+mysqladmin flush-logs
+
+-- MySQL table file system representation
+
+MYD - table data
+MYI - table indexes
+frm(format) - table structure
+
+InnoDB specific:
+ibdata1 - all InnoDB databases and tables structures
+
+
+A tool for checking error codes and their meaning:
+perror - get error code information
+
+	perror code 7
+
+mysql_config - retrieve information about installed MySQL
+
+MySQL Explain statement:
+https://dev.mysql.com/doc/refman/5.0/en/using-explain.html
+
+MySQL and JSON:
+http://mysqlserverteam.com/json-labs-release-native-json-data-type-and-binary-format/
+
+Definer error:
+mysqldump: Got error: 1449: The user specified as a definer ('sto'@'10.%.8.%') does not exist when using LOCK TABLES
+Fix:
+UPDATE `mysql`.`proc` p SET definer = 'root@localhost' WHERE definer='root@192.200.1.16'
+
+-- MySQL resources
+
+mysqlresources.com/
+
+-- Percona
+
+Connect to server instance:
+pmm-admin config --server 192.168.83.222 --server-user admin --server-password admin --client-name pmm-monitor-01

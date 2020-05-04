@@ -1,0 +1,124 @@
+http://wiki.coregamesupport.com:8081/dashboard.action
+
+Add the following to VPS template (in case of upgrade):
+
+If you want to view the website before pointing the domain name you can add the following line in your local hosts file:
+
+74.91.18.37 domain.com	www.domain.com
+
+Here is a quick guide how to do that from our Knowledge Base: http://kb.webhostface.com/other-technical/modify-hosts-file
+
+Add the info from the following email:
+
+cPanel transfer - icons bug
+to fix disappearing icons on a brand new cPanel, remove .cpanel in /home/$USER
+
+Ask about Collections status of invoices
+
+Make the test again
+
+synchronize home and workstation knowledge-base
+
+Introduction to SNMP:
+file://www.digitalocean.com/community/tutorials/an-introduction-to-snmp-simple-network-management-protocol
+
+How a CPU works:
+https://www.youtube.com/watch?v=cNN_tTXABUA
+
+explain about available MPM modules - prefork & worker
+
+how to add a SysV service for Apache with chkconfig and update-rc.d:
+http://serverfault.com/questions/16839/how-do-i-get-apache-to-startup-at-bootime-on-linux
+
+Useful systemd commands:
+http://dynacont.net/documentation/linux/Useful_SystemD_commands/
+
+http://kukuruku.co/hub/opensource/multitasking-management-in-the-operating-system-kernel
+http://kukuruku.co/hub/nix/multitasking-in-the-linux-kernel-interrupts-and-tasklets
+
+Arch Linux with SDDM, KDE frameworks 5 and Plasma 5:
+http://jeromyreimer.blogspot.com/2014/11/archlinux-with-plasma-5-installation.html
+
+Win2Flash
+
+SGFXI script for NVidia proprietary driver installation:
+http://smxi.org/
+
+Docker on 32 bit:
+http://mwhiteley.com/linux-containers/2013/08/31/docker-on-i386.html
+
+To research - APC Cache: 
+https://github.com/Luracast/Restler/issues/388
+
+How to build an OpenVZ kernel:
+http://www.inf.ufpr.br/josineys/kernel/openvz-aufs-guide.txt
+
+Add ZDNet to newsfeed
+
+Zend Engine articles:
+http://php.find-info.ru/php/016/ch20lev1sec1.html
+http://www.slideshare.net/ravirajforyou/how-php-works
+http://stackoverflow.com/questions/5377370/how-zend-engine-compile-php-codes-or-how-php-compiler-works
+http://www.developerknowhow.com/a-brief-look-inside-phps-zend-engine/
+https://support.cloud.engineyard.com/entries/26902267-PHP-Performance-I-Everything-You-Need-to-Know-About-OpCode-Caches
+
+MS SQL to MySQL: 
+http://www.ispirer.com/download-ispirer-sqlways?ttype=database&dbsrc=mssqlserver&dbtrg=mysql&dwopt=get
+
+30.03:
+
+Add the following to cPanel notes - for a reseller to enable SSH for his
+clients' accounts he has to have it enabled for his primary reseller
+cPanel account 
+Tutorial: Using email with Zoho 
+
+tiffanylamb.com
+alexandranason.com
+
+http://xmonad.org/
+http://www.cvedetails.com/
+
+http://jonls.dk/redshift/
+
+readtarot.com
+
+mysqltutorial.org
+
+http://stackoverflow.com/questions/14251676/detect-enter-key-pressed-using-javascript
+
+popcorntime.io
+
+The security of our customers is one of main priorities and ***we make sure that everyone is protected against fraudulent transactions.*** 
+
+libphutils 
+
+Add NetSec lectures to conspect 
+Add MPM modules to Apache section in conspect 
+Add autoconf tools to Linux section
+
+http://php.net/manual/en/control-structures.alternative-syntax.php
+
+http://phpmd.org/
+https://www.phing.info/
+
+Add literature about parsers, interpreters and types of compilers 
+
+WXdnZnXA
+
+http://www.sql-ex.ru/
+
+#!/bin/bash
+
+#for i in $(ack -ril "cdn-cgi" . );
+#    do cp $i $i.old
+#    sed 's|cdn-cgi/l/email-protection.html.*\">|mailto:feedback@webhostface.com?subject=Send%20us%20Feedback"|g' $i.old > $i;
+#done
+
+for i in $(ack -ril "" .);
+    do cp $i $i.old
+    sed 's|||g' $i.old > $i;
+done
+
+http://www.slideshare.net/fuzzycz/postgresql-on-ext4-xfs-btrfs-and-zfs
+
+http://onetransistor.blogspot.bg/2014/09/make-bootable-windows-usb-from-ubuntu.html

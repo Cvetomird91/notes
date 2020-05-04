@@ -1,0 +1,153 @@
+vagrant up - parse Vagrantfile and start instance
+
+	In Multi-machine environment:
+	vagrant up - will start all the machines in the config, except those who are explicitly set not
+				 to autoload
+	vagrant up machine-name - will only boot the specified machine
+	vagrant up database* - will boot instances, whose names start with "database"
+
+vagrant init - create a vanilla Vagrant file
+vagrant halt - stop machine, send shutdown signal
+vagrant status - get machine state
+vagrant reload - reboot machine. Re-read Vagrantfile before boot
+vagrant ssh-config - output SSH config of running machine
+vagrant provision
+
+	vagrant provision --provision-with shell box_name
+	vagrant provision --provision-with puppet box_name
+
+=======================================================================================================
+
+The Vagrant object
+
+Vagrant.configure("2") - setup the Vagrant API version. We need to have it set up to 1 if we're using
+			vagrant below 1.1. If we're using between 1.1 and 2 we'll have to configure it to 2.
+
+Vagrant.configure("2") do |setup|
+	setup.vm.box = "centos6"										# setup name for virtualbox
+																	# setup URL from http://vagrantbox.es
+
+	setup.vm.box_url = "https://dl.dropbox.com/sh/9rldlpj3cmdtntc/chqwU6EYaZ/centos-63-32bit-puppet.box"
+	setup.vm.synched_folder "./folder-in-host" "/var/www"			# setup a directory you can share
+																	#	inbetween guest and host
+	#statically select IP for machine
+	setup.vm.network :private_network, ip: "192.168.55.55"
+	# use DHCP
+	#setup.vm.network "private_network", type: "dhcp"
+
+	# create and use VirtualBox adapter
+	# NB!!! this works to setup the MongoDB box in the private network
+	#  vm_db.vm.network :public_network, :type => 'dhcp', :name => 'vboxnet0', :adapter => 2
+
+	#specify path to SSH private key
+	setup.ssh.private_key_path = "/home/cvetomir/.ssh/vagrant_private_key"
+
+	#select ssh user
+	setup.ssh.username = "vagrant"
+
+	# run a provision 'provider', it can be a shell script or a Puppet or check cookbook
+	# in this case it will run as root the setup.sh script in the same directory where the vagrant file is
+	setup.vm.provision :shell, :path => "setup.sh"
+
+	# Multi-machine environment
+	# the configuration looks like a config inside a config
+	setup.vm.define "vm_web" do |vm_web|
+		vm_web.vm.box = "debian8"
+		vm_web.vm.box_url = ""
+	end
+	# by default all machines are set to be autostarted when running vagrant up
+	# we can specify which should not be started
+
+	setup.vm.define autostart: false "vm_db" do |vm_db|
+		vm_db.vm.box = "debian8"
+	end
+	# we can then force start it with "vagrant up vm_db
+
+	# set provider settings
+	setup.vm.provider "virtualbox" do |vb|
+	  vb.gui = false
+	  vb.name = "vagrant_box"
+	  vb.memory = "512"
+	  vb.cpus = 1
+	end
+
+end
+
+Vagrant Boxes use passwordless sudo by default!
+
+-- VirtualBox networking settings:
+
+	port forwarding:
+	config.vm.network "forwarded_port", guest:80, host: 8089
+
+	dynamic ip address:
+	config.vm.network "private_network", type: "dhcp"
+
+	static ip address(it is good to ping the address to check if it's in use):
+	config.vm.network "private_network", ip: 192.168.10.16
+=======================================================================================================
+
+Plugins
+
+Plugin to check if VirtualBox Guest Additions are the newest version:
+
+vagrant plugin install vagrant-vbguest
+http://kvz.io/blog/2013/01/16/vagrant-tip-keep-virtualbox-guest-additions-in-sync/
+
+Issue with older VMs and newer guest additions:
+
+https://github.com/adrahon/vagrant-kvm
+	"This project is dead, please use vagrant-libvirt instead! A Vagrant 1.4+ plugin that adds a KVM
+	provider to Vagrant, allowing Vagrant to control and provision KVM/QEMU VM."
+
+unless Vagrant.has_plugin?("vagrant-some-plugin")
+  raise 'some-plugin is not installed!'
+end
+
+required_plugins = %w( vagrant-hostsupdater vagrant-someotherplugin )
+required_plugins.each do |plugin|
+  system "vagrant plugin install #{plugin}" unless Vagrant.has_plugin? plugin
+end
+
+Vagrant::Config.run do |config|
+  # disable auto install of guest additions
+  config.vbguest.auto_update = false
+  # disable downloading guest additions
+  config.vbguest.no_remote = true
+end
+
+Vagrant hostmaster
+plugin to manage /etc/hosts entries on both the host and guest machine
+
+vagrant veewee - adds the basebox option
+
+=======================================================================================================
+Vagrant environment variables
+
+VAGRANT_VAGRANTFILE - default is 'Vagrantfile'. This may be useful in shell scripting
+					  when a folder with multiple vagrantfiles is used.
+VAGRANT_LOGLEVEL - debug, info, warn or error
+VAGRANT_HOME - directory where state and boxes are stored by Vagrant
+
+=======================================================================================================
+
+Resources
+
+http://vishalp-kb.blogspot.bg/2013/12/vagrant-cheat-sheet.html
+http://www.howopensource.com/2011/06/how-to-use-virtualbox-in-terminal-commandline/
+
+"Connection refused" issue:
+http://stackoverflow.com/questions/22575261/vagrant-stuck-connection-timeout-retrying
+
+Engine Yard's Vagrant Tutorial:
+https://blog.engineyard.com/2014/building-a-vagrant-box
+
+Host-only adapter:
+http://superuser.com/questions/846964/
+how-to-add-a-host-only-adapter-to-a-virtualbox-machine-via-vagrant-file-config
+
+Port Forwarding:
+http://superuser.com/questions/570261/cant-ping-to-vagrant-box
+
+Vagrant, VirtualBox, Host-Only, VLAN:
+http://www.jedi.be/blog/2011/11/04/vagrant-virtualbox-hostonly-pxe-vlans/

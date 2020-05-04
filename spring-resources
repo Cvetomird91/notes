@@ -1,0 +1,182 @@
+https://www.vojtechruzicka.com/Core-Spring-4.2-4.3-Certification-Study-Guide-b4ac1198c654c091ae4140e579688c44.pdf
+https://d1fto35gcfffzn.cloudfront.net/academy/Spring-Professional-Certification-Study-Guide.pdf
+https://howtodoinjava.com/spring5/spring5-features-and-enhancements/
+
+https://tungeek.com/pivotal-spring-professional-v5-0-exam/
+
+Spring 4.3 to Spring 5.0 exam topics comparison:
+Spring 4.3						Spring 5.0
+Spring Container 				-> Container
+Testing with Spring 			-> Testing
+AOP 							-> AOP
+Data Access using Spring 		-> JPA Spring Data, JDBC
+Transactions 					-> Transactions
+Spring MVC 						-> MVC
+Spring Security 				-> Security
+Microservices 					-> N/A
+REST 							-> REST
+Spring Cloud 					-> N/A
+N/A 							-> What's new in Spring 5.x
+
+Pro Spring 5:
+Pivotal Certified Professional Spring Developer Exam:
+	? Spring Bean LifeCycle and Configuration
+	+ Testing Spring Applications
+	+ Aspect Oriented programming with Spring
+	? Data Access
+	? Spring Web
+
+Mock exams I have:
+- itestjava.com (5 tests)
+- certification-questions.com (6 tests)
+- SpringQMC - Android application (6 tests)
+- Udemy tests - for 4.3 (6 tests)
+
+https://docs.jboss.org/hibernate/orm/4.3/manual/en-US/html/ch13.html#transactions-basics-uow
+https://docs.oracle.com/javase/tutorial/jdbc/basics/transactions.html
+https://docs.oracle.com/javase/tutorial/java/IandI/createinterface.html
+https://docs.oracle.com/javase/8/docs/technotes/guides/reflection/proxy.html
+https://en.wikipedia.org/wiki/Mock_object
+https://en.wikipedia.org/wiki/Test_stub
+https://docs.spring.io/spring/docs/5.0.3.RELEASE/spring-framework-reference/core.html#beans-introduction
+https://docs.spring.io/spring/docs/5.0.3.RELEASE/spring-framework-reference/core.html#beans-basics
+https://docs.spring.io/spring/docs/5.0.3.RELEASE/spring-framework-reference/core.html#context-introduction
+https://docs.spring.io/spring/docs/5.0.3.RELEASE/spring-framework-reference/core.html#beans-factory-extension
+https://docs.spring.io/spring-security/site/docs/3.2.5.RELEASE/reference/htmlsingle/#nsa-intercept-url
+https://docs.spring.io/spring-data/jpa/docs/1.3.0.RELEASE/reference/html/repositories.html#repositories.query-methods.details
+https://docs.oracle.com/javaee/6/api/javax/persistence/EntityManager.html
+https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/context/annotation/Profile.html
+
+When @Required is used, and no value is injected into the property concerned, a corresponding exception is raised.
+
+https://docs.spring.io/spring-framework/docs/5.0.7.RELEASE/javadoc-api/org/springframework/test/web/reactive/server/WebTestClient.html
+https://docs.spring.io/spring-boot/docs/2.0.6.RELEASE/api/org/springframework/boot/test/web/client/TestRestTemplate.html
+https://docs.spring.io/spring/docs/5.0.7.RELEASE/javadoc-api/org/springframework/test/context/ContextConfiguration.html
+https://docs.spring.io/spring-framework/docs/5.0.7.RELEASE/javadoc-api/org/springframework/test/context/ContextLoader.html
+https://docs.spring.io/spring-boot/docs/2.0.6.RELEASE/api/org/springframework/boot/test/context/SpringBootContextLoader.html
+https://docs.spring.io/spring-boot/docs/2.0.6.RELEASE/api/org/springframework/boot/test/context/SpringBootTest.html
+https://docs.spring.io/spring-boot/docs/2.0.6.RELEASE/reference/htmlsingle/#boot-features-testing-spring-boot-applications
+https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-profiles.html
+https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/context/annotation/Profile.html
+https://docs.spring.io/spring-javaconfig/docs/1.0.0.M4/reference/html/ch04s03.html
+
+https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/context/ApplicationContext.html
+
+https://docs.spring.io/spring-boot/docs/2.0.6.RELEASE/api/org/springframework/boot/test/autoconfigure/web/reactive/WebFluxTest.html
+https://docs.spring.io/spring-boot/docs/2.0.6.RELEASE/api/org/springframework/boot/test/autoconfigure/web/servlet/WebMvcTest.html
+https://docs.spring.io/spring-boot/docs/2.0.6.RELEASE/api/org/springframework/boot/test/mock/mockito/SpyBean.html
+https://docs.spring.io/spring-boot/docs/2.0.6.RELEASE/api/org/springframework/boot/test/mock/mockito/MockBean.html
+https://docs.spring.io/spring-boot/docs/2.0.6.RELEASE/api/org/springframework/boot/test/context/SpringBootTest.html
+https://docs.spring.io/spring-boot/docs/2.0.6.RELEASE/reference/htmlsingle/#boot-features-testing
+
+https://docs.spring.io/spring/docs/5.0.7.RELEASE/spring-framework-reference/testing.html#testcontext-ctx-management
+https://docs.spring.io/spring/docs/5.0.7.RELEASE/spring-framework-reference/testing.html#contextconfiguration
+https://docs.spring.io/spring/docs/5.0.7.RELEASE/javadoc-api/org/springframework/test/context/ContextLoader.html
+https://docs.spring.io/spring/docs/5.0.7.RELEASE/javadoc-api/org/springframework/context/ApplicationContextInitializer.html
+https://docs.spring.io/spring/docs/5.0.7.RELEASE/javadoc-api/org/springframework/test/context/ContextConfiguration.html
+https://www.martinfowler.com/articles/mocksArentStubs.html
+http://easymock.org/
+https://site.mockito.org/
+https://docs.spring.io/spring/docs/5.0.7.RELEASE/spring-framework-reference/testing.html#testcontext-tx
+https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/web/bind/annotation/RequestParam.html
+
+https://en.wikipedia.org/wiki/Aspect-oriented_programming
+https://en.wikipedia.org/wiki/Cross-cutting_concern
+https://docs.spring.io/spring/docs/5.0.3.RELEASE/spring-framework-reference/core.html#aop-ataspectj
+https://docs.spring.io/spring/docs/5.0.3.RELEASE/spring-framework-reference/core.html#aop-introduction-defn
+https://docs.spring.io/spring/docs/5.0.3.RELEASE/spring-framework-reference/core.html#aop-proxying
+https://www.eclipse.org/aspectj/doc/released/progguide/index.html
+https://www.eclipse.org/aspectj/doc/released/progguide/quick.html#quick-pointcuts
+https://www.eclipse.org/aspectj/doc/released/adk15notebook/index.html
+https://github.com/cglib/cglib
+https://docs.spring.io/spring/docs/5.0.3.RELEASE/spring-framework-reference/core.html#aop-introduction-proxies
+https://docs.spring.io/spring/docs/5.0.3.RELEASE/javadoc-api/org/springframework/context/annotation/EnableAspectJAutoProxy.html
+https://docs.spring.io/spring/docs/5.0.3.RELEASE/spring-framework-reference/core.html#aop-at-aspectj
+https://docs.spring.io/spring/docs/5.0.3.RELEASE/spring-framework-reference/core.html#aop-aspectj-support
+https://www.eclipse.org/aspectj/doc/released/progguide/semantics-pointcuts.html
+https://www.eclipse.org/aspectj/doc/released/adk15notebook/jpsigs.html
+https://docs.spring.io/spring/docs/5.0.3.RELEASE/spring-framework-reference/core.html#aop-pointcuts-designators
+https://www.eclipse.org/aspectj/doc/released/progguide/semantics-pointcuts.html#pattern-summary
+https://docs.spring.io/spring/docs/5.0.3.RELEASE/spring-framework-reference/core.html#aop-pointcuts
+https://www.eclipse.org/aspectj/doc/released/runtime-api/org/aspectj/lang/JoinPoint.html
+https://www.eclipse.org/aspectj/doc/released/runtime-api/org/aspectj/lang/JoinPoint.StaticPart.html
+https://docs.spring.io/spring/docs/5.0.3.RELEASE/spring-framework-reference/core.html#aop-ataspectj-advice-params
+https://www.eclipse.org/aspectj/doc/released/progguide/semantics-pointcuts.html
+https://www.eclipse.org/aspectj/doc/released/runtime-api/org/aspectj/lang/ProceedingJoinPoint.html
+https://docs.spring.io/spring/docs/5.0.3.RELEASE/spring-framework-reference/core.html#aop-ataspectj-around-advice
+
+https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/beans/factory/annotation/Autowired.html
+https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/beans/factory/annotation/Required.html
+https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/context/annotation/Import.html
+
+https://docs.spring.io/spring/docs/5.0.7.RELEASE/javadoc-api/org/springframework/dao/DataAccessException.html
+https://en.wikipedia.org/wiki/Template_method_pattern
+https://en.wikipedia.org/wiki/Callback_(computer_programming)
+https://docs.spring.io/spring/docs/5.0.7.RELEASE/javadoc-api/org/springframework/jdbc/core/JdbcTemplate.html
+https://en.wikipedia.org/wiki/Anonymous_function
+https://docs.spring.io/spring/docs/5.0.7.RELEASE/javadoc-api/org/springframework/jdbc/core/ResultSetExtractor.html
+https://docs.spring.io/spring/docs/5.0.7.RELEASE/javadoc-api/org/springframework/jdbc/core/RowMapper.html
+https://docs.spring.io/spring/docs/5.0.7.RELEASE/javadoc-api/org/springframework/jdbc/core/RowCallbackHandler.html
+https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/transaction/annotation/Isolation.html
+https://en.wikipedia.org/wiki/Transaction_processing
+https://en.wikipedia.org/wiki/Distributed_transaction
+https://docs.spring.io/spring/docs/5.0.7.RELEASE/spring-framework-reference/data-access.html#transaction-motivation
+https://docs.spring.io/spring/docs/5.0.3.RELEASE/spring-framework-reference/data-access.html#tx-decl-explained
+
+https://docs.oracle.com/javaee/6/api/javax/persistence/PersistenceUnit.html
+https://docs.oracle.com/javaee/6/api/javax/persistence/EntityManagerFactory.html
+https://docs.oracle.com/javaee/6/api/javax/persistence/EntityManager.html
+https://docs.oracle.com/javaee/6/api/javax/persistence/Entity.html
+
+http://docs.spring.io/spring-framework/docs/4.0.9.RELEASE/spring-framework-reference/html/beans.html#beans-meta-annotations
+http://docs.spring.io/spring-framework/docs/4.0.9.RELEASE/spring-framework-reference/html/jdbc.html#jdbc-datasource
+
+https://docs.spring.io/spring/docs/5.0.7.RELEASE/javadoc-api/org/springframework/jdbc/datasource/AbstractDataSource.html
+https://docs.spring.io/spring/docs/5.0.7.RELEASE/javadoc-api/org/springframework/jdbc/datasource/DelegatingDataSource.html
+https://docs.spring.io/spring/docs/5.0.7.RELEASE/javadoc-api/org/springframework/jdbc/datasource/SmartDataSource.html
+https://docs.spring.io/spring/docs/5.0.7.RELEASE/javadoc-api/org/springframework/jdbc/datasource/embedded/EmbeddedDatabase.html
+https://commons.apache.org/proper/commons-dbcp/
+https://docs.spring.io/spring/docs/5.0.7.RELEASE/javadoc-api/org/springframework/jdbc/datasource/lookup/JndiDataSourceLookup.html
+https://docs.oracle.com/javase/8/docs/technotes/guides/jndi/index.html
+https://docs.spring.io/spring-boot/docs/2.0.5.RELEASE/reference/htmlsingle/#boot-features-connecting-to-a-jndi-datasource
+https://docs.spring.io/spring/docs/4.0.x/spring-framework-reference/html/jdbc.html
+https://docs.spring.io/spring/docs/current/spring-framework-reference/data-access.html#jdbc-core
+
+https://docs.spring.io/spring/docs/5.0.7.RELEASE/spring-framework-reference/data-access.html#transaction-declarative
+https://docs.spring.io/spring/docs/5.0.7.RELEASE/spring-framework-reference/data-access.html#transaction-programmatic
+https://docs.spring.io/spring/docs/5.0.7.RELEASE/javadoc-api/org/springframework/transaction/annotation/Transactional.html
+https://docs.spring.io/spring/docs/5.0.7.RELEASE/javadoc-api/org/springframework/transaction/PlatformTransactionManager.html
+https://docs.spring.io/spring/docs/5.0.7.RELEASE/javadoc-api/org/springframework/jms/connection/JmsTransactionManager.html
+https://docs.spring.io/spring/docs/5.0.7.RELEASE/javadoc-api/org/springframework/orm/jpa/JpaTransactionManager.html
+https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/transaction/support/TransactionTemplate.html
+https://docs.spring.io/spring/docs/5.0.7.RELEASE/javadoc-api/org/springframework/transaction/support/TransactionTemplate.html
+https://docs.spring.io/spring/docs/5.0.7.RELEASE/spring-framework-reference/data-access.html#tx-resource-synchronization-tadsp
+https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/jdbc/datasource/TransactionAwareDataSourceProxy.html
+
+https://docs.spring.io/spring/docs/5.0.7.RELEASE/spring-framework-reference/web.html#testing
+https://docs.spring.io/spring/docs/5.0.7.RELEASE/spring-framework-reference/testing.html#spring-mvc-test-framework
+https://docs.spring.io/spring/docs/5.0.7.RELEASE/spring-framework-reference/web.html#mvc-controller
+https://docs.spring.io/spring/docs/5.0.7.RELEASE/javadoc-api/org/springframework/web/servlet/ViewResolver.html
+https://docs.spring.io/spring/docs/5.0.7.RELEASE/javadoc-api/org/springframework/web/servlet/View.html
+https://docs.spring.io/spring/docs/5.0.7.RELEASE/spring-framework-reference/web.html#mvc-viewresolver
+https://docs.spring.io/spring-security/site/docs/5.0.7.RELEASE/reference/htmlsingle/#tech-intro-authentication
+
+https://docs.spring.io/spring-security/site/docs/5.0.7.RELEASE/reference/htmlsingle/#appendix-faq
+https://docs.spring.io/spring-security/site/docs/5.0.7.RELEASE/reference/htmlsingle/#core-components
+https://docs.spring.io/spring-security/site/docs/5.0.7.RELEASE/reference/htmlsingle/#tech-intro-access-control
+https://docs.spring.io/spring-security/site/docs/5.0.7.RELEASE/reference/htmlsingle/#web-app-security
+https://docs.spring.io/spring-security/site/docs/5.0.3.BUILD-SNAPSHOT/reference/htmlsingle/#filter-ordering
+
+https://docs.oracle.com/javase/8/docs/api/java/lang/InheritableThreadLocal.html
+https://docs.oracle.com/javase/8/docs/api/java/lang/ThreadLocal.html
+https://docs.spring.io/spring-security/site/docs/5.0.7.RELEASE/reference/htmlsingle/#securitycontextholder-securitycontext-and-authentication-objects
+https://docs.spring.io/spring-security/site/docs/5.0.7.RELEASE/reference/htmlsingle/#nsa-intercept-url
+https://docs.spring.io/spring-security/site/docs/5.0.7.RELEASE/api/org/springframework/security/web/util/matcher/RequestMatcher.html
+https://docs.spring.io/spring-security/site/docs/5.0.7.RELEASE/reference/htmlsingle/#jc
+
+https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready.html
+https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-endpoints.html
+https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-loggers.html
+https://en.wikipedia.org/wiki/Software_metric
+https://docs.spring.io/spring-boot/docs/2.0.1.RELEASE/reference/htmlsingle/#boot-features-external-config-conversion
+https://docs.spring.io/spring-boot/docs/2.0.1.RELEASE/reference/htmlsingle/#boot-features-json-components

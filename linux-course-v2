@@ -1,0 +1,400 @@
+Strategy: задачите могат да съдържат част за research и изброяване, но е препоръчително да има
+практическа част, също и част с теоритични пояснения от моя страна. По-сложните за
+начинаещи теми (като chroot) може да включват само задачи за теоретично запознаване.
+
+1. What are relative and absolute paths? What are working directories of a process?
+ How to get a process' working directory? How to get the current working directory of the shell?
+2. file extensions, directory separator, case sensitivity of *nix-like OSes, spaces in
+ command line arguments
+ What is a MIME type and how to obtain the MIME type of a file with the file command.
+3. What is a shell path? How to get the directories in the current shell path?
+4. what are background processes and how to start one through the command line
+5. install skype with dpkg
+6. what are hard and soft links and inodes
+7. bash command completion
+8. tilde expansion - navigate to home directory
+9. using chmod, reading and understanding file and directory permissions with ls.
+learn lsattr and chattr and how the most used attributes work when set on files.
+10. (this one could be extended into several tasks)
+ ICMP, ping, traceroute, mtr, loopback networking interface, IPv4, IPv6,
+ socket addresses, LAN IP ranges, UDP/TCP basics / Transport Layer basics, datagrams, packets,
+ /etc/hosts file, nmap
+11. learn to understand the ifconfig output
+12. Explain in a few sentances the client-server model.
+ What is a document root and what is CGI in web server technology?
+ Apache modules(mod_security, mod_rewrite, mod_spelling, mod_userdir, mod_perl,
+ mod_python, mod_php, mod_cgi, what is an SSL certificate,  how does it work and what is htaccess)
+13. What is the Unix timestamp?
+14. What is a fork? What is a thread?
+15. What is a chroot and a chroot'ed process?
+16. What is a protocol and IPC? What types of IPCs are available on an Linux-based system?
+17. what is the maximum number of processes on a 32-bit and on a 64-bit system? What about ports?
+18 .which port numbers can be used by non-root users?
+19. Why using rar and zip archives in a Unix-like environment should be avoided? Which
+ are the equivalent tools in such an environment for compressing, archiving and
+ archive password protecting in a Linux environment?
+20. cron jobs - what is a cron job a.k.a. batch processing task? how to set crons with the
+	crontab command?
+21. /etc/fstab - how to setup an ntfs partition to be mounted on boot
+22. Linux ACLs - activate Linux FS ACLs through /etc/fstab
+23. SSH & SCP(this one should be way ahead in the list, wooops)
+
+http://www.omnisecu.com/gnu-linux/index.php
+https://nixsrv.com/llthw
+
+1. Какво представляват релативните и абсолютните пътища(relative and absolute pathnames)?
+С кой символ започват абсолютните пътища в Unix
+базираните операционни системи? Коя директория наричаме root директория и как я обозначаваме?
+
+Да се разучи как се сменят директориите със cd (change directory), като се разучат следните команди
+и след всяка една от тях се пусне pwd командата /print working directory/:
+
+cd .
+cd ..
+cd (без аргументи)
+cd ~ (употребата на този символ в shell scripting се нарича tilde expansion)
+cd -
+
+Какво наричаме работна директория на процес? Как можем да определим коя е настоящата работна директория на
+текстовия shell?
+
+С кои символи означаваме настоящата и предходната директория? С кой символ означаваме home директорията
+на потребителя?
+
+Как можем с pwdx да намерим информация за работната директория на даден процес след като вземем неговото
+process id с pgrep командата? Да се вземе по този начин работната директория на BASH.
+
+Какво прави lsof командата? Какво са file descriptor-ите?
+
+2. Как работят файловите разширения под Unix базираните операционни системи? Задължително ли е да има даден файл
+file extension, oсвен за да се определи графичната среда с коя апликация да отвори файла.
+
+Какво е MIME type и как можем да разберем MIME type-a на даден файл с file командата?
+
+По колко разстояния между аргументите на командите можем да оставяме?
+Как можем да подаваме на команди аргументи от повече от една дума разделени със spaces?
+
+Какво е интерполация на стрингове?
+
+3. Какво е shell path? Как можем да видим кои са настоящите директории от shell path-a на BASH shell?
+
+Да се създаде директория /home/$USER/bin/ и да се добави към shell path-a на настоящия shell.
+След това да се създаде hello world BASH script в /home/$USER/bin/, който да може да се извиква
+автоматично без да се изписва пълния път до него.
+
+Да се направят нужните промени по /home/$USER/.bashrc,
+за да са активни тези промени всеки път когато потребителя
+отваря интерактивен shell.
+
+обикновено rc в конфигурационните файлове означава runtime configuration и са файлове, които са скрити
+за потребителя и се парсват от дадена програма при нейното стартиране. Всеки интерактивен BASH shell прочита
+.bashrc, което се намира в директорията на user-a, който го е отворил. (/home/$USER/.bashrc)
+
+Hint: PATH variable-а обикновено разделя директориите с двуеточие.
+
+За изброяване: какви други shell-oве има за Linux в наши дни освен BASH? От кои по-стари Unix shell-oве е
+повлиян BASH? Какво представлява /bin/sh?
+
+Пояснения за BASH autocompletion:
+Една от функционалностите на BASH shell e autocompletion-a на команди -
+когато започнем да въвеждаме името на някоя команда той ще започне да
+сканира директориите от shell path-a и ще допълни името на командата.
+Ако има няколко executables в shell path-a, които започват по този начин,
+ще бъде изведен списък с тях.
+
+4. background process
+
+Какво представляват background и foreground процесите?
+
+С ps командата можем да изследваме различни свойства на настоящите процеси на системата,
+подобно на Task Manager или System Monitor програмите от графичните интерфейси.
+
+Например, можем да видим колко ресурси използват, тяхното process id,
+кой е техния parent и кои child process-и са пуснати (spawned) от тях, oт кой
+терминал (tty/pts) на системата са пуснати, дали въобще са стартирани през конзола,
+както и различните state-ове на процесите (дали са running, sleeping, zombie/defunct,
+съответно и foreground и background), какъв
+приоритет имат (niceness, т.е. колко CPU единици могат да използват) и т.н.
+
+Първия процес, който пуска ядрото след boot се казва init и има process id 1.
+
+Процесите, които пуска Linux ядрото не могат да бъдат достъпвани и манипулирани
+от потребителски програми, а само от ядрото. Те се наричат kernel space процеси.
+Кои process id-та са резервирани само за kernel space процеси?
+
+Да се изброят и да се научат process state-овете под Linux. Могат да
+бъдат прочетени от manual page-a на ps с man ps.
+
+Да се стартира mtr командата в background режим, например да изпраща ICMP request-и към
+host-a github.com.
+
+5. Да се инсталира Skype с dpkg под Ubuntu или Debian.
+
+За да инсталираме програми и пакети под Linux, е нужно или да сме root или потребителя
+да е част от sudoers списъкта, за да може да използва root привилегиите със sudo командата.
+
+По подразбиране в Ubuntu потребителя, който създаваме при инсталация е добавен в sudoers
+списъка. Под Debian е нужно да станем root и да го добавим в следния конфигурационен
+файл с nano, vim, emacs, gedit или някой друг текстов редактор:
+
+sudo nano /etc/sudoers
+
+Можем да станем root по няколко начина:
+ще ни бъде поискана root паролата и ще се log-нем като root(не е нужно
+потребителя да е sudoer):
+$ su
+
+$ su -c "nano /etc/sudoers" - ще ни бъде поискана root паролата и без да се логваме като
+root командата в кавички ще бъде изпълнена с root привилегии.
+
+По този начин можем да изпълняваме команди като root user-a, ако знаем неговата парола.
+
+Двата основни package manager-a под Debian/Ubuntu са apt-get и dpkg.
+
+Package management tool-a apt-get сваля .deb пакет (това е пакетната система на Debian)
+като сканира отдалечените хранилища на дистрибуцията за пакети, които сътветстват на търсенето.
+След като свали пакета разрешава, ако са възникнали, dependency
+конфликти и го инсталира локално.
+
+Ако не можем да намерим .deb пакет в отдалечените хранилиращ и си го свалим локално ръчно,
+можем да го инсталираме локално с dpkg.
+
+Накратко apt-get оперира с отдалечените хранилища на дистрибуцията, а dpkg - с
+локално инсталираните пакети и локални .deb пакети. Техните еквиваленит в CentOS/RHEL
+съответно се наричат yum и rpm.
+
+Свалените и инсталираните пакети се кешират в /var/cache/apt/archives.
+
+Задачата е да се свали .deb пакет със Скайп и да се инсталира с dpkg.
+
+Ако нашия потребител вече е добавен в sudoers списъка, ще можем да инсталираме програми и пакети
+без да знаем root паролата на машината, като sudo ще поиска да въведем неговата парола, за
+да придобием root привилегии:
+
+$ sudo apt-get install vlc
+
+Доста често системните администратори изтриват sudo бинарката от production environments,
+защото е програма за privilege escalation и по този начин се намаляват потенциални
+vulnerabilities на системата (т.е. не се дават излишно привилегии на потребители, които може
+да са опасни за системата).
+
+Бонус: да се свали през конзолата с wget или curl или друг конзолен download manager.
+
+wget e конзолен download manager.
+С curl можем да правим заявки към различни портове, използвайки различни протоколи
+(например HTTP, FTP, SMTP и други).
+
+Подобни команди се използват доста в shell script-ове за сваляне на файлове или
+HTTP заявки, например за тестване на Web API-та или web scraping.
+
+Бонус: да се открие конфигурационния файл на APT, където се описват
+хранилищата и URL-тата към тях.
+
+Tutorial за apt-get и dpkg: https://www.youtube.com/watch?v=7dUl0s2ig0g
+
+6. Hard и Soft link-ове и inodes.
+
+Можем да направим аналогия между shortcut-ите в MS-DOS/Windows и линковете
+в Unix базираните системи.
+
+Има два типа линкове. Как можем с ln командата да създаваме hard и soft линкове?
+Да се изброи разликата между soft и hard линкове.
+
+В Linux всичко е частен случай на файла - дори device-ите, с които борави системата
+имат файлова репрезентация в системната директория /dev и процесите, които вървят
+са представени като директории и файлове в /proc. Директориите също са частен случай
+на файловете.
+
+Какво представляват inode-ите на Linux файловите системи? Как можем с ls
+командата да вземем inode id-то на файловете в настоящата директория?
+
+Да се създаде директория /home/$USER/links, в която с ln да се създаде един
+soft link към друга директория (например /dev). С какъв цвят излиза
+новия софт линк, когато изведем списък на файловете в директорията с
+ls --color=auto.
+
+Какво съобщение ще бъде изведено когато се опитаме да създадем hard link
+от файл в /proc в новата директория? На /proc има виртуална
+системна файлова система, която е различна от файловата система, на която
+е mount root-a на файловата система.
+
+Какво е inode id-то на hard link и inode id-то на файлa, към който сочи.
+
+7. BASH auto completion - merged into 3
+
+9. Да се опише как могат да се вземат file permission-ите за даден файл
+или директория чрез ls командата? Кои символи от output-a показват
+permission-ите за собственика на файла, за останалите user-и от
+групата притежател на файла и за всички останали потребители на
+системата.
+
+Обикновено тези permission-и се виждат в началото на
+output-a и представляват стринг от 10 символа. От втория до 10-я
+символ представляват permission-ите. Какво представлява
+първия символ от този стринг?
+
+Чрез chattr командата можем да записваме различни file attributes
+за даден файл. Чрез lsattr можем да видим тези file attributes.
+
+С кои файлови атрибути можем да забраним на user-ите (дори и на
+root потребителя) да дописва даден текстов файл?
+
+По този начин ако имаме server за споделен hosting можем да
+забраним access-a към сайта, ако например е компрометиран,
+чрез .htaccess файла на document root-a и докато не се
+разреши проблема потребителя да не може да прави промени по
+.htaccess.
+
+10. В миналото преди да има обособена DNS система ръчно са се добавяли в
+/etc/hosts файловете hostname-ове, които да сочат към определени IP адреси.
+
+Използвал се е също и за дефиниране на рутинг таблиците.
+
+Чрез FTP всяка седмица ръчно са се синхронизирали тези файлове на всичките
+700-800 компютри свързани към ARPANET преди DNS да бъде създаден и обособен.
+
+Тези файлове са останали и до ден-днешен в съвременните операционни системи
+и можем ръчно да описваме и задаваме hostname-ове, които да са валидни само
+за локалната система.
+
+В Linux/BSD можем да го открием в /etc/hosts.
+
+Задачата е да се прерутира фейсбук чрез /etc/hosts файл да сочи към loopback
+IP адреса. Какъв ред е нужно да се добави, за да спрем да отваряме facebook.com
+и за локалната машина да сочи към друг IP адрес този hostname?
+
+Как могат да се поставят коментари в началото на редовете в /etc/hosts
+конфигурационния файл?
+
+11. Да се използва ifconfig командата и да се напишат обяснения за
+деленията от output-a й.
+
+Възможно е под Debian да се изискват root права, за да се извика /sbin/ifconfig.
+
+Да се вземе локалното IP на машината в LAN мрежата.
+
+Networking interface-ите са подобни на networking adapter-ите във Windows,
+които могат да се видят там с ipconfig командата.
+
+Loopback networking interface-a присъства на всички системи и по конвениця му се
+дава IPv4 адрес 127.0.0.1. Този интерфейс се създава с цел да може да се пробва
+изправността на мрежовия хардуер на системата. Обикновено в Linux системите
+той има identifier lo при използване на ifconfig командата.
+
+Кои показатели от output-a на ifconfig показват входящия и изходящия трафик
+от даден networking interface?
+
+netstat е команда, която се използва за monitoring на състоянието на
+мреждата - кой порт на кой IP адрес слуша и с кой Transport Layer протокол
+и т.н.
+
+Как може с netstat да видим програмите, които извършват междупроцесна комуникация
+през мрежата, кой протокол използват, на кое IP и port слушат и с кое remote ip
+са свързани.
+
+Допълнение:
+- ifconfig и netstat командите са стари, но все още се използват масово.
+В по-новите версии на по-известните Linux дистрибуции тези команди не присъстват
+по подразбиране и е нужно да се инсталират допълнително. Командите, които
+ще ги заменят са ip и ss.
+
+12. Обяснение в няколко изречения на Client - Server model-a.
+Кой е клиента и кой е сървъра в междупроцесната комуникация с HTTP протокол?
+
+Какво е Document Root и какво е CGI (Common Gateway Interface) и CGI език?
+Какво представляват MPM (Multi-process module) и CGI Handler-ите на
+Apache web server?
+
+Да се инсталират apache2, mysql5.6 и php5 на виртуалната кутия с Debian 8
+или инсталираното на отделен дял Ubuntu с GNOME shell чрез apt-get пакетния мениджър.
+
+CGI handler-a e mod_php по подразбиране при този локален сетъп обикновено, но са
+възможни и комбинации с други handler-и, например Fast CGI.
+
+Нека се създаде PHP script с phpinfo(), който да се добави в Document Root-a на
+Apache web server и при отваряне на http://localhost/ да виждаме информация зa
+настоящия PHP executable.
+
+След като се настрои този setup да се пусне HTTP заявка с curl командата и да се
+изследва output-a й:
+
+curl -vv http://localhost/
+curl -I http://localhost/
+
+Tutorial за базисна работа с dependency manager-a APT на Debian/Ubuntu
+базираните системи:
+
+https://www.youtube.com/watch?v=g6Q5b85wHNQ
+
+Пояснение: Ubuntu е базирана на Debian дистрибуция.
+
+За изброяване: най-използваните PHP CGI handler-и и разликите помежду им.
+Кой е най-insecure и защо и кой използва най-много ресурси и защо? Какви други
+CGI handler-и има достъпни за Apache web server за други програмни скриптови езици
+освен PHP?
+
+13. Kaкво е Unix timestamp и за какви цели може да ни е полезен в програмирането?
+Какви усилия може да ни спести?
+Как можем да вземем Unix timestamp през конзолата?
+
+Колко бита е Unix timestamp-a? Какви проблеми могат да възникнат с ползването му в бъдеще?
+
+14.
+
+forks and BASH forks
+
+15. Какво е chroot? Коя директория по подразбиране виждат процесите като root директория.
+
+Да се създаде директория /home/$USER/fake-root и в нея да се пусне BASH shell с chroot командата.
+
+След като пуснем BASH shell с chroot в /home/$USER/fake-root можем с pwd да проверим дали
+процеса "вижда" настоящата директория като root.
+
+След това да се създадат с touch командата няколко файла по следния начин:
+
+touch foo bar bazz quix
+
+След излизане от chroot'ed BASH shell-a какво е съдържанието на /home/$USER/?
+
+http://www.cyberciti.biz/faq/unix-linux-chroot-command-examples-usage-syntax/
+
+16. Какво е protocol и какво е междупроцесна комуникация(IPC - Inter-process communication)?
+Какво е OSI model? На кое ниво от него стоят протоколите HTTP, XMPP, SMTP, DNS?
+Също и TCP и UDP?
+
+За изброяване:
+- формите на междупроцесна комуникация (IPC) в Linux среда
+
+17. Какъв е максималния брой процеси на 32 битова и на 64 битова операционна система?
+
+18. Кои номера на портове могат да се използват от неприливигировани потребители
+(non-root users)?
+
+Koи process ids са резервирани за kernel space процеси?
+
+19. Защо е нужно да се избягва използването на rar и zip архиваторите в Unix среда?
+най-често разпространения архиватор в такива среди е tar, като има и други
+(cpio например).
+
+С rar и zip обикновено компресираме И архивираме дадена директория. Също
+можем със същите tool-ове да криптираме съдържанието на даден архив.
+В Linux тези операции се извършват поотделно с отделни команди.
+
+Какви са еквивалентни tool-ове
+в Linux среда за изпълняването на ролята на rar или
+zip?
+
+Да се изброят най-често използваните опции на tar (поне 5 примера).
+
+20. Cronjob-овете представляват "задачи", които операционната система изпълнява
+през зададен от потребителя период от време чрез cron сървиса.
+
+Всеки потребител има свой личен crontab (файл, в който описва своите cron-oве).
+Може да "извика" своя текстов редактор по подразбиране с командата
+crontab -e. Със следната команда могат да се изтрие настоящия crontab на
+потребителя:
+
+crontab -r
+
+Заради близоста на клавишите 'e' и 'r' е нужно да се внимава при използването
+на тази команда.

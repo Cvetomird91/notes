@@ -1,0 +1,145 @@
+sudo -u postgres ls -l /var/lib/postgres/data-9.2 - postgres config files (in Arch or by default?)
+
+PostgreSQL server is a fork daemon - it doesn't spawn threads, but separate processes.
+
+logger process
+checkpointer process
+writer process
+wal writer process
+autovacuum launcher process
+stats collector process - creates statistics about database access
+
+Directories and files:
+/var/lib/pgsql/data - the data stored in the databases
+/var/lib/pgsql/data/pg_hga.conf - security model configuration
+/var/lib/pgsql/data/postgresql.conf - configuration of PostgreSQL
+~/.pgpass - stores user, socket address, and password (plain text)
+			for PostgreSQL servers for psql to access
+
+http://www.postgresqltutorial.com/
+
+http://www.postgresqltutorial.com/postgresql-json/ - return JSON data from a PostgreSQL database
+
+http://www.linuxtopia.org/online_books/database_guides/Practical_PostgreSQL_database/PostgreSQL_x5802_012.htm
+
+Basic User management:
+
+$ sudo -i -u postgres
+$ createuser --interactive
+$ createdb
+
+Add password:
+
+ALTER ROLE username PASSWORD 'password'
+
+Basic usage:
+
+\i - execute commands from file
+\l - list databases
+\z - list all table, view and sequence access privileges
+\d - describe table, index, sequence or view
+\dt - list the tables in the current database
+\di - list indexes in the current database
+\ds - list sequences in the current database
+\dv - list views in the current database
+\du - list users
+\df - get function information
+\? - help page
+
+pg_shadow - contains username information
+pg_stat_activity
+
+template0 and template1 are used as "skeletons" when creating a database.
+We can specify another database also as a template.
+The information in the template is also copied.
+
+To most of these commands a + can be added to output extra information
+
+MySQL: USE database;
+PostgreSQL: \c database;
+
+MySQL: SHOW TABLES;
+PostgreSQL: \d
+
+MySQL: SHOW DATABASES;
+PostgreSQL: \l
+PostgreSQL: SELECT datname FROM pg_database;
+
+MySQL: SHOW COLUMNS;
+PostgreSQL: \d table;
+
+MySQL: DESCRIBE table;
+PostgreSQL: \d+ table;
+
+Array literal syntax in PostgreSQL
+{elem_1,elem_2,elem_3}
+
+Import database through PostgreSQL client:
+psql -h localhost -d ladypopular -U ladypopular -f dump.sql -p 6432
+
+Inbetween hosts:
+pg_dump -h host1 dbname | psql -h host2 dbname
+
+Dump certain tables(the same option can be used to dump sequences):
+pg_dump -D -a -t zones_seq - t interway -t table_3 ... > /tmp/zones_seq.sql
+
+Reset user password:
+http://scratching.psybermonkey.net/2009/06/postgresql-how-to-reset-user-name.html
+
+Use password without prompting:
+export PGPASSWORD='my_password'
+
+pg_config - retrieve information about installed PostgreSQL database service
+
+Stop database import when there's an error:
+psql --set ON_ERROR_STOP=on dbname < input.sql
+
+The PostgreSQL client can accept the following syntax:
+psql postgresql://<user>:<password>@<host>/<db> << EOF
+       <your sql queries go here>
+EOF
+
+CREATE DATABASE db WITH OWNER user;
+
+In PostgreSQL the default timezone type doesn't include timezone. It is the same as timestampt without timezone.
+
+How to get create table statement in PostgreSQL:
+
+pg_dump -t 'aschema.atable' --schema-only
+
+PostgreSQL modules for Perl Compatible Regex:
+https://github.com/petere/pgpcre
+
+Transactional DDL in various RDBMSs:
+http://wiki.postgresql.org/wiki/Transactional_DDL_in_PostgreSQL:_A_Competitive_Analysis
+
+echo "SELECT * FROM cities;" | psql -U ladypopular -h localhost
+
+How to import and export data to tsv, csv and binary with \copy:
+http://www.postgresguide.com/utilities/copy.html
+
+Export only a table:
+$ pg_dump --table=export_table --data-only --column-inserts my_database > data.sql
+
+	--table - export a single table
+	--data-only - export only the data without schemas
+	--column-inserts - export data as insert statements
+
+How to specify a certain row to be at the beginning of a SELECT result with the ORDER BY statement:
+...ORDER BY id=22 DESC, id ASC, "limited_from" ASC, "min_level" ASC';
+
+Place rows with null values from the specified rows at the end:
+ORDER BY "row" NULLS LAST
+
+Reset PostgreSQL sequences at a certain point:
+ALTER SEQUENCE serial RESTART WITH 105;
+
+~/.pgpass entries format:
+<databaseip>:<port>:<databasename>:<dbusername>:<password>
+
+PostgreSQL linter/dry-run:
+pgsanity - depends on Python >= 2.7 and libecpq-dev
+https://github.com/markdrago/pgsanity
+
+PGStrom - CUDA C acceleration for PostgreSQL
+https://wiki.postgresql.org/wiki/PGStrom

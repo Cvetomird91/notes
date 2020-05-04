@@ -1,0 +1,51 @@
+Commands
+
+	  NB!!! Errbit is using Rails. bundle install should be run to install missing gems, as well as
+	  the rake tasks found in the README.md
+	  it also uses MongoDB
+	  https://docs.mongodb.org/v2.4/tutorial/install-mongodb-on-red-hat-centos-or-fedora-linux/
+	  https://docs.mongodb.org/manual/tutorial/configure-linux-iptables-firewall/
+
+	The vm_web box can be port-forwarded from the host machine. The Vagrant boxes can communicate
+	with each other in the VirtualBox VLAN. This is why the vm_db doesn't have to be
+	port forwarded.
+
+	Getting started with configuration management (Digital Ocean tutorial):
+	https://www.digitalocean.com/community/tutorials/an-introduction-to-configuration-management
+
+   	Adding yum repository with Puppet:
+ 	http://serverfault.com/questions/111766/adding-a-yum-repo-to-puppet-before-doing-anything-else
+
+	Errbit requires Ruby >= 2.1.0. Therefore RVM should be installed and run to install the newest
+	Ruby.
+
+	Web box:
+	install curl and git
+	add ruby-ng repo
+	install newest Ruby with apt and ruby-switch
+	install mongodb-clients
+	install bundle
+
+	git clone the errbit repository
+	database is set in .env.default in the MONGO_URL environment variable (errbit is set
+		entirely with environment variables. It is prefered that .env.default is
+		copied to .env):
+		mongodb://username:password@example.com:port
+	run bundle and Rake tasks
+		bundle install
+		bundle exec rake errbit:bootstrap
+		bundle exec rails server
+	bundle exec rails server &> /dev/null &
+
+	DB box:
+	Add MongoDB repository
+	Curl may also be needed to download the i686 built of Mongo and install it from tarball
+	Install MongoDB
+	Open port with iptables for MongoDB
+	Enable text search: add setParameter=textSearchEnabled=true to /etc/mongodb.conf
+	This feature is required by errbit. It is enabled by default since version 2.6 of MongoDB
+	However, some builds of MongoDB may ship with older versions of it. Ubuntu 14.04 ships with MongoDB 2.4.9
+
+	(probably) Create MnogoDB user
+
+	http://stackoverflow.com/questions/6819852/cant-start-mongodb-as-sudo

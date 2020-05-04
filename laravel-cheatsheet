@@ -1,0 +1,52 @@
+
+========================================================================================================================
+													Links
+========================================================================================================================
+http://laravel-recipes.com/
+http://cheats.jesse-obrien.ca/
+
+========================================================================================================================
+													Composer
+========================================================================================================================
+
+composer create-project laravel/laravel
+
+========================================================================================================================
+													Common
+========================================================================================================================\
+
+app/config/session.php
+		'driver' => 'file' - specify the driver in which to store sessions
+
+========================================================================================================================
+													Migrations
+========================================================================================================================
+
+php artisan migrate:install
+php artisan make:migration create_some_table
+
+public function up  () {} - commits the changes to the database
+public function down () {} - reverts the changes to the database
+
+php artisan migrate - up function
+php artisan migrate:rollback - down function
+
+	Schema class - create and manipulate tables
+
+	Schema::create('authors', function($table) {
+			$table->increments('id');
+			$table->string('username'); //creates varchar
+			$table->text('content');
+			$table->timestamps();		//creates timestamp field
+	});
+
+	DB class - class for performing SQL queries
+
+public function up () {
+	DB::table('authors')->insert(array(
+		'name'=>'Shakespeare',
+		'bio'=>'Biographic information',
+		'created_at' => date("Y-m-d H:i:s"),
+		'updated_at' => date("Y-m-d H:i:s")
+	));
+}

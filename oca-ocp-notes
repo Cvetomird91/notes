@@ -1,0 +1,950 @@
+import java.nio.*; // NO GOOD – a wildcard only matches
+//class names, not "file.*Files"
+import java.nio.*.*; // NO GOOD – you can only have one wildcard
+//and it must be at the end
+import java.nio.files.Paths.*; // NO GOOD – you cannot import methods
+//only class names
+
+importing by classname takes precedence over wildcards
+
+The answer should be easy by now. You can write either import java.util.*; or
+import java.util.Date; . The tricky cases come about when other imports are present:
+import java.util.*;
+import java.sql.*; // DOES NOT COMPILE
+When the class is found in multiple packages, Java gives you the compiler error:
+The type Date is ambiguous
+
+The parameters to a main method need to be an array or varargs.
+
+NB!!!
+local variables do not get assigned default values. The
+code fails to compile if a local variable is not explicitly initialized.
+
+1: public class LineNumbers {
+2: public void method(ArrayList list) {
+3: if (list.isEmpty()) { System.out.println("e");
+4: } else { System.out.println("n");
+5: } } }
+For this one, you would answer “Does not compile.” Since the code begins with line 1,
+you don’t get to assume that valid imports were provided earlier. The exam will let
+you know what package classes are in unless they’re covered in the objectives. You’ll
+be expected to know that ArrayList is in java.util —at least you will once you get to
+Chapter 3 of this book!
+
+public void Chick() { } // NOT A CONSTRUCTOR
+When you see a method name beginning with a capital letter and having a return type,
+pay special attention to it. It is not a constructor since there’s a return type. It’s a regular
+method that won’t be called when you write new Chick().
+
+Fields and instance initializer blocks are run in the order in which they appear in
+the file.
+The constructor runs after all fields and instance initializer blocks have run.
+
+Fields and blocks are run first in order, setting
+number to 3 and then 4. Then the constructor runs, setting number to 5.
+
+Java applications contain two types of data: primitive types and reference types.
+
+The other way is with math. An int is 32 bits. 2 32 is 4,294,967,296 . Divide that by 2 and
+you get 2,147,483,648. Then subtract 1 as we did with bytes and you get 2,147,483,647. It’s
+easier to just ask Java to print the value, isn’t it?
+
+We’d rather be reading the latter one because the zeroes don’t run together. You can add
+underscores anywhere except at the beginning of a literal, the end of a literal, right before a
+decimal point, or right after a decimal point. Let’s look at a few examples:
+// DOES NOT COMPILE
+double notAtStart = _1000.00;
+// DOES NOT COMPILE
+double notAtEnd = 1000.00_;
+// DOES NOT COMPILE
+double notByDecimal = 1000_.00;
+double annoyingButLegal = 1_00_0.0_0; // this one compiles
+
+A reference type refers to an object (an instance of a class). Unlike primitive types that hold
+their values in the memory where the variable is allocated, references do not hold the value
+of the object they refer to. Instead, a reference “points” to an object by storing the memory
+address where the object is located, a concept referred to as a pointer. Unlike other
+languages, Java does not allow you to learn what the physical memory address is. You can
+only use the reference to refer to the object.
+
+There are a few important differences you should know between primitives and reference
+types. First, reference types can be assigned null , which means they do not currently refer
+to an object. Primitive types will give you a compiler error if you attempt to assign them
+null .
+
+Next, reference types can be used to call methods when they do not point to null .
+Primitives do not have methods declared on them. In this example, we can call a method on
+reference since it is of a reference type.
+
+all the primitive types have lowercase type names.
+
+how many variables do you think are declared and initialized in this code?
+int i1, i2, i3 = 0;
+As you should expect, three variables were declared: i1 , i2 , and i3 . However, only one
+of those values was initialized: i3 . The other two remain declared but not yet initialized.
+That’s the trick.
+
+Another way the exam could try to trick you is to show you code like this line:
+int num, String value; // DOES NOT COMPILE
+This code doesn’t compile because it tries to declare multiple variables of different types
+in the same statement. The shortcut to declare multiple variables in the same statement only
+works when they share a type.
+
+“Legal,” “valid,” and “compiles” are all synonyms in the Java exam
+world.
+
+When you see an oddly placed semicolon on the
+exam, pretend the code is on separate lines and think about whether the code compiles that
+way
+
+The name must begin with a letter or the symbol $ or _ .
+Subsequent characters may also be numbers.
+You cannot use the same name as a Java reserved word. As you might imagine, a
+reserved word is a keyword that Java has reserved so that you are not allowed to use it.
+Remember that Java is case sensitive, so you can use versions of the keywords that only
+differ in case. Please don’t, though.
+
+A local variable is a variable defi ned within a method.
+
+4: public int notValid() {
+5: int y = 10;
+6: int x;
+7: int reply = x + y; // DOES NOT COMPILE
+8: return reply;
+9: }
+
+y is initialized to 10. However, because x is not initialized before it is used in the expres-
+sion on line 7, the compiler generates the following error:
+Test.java:5: variable x might not have been initialized
+int reply = x + y;
+	  ^
+
+The package needs to be declared before the imports. Otherwise, the program won't compile.
+
+All Java objects are stored in your program memory’s heap. The heap, which is also
+referred to as the free store, represents a large pool of unused memory allocated to your
+Java application. The heap may be quite large, depending on your environment, but there is
+always a limit to its size. If your program keeps instantiating objects and leaving them on
+the heap, eventually it will run out of memory.
+
+You do need to know that System.gc() is not guaranteed to run, and you should be able to
+recognize when objects become eligible for garbage collection.
+
+Do not confuse a reference with the object that it refers to; they are two different enti-
+ties. The reference is a variable that has a name and can be used to access the contents
+of an object. A reference can be assigned to another reference, passed to a method, or
+returned from a method. All references are the same size, no matter what their type is.
+
+An object sits on the heap and does not have a name. Therefore, you have no way to
+access an object except through a reference. Objects come in all different shapes and
+sizes and consume varying amounts of memory. An object cannot be assigned to another
+object, nor can an object be passed to a method or returned from a method. It is the
+object that gets garbage collected, not its reference.
+
+The finalize() method gets called if the garbage collector tries to collect the object.
+If the garbage collector doesn’t run, the method doesn’t get called. 
+If the garbage collector fails to collect the object and tries to run it again later,
+the method doesn’t get called a second time.
+
+All of the arithmetic operators may be applied to any Java primitives, except boolean
+and String. Furthermore, only the addition operators + and += may be applied to String
+values, which results in String concatenation.
+
+Numeric Promotion Rules
+1. If two values have different data types, Java will automatically promote one of the val-
+ues to the larger of the two data types.
+2. If one of the values is integral and the other is floating-point, Java will automatically
+promote the integral value to the floating-point value’s data type.
+3. Smaller data types, namely byte , short , and char , are first promoted to int any time
+they’re used with a Java binary arithmetic operator, even if neither of the operands is
+int .
+4. After all promotion has occurred and the operands have the same data type, the result-
+ing value will have the same data type as its promoted operands.
+
+For the third rule, note that unary operators are excluded from this
+rule. For example, applying ++ to a short value results in a short value.
+
+Java will automatically promote from smaller to larger data types, as we saw in the pre-
+vious section on arithmetic operators, but it will throw a compiler exception if it detects
+you are trying to convert from larger to smaller data types.
+
+Based on the description, it might be obvious that some operators require the variable
+or expression they’re acting upon to be of a specific type. For example, you cannot apply
+a negation operator, - , to a boolean expression, nor can you apply a logical complement
+operator, ! , to a numeric expression. Be wary of questions on the exam that try to do this,
+as they’ll cause the code to fail to compile. For example, none of the following lines of code
+will compile:
+int x = !5; // DOES NOT COMPILE
+boolean y = -true; // DOES NOT COMPILE
+boolean z = !0; // DOES NOT COMPILE
+
+The first statement will not compile due the fact that in Java you cannot perform a
+logical inversion of a numeric value. The second statement does not compile because you
+cannot numerically negate a boolean value; you need to use the logical inverse operator.
+Finally, the last statement does not compile because you cannot take the logical comple-
+ment of a numeric value, nor can you assign an integer to a boolean variable.
+
+Increment and decrement operators, ++ and -- , respectively, can be applied to numeric
+operands and have the higher order or precedence, as compared to binary operators. In
+other words, they often get applied fi rst to an expression.
+
+Overfl ow is when a number is so large that it will no longer fi t
+within the data type, so the system “wraps around” to the next lowest value and counts
+up from there.
+
+Let’s return to one of our earlier examples for a moment:
+short x = 10;
+short y = 3;
+short z = x * y;
+// DOES NOT COMPILE
+Based on everything you have learned up until now, can you understand why the last
+line of this statement will not compile? If you remember, short values are automatically
+promoted to int when applying any arithmetic operator, with the resulting value being of
+type int . Trying to set a short variable to an int results in a compiler error, as Java thinks
+you are trying to implicitly convert from a larger data type to a smaller one.
+
+short x = 10;
+short y = 3;
+short z = (short)(x * y);
+By performing this explicit cast of a larger value into a smaller data type, you are
+instructing the compiler to ignore its default behavior.
+
+consider the following example, in
+which the last line will not compile due to the result being promoted to a long and assigned
+to an int variable:
+long x = 10;
+int y = 5;
+y = y * x; // DOES NOT COMPILE
+
+Compound operators(-=, +=, *= etc) are useful for more than just shorthand—they can also save us
+from having to explicitly cast a value.
+
+One final thing to know about the assignment operator is that the result of the assign-
+ment is an expression in and of itself, equal to the value of the assignment.
+
+For example, the
+following snippet of code is perfectly valid, if not a little odd looking:
+long x = 5;
+long y = (x=3);
+System.out.println(x); // Outputs 3
+System.out.println(y); // Also, outputs 3
+
+instanceof operator - returns true if the reference that a points to is an instance of
+a class, subclass, or class that implements a particular
+interface, as named in b
+
+■ AND(&) is only true if both operands are true.
+■ Inclusive OR (|) is only false if both operands are false.
+■ Exclusive OR (^) is only true if the operands are different.
+
+Finally, we present the conditional operators, && and || , which are often referred to as
+short-circuit operators. The short-circuit operators are nearly identical to the logical opera-
+tors, & and | , respectively, except that the right-hand side of the expression may never be
+evaluated if the final result can be determined by the left-hand side of the expression.
+
+Data types supported by switch statements include the following:
+■ int and Integer
+■ byte and Byte
+■ short and Short
+■ char and Character
+■ int and Integer
+■ String
+■ enum values
+For the exam, we recommend you memorize this list. Note that boolean and long , and
+their associated wrapper classes, are not supported by switch statements.
+
+The values in each case statement must be compile-time constant values of the same data
+type as the switch value. This means you can use only literals, enum constants, or final
+constant variables of the same data type. By final constant, we mean that the variable
+must be marked with the final modifier and initialized with a literal value in the same
+expression in which it is declared.
+
+The first thing you may notice is that there is a break statement at the end of each case
+and default section. We’ll discuss break statements in detail when we discuss loops, but
+for now all you need to know is that they terminate the switch statement and return flow
+control to the enclosing statement. As we’ll soon see, if you leave out the break statement,
+flow will continue to the next proceeding case or default block automatically.
+
+Another thing you might notice is that the default block is not at the end of the switch
+statement. There is no requirement that the case or default statements be in a particular
+order, unless you are going to have pathways that reach multiple sections of the switch
+block in a single execution.
+
+Variables declared in the initialization block of a for loop have limited scope and
+are only accessible within the for loop. Be wary of any exam questions in which a vari-
+able declared within the initialization block of a for loop is available outside the loop.
+When you see a for-each loop on the exam, make sure the right-hand side is an array
+or Iterable object and the left-hand side has a matching type. For example, the two
+examples that follow will not compile.
+
+Why will the following fail to compile?
+String names = "Lisa";
+for(String name : names) {
+ // DOES NOT COMPILE
+System.out.print(name + " ");
+}
+In this example, the String names is not an array, nor does it implement java.lang.
+Iterable, so the compiler will throw an exception since it does not know how to iter-
+ate over the String.
+
+You learned that + is used to do String concatenation in Java. There’s another way,
+which isn’t used much on real projects but is great for tricking people on the exam. What
+does this print out?
+String s1 = "1";
+String s2 = s1.concat("2");
+s2.concat("3");
+System.out.println(s2);
+Did you say "12"? Good. The trick is to see if you forget that the String class is immutable
+by throwing a method at you.
+
+The String Pool
+Since strings are everywhere in Java, they use up a lot of memory. In some production appli-
+cations, they can use up 25–40 percent of the memory in the entire program. Java realizes
+that many strings repeat in the program and solves this issue by reusing common ones. The
+string pool, also known as the intern pool, is a location in the Java virtual machine (JVM)
+that collects all these strings. Remember that String s are immutable and literals are pooled.
+
+The lesson is to never use == to compare String objects. The only time
+you should have to deal with == for String s is on the exam.
+
+The string pool contains literal values that appear in your program. For example,
+“name” is a literal and therefore goes into the string pool. myObject.toString() is a string
+but not a literal, so it does not go into the string pool. Strings not in the string pool are gar-
+bage collected just like any other object.
+
+>> is the arithmetic (or signed) right shift operator.
+>>> is the logical (or unsigned) right shift operator.
+<< is the left shift operator, and meets the needs of both logical and arithmetic shifts.
+All of these operators can be applied to integer values (int, long, possibly short and byte or char). In some languages, applying the shift operators to any datatype smaller than int automatically resizes the operand to be an int.
+Note that <<< is not an operator, because it would be redundant. Also note that C and C++ do not distinguish between the right shift operators. They provide only the >> operator, and the right-shifting behavior is implementation defined for signed types.
+
+As you learned in Chapter 1, “Java Building Blocks,” this is an example of a reference
+type. You also learned that reference types are created using the new keyword. Wait a minute.
+Something is missing from the previous example: it doesn’t have new in it! In Java, these two
+snippets both create a String :
+String name = "Fluffy";
+String name = new String("Fluffy");
+
+The OCA exam creators like string concatenation because the + operator
+can be used in two ways within the same line of code. There aren’t a lot of rules to know for
+this, but you have to know them well:
+1. If both operands are numeric, + means numeric addition.
+2. If either operand is a String , + means concatenation.
+3. The expression is evaluated left to right.
+
+There is only one more thing to know about concatenation, but it is an easy one. In this
+example, you just have to remember what += does. s += "2" means the same thing as s =
+s + "2" .
+
+a string “plus” anything else means to use concatenation.
+
+String name = "Fluffy";
+String name = new String("Fluffy");
+The former says to use the string pool normally. The second says “No, JVM. I really
+don’t want you to use the string pool. Please create a new object for me even though it is
+less efficient.” When you write programs, you wouldn’t want to do this. For the exam, you
+need to know that it is allowed.
+
+java.lang.String.indexOf() returns –1 when no match is found.
+
+The method substring() also looks for characters in a string. It returns parts of the string.
+The first parameter is the index to start with for the returned string. As usual, this is a
+zero-based index. There is an optional second parameter, which is the end index you want
+to stop at.
+
+java.lang.StringIndexOutOfBoundsException - this exception is thrown when you try to reach a character
+from a string that isn't set.
+
+System.out.println(string.substring(3, 3)); // empty string
+System.out.println(string.substring(3, 2)); // throws exception
+System.out.println(string.substring(3, 8)); // throws exception
+The first example in this set prints an empty string. The request is for the characters start-
+ing with index 3 until you get to index 3. Since we start and end with the same index, there
+are no characters in between. The second example in this set throws an exception because
+the indexes can be backward. Java knows perfectly well that it will never get to index 2 if
+it starts with index 3. The third example says to continue until the eighth character. There
+is no eighth position, so Java throws an exception. Granted, there is no seventh character
+either, but at least there is the “end of string” invisible position.
+
+Other String methods:
+substring
+toLowerCase()
+toUpperCase()
+equals()
+equalsIgnoreCase()
+startsWith()
+endsWith()
+contains() - The contains() method is a convenience method so you don’t have to write str.indexOf(otherString) != -1 .
+replace()
+trim() - removes spaces, \t, \r and \n at the beginning and end of a string
+
+The CharSequence interface is a general way of representing several classes, including String and StringBuilder.
+
+String a = "abc";
+String b = a.toUpperCase(); //b = ABC
+b = b.replace("B", "2").replace('C', '3'); // b = A23
+System.out.println("a=" + a); //abc
+System.out.println("b=" + b); //A2c
+
+The StringBuilder class
+creates a String without storing all those interim String values. Unlike the String class,
+StringBuilder is not immutable.
+
+Creating a StringBuilder
+There are three ways to construct a StringBuilder :
+StringBuilder sb1 = new StringBuilder();
+StringBuilder sb2 = new StringBuilder("animal");
+StringBuilder sb3 = new StringBuilder(10);
+
+Size is the number of characters currently in the sequence, and capacity is the number
+of characters the sequence can currently hold. Since a String is immutable, the size and
+capacity are the same. The number of characters appearing in the String is both the size
+and capacity.
+
+StringBuilder methods
+charAt
+indexOf
+length
+substring - it returns a string in this case
+
+StringBuffer is the same as StringBuilder except that it is thread safe.
+
+Calling equals() on StringBuilder objects will check
+whether they are pointing to the same object rather than looking at the values inside.
+
+Another way to create an array is to specify all the elements it should start out with:
+int[] numbers2 = new int[] {42, 55, 99};
+
+As a shortcut, Java lets you
+write this:
+int[] numbers2 = {42, 55, 99};
+This approach is called an anonymous array. It is anonymous because you don’t specify
+the type and size.
+
+int ids[], types;
+All we did was move the brackets, but it changed the behavior. This time we get one vari-
+able of type int[] and one variable of type int . Java sees this line of code and thinks
+something like this: “They want two variables of type int . The fi rst one is called ids[] .
+This one is a int[] called ids . The second one is just called types . No brackets, so it is a
+regular integer.”
+
+The exam will test whether you are being observant by trying to access elements that are
+not in the array. In this case JAVA throws an ArrayIndexOutOfBoundsException.
+
+ArrayList implements an interface called List . In other
+words, an ArrayList is a List.
+
+You will learn about interfaces in Chapter 5. In the mean-
+time, just know that you can store an ArrayList in a List reference variable but not vice
+versa. The reason is that List is an interface and interfaces can’t be instantiated.
+List<String> list6 = new ArrayList<>();
+ArrayList<String> list7 = new List<>(); // DOES NOT COMPILE
+
+ArrayList methods:
+
+add()
+	boolean add(E element)
+	void add(int index, E element)
+remove
+	boolean remove(Object object)
+	E remove(int index)
+set
+	E set(int index, E newElement)
+isEmpty
+clear
+
+ArrayList implement the RandomAccess interface.
+
+Month is a special type of class called an enum.
+
+The date and
+time classes have private constructors to force you to use the static methods. The exam
+creators may try to throw something like this at you:
+LocalDate d = new LocalDate(); // DOES NOT COMPILE
+
+Don’t fall for this. You are not allowed to construct a date or time object directly.
+Another trick is to see what happens when you pass invalid numbers to of() . For example:
+LocalDate.of(2015, Month.JANUARY, 32)
+// throws DateTimeException
+You don’t need to know the exact exception that’s thrown, but it’s a clear one:
+java.time.DateTimeException: Invalid value for DayOfMonth
+(valid values 1 - 28/31): 32
+
+Manipulating Dates and Times
+Adding to a date is easy. The date and time classes are immutable, just like String was.
+This means that we need to remember to assign the results of these methods to a reference
+variable so they are not lost.
+LocalDate date = LocalDate.of(2014, Month.JANUARY, 20);
+System.out.println(date);
+// 2014-01-20
+date = date.plusDays(2);
+System.out.println(date);
+// 2014-01-22
+date = date.plusWeeks(1);
+
+Period everyThreeWeeks = Period.ofWeeks(3);
+Period everyOtherDay = Period.ofDays(2);
+Period everyYearAndAWeek = Period.of(1, 0, 7);
+147
+// every 3 weeks
+// every 2 days
+// every year and 7 days
+There’s one catch. You cannot chain methods when creating a Period . The following
+code looks like it is equivalent to the everyYearAndAWeek example, but it’s not. Only the
+last method is used because the Period .ofXXX methods are static methods.
+Period wrong = Period.ofYears(1).ofWeeks(1);
+// every week
+
+Java does not allow you to compare String and StringBuilder using == .
+
+Arrays define a property called length . It is not a method, so parentheses are not allowed.
+The rule when an item isn’t found is to negate that index and subtract 1.
+
+Default (Package Private) Access The method can only be called from classes in the same
+package. This one is tricky because there is no keyword for default access. You simply omit
+the access modifier.
+
+Protected members can be accessed within the same package and from subclasses.
+Package private members can be accessed only within the same class and same package.
+
+final - Used when a method is not allowed to be overridden by a subclass.
+synchronized
+native
+
+When declaring a method we need to put the return type before the method name. Optional specifiers
+can be placed before and after the access modifier.
+
+A vararg parameter must be the last element in a method’s parameter list.
+This implies you are only allowed to have one vararg parameter per method.
+
+Protected access allows everything that default (package private) access allows and more.
+protected also gives us access to everything that default access does.
+
+You can use an instance of the object to call a static method.
+
+Remember to look at the reference type for a variable when you see a
+static method or variable. The exam creators will try to trick you into think-
+ing a NullPointerException is thrown because the variable happens to be
+null . Don’t be fooled!
+
+A static member cannot call an instance member. 
+This shouldn’t be a surprise since static doesn’t require any instances
+of the class to be around.
+
+Other static variables are meant to never change during the program. This type of vari-
+able is known as a constant. It uses the final modifi er to ensure the variable never changes.
+static final constants use a different naming convention than other variables. They use
+all uppercase letters with underscores between “words.”
+
+Do you think the following compiles?
+    private static final ArrayList<String> values = new ArrayList<>();
+    public static void main(String[] args) {
+        values.add("changed");
+    }
+It actually does compile. values is a reference variable. We are allowed to call methods
+on reference variables. All the compiler can do is check that we don’t try to reassign the
+final values to point to a different object.
+
+We can initialize a static final variables only in a static initialization block or when we
+define them.
+
+Static imports are for importing static members of classes.
+
+Final classes cannot be extended.
+Final methods cannot be overriden or hidden by subclasses.
+
+Static inner classes can access static data members of the enclosing class. 
+They can't access non-static data members; after all, you can create an instance of a static inner class without creating any instance of the enclosing class. 
+
+Which method do you think is called if we pass an int[] ?
+public void fly(int[] lengths) { }
+public void fly(int... lengths) { }
+// DOES NOT COMPILE
+
+This means calling fly(3); will call the previous method as expected. However, what
+happens if we have both a primitive and an integer version?
+    public void fly(int numMiles) { }
+    public void fly(Integer numMiles) { }
+Java will match the int numMiles version. Java tries to use the most specifi c parameter
+list it can find. When the primitive int version isn't present, it will autobox. However, when
+the primitive int version is provided, there is no reason for Java to do the extra work of
+autoboxing.
+
+We can compare primitive wrapper class objects with the .equals method but not 
+with the == and != operators!
+
+public class Plane {
+    public void fly(int i) {
+        System.out.print("int ");
+    }
+    public void fly(long l) {
+        System.out.print("long ");
+    }
+    public static void main(String[] args) {
+    Plane p = new Plane();
+    p.fly(123);
+    p.fly(123L);
+} }
+The answer is int long . The fi rst call passes an int and sees an exact match. The sec-
+ond call passes a long and also sees an exact match. If we comment out the overloaded
+method with the int parameter list, the output becomes long long . Java has no problem
+calling a larger primitive. However, it will not do so unless a better match is not found.
+Note that Java can only accept wider types. An int can be passed to a method taking a
+long parameter. Java will not automatically convert to a narrower type. If you want to pass
+a long to a method taking an int parameter, you have to add a cast to explicitly say nar-
+rowing is okay.
+
+Order Java uses to choose the right overloaded method:
+Exact match by type public String glide(int i, int j) {}
+Larger primitive type public String glide(long i, long j) {}
+Autoboxed type public String glide(Integer i, Integer j) {}
+Varargs public String glide(int... nums) {}
+
+Initialization order:
+1. If there is a superclass, initialize it first (we’ll cover this rule in the next chapter. For
+now, just say “no superclass” and go on to the next rule.)
+2. Static variable declarations and static initializers in the order they appear in the file.
+3. Instance variable declarations and instance initializers in the order they appear in the file.
+4. The constructor.
+
+Keep in mind that the four rules apply only if an
+object is instantiated. If the class is referred to without a new call, only rules 1 and 2 apply.
+The other two rules relate to instances and constructors. They have to wait until there is
+code to instantiate the object.
+
+Rules for JavaBeans naming conventions
+Properties are private.
+Getter methods begin with is if the
+property is a boolean .
+Getter methods begin with get if the
+property is not a boolean .
+Setter methods begin with set .
+The method name must have a prefix
+of set / get / is , followed by the first
+letter of the property in uppercase, fol-
+lowed by the rest of the property name.
+
+12, 13, 14, 15
+
+Immutable classes don't have setters. Their properties are private and they are set via the constructor.
+
+Lambdas:
+print(a, b -> a.startsWith("test"));
+print(a -> { a.startsWith("test"); });
+print(a -> { return a.startsWith("test") });
+// DOES NOT COMPILE
+// DOES NOT COMPILE
+// DOES NOT COMPILE
+The fi rst line needs parentheses around the parameter list. Remember that the parenthe-
+ses are only optional when there is one parameter and it doesn’t have a type declared. The
+second line is missing the return keyword. The last line is missing the semicolon.
+You might have noticed all of our lambdas return a boolean . That is because the scope
+for the OCA exam limits what you need to learn.
+Lambdas can access instance and static variables.
+Method parameters and local variables are also fine if they are not assigned new values.
+
+There is one more issue you might see with lambdas. We’ve been defi ning an argument
+list in our lambda expressions. Since Java doesn’t allow us to redeclare a local variable, the
+following is an issue:
+(a, b) -> { int a = 0; return 5;}
+// DOES NOT COMPILE
+Lambdas work with interfaces that have only one method.
+For the OCA exam, you only need to know how to implement lambda expressions that use the Predicate interface.
+
+static final variables must be set exactly once, and it must be in the declaration
+line or in a static initialization block ONLY! Otherwise, a compiler error is raised.
+this() can only be called from a constructor in the same
+class.
+
+Constructors cannot be called without new!
+
+Omitting the "this" when assigning an instance variable argument value in the constructor
+when they have the same name may cause the constructor to assign the argument value to itself.
+
+JAVA doesn't allow multiple inheritance but a class can implement multiple interfaces.
+
+Interfaces contain abstract, default and static methods. All abstract, default and static methods
+in an interface are implicitly public.
+An interface can contain constant declarations. All interface constants are implicitly public, static
+and final.
+
+When you extend an interface that contains a default method, you can do the following:
+
+Not mention the default method at all, which lets your extended interface inherit the default method.
+Redeclare the default method, which makes it abstract.
+Redefine the default method, which overrides it.
+
+In Java, it is not possible to
+override a private method in a parent class since the parent method is not accessible from
+the child class. Just because a child class doesn’t have access to the parent method, doesn’t
+mean the child class can’t define its own version of the method. It just means, strictly speak-
+ing, that the new method is not an overridden version of the parent class’s method.
+Java permits you to redeclare a new method in the child class with the same or modified 
+signature as the method in the parent class. This method in the child class is a separate
+and independent method, unrelated to the parent version’s method, so none of the rules for
+overriding methods are invoked.
+
+Hiding Static Methods
+A hidden method occurs when a child class defi nes a static method with the same name
+and signature as a static method defi ned in a parent class. Method hiding is similar but
+not exactly the same as method overriding. First, the four previous rules for overriding a
+method must be followed when a method is hidden. In addition, a new rule is added for
+hiding a method, namely that the usage of the static keyword must be the same between
+parent and child classes. The following list summarizes the five rules for hiding a method:
+1. The method in the child class must have the same signature as the method in the parent
+class.
+2. The method in the child class must be at least as accessible or more accessible than the
+method in the parent class.
+3. The method in the child class may not throw a checked exception that is new or
+broader than the class of any exception thrown in the parent class method.
+4. If the method returns a value, it must be the same or a subclass of the method in the
+parent class, known as covariant return types.
+5. The method defined in the child class must be marked as static if it is marked as
+static in the parent class (method hiding). Likewise, the method must not be marked
+as static in the child class if it is not marked as static in the parent class (method
+overriding).
+6. Static methods in interfaces are never inherited.
+
+Java doesn’t allow variables to be overridden but instead hidden.
+
+public class Animal {
+    public int length = 2;
+}
+
+public class Jellyfish extends Animal {
+    public int length = 5;
+    public static void main(String[] args) {
+        Jellyfish jellyfish = new Jellyfish();
+        Animal animal = new Jellyfish();
+        System.out.println(jellyfish.length);
+        System.out.println(animal.length);
+    }
+}
+
+public class Chicken {
+    public abstract void peck();
+}
+// DOES NOT COMPILE
+The exam creators are fond of questions like this one, which mixes nonabstract classes
+with abstract methods. They are also fond of questions with methods marked as abstract
+for which an implementation is also defi ned. For example, neither method in the following
+code will compile because the methods are marked as abstract :
+public abstract class Turtle {
+    public abstract void swim() {}
+    public abstract int getAge() {
+        return 10;
+    }
+}
+
+Although you can’t provide a default implementation to an abstract method in an abstract
+class, you can still defi ne a method with a body—you just can’t mark it as abstract . As
+long as you do not mark it as final , the subclass still has the option to override it, as
+explained in the previous section.
+
+Likewise, an abstract method may not be marked as final for the same reason that
+an abstract class may not be marked as final.
+a method may not be marked as both abstract and private.
+
+An abstract class becomes useful when it is extended by a concrete subclass. A concrete
+class is the fi rst nonabstract subclass that extends an abstract class and is required to imple-
+ment all inherited abstract methods. When you see a concrete class extending an abstract
+class on the exam, check that it implements all of the required abstract methods.
+
+There is one exception to the rule for abstract methods and concrete classes: a concrete
+subclass is not required to provide an implementation for an abstract method if an interme-
+diate abstract class provides the implementation. For example, take a look at the following
+variation on our previous example:
+public abstract class Animal {
+    public abstract String getName();
+}
+public abstract class BigCat extends Animal {
+    public String getName() {
+        return "BigCat";
+    }
+    public abstract void roar();
+}
+
+public class Lion extends BigCat {
+    public void roar() {
+        System.out.println("The Lion lets out a loud ROAR!");
+    }
+}
+
+Abstract Class Definition Rules:
+1. Abstract classes cannot be instantiated directly.
+2. Abstract classes may be defined with any number, including zero, of abstract and non-
+abstract methods.
+3. Abstract classes cannot be marked as private or final .
+4. An abstract class that extends another abstract class inherits all of its abstract methods
+as its own abstract methods.
+5. The first concrete class that extends an abstract class must provide an implementation
+for all of the inherited abstract methods.
+
+Abstract Method Definition Rules:
+1. Abstract methods may only be defined in abstract classes.
+2. Abstract methods cannot be declared private or final .
+3. Abstract methods must not provide a method body/implementation in the abstract
+class for which is it declared.
+4. Implementing an abstract method in a subclass follows the same rules for overriding a
+method. For example, the name and signature must be the same, and the visibility of
+the method in the subclass must be at least as accessible as the method in the parent
+class.
+
+Defining an Interface
+1. Interfaces cannot be instantiated directly.
+2. An interface is not required to have any methods.
+3. An interface cannot be marked as final.
+4. All top-level interfaces are assumed to have public or default access, and they must
+include the abstract modifier in their definition. Therefore, marking an interface as
+private , protected , or final will trigger a compiler error, since this is incompatible
+with these assumptions.
+5. All nondefault methods in an interface are assumed to have the modifiers abstract
+and public in their definition. Therefore, marking a method as private , protected ,
+or final will trigger compiler errors as these are incompatible with the abstract and
+public keywords.
+The fourth rule doesn’t apply to inner interfaces.
+
+Inheriting an Interface
+There are two inheritance rules you should keep in mind when extending an interface:
+1. An interface that extends another interface, as well as an abstract class that
+implements an interface, inherits all of the abstract methods as its own abstract
+methods.
+2. The first concrete class that implements an interface, or extends an abstract class
+that implements an interface, must provide an implementation for all of the inherited
+abstract methods.
+
+An interface can extend multiple other interfaces.
+
+What about an abstract class that implements an interface? In this scenario, the abstract
+class is treated in the same way as an interface extending another interface. In other words,
+the abstract class inherits the abstract methods of the interface but is not required to imple-
+ment them.
+
+Differences between abstract classes & interfaces:
+- there is multiple inheritance between interfaces
+- a top-level interface MUST be public. 
+
+Classes, Interfaces, and Keywords
+The exam creators are fond of questions that mix class and interface terminology. Although
+a class can implement an interface, a class cannot extend an interface. Likewise, whereas
+an interface can extend another interface, an interface cannot implement another interface.
+The following examples illustrate these principles:
+public interface CanRun {}
+public class Cheetah extends CanRun {}
+// DOES NOT COMPILE
+public class Hyena {}
+public interface HasFur extends Hyena {} // DOES NOT COMPILE
+
+Make sure the only connection between a class and an interface is with the class implements interface
+syntax.
+
+What happens if the two methods have different signatures? If the method name is the
+same but the input parameters are different, there is no confl ict because this is considered a
+method overload.
+
+NB!!!
+It is not possible in
+Java to define two methods in a class with the same name and input parameters but different return types.
+
+Here are two interface variables rules:
+1. Interface variables are assumed to be public, static, and final. Therefore, marking
+a variable as private or protected will trigger a compiler error, as will marking any
+variable as abstract.
+2. The value of an interface variable must be set when it is declared since it is marked as
+final.
+
+If the class doesn’t override the method, the default implementation will be used.
+In this manner, the method definition is concrete, not abstract.
+
+We can use the default keyword only within interfaces, not abstract classes.
+
+the interface may override the defi nition of the default
+method using the standard rules for method overriding, such as not limiting the acces-
+sibility of the method and using covariant returns.
+
+the interface may redeclare the method as abstract, 
+requiring classes that implement the new interface to explicitly provide
+a method body.
+
+A virtual method is a method in which
+the specifi c implementation is not determined until runtime.
+
+(page 280) The most important thing to note about this example is that only one object, Lemur, is
+created and referenced. The ability of an instance of Lemur to be passed as an instance of an
+interface it implements, HasTail, as well as an instance of one of its superclasses, Primate,
+is the nature of polymorphism.
+
+Once the object has been assigned a new reference type, only the methods and variables
+available to that reference type are callable on the object without an explicit cast. For
+example, the following snippets of code will not compile:
+HasTail hasTail = lemur;
+System.out.println(hasTail.age);
+// DOES NOT COMPILE
+
+Here are some basic rules to keep in mind when casting variables:
+1. Casting an object from a subclass to a superclass doesn’t require an explicit cast.
+2. Casting an object from a superclass to a subclass requires an explicit cast.
+3. The compiler will not allow casts to unrelated types.
+4. Even when the code compiles without issue, an exception may be thrown at runtime if
+the object being cast is not actually an instance of that class.
+
+Although this topic is out of scope for the OCA exam, keep in mind that the
+instanceof operator can be used to check whether an object belongs to a
+particular class and to prevent ClassCastException s at runtime. Unlike the
+previous example, the following code snippet doesn’t throw an exception at
+runtime and performs the cast only if the instanceof operator returns true.
+
+A virtual method is a method in which
+the specifi c implementation is not determined until runtime. In fact, all non-fi nal, non-
+static, and non-private Java methods are considered virtual methods, since any of them can
+be overridden at runtime.
+
+If you’re defining a method that will be accessible outside the current class, either to
+subclasses of the current class or publicly to objects outside the current class, it is con-
+sidered good coding practice to use the superclass or interface type of input parameters
+whenever possible.
+As you may remember from Chapter 3, “Core Java APIs,” the type java.util.List is an
+interface, not a class. Although there are many classes that implement java.util.List ,
+such as java.util.ArrayList and java.util.Vector , when you’re passing an existing
+List you’re not usually interested in the particular subclass of the List . In this manner, a
+method that passes a List should use the interface type java.util.List as the polymor-
+phic parameter type, rather than a specifi c class that implements List , as the code will be
+more reusable for other types of lists.
+For example, it is common to see code such as the following that uses the interface refer-
+ence type over the class type for greater reusability:
+java.util.List list = new java.util.ArrayList();
+
+Abstract classes and interfaces dont extend java.lang.Object.
+
+ava has a rule called the handle or declare
+rule. For checked exceptions, Java requires the code to either handle them or declare them
+in the method signature.
+
+A checked exception includes Exception and all subclasses that do not extend RuntimeException.
+
+try {// DOES NOT COMPILE
+    fall();
+}
+
+A try statement needs to be followed by a catch or finally block.
+try, catch, finally statements need to be followed by curly braces, even if they contain
+a single expression.
+
+There is one exception to “the finally block always runs after the catch block” rule:
+Java defi nes a method that you call as System.exit(0); . The integer parameter is the
+error code that gets returned. System.exit tells Java, “Stop. End the program right now.
+Do not pass go. Do not collect $200.” When System.exit is called in the try or catch
+block, finally does not run.
+
+We can have multiple catch blocks after a try block. We cannot catch a broader exception before a
+less broader one.
+
+Instance variables and methods must be called on a non- null reference. If the reference is
+null, the JVM will throw a NullPointerException.
+
+ExceptionInInitializerError Thrown by the JVM when a static initializer throws
+an exception and doesn’t handle it - this error is thrown only within static initializers.
+The class cannot be loaded afterwards. It is thrown usually when an exception is thrown
+within the static initializer block.
+
+NoClassDefFoundError - NoClassDefFoundError occurs when Java can’t fi nd the class at runtime.

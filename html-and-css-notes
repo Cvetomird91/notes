@@ -1,0 +1,268 @@
+https://zellwk.com/blog/9-important-css-properties-you-must-know/
+https://colorlib.com/wp/
+https://www.html5rocks.com/
+http://html5doctor.com/
+https://codemyui.com/
+
+CSS stylesheets need to be put in the head of a page only, only script tags are allowed to be placed elsewhere.
+
+Google Apps Tips:
+http://gappstips.com/
+
+http://html.com/
+http://codebeautify.org/
+
+Responsive design tester:
+http://responsivedesignchecker.com
+
+Димитър Папазов @ YouTube
+
+http://www.danstools.com/
+http://cssreference.io/
+
+https://scotch.io/tutorials/a-visual-guide-to-css3-flexbox-properties
+https://www.patternfly.org/download/#_
+
+A website to check which new HTML and CSS standards are supported by the major browsers.
+http://caniuse.com/
+A clearfix class in CSS is generally used to clear problems with floats.
+
+CSS Specificity Rules / CSS priority of properties(from highest to lowest):
+1. Inline style
+2. ID
+3. Class, pseudo-class, attribute
+4. Elements
+
+HTML5:
+data-toggle -this attribute hooks the element to the type of widget it is
+data-togle="modal"
+data-togle="collapse"
+data-togle="dropdown"
+data-togle="tab"
+data-container
+data-offset
+data-placement
+data-content
+data-toggle
+data-spy - can be used to make a scrollfix
+aria-expanded
+aria-haspopup
+aria-labelledby
+role
+tabindex - the order in which the element will be focused when the user browses the sibling elements with the tab button
+
+<i></i> and <b></b> are deprecated in favor of <strong></strong> and <em></em>.
+
+HTML5 semantic elements:
+<article>
+<aside>
+<details>
+<figcaption>
+<figure>
+<footer>
+<header>
+<main>
+<mark>
+<nav>
+<section>
+<summary>
+<time>
+
+template - all code in the <template></template> tag is innert. It doesn't get rendered and we can't interact with those elements through the DOM API in the standard way, any JS in it won't be executed. We can work with it after cloning it. It is hidden from selectors.
+we can place template tags wherever in the HTML page.
+
+var template = document.querySelector('#myTemplate');
+var clone = document.importNode(template.content, true); //the second parameters determine if a deep copy will be performed.
+document.body.appendChild(clone);
+
+Custom elements:
+The name MUST have a dash to be recongnized by the browser as a valid custom element:
+
+E.g.
+<my-component> (<mycomponent> would be invalid)
+https://www.html5rocks.com/en/tutorials/webcomponents/customelements/#intro
+
+Another way to define them is to use the is attributes:
+<input type="text" is="search">
+
+We need to select the appropriate object to become a prototype for the element.
+<script>
+    //select an object and get its prototype for the new element
+    var SlickTabs = Object.create(HTMLButtonElement.prototype);
+
+    //register the new element
+    document.registerElement('slick-tabs');
+
+    //Use the custom element
+    document.body.appendChild(new SlickTabs());
+</script>
+
+We can extend custom elements
+
+var XFooProto = Object.create(HTMLElement.prototype);
+document.registerElement('x-foo');
+var XFooExtended = document.registerElement('x-foo-extended', {
+    prototype: XFooProto,
+    extends: 'x-foo'
+});
+
+Four ways to instantiate a custom element:
+1. Markup
+<custom-element/>
+
+2. new Operator in JS
+var comment = new CustomElement();
+
+3. document.createElement
+var comment = document.createElement('custom-element');
+
+4. innerHTML
+el.innerHTML = '<pluralsight-comment />';
+
+Creating an extended element:
+
+1. Markup
+<button is='supper-button'></button>
+
+2. JS
+var button = document.createElement('button', 'super-button');
+
+3. new
+document.body.appendChild(new SuperButton());
+
+4. Prototype
+var Proto = Object.create(HTMLButtonElement.prototype); //we refer to the prototype of the object representation of the element we want to extend
+
+Proto.createCallback = function() {
+    this.innerHTML = 'Pluralsight Button';
+    this.value = 'Default value';
+    this.style.color = 'orange';
+}
+
+var PluralsightButtom = document.registerElement('pluralsight-button', {
+    prototype: Proto,
+    extends: 'button'
+});
+
+HTML5 custom elements support 4 types of callbacks(lifecycle callback methods):
+createdCallback - Instance is created
+attachedCallback - Instance inserted into the DOM
+detachedCallback - Instance removed from the DOM
+attributeChangedCallback - Attributes are added, removed or updated
+
+https://component.kitchen/ - site to browse ready HTML5 web components
+https://www.webcomponents.org/ - site to browse HTML5 web components and with information on the subject
+
+The following names are reserved for the use of HTML5 web components:
+annotation-xml
+color-profile
+font-face
+font-face-src
+font-face-url
+font-face-format
+font-face-name
+missing-glyph
+
+Shadow DOM:
+Logical DOM - comprises of the Light DOM and the Shadow DOM
+
+Creating a Shadow DOM:
+1. Create a shadow host (e.g. a <video></video> element)
+2. Create a shadow root
+3. Add elements to the shadow root
+
+var host = document.getElementById('host');
+var root = host.createShadowRoot();
+root.innerHTML = "<h1>Hello, World!</h1>"; <!-- hello world from the shadow DOM -->
+
+The stilings from the light DOM don't apply for the elements in a shadow DOM. Each shadow DOM needs to have its own styling.
+
+shadow host - element in the Light DOM that is hosting our shadow DOM
+Shadow boundary - encapsulates styling rules that are defined within a given pease of shadow DOM. The boundary encapsulates a DOM subtree.
+Keeps styles in main doc from styling the shadow DOM and vice versa.
+
+JavaScript is NOT encapsulated within the Shadow DOM! HTML and CSS within the shadow DOM is encapsulated within the shadow DOM.
+
+<content> - entry point for the shadow DOM
+<content select="img"> - image tags from the shadow DOM can be inserted here. The first image that is found is inserted.
+Using a <content> tag without attributes will insert each element that was not already inserted.
+
+JS example of importing elements from a template into the shadow DOM
+
+<script>
+    var CommentProto = Object.create(HTMLElement.prototype);
+    CommentProto.createdCallback = function() {
+        var template = document.querySelector('template');
+	var shadow = this.createShadowRoot();
+	shadow.appendChild(document.importNode(template.content, true));
+
+	document.registerElement('comment-form', {
+	    prototype: CommentProto
+	});
+    }
+</script>
+
+<content> creates an insertion point.
+Elements inserted at the insertion point are called distributed nodes.
+Distributed notes are *merely displayed* at the insertion point.
+They are not actually inserted into the shadow DOM. Their location in the DOM continues
+to be in the light DOM after being distributed into the shadow DOM.
+
+Supported <content> tag selectors:
+Type selector 		  - <content select="p"></content>
+Class selector 		  - <content select=".target"></content>
+Attribute selector	  - <content select="input type=[text]"></content>
+ID selector			  - <content select="#target"></content>
+Negation pseudo-class - <content select=":not(.ugly)"></content>
+Universal selector	  - <content></content>
+
+<shadow></shadow> - shadow insertion point
+
+Shadow DOM terminology:
+Youngest tree - the last one added. Previous trees are called older tree.
+Only the first shadow insertion point in a shadow tree is recognized.
+
+As shadow trees are added to the host they are stacked up in a last-in first-out queue.
+
+get distributed nodes within a shadow root with JS:
+var distributedNodes = root.querySelector('#test').getDistributedNodes();
+console.log(distributedNodes);
+
+var destinationInsertionPoints = document.querySelector('ul').getDestinationInsertionPoints();
+
+Events in the shadow DOM are retargeted.
+Events will appear to come from the shadow host.
+
+The events in this list aren't retargeted. They are just killed at the shadow Root and not visible from the outside. They are not visible to the parent document at all. There's no way to expose these events outside of the shadow DOM:
+
+abort
+error
+select
+change
+load
+reset
+resize
+scroll
+selectstart
+
+Styling the Shadow DOM and web components
+Shadow DOM pseudo selectors:
+:host - allows us to style the shadow host
+:host-context
+::content
+::shadow
+/deep/
+:unresolved - this selector is used by the browser to style a custom HTML 5 element until his properties are resolved by the browser. (Flash of Unstyled Element)
+
+Telerik Kendo UI ThemeBuilder:
+http://demos.telerik.com/kendo-ui/themebuilder/
+
+:host(.awesome) {
+
+}
+
+Events in the shadow dom are retargeted so that they appear to come from the shadow host.
+
+All elements which aren't present in the HTML5 specification and are not declared as custom HTML5 elements belong to the DOM type HTMLUnknownElement, as long as they don't contain a dash in their name. If they contain a dash, they'll be considered HTML5 elements and will be of type HTMLElement.
+
+document.currentScript.ownerDocument

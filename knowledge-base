@@ -1,0 +1,3466 @@
+BASH - new commands
+
+man - manpage ids according to types of manuals
+
+	1  Program section
+	2  Syscall section
+	3  Library section
+	4  Device section
+	5  File format section
+	6  Games section
+	7  Misc section
+	8  Admin section
+	9  Kernel section
+	l  Local section
+	n  New section
+	tcl  Tcl section
+	o  Old section
+
+	man -k - seach the man pages
+
+pwd - print working directory
+
+	pwd -P - print physical location in case the current
+			 working directory is accessed via a symlink
+	pwd -L - print full path even if CWD is actually a symlink
+
+pwdx - print process working directory
+	pwdx 3315
+	3315: /home/cvetomir
+
+lsof -i - a utility that displays information about open file descriptors
+	- print open files and processes that use them
+
+	lsof -i
+	lsof -i :3306 - print ports and processes that use them
+	lsof -u username - return file descriptors opened by a certain user
+	lsof -u^username - return file descriptors except by those opened by a certain user
+	lsof -i -n -P
+
+	List Unix-domain sockets:
+	lsof -U
+
+lsipc - list IPC
+
+ls
+
+	ls -F - display files superceded by a special symbol indexing their type
+	* - executable
+	/ - directory
+
+lsinitrd - get initrd content
+
+ipcs - retrieve information for currently running interprocess communications on the system
+
+	ipcs -s - retrieve semaphore arrays setup
+	ipcs -m - shared memory segments
+	ipcs -q - message queues
+	ipcs -s - semaphore arrays
+	ipcs -a - all (this is the default)
+
+	Additional options for the output format:
+
+	-t     time
+	-p     pid
+	-c     creator
+	-l 	   limits
+	-u     summary
+
+pmap - print the memory map of an object
+
+symlink - utility to maintain symlinks
+
+lshw - list hardware - displays information about the hardware on the system
+
+hwloc - GUI tool for hardware inspection
+
+lshal - show a list of the devices and their properties
+
+systool - view system device information by bus, class and topology as read from sysfs
+
+cpupower - get cpu performance info
+
+lscpu - show information about CPUs
+
+cpu-checker - Debian package of tools for checking if KVM
+			  would run on the processor.
+
+	Contains:
+	kvm-ok
+	check-bios-nx
+
+mpstat - show information about a multithreaded processor
+
+vmstat - display virtual memory statistics
+
+		vmstat --forks - display the number of forks
+
+free
+
+	free -l - add high and low level sections to the output.
+			  "low level" memory is memory that the
+			  kernel can address directly and is reserved just for the kernel.
+
+	free -c 3 -s 5 - run free three times in an interval of 5 seconds
+	free -k, -g, -m - run free displaying memory in Kilobites, gigabites and megabites
+	free -h - human readable format
+
+gearman - task runner for synchronous and asynchronous tasks written in C
+		  with client libraries for multiple programming languages
+
+corosync - framework for creating clusters of Linux servers
+
+lspci - list all PCI devises
+
+	lspci -k - list all modules used for the PCI devices
+
+	verbose modes:
+	lspci -v
+	lspci -vv
+	lspci -vvv
+
+lsmod - show kernel modules information as read from /proc/modules
+		"Size" shows the size of the module, not the used memory
+		"Used by" shows how much the module is used and a list of referring modules
+
+insmod - insert a kernel module
+
+rmmod - remove modules from the kernel
+
+lsb_release - get distribution information
+
+	lsb_release -a - get the name and version of current Linux distribution
+
+lsscsi - list the connected SCSI devices
+
+hardinfo - GUI for viewing system information (OS, hardware and partitions)
+
+netstat - a tool used to get information about the network state
+
+	netstat -tulnp - lists open network ports and the processes
+			that own them
+
+	-l - list only listening ports
+
+netstat -antp | grep :3306 | wc -l - check open MySQL connections
+
+sockstat - list information about sockets
+
+	sockstat -l - list listening sockets
+	sockstat -4 - show only sockets using IPv4
+
+nohup - can be used to "demonize" processes - it runs them without tty output
+		and immune to hangups (HUPs) - the processes are terminated after the user logs out
+
+parallel - execute commands in parallel
+
+apropos - search the manual page names and description
+
+updatedb - update the database for the locale
+
+showconsolefont - get current console font
+
+setfont - set tty font
+
+fc-cache - refresh system font cache
+
+	fc-cache -f -v
+
+df
+	df -i - displays number of inodes per filesystem
+	df -T - display filesystem types
+
+du - estimate file space usage
+
+	du -h - human readable format
+	du -ah -
+	du -c - show total filesize in the end
+	du -hs - show disk summary
+	du -d or --max-depth - check the depth of the search
+
+ncdu - TUI which displays recursively the content of directories
+	   and the file size (ncurses du)
+
+chkconfig -  it is  used  to  manipulate the runlevel links at boot time
+			 on a Red Hat system (init scripts)
+
+	chkconfig --list | grep 3:on - shows scripts which work on runlevel 3
+	chkconfig --add
+
+	Add a service to init level:
+	chkconfig --level 3 servicename on
+
+patchk - check if the filename contains valid POSIX portable filenames
+
+exportfs
+
+cmp - compare two files byte by byte
+
+cp
+
+	cp -a - perserve file permissions, attributes and ownerships
+	cp -v - verbose mode
+	cp -r - copy recursively all child files and directories if a directory is passed
+
+whereis - locate the binary, source, and manual page files for a command
+
+		whereis ls
+		ls: /bin/ls /usr/share/man/man1p/ls.1p.gz /usr/share/man/man1/ls.1.gz
+
+brctl - ethernet bridge administrator
+
+ebrtables - Ethernet bridge frame table administration
+
+ethtool - control network driver and hardware settings
+	ethtool -i eth0
+	ethtool eth0 - check eth0 port status and see if there's an
+			Ethernet link
+
+mii-tool - ethtool is extending the mii-tool functionality
+
+iwlwifi - suitable wifi/wi-fi driver for my Samsung laptop
+
+	The firmware-iwlwifi package on a Debian system from a non-free repository
+
+update-rc.d - it is used to manipulate the runlevel links at boot time
+			  on a Debian system (init scripts)
+
+ebtables - Ethernet bridge frame table administration
+
+tcpdump
+
+	tcpdump "cookbook" / cheatsheet:
+	https://hackertarget.com/tcpdump-examples/
+
+date - get or set the date
+
+	to set the date:
+
+	date 111720092015 - day, month, time, year
+
+	Similar to strftime C function:
+	http://www.cplusplus.com/reference/ctime/strftime/
+
+	+%d+%m+%Y
+
+		Format options 	Purpose of Option 	Output
+		 +%a 	Displays Weekday name in short (like Mon, Tue, Wed) 	Thu
+		 +%A 	Displays Weekday name in full short (like Monday, Tuesday) 	Thursday
+		 +%b 	Displays Month name in short (like Jan, Feb, Mar ) 	Feb
+		 +%B 	Displays Month name in full short (like January, February) 	February
+		 +%d 	Displays Day of month (e.g., 01) 	07
+		 +%D 	Displays Current Date; shown in MM/DD/YY 	02/07/13
+		 +%F 	Displays Date; shown in YYYY-MM-DD 	2013-02-07
+		 +%H 	Displays hour in (00..23) format 	23
+		 +%I 	Displays hour (01..12) format 	11
+		 +%j 	Displays day of year (001..366) 	038
+		 +%m 	Displays month (01..12) 	02
+		 +%M 	Displays minute (00..59) 	44
+		 +%S 	Displays second (00..60) 	17
+		 +%N 	Displays nanoseconds (000000000..999999999) 	573587606
+		 +%T 	Displays time; shown as HH:MM:SS
+				Note: Hours in 24 Format 	23:44:17
+		 +%u 	Displays day of week (1..7); 1 is Monday 	4
+		 +%U 	Displays week number of year, with Sunday as first day of week (00..53) 	05
+		 +%Y 	Displays full year i.e. YYYY 	2013
+		 +%Z 	alphabetic time zone abbreviation (e.g., EDT) 	IS
+
+	get UTC time:
+	date -u
+
+hwclock - sets the hardware clock
+
+	hwclock --systohc --utc
+
+ntpdate - synchronize time with an ntp server
+
+	ntpdate ntp.yuhu.biz
+
+ntpq - query ntp servers
+
+	ntpq -p
+
+rdate - set up time
+
+	rdate -s tick.greyware.com
+
+tzselect - timezone select (Red Hat specific)
+
+route - show / manipulate the IP routing table
+	route -n
+	route add -net 215.101.0.0/24 dev eth0
+	/proc/net/route
+
+iotop - top for disk Input-Output
+
+iostat - display statistics about the hard disks' input/output
+
+identify - imagemagick command line tool:
+
+	get image exif:
+	identify -format %[exif:*]
+
+blkid - returns UUID block device IDs
+
+login - starts a login shell
+
+pv - monitor the progress of data through a pipe
+
+MegaCLI - Management tool for MegaRAID controllers
+
+	cheatsheet: http://erikimh.com/megacli-cheatsheet/
+
+uptime - return uptime information
+
+    uptime -p - show pretty format
+    uptime -s - show since the system is up and running
+
+arch - print system architecture
+
+top
+
+	Shift + h - display process threads
+	e - display memory in human-readable format (change memory size unit)
+	top -H -p <pid> - monitor a specific process and its threads
+
+dmesg
+
+	clear kernel ring buffer cache:
+	dmesg -c
+
+iotop - top for Input-Output
+
+readlink - print value of a symbolic link or canonical file name
+
+	readlink -f filename - get current directory + filename
+
+dirname - get directory name in which the file resides (without filename)
+
+-- C/C++ programming tools --
+
+gcc - GCC compiler
+
+	gcc --save-temp - save temporary files - output from preprocessor,
+		Assembly output file etc
+
+	Compile a file as an object:
+	gcc -c main.c -o main (there's no need to use the -o option to specify the name)
+
+	Linking object files:
+	gcc main.o hello_fn.o -o hello - adding the -Wall option here is unnecessary because the source code has already been parsed and compiled.
+		Linking fails if there are references that cannot be resolved.
+
+	Object files have an .o extension. An object file is created when a source code file is compiled without creating an executable.
+	On Unix systems, libraries typically have an .a extension and are usually archives.
+
+	Link against a library(libm.a will be linked; GCC first searches for .so libraries and then for .a libs)
+	gcc -Wall calc.c -lm -o calc
+
+	include path - directories which include header files
+	link path/library search path - directories which include libraries
+
+	Directories in those paths have a precedence. Inbetween files called 'lib-a.a' the one found
+	first in the link path will have precedence. (a.k.a static libraries)
+
+	Add new search paths to the BEGINNINGS of include and link paths respectively:
+	gcc -L /home/user/mylibs
+	gcc -I /home/user/myheaders
+
+	The following shell variables can be exported to add directores at the top of the include and link paths:
+	C_INCLUDE_PATH
+	CPLUS_INCLUDE_PATH
+	LIBRARY_PATH
+	LD_LIBRARY_PATH
+	They can include multiple directores separated with ':'. They'll be searched from left to right.
+
+	Force static linking:
+	gcc -static
+
+	Force the ANSI standart:
+	gcc -ansi
+
+	Compile a program to be used afterwards with the gprof profiler:
+	gcc -pg execinit.c
+
+	Macros that are defined by the compiler start with '__'.
+
+	gcc -DMACRO=VALUE
+
+	gcc -E test.c - similar to running the cpp command; runs the preprocessor on a source file
+
+	gcc -O - specify optimization level (from 0 to 3; ommiting the level will run the compiler with -O0)
+
+	Turn on loop unrolling:
+	gcc -funroll-loops
+
+	Run optimizations to make the compiler the smallest possible executable:
+	gcc -Os
+
+	Valid C++ source file names:
+	.cpp, .cc, .cxx, .C
+
+cmake - the CMake build system
+	cmake -G "CodeBlocks - Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug
+	cmake -G "CodeBlocks - Unix Makefiles" -DCMAKE_BUILD_TYPE=Release
+
+as - the portable GNU assembler
+
+ar - GNU ar - the GNU archiver. Archives for C libraries are created with this archiver.
+
+nm - displays the symbol table of an executable
+
+	Functions declared within the passed object file have the T flag.
+
+strip - remove the symbol table off a compiled executable
+
+ldd - shows if a program is statically compiled or uses outer libraries and lists
+	  those libraries in such case
+
+	get glibc version:
+	ldd --version
+
+ldconfig
+
+	ldconfig -v - verbose mode (can be useful to list all the shared objects and
+				  libraries on a system)
+
+ld
+
+cflow - analyzie C source files
+
+objcopy
+
+	How to compile image with ld and objcopy to include it as an extern variable:
+	http://psydk.org/archives/2014-06-26-220-embed-a-binary-file-into-your-executable
+
+objdump
+
+	Display file header information:
+	objdump -f file.o
+
+	Display the dis-assembled output of executable sections:
+	objdump -d file.o
+
+	Display a complete binary hex dump of all sections:
+	objdump -s file.o
+
+vbindiff - ncurses-based tool for viewing hex dumps in binaries
+
+TAU - open source multithreading profiler for C/C++, Fortran and JAVA
+	https://www.cs.uoregon.edu/research/tau/home.php
+
+ccache - tool for caching the compilation process of C/C++ software
+
+	Speeding kernel compilation with ccache:
+	http://linuxdeveloper.blogspot.bg/2012/05/using-ccache-to-speed-up-kernel.html
+
+ccontrol - compilation controller
+
+valgrind - C/C++ profiler and debugger
+
+	valgrind --tool=callgrind ./program - the output file can then be reviewed
+										  with GUI tools like kcachegrind
+
+gcov - C/C++ code coverage tool that works with GCC
+
+	We need to compile a binary with the following options to use gcov:
+	gcc -fprofile-arcs -ftest-coverage source.c
+
+	-ftest-coverage - collects how much each line of code is executed.
+	-fprofile-arcs - collects information about each branch of the program
+
+	lines marked with '######' are never executed.
+
+	Outputs the following file extensions:
+	.bb
+	.bbg
+	.da
+
+gprof - C/C++ profiling tool that works with GCC
+
+cpp - parser for C/C++ - show parser tokens for a C/C++/Objective-C file.
+
+	Show all GCC defined macros (on an empty file):
+	cpp -dM /dev/null
+
+sysprof - Linux system profiler with GUI
+
+strings - print the strings of printable characters - we can print only the strings off a binary file
+
+	Get installed libcstd versions:
+	strings /usr/lib/x86_64-linux-gnu/libstdc++.so.6  | grep -i glib
+
+
+hardening-check - check a binary for security hardening features
+
+-- c/c++ programming tools --
+
+chroot - run process in another directory
+
+chrt - get and change real time attributes for a process
+
+chattr - change file attributes on a Linux file system
+
+	chattr -R - change file attributes recursively
+
+lsattr - list file attributes on a Linux file system
+
+	lsattr -R - list file attributes recursively in current directory
+	lsattr -a - list attributes of all files in directory, including hidden ones
+	lsattr -d - list attributes of directories
+
+-- File Attributes --
+
+(some of them)
+
+A - the atime (accesstime, http://www.binarytides.com/linux-find-command-examples/) cannot be changed
+a - can only be opened in append mode for writing
+c - a file with this attribute is compressed by the kernel on the disk. Reading from it returns uncompressed data
+i - cannot be modified, deleted or renamed, even from root
+u - files with this attribute are saved after deletion and users can request its undeletion
+-v - version
+
+D - for directories only. Changes are written asynchronously to the disk
+d - file cannot be backed up with dump journaling filesystem backup utility
+j - ext3 filesystem specific option; all data is written to the ext3 journal before being written to the file itself;
+	the ext3 filesystem should be mounted with the data=ordered or data=writeback options
+s - file blocks are zeroed and written back to disk
+S - similar to the sync mount option applied to a subset of files
+T - top of directory hierarchy
+t - for filesystems that support tail-merging
+X - experimental functionality connected with compression, cannot be set with chattr
+Z - experimental functionality connected with compression, cannot be set with chattr
+
+-- file attributes --
+
+sticky bit, suid, sgid explained
+
+/dev/shm - shared memory implementation. Also known as tmpfs. It can be manipulated through /etc/fstab.
+
+read - read a line from standard input
+
+	It can be used in a shell script to store any command line input in a variable
+	Cause read to timeout:
+	read -t 3 - timeout after 3 seconds without input
+	read -p 'Message: ' - print message before prompting for input
+
+service - run a SystemV init script
+
+	service --status-all
+
+tasksel - a user interface for configuring the system to perform a specific task
+	  It is used for installing desktop environments or the "laptop" task.
+
+grep
+
+	grep --color=auto - color the matched strings in the output
+	grep --regex="thunder[[:alpha:]]" - use regular expressions (POSIX compliant)
+
+	grep -A6 - display a number of lines AFTER a match
+	grep -B6 - display a number of lines BEFORE a match
+	grep -C6 - display a number of lines AFTER and BEFORE a match
+
+	grep -c - count occurences
+	grep -i - case insensitive mode
+	grep -r - recurse into the current directory
+
+	grep -v - show occurences that don't include string
+
+	-P - force PCRE regex search
+	-E - force ERE regex search
+	-F - force the string to be read literally
+	-w - grep for words
+
+	Grep doesn't support the ? and + regex metacharacters!! Only the asterisk sign.
+	< and > should be escaped when looked up
+
+	grep lines containing multiple patterns:
+	grep 'pattern1|pattern2' filename
+	egrep -e pattern1 -e pattern2 filename
+
+	grep -x - Select only those matches that exactly match the whole line.
+
+	grep -F, --fixed-strings - Interpret PATTERN as a list of fixed strings, separated by  new-
+       lines, any of which is to be matched.
+
+	strip text file off files containing comments (the second grep is to filter
+	blank lines from output):
+	grep -v ^# config | grep .
+	https://shapeshed.com/unix-grep/#how-to-list-line-numbers-for-matches
+
+ack - grep alternative, written in Perl
+
+	http://beyondgrep.com/
+	cpan install App::Ack
+
+vault - HashiCorp Vault CLI
+
+	vault server -dev -dev-root-token-id=roottoken - start a dev server on port 8200
+	export VAULT_ADDR='http://127.0.0.1:8200'
+	vault status
+	vault secrets - command for controlling secrets
+	vault kv put secret/application mongopass=p4ssf0rm0ng0
+	vault read secret/application
+
+sed - stream editor
+
+	http://www.theunixschool.com/2012/06/sed-25-examples-to-delete-line-or.html
+
+egrep - grep with extended regular expressions support
+
+	egrep -v "^#|^$" filename - remove comments and blank lines
+	egrep  support the ? and + metacharacters, as opposed to grep.
+
+fgrep, egrep and rgrep are the same binary executable
+
+sed - stream editor
+
+	http://www.theunixschool.com/2012/06/sed-25-examples-to-delete-line-or.html
+
+-- USER MANAGEMENT --
+
+gpasswd -a cvetomir docker - add already existing user to already existing group
+
+usermod - modify a user account
+
+	Add existing user to existing group:
+	usermod -a -G <groupname> <username>
+
+	Change user primary group:
+	usermod -g <groupname> <username>
+
+	Add user to more than one group:
+	usermod -a -G ftp,admins,othergroup username
+
+useradd
+
+	add a new user and assign him to an already existing group:
+	useradd -g <groupname> <username>
+
+last - display the last users who started a login session
+
+	reads information from the /var/log/wtmp binary file
+	last reboot - get information about previous reboots
+
+pwck - verify integrity of passwd files
+
+	pwck /etc/passwd
+
+pwuconv - convert to and from passwd files content
+
+-- user management --
+
+pwgen - generate random strings to be used in passwords
+
+	pwgen -c - include atleast one capital
+	pwgen 20 - generate strings of up to 20 symbols
+
+fc - open the text editor set with VISUAL with the last command in the buffer
+
+id [username] - displays UID, GID, groups
+
+newgrp docker - make user aware of a group he was just added to
+
+umask - remove permissions
+	a file with 777 will have 700 after a umask 077 command
+
+udisk - disk manager
+
+modprobe - add and remove modules from the Linux kernel
+
+	modprobe module - load module
+	modprobe -l - lists loaded kernels (deprecated)
+	modprobe -r - removes a module
+
+	modprobe works with a file generated with depmod. This file is called
+	system map. It is stored in /lib/modules/$(uname -r)/modules.dep
+
+	modprobe --dump-modversions kernel/drivers/net/ethernet/intel/e1000/e1000.ko
+	modprobe --show-modversions kernel/drivers/net/ethernet/intel/e1000/e1000.ko
+
+modinfo
+
+	modinfo path/to/kernel-module
+
+kmod - modprobe is a symbolic link to /sbin/kmod
+
+depmod - generate modules dependency files
+
+nvidia-modprobe - nVidia kernel module loader and tool to create device nodes
+
+getconf - get POSIX developer info
+
+patch - apply patches to packages
+
+	patch -p0 < toolname.patch	- p показва броя на директории, който ще махнем
+
+watch - execute a program periodically watching the output
+
+	watch -n1 'cat /proc/interrupts'
+
+who
+	who -r - display current runtime (init) levels
+
+dkms - dynamic kernel module start
+
+sysctl - configure kernel parameters at runtime
+
+	sysctl -a - show all kernel variables
+	sysctl -p - reload configuration
+	sysctl -p /etc/sysctl.conf
+
+	Get currently open file handlers:
+	sysctl fs.file-nr
+
+	Get limit for simultaneous open files:
+	sysctl fs.file-max
+
+systemctl - command line tool for managing systemd
+
+	systemctl enable named.service
+	systemctl restart sshd.service
+	systemctl reload nginx.service - reload configuration file
+
+	systemctl list-unit-files - list all active services
+	systemctl is-enabled nginx.service - check if a service is enabled
+
+	systemctl is-active nginx.service
+	systemctl status service-name - get systemd status of a service
+
+	systemctl list-dependencies named.service
+	systemctl list-dependencies --all nginx.service - explain recursively
+	systemctl list-sockets
+
+	systemctl cat nginx.service - cat unit file
+
+	systemctl reload-or-restart nginx.service - reloads configuration file if available or restarts service
+
+	reload systemd configuration file:
+
+		systemctl daemon-reload
+
+journalctl
+
+	journalctl -b - view logs only for current boot
+	journalctl -k - view only kernel messages
+	journalctl -k -b
+
+	delete journal files:
+
+	reduce them to 100M:
+	journalctl --vacuum-size=100M
+
+	remove those from the last two weeks:
+	journalctl --vacuum-time=2weeks
+
+timedatectl - a systemd tool for managing system date and time
+
+bootctl - change /boot settings
+
+stty - print and change terminal settings
+
+dmidecode - reports information about your system's hardware as described in your system BIOS
+
+	dmidecode -t bios -q - returns information about the BIOS
+	dmidecode -t 16 - get information about maximum supported amount of RAM
+
+/etc/network/interface - this file describes the network interfaces on your system
+
+/etc/hosts
+	/etc/init.d/network(ing) restart - it is recommended after editting the hosts file
+
+/etc/security/limits.conf
+
+	In this file we can set a variety of limits. For example, we can set the soft and hard
+	limits for all users or on a per-user basis:
+
+	www-data 	soft 	nofile 		10000
+	www-data	hard	nofile		30000
+
+	Prevent a fork bomb by limiting user processes:
+	http://www.cyberciti.biz/tips/linux-limiting-user-process.html
+
+	All limits that can be set:
+
+	 - core - limits the core file size (KB)
+	 - data - max data size (KB)
+	 - fsize - maximum filesize (KB)
+	 - memlock - max locked-in-memory address space (KB)
+	 - nofile - max number of open files
+	 - rss - max resident set size (KB)
+	 - stack - max stack size (KB)
+	 - cpu - max CPU time (MIN)
+	 - nproc - max number of processes
+	 - as - address space limit (KB)
+	 - maxlogins - max number of logins for this user
+	 - maxsyslogins - max number of logins on the system
+	 - priority - the priority to run user process with
+	 - locks - max number of file locks the user can hold
+	 - sigpending - max number of pending signals
+	 - msgqueue - max memory used by POSIX message queues (bytes)
+	 - nice - max nice priority allowed to raise to values: [-20, 19]
+	 - rtprio - max realtime priority
+	 - chroot - change root to directory (Debian-specific)
+
+pgrep - look up process id based on name
+
+      pgrep -l $process-name - lists process names and ids starting with $process-name
+
+multitail - tool with a split screen TUI for viewing real-time tails of multiple files
+
+fg - starts stopped processes
+
+bg - brings process to background
+
+jobs - shows process status in the current session
+
+How to get coredump of a running process:
+
+	gdb --pid=123
+
+	gcore $(pidof process-name)
+
+ulimit - defines limits for a process (BASH specific)
+
+	ulimit -l
+	ulimit -a
+
+	See hard and soft open file limits:
+	ulimit -Hn - hard limit
+	ulimit -Sn - soft limit
+
+fuser - identify processes using files or sockets
+
+	fuser -cu directory/
+
+watch - watch processes
+
+	watch -t - suppress timer
+
+	Usually the cp command doesn't have a progress bar
+			While we copy a large file, we can run watch du -h filename to watch the progress
+
+	watch -n - specify time interval between command execution
+
+	it can also be used as a timer:
+
+	watch -n 1 " "
+	watch -d - highlight differences in output
+	watch -b - beep if the command has a non-zero exit
+	watch -c - interpret color output
+	watch -g - exit when the output is different
+	watch -e - stops updates after error and the TUI can be exited after a key press
+	watch -x - passes the command to exec
+
+/etc/network/interfaces - Debian
+
+/etc/sysconfig/network-scripts - CentOS
+
+mysql - mysql client
+
+	mysql -u username -p -h server.hostname.org -e "use database; select * from table"
+
+	perform a MySQL dump for all the databases and tables without the events system table:
+	mysqldump -u username -p --all-databases > all-databases.sql
+
+	perform a MySQL dump for all the databases and tables with the mysql.events table:
+	mysqldump -u username -p --all-databases --events > all-databases.sql
+
+	perform a MySQL dump including stored routines (triggers are exported by default):
+	http://www.ducea.com/2007/07/25/dumping-mysql-stored-procedures-functions-and-triggers/
+
+pmm-admin - client program for the Percona Monitoring and Management server
+
+pgrep - look up process id based on name
+
+      pgrep -l $process-name - lists process names and ids starting with $process-name
+
+crontab - set cronjobs
+
+	http://cronchecker.net/
+
+	crontab -e - edit personal crontab
+	crontab -l - display personal crontab
+
+	You can check if a cronjob was executed successfully in:
+	/var/log/syslog
+
+	Personal crontabs:
+	/var/spool/cron/crontabs/
+
+	NB!!!
+	crontab -r - remove all contabs - key is close to 'e',
+	so one should beware of this option and use crontab -l
+
+logger - a CLI interface to the syslog functionality
+
+logrotate
+
+	logrotate -d /etc/logrotate/config - dry run a logrotate config
+	logrotate -f /etc/logrotate/config - logrotate config file
+	logrotate -v /etc/logrotate/config - verbose mode
+
+run-parts
+
+chkcrontab - verify crontab syntax(crontab linter)
+
+	pip install chkcrontab
+
+cksum - return checksum and the bites in a file
+
+hexdump - dump a hex representation of a binary file
+
+	hexdump -C /usr/bin/binary
+
+TO DO:
+
+# use xargs with pgrep at the end
+ps auxfwww | awk '{print $4" "$2}' | sort -n | tail -n 1 | awk '{print $2}' | xargs pgrep
+
+xargs - echo stdin
+
+	When used with a pipe it passes each line of output from the previous
+	command to the command passed as argument to xargs.
+
+	E.g.
+
+	find -type d | xargs readlink -f - the absolute path of each dir
+	found will be printed because each found dir with find will be
+	passed to "readlink -f"
+
+hdparm - get/set SATA/IDE device parameters
+
+sdparm - access SCSI modes pages. Send simple SCSI commands.
+
+mdadm - manage MD devices aka Linux software RAID
+
+	CREATING A SOFTWARE RAID 5
+
+	0. Mount 3 additional virtual VDA images that are all equal to 2GB. RAID 5 requires a minimum of three hard drives.
+
+	00. check disks state with the fdisk partitioning utility
+
+		sudo fdisk -l /dev/sda
+
+	01. Create the software RAID 5 with the mdadm utility
+
+		sudo mdadm --create /dev/md0 --chunk=64 --level=5 --raid-devices=3 /dev/sdc1 /dev/sdd1 /dev/sde1
+
+		the --level option specifies the RAID level
+		the --raid-devices specifies the number of devices included, followed by their block file representations in the /dev directory
+		--chunk - specify chunk size in kibibytes
+
+	02. Mount the new software RAID
+
+		sudo mount /dev/md0 /mnt/disk1
+
+	03. Format the new partition in ext4 journal file system
+
+		sudo mkfs.ext4 /dev/md0
+
+RAID levels explained - http://www.prepressure.com/library/technology/raid
+http://www.ducea.com/2009/03/08/mdadm-cheat-sheet/
+
+Disable md* device used as swap:
+https://mikebeach.org/2013/10/25/cannot-delete-a-raid-swap-partition-during-ubuntu-installation/
+
+mkfs.ntfs
+
+	By default mkfs.ntfs will zero write the device. This can
+	take an additional amount of time.
+	We can use the following option to skip this:
+	mkfs.ntfs -f /dev/sdb1
+
+ntfsclone - clone an NTFS file system
+
+fdisk - partitioning tool
+
+		m - help
+		n - new partition
+		primary, extended (p, e)
+		l - list partition types
+		d - delete partition
+		w - write partition table to disk and exit
+		q - quit
+		p - print current partition table
+
+sfdisk - partitioning tool
+		 sfdisk -d /dev/sda - dump partition table
+		 sfdisk -d /dev/sda | sfdisk /dev/sdb - copy the partition table to another device
+
+mount - utility for mounting filesystems
+
+	mount -a - mount all partitions listed in /etc/fstab
+
+	mounting a shared folder in VirtualBox guest:
+	mount -t vboxsf H_DRIVE /home/user/directory
+
+fsck - check and repair a Linux filesystem
+	/lost+found - fsck places corrupted files here after performing a check on a
+	Linux/Unix filesystem, provided the FS is mounted on /
+	If it is mounted on /var/log/mysql, it will place them in /var/log/mysql/lost+found
+
+fsck.ext4
+
+resize2fs - resize a file system
+
+	We need to pass the resulting size of the file system, not the amount of space we would like to decrease or increase it with:
+	resize2fs -p /dev/debian/debian_root 45G
+
+e2fsck - check a Linux Ext2 / Ext3 / Ext4 file system
+
+tune2fs - check and change file system settings
+
+	tune2fs -l /dev/sda1 - list file system attributes
+
+dd
+	if - input file
+	of - output file
+	bs - block size written at a time
+
+	dd bs=4M if=path-to-file.iso of=/dev/sdb (not /dev/sdb1!)
+
+	Delete all data on a device:
+	dd if=/dev/zero of=/dev/sdb
+
+	Specify amount of megabites to be copied, starting from the beginning of the file:
+	dd if=/dev/zero of=test-file bs=1M count=100
+
+dcfldd - enchanced dd
+
+file - reads the first 8 bites from a file and returns the MIME type recorded in them
+
+	file --mime-type script.rb
+
+badblocks - scan a hard disk device for bad blocks
+
+	Delete all data on a device:
+	badblocks -ws /dev/sdc
+
+partprobe - inform the operating system of partition table changes
+
+zpool
+
+	zpool list
+	zpool status
+
+	zpool states:
+	http://www.datadisk.co.uk/html_docs/sun/sun_zfs_cs.htm
+
+	Issue with zpool replace on Linux:
+	http://stackoverflow.com/questions/20494452/zpool-replace-erroring-with-does-not-contain-an-efi-label-but-it-may-contain-par
+
+	How to replace missing/broken ZFS partition form RAIDZ:
+	https://wobblynetworks.wordpress.com/2014/12/16/how-to-replace-a-drive-in-a-zfs-pool/
+
+btrfs
+	
+	 btrfs balance start -musage=0 /home
+	 btrfs balance start -dusage=0 /home
+	 btrfs balance start -dusage=20 /home
+	 btrfs scrub start -Bd /home
+
+	 btrfsck:
+	 https://btrfs.wiki.kernel.org/index.php/Btrfsck
+	 btrfsck --repair --init-csum-tree /dev/sda2 (this fixed the kernel panic issue on CentOS 7)
+
+-- LVM
+
+vgdisplay - display logical volume group information
+vgs - display logical volume group information(short)
+
+vgcreate - create a logical volume group
+
+	vgcreate storage /dev/sda - add a device that will be used by the group
+
+pvcreate - install LVM on a partition
+
+lvcreate - create a Logical volume
+
+	lvcreate -L 100G -n SMB storage - create a volume labeled "SMB" belonging to group "storage"
+
+pvscan - scan all disks for physical volumes
+
+vgscan - scan all disks for volume groups and rebuild caches
+
+Shrinking the root logical volume on a CentOS machine(booting from live image is required):
+https://rbgeek.wordpress.com/2013/02/11/how-to-reduce-the-root-partition-in-lvm/
+
+Add a Unix account to Samba/SMB:
+https://help.ubuntu.com/community/How%20to%20Create%20a%20Network%20Share%20Via%20Samba%20Via%20CLI%20%28Command-line%20interface/Linux%20Terminal%29%20-%20Uncomplicated%2C%20Simple%20and%20Brief%20Way%21
+
+smbpasswd - set a password for SMB for an already existing unix user to be writen to /etc/samba/smbpasswd
+
+testparm - test /etc/smb.conf for errors
+
+lvmdiskscan - return devices with LVM volumes
+
+device files, that correspond to LVM volumes:
+
+/dev/dm-0
+/dev/dm-1
+etc.
+
+--lvm
+
+sed - stream editor
+
+	http://www.theunixschool.com/2012/06/sed-25-examples-to-delete-line-or.html
+
+
+dig - DNS lookup utility
+	http://alvinalexander.com/linux-unix/dig-commands-examples-tcp-ip-mx-record-dns
+	http://www.debianhelp.co.uk/dnsrecords.htm
+	http://www.madboa.com/geek/dig/
+
+	dig @8.8.8.8 abv.bg - perform a DNS query using a specific caching nameserver
+		in this way we can validate a DNS record by performing a query with a
+		DNS caching server different from our default to make sure of the
+		domain name's credibility
+
+	dig -x 12.34.56.78 - perform a DNS query for a PTR record
+
+	NB!!! About how the DNS system works
+	When querying the authoritative part of the DNS servers a DNS client asks
+	for the NS records of a certain domain. After it receives this information
+	it queries those nameservers for the records it needs to know (MX, A, AAAA etc).
+	They are stored in the DNS zone for which the nameservers of the domain are in
+	charge. A common mistake is to think that authoritative queries can give
+	all the information in the DNS zone and the servers in the lower level of the
+	DNS hierarchy only serve for caching this information.
+
+domainname - returns the domain name pointed to (one of) the computer's TCP/IP address.
+
+host - similar functionality to dig
+	host -t ns sitedomain.com - display the authoritative name server for this domain name
+
+	host -v hostname - enables DNS query verbose
+host -m - set memory debugging flag
+
+lwp-request, POST, GET, HEAD - simple Perl HTTP client
+
+pcre-config - get the needed compiler flags against PCRE libraries installed on the system 
+
+hostname
+	hostname -F /etc/hosts - read the hosts for the machine from a specific file
+
+http://www.accessify.com/n/nemexius.com - display information about previous content
+	on a host
+
+stat - display file or filesystem status
+
+apxs - APache Extensions Tool
+
+htpasswd - can create a .htpasswd dotfile that contains a userid and an encrypted password
+
+	htpasswd -c /var/www/.htpasswd username
+
+/etc/crypttab - manage encrypted partitions
+
+ps
+
+-- Linux Style --
+-A - all processes (with tty)
+-e - all processes (with tty)
+-c - show scheduling class (aliased to policy, cls). Possible scheduling classes:
+
+	 -   not reported
+	 TS  SCHED_OTHER
+	 FF  SCHED_FIFO
+	 RR  SCHED_RR
+	 B   SCHED_BATCH
+	 ISO SCHED_ISO
+	 IDL SCHED_IDLE
+	 ?   unknown value
+
+We can specify more than one argument, separated by coma or space to the following options:
+
+-C - specify command name
+-G - specify RGID name
+-p - specify PID
+-pid - specify PID
+-ppid - specify PPID
+-t - specify tty
+-s - specify session id
+--sid - specify session id
+
+	ps -C chrome
+
+-- BSD Style --
+
+j - jobs
+l - long output
+
+a - all with tty, including the ones ran by another user
+r - only running processes
+T - all processes on this terminal
+x - include processes without tty
+
+Combinations:
+
+ps -T -p $PID - return threads of a process
+
+-- Process status code
+
+    D    uninterruptible sleep (usually IO)
+    R    running or runnable (on run queue)
+    S    interruptible sleep (waiting for an event to complete)
+    T    stopped, either by a job control signal or because it is being traced
+    W    paging (not valid since the 2.6.xx kernel)
+    X    dead (should never be seen)
+    Z    defunct ("zombie") process, terminated but not reaped by its parent
+
+    <    high-priority (not nice to other users)
+    N    low-priority (nice to other users)
+    L    has pages locked into memory (for real-time and custom IO)
+    s    is a session leader
+    l    is multi-threaded (using CLONE_THREAD, like NPTL pthreads do)
+    +    is in the foreground process group
+
+
+pstree - displays the processes with their belonging child processes and the parent process they are
+	spawned from
+
+locate - find files by name (part of find-utils)
+
+unlink - remove symbolic(soft) link
+
+http://www.binarytides.com/linux-find-command-examples/
+
+Difference between ctime, mtime and atime:
+http://www.linux-faqs.info/general/difference-between-mtime-ctime-and-atime
+
+screen - GNU screen terminal multiplexer
+	Ctrl + a + Shift + s - create a new horizontal window
+	Ctrl + a + Tab - switch inbetween windows
+	Ctrl + a + x - close session
+	Ctrl + a + c - start a new BASH shell in the current window
+	Ctrl + a + | - start a new vertical window (requires screen >= 4.1)
+	Ctrl + d - terminate screen (different than the subsecuent combination!)
+	Ctrl + a + d - detach screen session
+	Ctrl + a + n - next window
+	Ctrl + a + p - previous window
+	Ctrl + a + A - rename current window
+	Ctrl + a + :resize + number of lines - set lines in a window
+
+	Scrolling in screen:
+	Enter copy mode with Ctrl + A and [.
+	Scroll with Ctrl + u and Ctrl + d.
+	Press q to exit copy mode
+	We can use / and ? for searching in the text.
+
+	screen -ls - list screen sessions
+	screen -r [session name] - reattach to session
+
+	Ctrl + [ - enter copy mode
+	Then scroll to previous and next lines through the following hotkeys:
+	Ctrl - u
+	Ctrl - b
+	In copy mode we can search words with / and ? just like in vi.
+
+screen - dump the virtual console output to stdout
+		(usually found in /dev and starting with 'vcs')
+
+mutt - console mail client
+	Ctrl + D - mark email for deletion
+
+ifconfig - configure a network interface
+
+	MTU - maximum transmission units
+
+	without arguements - lists enabled interfaces
+
+	ifconfig -a
+		lists all interfaces, even those disabled
+
+	ifconfig eth0 up
+
+	ifconfig eth0 down - the configuration for the networking interface is saved
+						 We need to use this before changing the MAC address of
+						 a networking interface
+
+	ifconfig eth0 hw ether {macaddress} - changes the hardware address
+
+	ifconfig ${Interface} mtu ${SIZE} up
+	ifconfig eth1 mtu 9000 up
+
+	Use promisquous mode:
+	ifconfig eth0 promisc
+
+	By default the NIC drops frames that it is intended to receive.
+	In promiscuous mode it passes all the traffic that it receives to the CPU.
+
+ip
+	ip a a
+	ip r l
+	ip neigh - it is used to manage the ARP table
+	ip addr show = ip addr list = ip a l = ip a s
+
+	ip addr del
+
+	how to blacklist an IP address or range(add a blackhole interface):
+
+	ip route add blackhole 192.168.0.1/32
+
+	ip route add 0/0 via 10.2.0.1 - adding a default gateway
+	ip r a via 10.2.0.1 - adding a default gateway
+
+	ip route replace 0/0 via 192.168.102.2
+
+	ip rule list - parses /etc/iproute2/rt_tables
+
+	ip route list table local/main/default
+
+	Change MAC address:
+	ip link set dev wlan0 down
+	ip link set dev wlan0 address <new MAC address>
+	ip link set dev wlan0 up
+
+	ifconfig, ip and route - we directly communicate with the kernel using those commands
+
+ss - utility for socket investigation
+
+	ss -r - resolve hostnames
+	ss -n - don't resolve service port names
+	ss -l - display listening sockets
+
+iproute
+
+/proc/net/
+/etc/iproute/rt_tables
+
+avahi-browse
+
+	get all workstations in a local network:
+
+	avahi-browse -alt
+
+	-a - all
+	-l - ignore services on current machine
+	-r - resolve automatically
+
+	get all workstation IPs:
+	avahi-browse -rt _workstation._tcp
+
+dhclient
+
+	remove IP address:
+	dhclient -r
+	dhclient -r eth0
+
+	get new IP addres:
+	dhclient (no arguments)
+	dhclient eth0
+
+arp-scan - get address info for local network interfaces
+
+	sudo arp-scan 192.168.16.0/24
+
+wireshark
+
+	Sniff HTTP response & request with wireshark:
+	http://stackoverflow.com/questions/3410505/
+	sniff-http-packets-for-get-and-post-requests-from-an-application
+
+macchanger - change MAC address for interface
+
+	macchanger -r <interface>
+
+	Change only device specific bits (the second half of 24 bits):
+	macchanger -e <interface>
+
+arp - manipulate the ARP table
+
+arping
+	arping -U -I eth0 -c3 interface_ip - updating the switch MAC table
+
+iwconfig - configure a wireless network interface
+
+	connect to network:
+	iwconfig wlan0 essid NETWORK_NAME key WIRELESS_KEY
+
+	In case we would like to use ASCII for the key:
+	iwconfig wlan0 essid NETWORK_NAME key s:WIRELESS_KEY
+
+	Then get an IP with dhclient:
+	dhclient wlan0
+
+iwlist - get more detailed wireless information for a wireless interface
+
+	get available networks:
+	iwlist wlan0 scan
+
+nc - the netcat utility - a networking swiss army knife
+
+dhcpcd - a wrapper for the DHCP client daemon
+
+geoiplookup - lookup IP address' location
+
+	The package name under Debian-based system is geoip.
+
+	Add additional IPs from the MaxMind GeoIP database:
+
+	$ wget http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz
+	$ wget http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz
+	$ wget http://download.maxmind.com/download/geoip/database/asnum/GeoIPASNum.dat.gz
+	$ gunzip GeoIP.dat.gz
+	$ gunzip GeoIPASNum.dat.gz
+	$ gunzip GeoLiteCity.dat.gz
+	$ sudo cp GeoIP.dat GeoIPASNum.dat GeoLiteCity.dat /usr/share/GeoIP/ 
+
+	We can also use curl and the following URL:
+
+	curl ipinfo.io/23.66.166.151
+
+nmap
+
+	/usr/share/nmap - settings and information about nmap functionality
+
+	NB!!!
+	Nmap only scans each port from 1 to 1024 and the default ports used by
+	most popular services!
+
+httpref - HTTP server load testing tool
+
+	http://centoshowtos.org/commands/httperf/
+
+-- SSH
+
+ssh - Secure Shell
+
+The following environment variables are created after SSH login
+and hold information about the SSH client's address, incoming,
+outgoing port and TTY:
+SSH_CLIENT
+SSH_CONNECTION
+SSH_TTY
+
+	ssh -A user@hostname -i public_key - forward public key to use in subsequent SSH connections from the remote location
+
+scp - secure copy - copy files to a remote server
+
+	scp -P 22 archive.tar.gz user@server.com:/home/$USER
+	scp -P 22 -i id_rsa archive.tar.gz user@server.com:/home/$USER
+	scp -i id_rsa -r log-files/ user@server.com -p 22 # to copy a directory
+
+	from remote to local:
+	scp user@server.com:/path/to/file /home/$USER/
+	scp -p - preserve mtime, ctime, atime and other properties
+
+ssh-keygen
+
+sftp - SSH over FTP
+
+	http://www.tecmint.com/sftp-command-examples/
+	sftp -oPort=2222 -oIdentityFile=private_key user@123.456.789.012:/home/user
+	https://kb.iu.edu/d/akqg
+
+	cd - change remote working directory
+	lcd - change local working directory
+	chmod - change permissions on a remote file
+	chown - change ownership on a remote file
+	lmkdir - create directory in local working directory
+	lpwd - list local files
+	pwd - list remote files
+	rename - rename remote file
+	ln - create link on remote location
+	lls - list local directories
+	! - escape to local shell (with Ctrl+D we can return to sftp shell)
+	!command - execute command in local shell
+	get remote-file local-destination - download file
+	get -r directory - download a directory recursively
+	put local-file - upload file to remote locaiton
+	lls - display local directory listing
+
+-- ssh
+
+wget
+
+	recursively download a website:
+	wget -r -l5 -A* http://example.com/
+	wget -l - URI depth level
+	-A - file type
+	-r - recursive
+
+	make an HTTP request using a specific interface/address:
+	wget -qO- http://checkip.dyndns.com/ --bind-address 192.168.1.224
+	
+	Use HTTP Proxy:
+	wget -e use_proxy=yes -e http_proxy=212.5.143.133:1080 $URL
+
+sudo
+
+	sudo -s - keep sudo session while terminal emulator is running
+
+	Pass existing shell environment variables of non-root user to root session:
+	sudo -E bash
+
+	Run a particular command as a certain user and see the output
+	sudo -u nginx stat /home/cvetomir/workspaces/Common/project-management/
+
+openssl - OpenSSL command line tool
+
+	example:
+	openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/nginx/ssl/nginx.key -out /etc/nginx/ssl/nginx.crt
+
+	Options explained:
+	req -x509 - Specify the OpenSSL standard to be X.509.
+	With the X.509 standard we specify that we would like to generate a self-signed certificate and not a
+	certificate signing request as by default
+
+	-nodes - skip passphrase. This is suitable for installing an SSL certificate on a webpage. Thus it will not
+	require user intervention for entering the passphrase.
+
+	-days 365 - validity period for the certificate
+
+	-newkey rsa:2048 - specify cryptography algorythm.
+
+	-keyout - output file for the private key
+
+	-out - output file for the certificate
+
+iptraf - TUI-based traffic monitor
+
+sipcalc - calculate the network address and mask of an IP address
+
+ipcalc - calculate IP addresses inbetween different numbering systems
+
+mknod - make block and character special devices
+
+httpd
+	httpd -S - shows the status of the Apache configuration file - httpd.conf by default in
+	CentOS
+	httpd -M - list loaded modules
+
+install - copy files and set attributes
+
+postconf - get and change postfix configuration
+
+	Change Postfix configuration directives on the fly:
+	postfix -e smtpd_delay_open_until_valid_rcpt=123
+
+-- Debian packaging
+
+apt - Advanced Package Manager
+
+	apt stores downloaded packages in /var/cache/apt/archives
+
+	apt-get -y install - answer with "yes" automatically
+	apt-get install --force-yes package-name
+
+	apt-get source package-name - get package source tarball
+
+	apt-get install --reinstall package - reinstall an already installed package
+	apt-get download - download .deb file in current directory
+	apt-get clean - clears package files in /var/cache/apt/archives
+
+	Install a specific version of a package:
+	sudo apt-get install -y mongodb-org=3.0.11
+
+	Read the changelog for a package with most recent revisions:
+	apt-get changelog apache2
+
+	Download the dependencies which are needed to build some package from source:
+	apt-get build-deb curl
+
+apt-cache
+
+	apt-cache search - search the repositories for a package
+	apt-cache depends - show dependencies for a package
+	apt-cache rdepends - show packages which depend on the specified package
+
+mongo - mongodb client
+
+	rs.slaveOk()
+	it
+
+dpkg - Debian Package manager
+
+	dpkg -i - install package
+	dpkg -l - list all installed packages
+	dpkg -L - list all files from an installed package
+	dpkg --contents, dpkg -c - list package contents
+	dpkg -s
+	dpkg -p - purge - remove package with configuration files
+	dpkg -r - remove package without configuration files
+	dpkg -V - package verification
+
+	dpkg --force-help - a list of actions we can force with dpkg
+
+	Force install package without root in homedir:
+	dpkg -i package.deb --force-not-root --root=$HOME
+
+	Add architecture:
+	dpkg --add-architecture i386
+
+	Remove architecture:
+	dpkg --remove-architecture i386
+
+	Installing a package without root privileges in home
+	directory:
+	http://askubuntu.com/questions/339/how-can-i-install-a-package-without-root-access
+
+	These are anonymously gathered statistics about the most used packages on a Debian system
+
+dpkg-reconfigure popularity-contest - settings about the popularity contest
+	It traces the popularity of various Debian packages.
+
+dpkg-reconfigure - run configuration TUI menu used to configure a certain
+		package upon installation
+
+Debian packages are ar archives that contain three files:
+- debian-binary
+- control.tar.gz
+- data.tar.gz
+
+They can be extracted in the following way:
+
+ar vx mypackage.deb
+tar -xzvf data.tar.gz
+
+Debian packages can be found in the following directory in a repository mirror:
+$REPOSITORY_URL/debian/pool/
+							contrib/
+							main/
+							non-free/
+
+Packages states are recorded here:
+/var/lib/dpkg/status
+
+/etc/apt/trusted.pgp.d/
+/etc/apt/sources.list
+/etc/apt/sources.list.d/
+
+A directive in the sources.list configuration file consists of:
+
+type_of_repository URL_to_repository distribution repository_from_the_distribution
+
+examples:
+
+deb http://ftp.bg.debian.org/debian/ jessie main
+deb-src http://ftp.bg.debian.org/debian/ jessie main
+
+*.-dev - packages with such a postfix
+		 are usually the development
+		 header files for a package on a Debian-based system.
+
+dlocate - apt-get/dpkg alternative (BASH script)
+
+	Most dpkg options work with dlocate, e.g. -l and -L
+
+	check which packages use a certain directory:
+	dlocate /usr/lib/debug
+
+unattended-upgrade - can perform only security upgrades
+
+-- debian packaging
+
+-- RPM packagin system
+
+rpm - RedHat Package Manager
+
+	rpm -ivh - install
+	rpm -Uvh - add repository
+	rpm -e - uninstall package
+
+	rpm --nodeps - doesn't check for dependencies
+	rpm --nomd5 - doesn't check for md5sum
+
+	rpm -qa - list all installed packages
+	rpm -ql -list all files in a package
+	rpm -qc - displays the configuration files of an installed software
+	rpm -qi - get package information
+
+	rpm -qR - get information about software dependancy
+
+	rpm -Vv package-name - display changed files from this package
+
+	rpm --query --info httpd - get package information
+	rpm --query --changelog httpd - get the latest revisions and patches for a
+		particular package
+
+extract rpm packages:
+
+rpm2cpio package-0.1.rpm | cpio -vid
+
+yum - yellowdog update modifier
+
+	yum provides file-name - returns the package which contains the file
+	yum install yum-plugin-priorities - a plugin for specifying the priorities of enabled repositories
+	yum install yum-plugin-downloadonly - a plugin for simply downloading the rpm package without installing it
+		yum install --downloadonly --downloaddir=<directoty> <package>
+
+	yum info <package> - get information about a package
+
+up2date - a replacement of yum on the proprietary RHEL distribution
+
+Remi software collections:
+https://fedorahosted.org/SoftwareCollections/ - packages for Ruby, Apache, Perl, MariaDB etc for CentOS 6
+
+Remi repository blog:
+https://blog.remirepo.net/
+
+-- rpm packagin system
+
+checkinstall - utility for packaging and installing custom-built software
+
+	checkinstall [without arguements] - compile and install according to the makefile
+
+	checkinstall --install=no - create a deb package without installing
+
+-- Arch packaging
+
+pacman - Arch Linux packaging tool
+
+	pacman -Ql package - get information about package content location
+	pacman -Qqn - list all officially installed packages
+
+pkgfile - get information about the package of a program
+
+When installing packages fails due to the following error:
+error: key "7A4E76095D8A52E4" could not be looked up remotely
+error: required key missing from keyring
+error: failed to commit transaction (unexpected error)
+
+This can be fixed after reinstalling the archlinux-keyring package.
+
+-- arch packaging
+
+make - maintain groups of programs
+
+pkg-config - return library information
+
+/usr/share/pkgconfig/
+
+ftp
+	To do - create separate FTP users through CLI:
+	http://unix.stackexchange.com/questions/83221/how-to-create-a-ftp-user-with-specific-dir-access-only-on-a-centos-linux-ins
+
+sshfs - FUSE over SSH
+
+	sshfs -o allow_other username@node.hostname.com:/mnt/storage
+
+rsync
+
+	options source destination
+
+	rsync -z - compress files during transfer
+	rsync -n - dry run
+	rsync -v - verbose
+	rsync -P - adds a progress bar and gives the opportunity to resume
+			   stopped transfers
+	rsync --progress - adds a progress bar
+	rsync --chmod +x - add executable mode to new files
+
+	exclude a subdirectory with a particular name:
+	rsync --exclude misc/ backup_1/ backup_2/
+	This will exclude any directory named misc/ anywhere in the copied tree of files,
+	not only in the underlying directory!
+
+	use the ssh protocol:
+	rsync -e ssh remote_host_name:remote_file local_file
+
+	set bandwidth limit:
+	rsync --bwlimit=2000 <source> <dest> (this will set the bandwidth to 2MB)
+
+	set log file:
+	rsync --log-file=rsync-log.txt
+
+	send a file over SSH:
+	rsync -avzhe --progress 'ssh -i .ssh/cvetomir_rsa_key' internal-v2.tar.gz root@193.203.198.77:/home/
+
+rdiff-backup
+
+rsnapshot - rsync-based Perl script for incremential backups
+
+wombat
+
+sync - flush filesystem buffers
+
+alsamixer - user interface for alsa
+
+arecord -d 10 /tmp/record.wav - record sound for 10 seconds
+
+aplay /tmp/record.wav - play audio file
+
+youtube-dl
+
+	youtube-dl --audio-format mp4 --audio-quality 0 --recode-video mkv $URL
+	--recode-video - decode in format
+	--audio-quality - default is 5; 0 is better, 9 is worse
+	--audio-format - specify audio format
+	
+	Get available formats and quality:
+	youtube-dl -F $URL
+	Then, a specific format can be downloaded with the format code in the right column:
+	youtube-dl -f 22 $URL
+
+	Specify one option for the video and one for the audio (the video format code comes first):
+	youtube-dl -f 135+140 $URL
+
+xclip - command line interface to the GUI's clipboard
+
+	echo message | xclip -sel clip
+
+	output current clipboard content:
+	xclip -o
+
+xprop
+
+notify-send - send a notification to the graphic shell via libnotify
+
+xrandr - display information about connected displays
+
+	xrandr --output VGA1 --left-of LVDS1
+	xrandr --output VGA1 --right-of LVDS1
+	xrandr --output LVDS --auto
+
+/etc/issue - message displayed before login program
+
+motd - message of the day displayed after user login (/etc/motd)
+
+-- JAVA
+
+java
+
+	How to run a .jar archive:
+	java -jar archive.jar
+
+	Librariy to run Java programs as Unix services:
+	https://commons.apache.org/proper/commons-daemon/jsvc.html
+
+	How to install the JAVA compiler under CentOS/Fedora/RHEL:
+	yum install java-devel
+
+jenv
+
+	version - show current Java version
+	versions - list available versions
+	enable-plugin - install a jenv plugin
+		jenv enable-plugin maven - enable maven to read jenv configs
+		jenv enable-plugin export - set JAVA_HOME through the export plugin
+	local - set or show local java version for current directory
+	global - set or show global java version for current directory
+	exec - execute a specific command taking in consideration the specific Java env settings
+
+jdb - Java debugger
+jstack
+-- java
+
+-- User management
+
+useradd
+
+	Add a user with a specific home directory:
+	useradd -d /home/testuser -m testuser
+
+tar - the UNIX archiver
+
+	tar -cvzf name.tgz subdir - create gzip tarball
+	By default GNU tar uses 9th level of compression - the maximum level for gzip compression
+
+	tar -cvpzf name.tar.gz dir/ - create tarball and preserver permissions
+	tar --extract --file=crunchbang-home.tar.gz home/cvetomir/.vimrc - extract a certain file
+		off the archive
+	tar xzvf tarball.tar.gz dir/filename
+
+	tar -zxvf name.tar.gz -C /tmp/ - extract to a certain directory
+	tar -tf name.tar.gz - list files in an archive without extracting them
+
+	tar overwrites metadata (ownership, permissions) of an already existing directory that is already full
+	tar xf --no-overwrite-dir - perserve directory metadata of already existing directory
+
+unzip
+
+	unzip -l - list zip archive content
+
+zip
+
+	read file names from stdin:
+	find . -name <name> -print | zip name.zip -@
+
+ranlib - generate an index to speed up access to archives
+
+cpio - copy files to and from archives
+
+pax - archiving toolkit
+
+strace - trace system calls and signals (issued by the signal system call) to track
+		 interactions between a process and the operating system kernel
+
+	strace -c - print an output as a table with the number of and percentage of
+			 the used syscalls
+	strace -o - write the strace output to a filename
+	strace -f - trace child processes being span by the traced process
+
+	Signals are a type of system call.
+
+ltrace - trace the dynamic library calls which a process makes
+
+expect - tool for testing and managing the output of interactive command-line programs
+
+rev - reverse line of a file or files
+
+nice - set process priority
+
+smartctl - hard drive inspection tool suite
+
+	https://kb.acronis.com/search/site/S.M.A.R.T.%20Attribute
+
+	Smartctl disk health metrics:
+
+	Raw_Read_Error_Rate - stores data related to the rate of hardware read errors that
+						  occured when reading data from a disk surface.
+	Spin_Up_Time - average time in seconds or miliseconds of spindle spinup from
+				   0 rpm to fully operational.
+	Start_Stop_Count - number of times the disk has been stopped and started
+
+	Reallocated_Sector_Ct - reallocated sectors count. Reallocated sectors are 512
+				   bytes in size. When the HDD finds a read/write/verification
+				   error, it marks this sector as 'reallocated' and transfers the
+				   data to a special reserved area (spare area). This is also
+			       known as remapping. Reallocated sectors are also called remaps.
+			       In modern disks all bad sectors are 'hidden' into remaps.
+
+	Seek_Error_Rate - when the drive is over- or unser-shooting the correct
+				   track when it moves the heads
+
+	Power_On_Hours - hours in which the disk has been in power-on state
+
+	Spin_Retry_Count - count of retry of spin start attempts.
+
+	Power_Cycle_Count - full hard disk power on/off cycles.
+
+	Reported_Uncorrect - errors that cannot be recovered using hardware correcting codes
+
+	High_Fly_Writes (Seagate, Western Digital) - indicates when a recording head
+				  is flying outside its normal operating range
+
+	Airflow_Temperature_Cel - air temperature of HDD
+
+	Temperature_Celsius - temperature in Celsius
+
+	Hardware_ECC_Recovered - timedifference between ECC-corrected errors
+
+	Current_Pending_Sector
+
+	Offline_Uncorrectable - Offline_Uncorrectable is the number of sectors
+				  that the drive has attempted to correct itself, but failed.
+	http://daemon-notes.com/articles/system/smartmontools/offline-uncorrectable
+
+	UDMA_CRC_Error_Count
+
+	Multi_Zone_Error_Rate - the count of errors found when writing a sector
+
+	Data_Address_Mark_Errs - the number of invalid data marks
+
+	get basic information about disk and check if it does support S.M.A.R.T
+	smartctl -i /dev/sda
+
+	Enable smart for a device:
+	smartctl -s on /dev/sda
+
+	Get the time needed to perform different types of tests:
+	smartctl -c /dev/sda
+	smartctl --capabilities /dev/sda
+
+	Start short test:
+	smartctl -t short /dev/sda
+	smartctl -t long /dev/sda
+	smartctl -t conveyance /dev/sda
+
+	View test results:
+	smartctl -l selftest /dev/sda
+
+	Display info by specifying disk type:
+	smartctl -a -d ata /dev/sda (this also works for IDE drives in new
+		kernels that are being run through the SCSI stack and show up as
+		/dev/sda
+
+	Get overral health status:
+	smartctl -H /dev/sda
+
+	GSmartControl - Linux GUI to S.M.A.R.T.
+
+	Directories (on a Debian-based system):
+	/etc/smartctl.conf
+	/etc/smartmontools/run.d/
+	/usr/share/smartmontools/smartd-runner
+	/etc/default/smartmontools - from here we can enable smartd
+		To enable it add the following line:
+		start_smartd=yes
+	DB Header:
+	/var/lib/smartmontools/drivedb/drivedb.h
+
+renice - set process priority
+
+aspell - command line spell checker
+
+	aspell -c letter.txt
+	aspell dump dicts - list installed dictionaries for current locale
+	apt-get install aspell-en - to install English dictionaries
+
+Wireless configuration on a laptop with Linux:
+	http://svobodnaplaneta.com/story/4025
+
+Display number of inodes in the current directory:
+echo "Inode usage for: $(pwd)" ; for d in `find -maxdepth 1 -type d |cut -d\/ -f2 |grep -xv . |sort`; do c=$(find $d |wc -l) ;
+ printf "$c\t\t- $d\n" ; done ; printf "Total: \t\t$(find $(pwd) | wc -l)\n"
+
+htop
+	difference between top and htop: top displays RAM usage including the cached RAM.
+				htop excludes it.
+
+atop - AT's server monitoring tool
+
+GRUB
+
+	Full GRUB 2 tutorial:
+	http://www.dedoimedo.com/computers/grub-2.html
+
+	Creating a bootable Windows USB under Linux:
+	http://onetransistor.blogspot.bg/2014/09/make-bootable-windows-usb-from-ubuntu.html
+	http://askubuntu.com/questions/289559/how-can-i-create-a-windows-bootable-usb-stick-using-ubuntu
+
+	The USB should have a bootable flag and the NTFS flag from cfdisk (7th option).
+	We need to install an ntfs file system on it.
+	Then windows iso can be mounted with mount -o loop and the files can be copied to the USB afterwards.
+	After that GRUB 2 can be installed on the USB for it to boot.
+	The grub entry should be added to $WIN_USB/boot/grub/grub.cfg
+
+	Generate an encrypted string to add an encrypted password for password protected boot in GRUB:
+	grub-mkpasswd-pbkdf2
+
+	Login with root on a machine with unsecure boot loader.
+	Press 'e' in the GRUB menu. Select kernel and press 'e' again.
+
+	update-grub/update-grub2 (only on Debian/Ubuntu) - can be used to automatically greate new grub entries for new kernels
+
+	HDD naming convention:
+	https://www.gnu.org/software/grub/manual/html_node/Naming-convention.html
+
+VirtualBox
+
+	Arch Linux:
+	http://unix.stackexchange.com/questions/88081/arch-linux-on-virtualbox-internet-connection-issue-on-virtualbox
+	http://forums.whirlpool.net.au/archive/1104558
+
+	VirtualBox Arch Linux error and fix:
+	piix4_smbus 0000.00.07.0: SMBus base address uninitialized - upgrade bios or use force_addr=0xaddr
+	echo blacklist i2c_piix4 >> /etc/modprobe.d/blacklist.conf
+
+	How to use shared folders with Guest VirtualBox:
+			- Devices -> install guest additions - mount the Virtualbox guest additions cdrom on /media/cdrom
+			- navigate to /media/cdrom
+			- run autorun.sh and install the needed drivers
+			- mount the directory you've shared with the following command run as root:
+				mount -t vboxsf -o rw,exec,uid=1000,gid=1000,dev directory-name /path/to/guest/location
+
+	How to open TTY in a VirtualBox Linux instance (similar to Ctrl+Alt+F{1..12} on a host Linux machine)
+
+	Right Ctrl + F1/F2/F3 etc.
+
+	In case of UUID already registered error:
+	VBoxManage internalcommands sethduuid box.vdi
+
+	In case of UUID mismatch error:
+	File -> Virtual Media Manager -> Select Disk -> Right click and Release/Remove
+	-> Re-add disk to Box
+
+qemu
+
+	qemu-system-i386 -cdrom os-image.iso
+	qemu-system-i386 -hda dsl.img -cdrom os-image.iso -boot d
+
+	Create image:
+	qemu-img create dsl.img 2G
+
+	Test image:
+	qemu-img info sample.vmdk
+
+	qemu-img -incoming
+
+	Boot from image:
+	qemu-system-i386 -hda dsl.img
+
+	Emulate a specific CPU:
+	qemu-system-i386 -cpu n270 - emulate Intel Atom
+	qemu-system-i386 -cpu help - list available architectures
+
+	Specify amount of RAM for instance:
+	qemu -m 256 -hda winxp.img -cdrom winxpsp2.iso -boot d
+
+	Usage of additional images in QEMU:
+	qemu -m 256 -hda winxp.img -hdb pagefile.img -hdc testdata.img -hdd tempfiles.img -kernel-kqem
+	NB!!!
+	We cannot use the -cdrom option when using -hdc
+
+	qemu-io - tool for changing I/O path
+
+	qemu-user - run a binary compiled for another architecture on the same system
+
+	Drop into QEMU console:
+	Ctrl + Alt + 2
+
+	Return to virtual machine:
+	Ctrl + Alt + 1
+
+	To open new tty in guest machine, you can use the following in QEMU console:
+	sendkey ctrl-alt-f1
+
+	Boot a live USB via QEMU:
+	http://unix.stackexchange.com/questions/37779/how-do-i-boot-from-a-liveusb-using-qemu-kvm
+	qemu-system-x86_64 -hda /dev/sda
+
+VMware Player
+
+	Run installation script with EULA:
+	(as root) ./VMware-edition-version.release.architecture.bundle --eulas-agreed
+
+	compile and install the needed modules after VMPlayer/VMware Workstation installation:
+	vmware-modconfig --console --install-all
+
+	load VMware kernel modules:
+	cd /usr/lib/modules/$(uname -r)/misc
+	insmod *
+
+	VMware hotkeys:
+	https://www.vmware.com/support/ws5/doc/ws_learning_keyboard_shortcuts.html
+
+VMWare common notes
+
+	NB!!!
+	Issue with vSphere on Windows Server 2012 x64 - server loses networking gateway:
+	Fix:
+		choose only one NIC with E1000E adapter (equivalent to Intel Pro 1000 NIC)
+
+	Insert licence through the console:
+	https://vmexpo.wordpress.com/2014/02/04/how-to-renew-your-expire-esxi-license/
+
+vSphere
+
+	VMDK Disk types:
+	Thin Provision - Similar to 'Dynamically allocated' in VirtualBox.
+	Thick/Lazy-zeroed provision - all space allocated upon creaton. Data is not
+								  zero-written on device. Stale data may be present
+								  on the HDD.
+
+	Eager Zeroed Thick - all space allocated (similar to Fixed size in VirtualBox)
+						The entire disk space is unavailable for other virtual machines
+						The difference with Thick/Lazy-zeroed is that all space is
+						zero-written before allocating space for the new VMKD disk.
+
+	How to create a VMVisor bootable ISO:
+	https://pubs.vmware.com/vsphere-60/index.jsp?topic=%2Fcom.vmware.vsphere.install.doc%2FGUID-33C3E7D5-20D0-4F84-B2E3-5CD33D32EAA8.html
+
+
+-- Links
+
+How to build a Linux router from scratch:
+http://arstechnica.com/gadgets/2016/04/the-ars-guide-to-building-a-linux-router-from-scratch/
+
+Systemcalls/sys calls/system calls referrence:
+http://www.digilife.be/quickreferences/qrc/linux%20system%20call%20quick%20reference.pdf
+
+Signals reference/cheatsheet:
+http://lasr.cs.ucla.edu/vahab/resources/signals.html
+
+How to set up a TL-WN722N wireless adapter on Debian:
+http://elinux.org/RPi_Peripherals
+
+omm killer - kernel functionality
+
+Andrew Tanenbaum VS Linus Torvalds:
+http://www.oreilly.com/openbook/opensources/book/appa.html
+
+netsniff-ng networking toolkit:
+http://en.wikipedia.org/wiki/Netsniff-ng
+
+Process state codes:
+http://hydra.azilian.net/lsa1-softuni/04-process-state-codes.txt
+
+Add an IP address to a chrooted environment:
+http://unix.stackexchange.com/questions/98808/how-to-assign-an-additional-ip-hostname-to-a-chrooted-environment
+
+CloudLinux-specific cPanel meters:
+http://www.thiswebhost.com/blog/cloudlinux-shared-hosting-limits-explained/#
+
+Magic SysRq Keys for sending system calls through keyboard combinations:
+https://en.wikipedia.org/wiki/Magic_SysRq_key
+
+How to install and use the Sublime Text 3 package manager:
+
+open Python console with Ctrl + `
+Install Package Control package manager with the following code:
+https://packagecontrol.io/installation
+
+Open the command palette: Ctrl + Shift + P
+Select Package Control: Install Package
+
+Linux Kernel Testing process:
+http://stackoverflow.com/questions/3177338/how-is-linux-kernel-tested
+
+Bozho Batsov's Emacs blog:
+http://emacsredux.com/
+
+Linux IP Networking explained (kernel space):
+https://www.cs.unh.edu/cnrg/people/gherrin/linux-net.html
+
+-- Linux desktop stuff
+
+In Okular we can see different options for anotations with F6.
+Okular stores its anotations in the following directory(no matter if the system uses GNOME or KDE):
+~/.kde/share/apps/okular/docdata
+$(kde4-config --localprefix)/share/apps/okular/docdata/
+
+It requires additional libraries to open epub format:
+libepub0 libepub-dev
+
+http://stackoverflow.com/questions/8675599/
+whats-the-difference-between-a-graphical-shell-and-a-desktop-environment
+
+Linux on different laptops:
+http://www.linux-on-laptops.com/
+
+VLC:
+
+- open youtube videos with VLC:
+Media -> Open Network Stream
+
+Viber:
+	Error with Viber on Debian 8.3:
+	http://superuser.com/questions/1041013/viber-on-debian-9-no-internet-connection
+
+Backup solutions for Linux Desktops:
+http://askubuntu.com/questions/2596/comparison-of-backup-tools
+
+Disk cloning solutions for Linux and Windows:
+http://www.cyberciti.biz/datacenter/5-awesome-open-source-cloning-software/
+Fog can be used from a Linux server to backup Windows Machines.
+dcfldd - fork of dd
+
+simple-scan - GUI scanner software
+
+=======================================================================================================
+
+htaccess
+
+NB!!! Mod Rewrite cheatsheet:
+http://www.cheatography.com/davechild/cheat-sheets/mod-rewrite/
+
+htaccess tool:
+http://www.htaccessredirect.net/?_ga=1.190508780.690937515.1436490570
+
+http://www.javascriptkit.com/howto/htaccess11.shtml
+
+Htaccess cheatsheet:
+http://www.thejackol.com/htaccess-cheatsheet/
+
+htaccess for beginners
+http://perishablepress.com/stupid-htaccess-tricks/#ess1
+
+htpasswd - we can create a password protected website with this configuration file
+
+Enabling Perl and Ruby scripts for a directory:
+Options +ExecCGI
+AddHandler cgi-script .pl .rb
+
+htaccess rules for https redirection:
+
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI}
+
+htaccess rules for clean URLs (manual):
+
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteCond %{REQUEST_URI} !/$
+RewriteRule (.*) $1\\.php [L]
+
+=======================================================================================================
+
+Java Script/JavaScript
+
+http://www.brothercake.com/site/resources/scripts/cssutilities/
+A library for inspecting CSS. It can be useful to retrieve all the CSS applied to an element, even from
+different stylesheets.
+
+CSS Minifier:
+http://cssminifier.com/
+
+jQuery plugin for assigning compiled CSS properties from one element to another:
+https://github.com/moagrius/copycss
+
+Hack Reactor's Java Script resources:
+https://github.com/hr-14-15/resources
+
+Java Script the right way:
+http://jstherightway.org/
+
+JSDeliver - CDN for Java Script libraries:
+http://www.jsdelivr.com/index.php
+
+Library for displaying gif images with a play button:
+https://github.com/krasimir/gifffer
+
+jQuery terminal plugin:
+http://terminal.jcubic.pl/
+
+jQuery vs Vanilla JS:
+http://modernweb.com/2014/05/05/replacing-jquery-with-vanilla-javascript/
+
+Attribute selectors:
+http://api.jquery.com/attribute-equals-selector/#attributevalue
+
+In jQuery $(function() {}); is the shorthand for $(document).ready(function() {});
+
+Java Script - Functional programming:
+https://medium.com/functional-javascript/introduction-to-functional-javascript-45a9dca6c64a
+
+jQuery snippet for console usage of jQuery functions:
+http://www.learningjquery.com/2009/04/better-stronger-safer-jquerify-bookmarklet
+
+https://learn.jquery.com/using-jquery-core/selecting-elements/
+http://www.sitepoint.com/5-basic-jquery-syntax/
+
+JSON Tutorial:
+https://www.youtube.com/watch?v=Z6ceFGwPsgY
+
+JS Snippets and testing tool:
+http://jsfiddle.net/
+
+Enable WebGL in Google Chrome:
+http://askubuntu.com/questions/299345/how-to-enable-webgl-in-chrome-on-ubuntu
+
+Check for WebGL support in Chrome:
+chrome://gpu/
+
+Enable experimental Chrome DevTools functionality:
+chrome://flags/#enable-devtools-experiments
+
+Remote debugging protocol for Chrome:
+https://developer.chrome.com/devtools/docs/debugger-protocol
+
+ASM.JS:
+http://asmjs.org/
+
+Java Script libraries:
+https://www.javascripting.com/
+
+=======================================================================================================
+PHP - New functions
+
+passthru();
+fpassthru();
+join();
+implode(); #implode and join are aliases
+http_build_query();
+urlencode();
+htmlentities();
+rawurlencode();
+sprintf();
+filetype();
+json_decode();
+addslashes();
+
+uniqid();
+
+opendir();
+readdir();
+closedir();
+
+array_key_exists();
+array_combine();
+array_fill();
+array_count_values();
+
+processing();
+
+curl_init();
+curl_setopt();
+curl_exec();
+curl_close();
+
+gethostbyaddr();
+gethostbyname();
+gethostbynamel(); # returns an array with all the IPs to which the domain name is pointed
+
+mime_content_type(); #deprecated
+
+finfo_open();
+finfo_file();
+finfo_set_flags();
+finfo_buffer();
+finfo_close();
+
+tempnam(); 	# not tempname!
+copy(); 	# similar to cp in UNIX
+rename();	# similar to mv for file renaming
+unlink();	# similar to rm in UNIX
+mkdir();
+rmdir();	# same as in UNIX - the directory should be empty
+
+fopen();
+fread();
+fwrite();
+ftell();
+fflush();
+flock();
+fgets();
+fputs();
+feof();
+fsockopen();
+fclose();
+
+dns_get_record();
+dns_get_mx();
+dns_check_record(); # alias of
+checkdnsrr();
+
+getcwd();
+count_chars();
+chr();
+idn();
+
+eval();
+
+strrchr();
+exif_imagetype();
+
+ob_start();
+ob_flush();
+ob_get_contents();
+ob_end_clean();
+ob_end_flush();
+
+imagejpeg();
+imagecreatetruecolor();
+confirm_logged_in();
+headers_sent();
+
+error_log();
+preg_match();
+preg_split();
+
+strcmp(); - binary safe string comparison
+strcasecmp(); - binary safe case-insensitive string comparison
+		Returns 0 if they are equal
+		Returns a negative number if the second is longer
+		Returns a positive number if the first is longer.
+
+simplexml_load_string();
+simplexml_load_file();
+
+PCRE - Perl compatible regular expressions
+PECL - PHP extension community library
+libxml2 - PHP xml extensions library
+
+Storing PHP sessions in Memcached:
+http://stackoverflow.com/questions/13946033/is-it-recommended-to-store-php-sessions-in-memcache
+
+Using WordPress with Memcached:
+http://scotty-t.com/2012/01/20/wordpress-memcached/
+
+PHP typecasting table:
+http://php.net/manual/en/types.comparisons.php
+
+PHP Handlers:
+http://chriswiegman.com/2011/10/fastcgi-vs-suphp-vs-cgi-vs-mod_php-dso/
+https://ma.ttias.be/a-better-way-to-run-php-fpm/
+
+Spawn-FCGI:
+https://redmine.lighttpd.net/projects/spawn-fcgi/wiki
+
+Differences:
+	*mod_php (DSO) - Runs PHP as part of Apache. PHP is run directly in the same process as the
+		       	 Apache server. all work on files will be done as the Apache user which therefore
+			 must have permissions on the files. Often the files on your site are owned by users
+			 other than that running the webserver. Therefore this configuration is unsuitable for
+			 a shared environment.
+
+		- thread-safety
+		- non-thread-safety
+
+	*CGI 		- PHP is run as a separate cgi process, in a executable outside Apache's
+			  	Requires more CPU time than mod_php.
+
+	*suPHP		- Runs PHP outside of the Apache process as the user who owns the files.
+
+	*FastCGI	- Same as suPHP except each PHP process has its own memory pool
+
+	*suEXEC
+
+	*Spawn FCGI
+
+Best PHP Security practises:
+http://www.cyberciti.biz/tips/php-security-best-practices-tutorial.html
+
+Sessions in PHP:
+http://www.phpro.org/tutorials/Introduction-To-PHP-Sessions.html
+
+PHP and SSH2 connections:
+http://kvz.io/blog/2007/07/24/make-ssh-connections-with-php/
+
+PatternCraft@youtube - playlist for learning design patterns
+https://www.youtube.com/playlist?list=PL6A29DA14366FF6C3
+
+PHP Security Cheat Sheet:
+https://www.owasp.org/index.php/PHP_Security_Cheat_Sheet
+
+PHP Basic Compilation steps:
+http://zgadzaj.com/how-to-install-php-53-and-52-together-on-ubuntu-1204
+
+PHP most common compilation errors under CentOS:
+http://crybit.com/20-common-php-compilation-errors-and-fix-unix/
+
+PHP memtrack:
+http://php.net/manual/en/book.memtrack.php
+
+Pinba (PHP is not a bottleneck anymore) - MySQL engine for debugging PHP scripts:
+http://pinba.org/
+
+PHP Limits:
+
+max_file_uploads	20				 # maximum number of files allowed to be uploaded at the same time
+memory_limit	128M 				 # maximum RAM per PHP process
+post_max_size	12M					 # the maximum size for a POST request
+upload_max_filesize	48M 			 #	maximum filesize you can upload
+max_execution_time	30 (seconds)	 # the time before a PHP script times out
+max_input_time						 # maximum time for PHP script execution when started as a child process
+MySQL connections
+
+PHP Common Pitfalls:
+http://php.net/manual/en/features.file-upload.common-pitfalls.php
+
+Passing values by reference in PHP:
+http://www.larryullman.com/2012/04/25/passing-values-by-reference-in-php-5/
+
+PHP Internals Book:
+http://www.phpinternalsbook.com/index.html
+
+Composer:
+
+Install Zend Engine through Composer:
+composer create-project -sdev --repository-url="https://packages.zendframework.com"
+zendframework/skeleton-application zend-framework
+
+Sorting Algorythms:
+http://kukuruku.co/hub/php/benchmarks-14-sorting-algorithms-and-php-arrays
+
+Why the closing ?> should be omitted:
+http://stackoverflow.com/questions/4410704/why-would-one-omit-the-close-tag
+
+http://php.net/manual/en/language.oop5.changelog.php - OOP changelog
+
+ReactPHP:
+http://reactphp.org/ - asynchronous PHP
+
+PHP books:
+http://learningbooksphp.blogspot.com/
+
+https://blackfire.io/ - PHP profiler
+
+Xcache admin page:
+http://xcache.lighttpd.net/wiki/InstallAdministration#HowtoInstallXCacheAdministrationPage
+
+PHP - direct I/O
+http://php.net/manual/en/intro.dio.php
+
+PHP Resource types:
+http://php.net/manual/en/resource.php
+
+Invisible cli prompt for PHP:
+https://github.com/Seldaek/cli-prompt
+
+Iterate over directories in PHP:
+http://jdhsu.blogspot.bg/2010/01/9-ways-to-iterate-over-directory-in-php.html
+
+PHP CodeSniffer:
+https://github.com/squizlabs/PHP_CodeSniffer
+
+PHP Garbage Collection:
+http://www.hackingwithphp.com/18/1/10
+
+PHP socket programming:
+https://www.christophh.net/2012/07/24/php-socket-programming/
+
+PHP MySQLi basic usage:
+https://www.sanwebe.com/2013/03/basic-php-mysqli-usage
+
+PHP applications security:
+https://blog.ripstech.com/
+
+Using X-Debug on a remote machine (via SSH port forwarding):
+http://stackoverflow.com/questions/12046510/remote-xdebug-with-virtualbox
+
+How to build and install PHP 7:
+https://linuxconfig.org/how-to-compile-and-install-php-7-on-debian-jessie-linux
+
+Memory and CPU profiling for PHP:
+http://stackoverflow.com/questions/2192657/how-to-determine-the-memory-footprint-size-of-a-variable
+
+How the Zend engine works:
+http://php.find-info.ru/php/016/ch20lev1sec1.html
+
+PHP CLI:
+
+php-cgi -m - call the CGI binary to see the enabled extensions without fireing up a webserver
+with a phpinfo() page.
+
+Get PHP funciton info on the command line:
+
+php --rf curl_init
+
+Get PHP class info on the command line:
+php --rc DateTime
+
+Downgrade PHP version using REMI in Fedora/CentOS
+https://blog.remirepo.net/post/2016/04/16/My-PHP-Workstation
+
+Awesome PHP libraries (list of PHP libraries and frameworks):
+https://github.com/ziadoz/awesome-php
+
+=======================================================================================================
+
+PayPal
+
+View Transaction Activity:
+https://developer.paypal.com/docs/classic/paypal-payments-standard/integration-guide/
+manage_transaction_activity/
+
+Available currencies to be received:
+https://www.paypal.com/cgi-bin/webscr?cmd=p/sell/mc/mc_receive-outside
+
+Check Transaction Status:
+https://www.paypal.com/us/selfhelp/article/How-do-I-check-the-status-of-a-transaction-FAQ1081
+
+=======================================================================================================
+Facebook API and OpenGraph (OG) protocol
+
+OpenGraph tags:
+http://ogp.me/
+
+https://developers.facebook.com/docs/sharing/reference/share-dialog
+https://developers.facebook.com/docs/sharing/best-practices
+https://developers.facebook.com/docs/sharing/opengraph/using-actions
+https://developers.facebook.com/docs/sharing/opengraph
+https://developers.facebook.com/docs/sharing/reference/feed-dialog/v2.5
+http://stackoverflow.com/questions/22147919/creating-a-dynamic-facebook-share-button
+https://developers.facebook.com/docs/javascript/reference/FB.ui
+
+All OpenGraph properties:
+https://developers.facebook.com/docs/reference/opengraph/
+
+Facebook permissions:
+https://developers.facebook.com/docs/facebook-login/permissions
+
+OpenGraph debugger:
+https://developers.facebook.com/tools/debug/
+
+Blogpost on having your URL blacklisted by Facebook:
+somedudeguy.com/2014/06/28/how-i-fixed-facebooks-critical-errors-that-must-be-fixed-error-linting-url
+
+Links for opening issues for delisting:
+https://www.facebook.com/help/contact/571927962827151
+https://www.facebook.com/help/contact/244560538958131
+
+=======================================================================================================
+
+VIM - http://silencemakesmefree.blogspot.com/2014/05/humble-vim-tutorial.html
+
+mapping:
+http://vim.wikia.com/wiki/Mapping_keys_in_Vim_-_Tutorial_%28Part_1%29
+
+Appending at the beginning is called prepending
+:2,17s/^/#/ - add a character at the beginning of a sequence of lines
+
+Ctrl+z - suspends Vim in the background. It can be unsuspended with the fg command
+Vim cheatcheet - /home/cvetomir/CKl-4m0UkAAnenz.jpg
+
+Vim for PHP:
+https://mwop.net/blog/164-Vim-Productivity-Tips-for-PHP-Developers.html
+
+Change split size in Vim:
+http://vim.wikia.com/wiki/Resize_splits_more_quickly
+
+Closing windows in Vim:
+http://stackoverflow.com/questions/4809729/cancel-split-window-in-vim
+
+Close buffers in Vim:
+http://stackoverflow.com/questions/1269648/how-do-i-close-a-single-buffer-out-of-many-in-vim
+
+:set paste - add indent for code pasting
+
+set filetype=messages - apply syntax highlighting to /var/log/messages logs
+
+Delete empty lines in a file:
+:g/^$/d
+
+=======================================================================================================
+
+PORTS - most used and default ports
+
+ftp-data	20/tcp
+ftp		21/tcp
+ssh		22/tcp				# SSH Remote Login Protocol
+ssh		22/udp
+telnet	23/tcp
+telnet	23/udp
+smtp            25/tcp          mail
+domain          53/tcp                          # name-domain server
+domain          53/udp
+tftp		69/udp
+http		80/tcp		www		# WorldWideWeb HTTP
+http		80/udp				# HyperText Transfer Protocol
+pop3		110/tcp		pop-3		# POP version 3
+pop3		110/udp		pop-3
+sftp		115/tcp				# Secure shell over File Transfer Protocol
+imap2		143/tcp		imap		# Interim Mail Access P 2 and 4
+imap2		143/udp		imap
+imap3		220/tcp				# Interactive Mail Access
+imap3		220/udp				# Protocol v3
+https		443/tcp				# http protocol over TLS/SSL
+https		443/udp
+ssmtp           465/tcp         smtps           # SMTP over SSL
+ftps-data	989/tcp				# FTP over SSL (data)
+ftps		990/tcp
+imaps		993/tcp				# IMAP over SSL
+imaps		993/udp
+pop3s		995/tcp				# POP-3 over SSL
+pop3s		995/udp
+http-alt	8080/tcp	webcache	# WWW caching service
+http-alt	8080/udp
+
+=======================================================================================================
+
+HTTP
+
+TO DO:
+HTTP Header fields: http://en.wikipedia.org/wiki/List_of_HTTP_header_fields
+
+Referer - includes the location that linked to the current request.
+User-Agent - describes the client (web browser) from which the request was sent.
+
+HTTP Status codes: http://en.wikipedia.org/wiki/List_of_HTTP_status_codes
+
+Markdown cheatsheet:
+https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet
+
+=======================================================================================================
+
+SSL
+
+https://www.ssllabs.com/ssltest/analyze.html?d=kahlerusa.com
+
+=======================================================================================================
+SMTP
+
+SMTP cannot run over UDP, because UDP is a stateless protocol.
+SMTP is connection-oriented.
+
+SMTP Header Fields
+
+Reputation Rank
+
+We can use TLS over SMTP on port 25, not just 465. This is good for the reputation rank of the
+Email service providers. Some big SMTP hosts won't receive mail from SMTP on port 25 if the sender
+doesn't use TLS.
+
+SPF record:
+
+~all - makes the rules not obligatory
+-all - makes the rules in the SPF record obligatory
+
+https://senderscore.org/
+https://returnpath.com
+
+Cisco's Mail sending reputation data website:
+http://senderbase.com/
+
+http://spamcop.net/
+http://mxtoolbox.net/
+
+http://multirbl.valli.org/lookup/193.203.198.10.html
+
+We can configure the SMTP daemon to change the MSA port dynamically. Some MUAs can query the DNS
+for the MSA port dyniamically (like Evolution).
+
+The mailbox authentication for a mailbox happens when communicating with the MSA.
+
+postconf - dump postfix config
+
+=======================================================================================================
+
+Networking terms:
+
+http://compnetworking.about.com/od/networkingtermsa/
+IT инфраструктурата се състои от compute, network и storage част и data centre-ове.
+
+Long haul мрежи - мрежи за пренос на данни на големи разстояния (напр. презокеански мрежи)
+
+CCNA answers:
+http://www.mipdf.com/category/ccna-1-v5-0/
+http://www.ccna5.net/
+
+Добавяне на допълнителни IP адреси в CentOS:
+http://kb.iweb.com/entries/21185593-Adding-and-viewing-IP-addresses-on-CentOS-servers
+
+NAT table
+
+IETF Datatracket:
+http://datatracker.ietf.org/
+
+HTTP Header structure:
+http://barracudafirewalls.ca/freebies/poster/poster_http_packet.pdf
+
+Table for calculating the numbers from 0 to 255 into binary:
+
+2^7		 2^6	 2^5	 2^4	 2^3	 2^2	 2^1	 2^0
+
+128		  64	 32		 16		  8		  4		  2		  1
+
+Substract with the closest number and place 1 in the table under that number.
+
+E.g. 123:
+
+ 0		  1 	 1 		 1		  1		  0		  1		  1
+
+123 - 64
+59 - 32
+27 - 8
+19 - 4
+15 - 2
+14 - 1
+
+Binary numbers ending in 1 are odd. Those ending in 0 are even.
+
+Binary to hexademical conversion table:
+
+Decimal		Binary  Hexadecimal
+
+0	  		0000		0
+1  			0001		1
+2  			0010		2
+3  			0011		3
+4  			0100		4
+5  			0101		5
+6  			0110		6
+7  			0011		7
+8  			1000		8
+9   		1001		9
+10  		1010		A
+11  		1011		B
+12  		1100		C
+13			1101		D
+14			1110		E
+15			1111		F
+
+MAC address - hexadecimal, 48 bits. It is comprised of two parts:
+
+-OUI - vendor specific, first 24 bits
+-Host portion - second 24 bits, changes for each MAC address
+
+EUI-60, EUI-64 - extended MAC addresses - 60 and 64 bit MAC addresses
+
+Switches don't have MAC addresses! Ports and switches take the MAC address of whatever device is
+connected to them.
+A MAC address can be used only once inside a network.
+
+MAC Address database:
+https://code.wireshark.org/review/gitweb?p=wireshark.git;a=blob_plain;f=manuf
+
+PDU Names on the layers of the OSI Model
+
+Layer 			Unit
+Application		Data
+Presentation	Data
+Session			Data
+Transport		Segment
+Network			Packet
+Data Link		Frame
+Physical		Bits
+
+=======================================================================================================
+
+cPanel
+
+public_html/ should have 0750 permissions and username:nobody as owner.
+Else Apache will throw 500 Forbidden error
+
+cPanel/WHM Logs
+
+Login Attempts to cpsrvd /usr/local/cpanel/logs/login_log
+Account Transfers & Misc. Logs /var/cpanel/logs
+Per-Account Bandwidth History Human Readable /var/cpanel/bandwidth/(USERNAME)
+Per-Account Bandwidth History – Cached /var/cpanel/bandwidth.cache/(USERNAME)
+Service Status Logs /var/log/chkservd.log
+Error Log for cpsrvd /usr/local/cpanel/logs/error_log
+Panic Log for cpsrvd /usr/local/cpanel/logs/panic_log
+Backup Logs /usr/local/cpanel/logs/cpbackup
+Update (UPCP) Log /var/cpanel/updatelogs/update-(TIMESTAMP).log
+Mailman Logs /usr/local/cpanel/3rdparty/mailman/logs
+Auditing Log (Account Creations, Deletions, etc.) /var/cpanel/accounting.log
+Access Log & User Actions in cpsrvd /usr/local/cpanel/logs/access_log
+Website Statistics Logs /usr/local/cpanel/logs/stats_log
+Logs for Specific Webmail Applications
+SquirrelMail /var/cpanel/squirrelmail
+RoundCube /var/cpanel/roundcube/log
+Horde /var/cpanel/horde/log
+License Updates & Errors /usr/local/cpanel/logs/license_log
+Brute Force Protection (cPHulkD) Log /usr/local/cpanel/logs/cphulkd.log
+WebDisk (cpdavd) Log /usr/local/cpanel/logs/cpdavd_error_log
+Tailwatch Driver (tailwatchd) Log /usr/local/cpanel/logs/tailwatch_log
+EasyApache Build Logs /usr/local/cpanel/logs/easy/apache/
+Installation Log /var/log/cpanel*install*
+MySQL
+
+General Information & Errors /var/lib/mysql/(HOSTNAME).err or
+/val/log/mysqld.log
+FTP (Pure-FTPD, Pro-FTPD)
+
+Login Attempts & General Info /var/log/messages
+FTP Transfer Log /var/log/xferlog is a symbolic link to /usr/local/apache/domlogs/
+Mail Retrieval & Spam Protection (Courier, Dovecot, SpamAssassin)
+
+IMAP, POP Login Attempts, Transactions, Fatal Errors & Spam Scoring /var/log/maillog and /var/log/messages
+Mail Delivery (Exim)
+
+Unexpected/Fatal Error Log /var/log/exim_paniclog (Linux)
+/var/log/exim/paniclog (FreeBSD)
+Incoming Mail Queue /var/spool/exim/input
+Log of Messages Rejected Based on ACLs or Other Policies /var/log/exim_rejectlog (Linux) /var/log/exim/rejectlog (FreeBSD)
+Delivery & Receipt Log /var/log/exim_mainlog (Linux) /var/log/exim/mainlog (FreeBSD)
+Named (BIND)
+
+Log /var/log/messages
+NSD
+
+Log /var/log/messages
+SSHD
+
+SSH Log /var/log/messages
+Web Server (Apache/httpd)
+
+Domain Access Logs /usr/local/apache/domlogs/(DOMAIN)
+Web Server & CGI Application Error Log /usr/local/apache/logs/error_log
+SuExec Audit Log /usr/local/apache/logs/suexec_log
+SuPHP Audit Log /usr/local/apache/logs/suphp_log
+
+PHP Classes: http://phpclasses.org
+
+=======================================================================================================
+
+SSH
+
+MySQL dump through SSH and Cronjobs:
+http://nau4i.me/forum/index.php?topic=14982.0
+
+SSH security practises:
+http://www.cyberciti.biz/tips/linux-unix-bsd-openssh-server-best-practices.html
+
+ssh-keygen
+
+	-t specify key pair encryption type
+	-C specify comment at the end of public key
+	-b bit size
+
+	ssh-keygen -t rsa -b 4096 -C cvetomirdenchev@gmail.com
+
+=======================================================================================================
+C/C++ programming
+
+opendir ();
+	The  opendir() function opens a directory stream corresponding to the directory name,
+	 and returns a pointer to the directory stream.
+	 The stream is positioned at the first entry at the directory
+       the first entry in the directory.
+	#include <sys/types.h>
+	#include <dirent.h>
+
+ptrace - provides functionality in which a parent process can trace child ones
+
+Beej's Guide to UNIX IPC:
+http://beej.us/guide/bgipc/output/html/multipage/index.html
+
+lockf.h - POSIX file lock
+
+glibc documentation:
+
+http://www.gnu.org/software/libc/manual/html_node/
+
+C++ Boost library - standard library boost:
+http://www.boost.org/
+
+Libevent:
+http://libevent.org/
+
+=======================================================================================================
+SQL
+
+TO DO:
+http://en.wikipedia.org/wiki/Category:Database_management_systems
+
+mysql_connect VS mysql_pconnect:
+http://stackoverflow.com/questions/247807/mysql-connect-vs-mysql-pconnect
+
+=======================================================================================================
+
+CMSs
+
+--WORDPRESS
+
+10 most common Wordpress errors:
+http://www.hongkiat.com/blog/common-wordpress-errors-with-solutions/
+http://svobodnaplaneta.com/story/4215
+
+Akismet plugin API key:
+c7a3ed55e7a5
+
+Auto upgrade may fail due to .maintenance file in the WordPress directory
+
+High I/O during upgrade:
+http://www.webmasterworld.com/wordpress/4549528.htm
+
+WordPress database optimization:
+http://premium.wpmudev.org/blog/optimizing-your-wordpress-database-a-complete-guide/
+
+Install WordPress via SVN:
+svn co https://core.svn.wordpress.org/trunk/
+
+Install WordPress via Git:
+https://github.com/wordpress/wordpress
+
+WordPress vulnerability database:
+http://wpvulndb.com
+
+WordPress hosting:
+https://premium.wpmudev.org/
+
+	-- Wordpress Security:
+	http://wpsiteguardian.com/
+
+Managing Wordpress through MySQL queries:
+http://www.catswhocode.com/blog/using-sql-to-manage-wordpress-the-definitive-guide
+
+--Magento
+
+maintenance.flag file - empty file created when we want to put Magenton into maintenance mode
+
+prefix_admin_user - we can reset the user password here. It is encrypted with MD5.
+
+~/public_html/magento_installation/etc/app/local.xml - here we can find the used MySQL database,
+the username for it and his password
+
+http://kb.webhostface.com/shopping-cart/magento-faq/magento-database-log-cleaning
+
+Cleaning Magento Logs using SSH is possible and quite simple if you have SSH access to your website.
+
+    Log into to your account using SSH.
+    In your public_html/shell folder there is a file called log.php
+    Run the following command "php -f shell/log.php clean"
+
+Magento Cron jobs should be adjusted when installing a Magento installation to a period of about 
+3~4 hours.
+
+--Pimcore 
+
+--PrestaShop
+
+.tpl файловете от PrestaShop темите отварят и затварят коментарите си с {* и *} . Toва са всъщност
+Smarty шаблони.
+
+presta/config/settings.inc.php - тук се въвежда базата данни
+
+Смяна на URL:
+
+Preferences -> SEO & URLs - през Dashboard
+change the PS_SHOP_DOMAIN and PS_SHOP_DOMAIN_SSL database entries - през MySQL database
+
+~/public_html/presta_shop/error_log
+
+Дефолтния админски панел се намира в admin123. Повечето случаи потребителите променят тази директория.
+Админския панел е различен от потребителския!!!
+
+PrestaShop не поддържа tarball архиви при качването на темата.
+
+--OpenClassifieds
+
+Трябва да се изтрие директорията install/ след инсталация
+
+--OpenCart
+
+=======================================================================================================
+
+SVN
+
+How to set up an SVN repository:
+
+https://civicactions.com/blog/2010/may/25/how_set_svn_repository_7_simple_steps
+
+=======================================================================================================
+
+Books
+
+Apache - The Definitive Guide
+Apache Cookbook
+MySQL Administrator's Bible
+Eloquent JavaScript
+Maintainable JavaScript
+Mastering High Performance Java Script
+PHP Programming / Cookbook / Web Services / Design Patterns / Essential Security
+Building Web Apps with WordPress
+Learn C The Hard Way
+C Programming Language
+An Introduction to Design Patterns in C++ with Qt 4
+Pro Git
+How Linux Works
+Linux Trainining books
+Linux Server Security
+Network Warrior
+Linux Network Administrator's Guide
+BIND & DNS Cookbook
+TLDP's Guide to BASH Scripting
+The AWK Programming Language - Alfred V. Aho
+Beej's Guide to UNIX Sockets
+Basics of Compiler Design: http://www.diku.dk/~torbenm/Basics/basics_lulu2.pdf
+Smashing the Stack for Fun and Profit: http://insecure.org/stf/smashstack.html
+Learning Python Data Visualization
+Unix Network Programming
+Programing Internet Email
+
+Real Time Collision Detection
+
+Understanding the Linux Kernel
+Linux Programming Interface
+
+Introduction to Programming Threads: http://www.mit.edu/people/proven/IAP_2000/
+
+Learn you Some Erlang for Great Good:
+http://learnyousomeerlang.com/content
+
+High Performance Browser Networking:
+https://hpbn.co/?utm_source=igvita&utm_medium=referral&utm_campaign=igvita-homepage
+
+=======================================================================================================
+Other useful links, terms and acronims:
+
+Coding almanachs:
+http://rosettacode.org/wiki/Rosetta_Code
+http://learnxinyminutes.com/
+
+A blog on server administration:
+http://www.shellhacks.com/en
+
+monitoring tool, written in Ruby
+http://www.fluentd.org/
+
+http://www.revsys.com/
+
+http://natsys-lab.blogspot.bg/ - High performance Linux programming
+
+A link with different mathematical problems that can be solved with
+programming:
+https://projecteuler.net/
+
+SVN book:
+http://svnbook.red-bean.com/en/1.7/index.html
+
+A blog about modern web development languages:
+http://www.reactive.io/
+
+Clang tutorial:
+https://kevinaboos.wordpress.com/2013/07/23/clang-tutorial-part-i-introduction/
+
+Cling (C++ REPL, created with LLVM)
+https://root.cern.ch/cling
+
+Blog for security tools:
+http://www.kitploit.com/
+
+http://www.cpu-collection.de/?tn=0
+
+Nutcracker(twemproxy) - proxy for Memcached and Redis
+http://manpages.ubuntu.com/manpages/vivid/man8/nutcracker.8.html
+
+A wiki about operating system architecture:
+http://wiki.osdev.org/
+
+OSDev - a blog about operating systems internals and development:
+http://wiki.osdev.org/
+
+http://en.wikipedia.org/wiki/Comma-separated_values - CSV - similar to XML and JSON files. Stores
+	tabular data (numbers and text) in plain-text format.
+
+ASCII Table:
+http://www.asciitable.com/
+
+Steps for learning and mastering a programming language:
+1. Literals, language constructs, syntax structures (loops, conditionals, class/method
+	declarations, primitives), syntax pecularities, type-casting
+2. Core functions, methods and/or classes (e.g. for operations with arrays, strings,
+   file system, date and time etc.)
+3. Standard library (e.g. Standard Python Library, C standard library,
+	Standard PHP library, jQuery, Ruby stdlib) -
+    classes, methods and functions
+4. Error and exception handling classes (in case of OOP), error/warning/notice messages
+5. Compiler and toolchain (if it is a compiled language)
+6. Theory about the inner workings of the language (e.g. VM, parser/lexer,
+	interpreter, compiler "eco-system")
+7. IDE(s)/Text editor(s) and their configuration
+8. Code Conventions
+9. Debugger(s) and debugging techniques
+10. Profiler(s) and performance pecularities
+11. Build system, static code analysis and dependency management tools
+12. Design patterns implementation (in case of OOP)
+13. Unit Testing practises and framework(s)
+14. Reflections/metaprogramming/Introspection
+15. Server-side setup (system administration part)
+16. Security practises
+--------------------------
+17. Create and maintain a project with a large codebase,
+having in mind security, performance, maintainability
+and user experience.
+
+Steps for understanding software:
+1. Read and understand the code
+2. Debug and extend
+3. Rewrite and refactor
+
+Steps for mastering an OS's (operating system) administration:
+1. Partitioning & file system tools
+2. Networking inspection and configuration
+3. Package management
+4. Service management
+5. File system permissions
+6. User management
+7. Boot process and boot options/pecularities
+8. Process management
+9. Firewall configuration
+10. GUI configuration & tweaking
+11. Security
+12. Log management and browsing
+13. Text shells - commands and scripting
+14. System calls and debugging tools
+15. Batch processing and scheduling
+16. Driver and device management
+17. Locale and System Time management
+
+Search engines for Internet-connected devices:
+https://censys.io/
+https://www.shodan.io/
+
+SSH security practises - http://www.cyberciti.biz/tips/linux-unix-bsd-openssh-server-best-practices.html
+
+SlashRoot - http://www.slashroot.in
+How does SSH work - http://www.slashroot.in/secure-shell-how-does-ssh-work
+
+Difference between RSA and DSA encryption algorythms:
+http://security.stackexchange.com/questions/5096/rsa-vs-dsa-for-ssh-authentication-keys
+
+ICANN - EPP status codes:
+https://www.icann.org/resources/pages/epp-status-codes-2014-06-16-en
+
+OSI (to do):
+
+Application Layer - HTTP, IMAP, LDAP, NNTP, POP, DNS, IRC, XMPP and so forth
+Presentation Layer
+Session Layer
+Transport Layer - TCP, UDP
+Network Layer - Authentication, TCP/IP, IPX
+Internet Layer - IPv4, IPv6
+Data Link layer - ARP
+
+All protocols declared in RFC:
+https://www.rfc-editor.org/materials/abbrev.expansion.txt
+
+ARP - Address Resolution Protocol, usually the software for the manipulation of those addresses is
+      called arp in most operating systems. It uses broadcast to find the MAC addresses.
+APIPA - Automatic Private Internet Protocol Addressing - another way to automatically asign IP addresses, besides DHCP
+	    Only used by Microsoft OSs. Only assigns IP addresses in the range of 169.254.0.1 - 169.254.255.255
+AES - Advanced Encryption Standard - hardware encryption standard
+	http://www.cyberciti.biz/faq/how-to-find-out-aes-ni-advanced-encryption-enabled-on-linux-system/
+	Extension for the x86/x86_64 instruction set that provides hardware speed improvement for software using the
+	AES algorythm (openssl, ssh, openvpn, *nix full disk encryption)
+NTP - Network Time Protocol
+NNTP - Network News Transfer Protocol
+NIC - Netrwork interface controller (also network interface card, network adapter, LAN adapter,
+	  physical network interface)
+TUN - network tunnel - virtual kernel layer 3 network device. Used by VPN technology. Works with layer 3 protocols (e.g. IP packets).
+TAP - network tap - virtual kernel layer 2 (link layer) network device. Used by VPN technology.
+PDU - Protocol Data Unit - units into which data is separated for a certain protocol to work with
+SNMP - Simple Network Management Protocol
+STP - Staning-Tree Protocol
+SIP - Session Initiation Protocol
+CRT - Combined Rlogin And Telnet
+ELF - Executable and Linking Format
+COFF - Common Object File Format
+LSB - Least Significant Byte
+MSB - Most Significant Byte
+	LSB and MSB are respectively known as little endiand and big endian.	
+
+CVE - Common Vulnerabilities and Exposures
+PPP - 	Point to Point Protocol
+PPTP - Point to Point Tunneling Protocol
+POE - Power over Ethernet
+STP - shielded twisted pairs
+VoIP - Voice over IP
+UPnP - Universal Plug and Play
+UPS - Uninterruptable Power supply
+SMB - Server Message Block
+SFP - Small Form-factor Pluggable
+BGP - Border Gateway Protocol
+IGMP - Internet Group Management Protocol - communication layer protocol for creating multicast groups
+IPMI - Intelligent Platform Management Interface (Supermicro's KVM)
+IOPS - Input/Output Operations Per Second
+Telnet - protocol for terminal emulation for remote terminal connection
+	 	 It can be used for remote manipulation of routers. Connection is not encrypted.
+DWDM - 	Dense Wavelength Division Multiplexing - an optical technology used to increase bandwidth over
+	existing fiber optic backbones.
+SFP -
+DMZ - Demilitarized zone - a public network in which an organization's external services are exposed
+VRM - Voltage Regular Module
+NIS - Network Information Service
+
+SMP - Symmetric multi-processing support
+	  Multicore is a sub-set of SMP
+PIIX - PCI IDE ISA Xcelerator
+PAE - Physical Address extension - CPU functionality, which allows to allocate more than 4GB of
+	  memory on a 32 bit system
+VME - Intel support for Virtual 8086 mode
+VMX - Intel CPU flag for VT - needed to compile kernel for adding virtualization support
+PXE - Preboot Execution Environment
+PGA - Pin Grid Array - the pins on a processor or a motherboard
+SCGI - Simple CGI protocol
+XSL - XSL attack - Extended Sparse Linearization
+SDCH - Shared Dictionary Compression for HTTP - compression algorithm, created by Google for Chrome
+IDE - Integrated Drive Electronics
+AHCI
+ACPI
+CMOS - Complementary Metal-Oxide Semiconductor - contains available hard disks, system time(UTC) and
+	   boot priorities of disks
+
+Network interface bonding, port trunking, channel bonding, link aggregation, NIC teaming -
+combination of multiple network connecitons into a single
+logical network interface
+
+UNIX = UNIplexed Information and Computing Service
+
+tty - native terminal device - either hardware or kernel emulated device
+pty (pseudo terminal device) - terminal device emulated by another program (e.g.
+	xterm, screen, ssh)
+pts (pseudo terminal slave) - slave of pty.
+
+SOLID principles
+
+SOAP - Simple Object Access Protocol
+DTD - Document Table Definition - in XML formatting describes how the document is formatted
+RSS - Rich Site Summary
+
+PEP - Python Enhancement Proposals
+
+WDDX - A XML format for storing sessions, most famous for being used by PHP
+SASL - Simple Authentication and Security Layer - authentication layer for application layer protocols
+TTFB - Time To First Byte - the time since an HTTP request is sent by the browser
+	   until the first byte from the web page is received.
+RTT - Round-trip delay time
+
+FFI - Foreign Function Interface
+ABI - Application Binary Interface
+Mutex - Mutual Exclusion
+
+CHS - Cylinder, Head, Sector addressing
+LBA - Linear Block addressing
+PBR - Partition Boot record - stored in first sector
+	  of bootable partition
+
+DLL - Dynamic-Link Libraries
+
+SAN - Storage Area Network
+NAT - Network Attached Storage
+
+PCI-DSS - Payment Card Industry Data Security Standard
+
+The DOM Tree:
+http://guistuff.com/css/css_doctree.html
+
+PHP Handlers:
+http://chriswiegman.com/2011/10/fastcgi-vs-suphp-vs-cgi-vs-mod_php-dso/
+
+FTP client with remote apps support:
+http://www.pablosoftwaresolutions.com/html/ftp_wanderer_3_0.html - FTP Wanderer
+
+How to set an FTP server (vsftpd):
+https://www.digitalocean.com/community/tutorials/how-to-set-up-vsftpd-on-centos-6--2
+
+Wireless configuration on a laptop with Debian GNU/Linux:
+http://svobodnaplaneta.com/story/4025
+
+The Internet for dummies:
+http://www.20thingsilearned.com/en-GB/credits
+
+Learn Processing:
+http://www.learningprocessing.com/about/
+
+Blog for VPS Linux virtualization /KVM, QEMU, VMWare, VirtualBox etc/
+http://blog.vmsplice.net/
+
+POST - Power On Safe Test - The BIOS initializes the hardware (including keyboard, mouse and screen)
+	and tests the main memory. This happens after the power is turned on. Once the POST is completed,
+	the system control passes from the BIOS to the boot loader.
+
+MBR - Master Boot Record - the first sector of a disk that designates it is a bootable device
+
+TO DO - Unix Sockets
+
+=======================================================================================================
+
+Other cheatsheets and files:
+
+amd-processors
+ansible
+apache-cheatsheet
+autoconf-cheatsheet
+awk-sed-filters
+bash-cheatsheet
+bioenergetic-exercises
+courses-progres
+curl-cheatsheet
+daily-productivity
+errbit-task
+find-cheatsheet
+fstab-cheatsheet
+gentoo-cheatsheet
+git-cheatsheet
+hier-cheatsheet
+html-and-css-notes
+ideas
+important-links
+intel-processors
+iptables-cheatsheet
+jquery
+js-cheatsheet
+knowledge-base
+langs
+laravel-cheatsheet
+life-lessons
+memcache-cheatsheet
+momchi-tasks
+mysql-cheetsheat
+nagios
+new-english-words
+nginx-cheatsheet
+notifications
+php-ini-cheatsheet
+php-notes
+postgres-cheatsheat
+programming-theory
+puppet
+python-resources
+regex-cheatsheet
+ruby-rvm-gem
+svn-cheatsheet
+to-dos
+vagrant
+vim-plugins-cheatsheet
+windows-bootable-entry
+windows-info

@@ -1,0 +1,386 @@
+Complete list of all bootstrap classes:
+https://www.w3schools.com/bootstrap/bootstrap_ref_all_classes.asp
+
+Bootstrap container
+
+Bootstrap comes with a 12-column grid. The grid is accessed through CSS classes.
+Cols are contained within rows. We cannot use the col classes in child elements of
+elements which already have col classes. Otherwise the Bootstrap grid breaks!
+
+It is not recommended to apply styles and add additional classes to elements which already
+have classes from the bootstrap grid. Instead it is preferred to wrap the content in an
+additional div / span.
+
+The framework lies upon three key concepts:
+- Containers
+- Rows
+- Columns
+
+The content within a layout never fully reaches the end of the screen.
+
+Two types of containers:
+
+- fixed
+- fluid container - the position is always indented - we can use it with the container-fluid class
+
+Rows are horizontal groups of columns - they are always placed in a container
+Rows should always include columns
+
+When creating a column bootstrap automatically creates a 'gutter', that is automatically 30px wide.
+
+col-SIZE-SPAN
+
+Column metrics:
+				Extra small		small 			Medium 				Large
+				<768px			>=768px 		>=992px				>=1200px
+
+	Container 	Auto 			750px 			970px 				1170px
+
+
+	Size 		.col-xs- 		.col-sm- 		.col-md- 			.col-lg-
+
+
+	Column 		Auto 			~62px 			~81px	      		~97px
+	width
+
+clearfix - this CSS class clears the floats
+A clearfix class in CSS is generally used to clear problems with floats.
+
+visible-sm-block
+visible-sm-inline
+visible-sm-inline-block
+
+col-xs-offset-3 - the row will have its margin on the left the size of three columns
+We must then use col-xs-6, so that it will be centered
+
+col-sm-offset-0
+col-xs-push-4 - push the column which has the class with the size of four xs columns
+
+<div class="h1">headline 1</div> - emulates the use of <h1></h1>
+
+Bootstrap has custom design for the following elements:
+<mark></mark>
+<small></small>
+<s></s>
+<del></del>
+<ins></ins>
+<u></u>
+<blockquote></blockquote>
+<code></code>
+<var></var> - this is an HTML tag, used by search engines
+<pre></pre>
+<samp></samp>
+
+Classes for text manipulation:
+text-nowrap - the element always has one line
+text-justify
+text-left
+text-lowercase
+text-uppercase
+text-capitalize
+
+<abbr title="United States Air Force" class="initialism">USAF</abbr> - the initialism class is useful
+for abbreviations. It makes the text slightly smaller than the rest in the paragraph.
+
+Blockquotes:
+reverse - this class reverses the styling of the blockquote
+
+Lists:
+There are three types of lists in HTML:
+ul, ol and dl (dictionary list)
+list-inline - this class makes the list members inline
+dl-horizontal
+
+We can wrap a list item in a container element which has the list-group class.
+
+pre-scrolable - class to make an element scrolable
+
+Buttons
+btn
+btn-default
+btn-success
+btn-primary
+btn-info
+btn-xs
+btn-icon
+btn-shadow
+btn-outline
+
+Button sizes:
+btn-lg
+btn-xs
+btn-sm
+
+btn-block
+
+Buttons state:
+active - we can use this class to force the state of the button as if it is pushed
+disabled="disabled" - we can use this HTML property to disable the button
+
+Tables:
+table - class to identify element as a table
+table-bordered -add borders
+table-striped - each row will have a different color
+classes for table rows:
+success
+info
+warning
+danger
+
+Images:
+img-responsive
+img-rounded
+img-circle
+img-thumbnail
+
+Text:
+text-muted - text appears a little lighter than normal
+text-info
+text-warning
+text-danger
+text-primary
+text-success
+
+sr-only - show when viewed on screen reader-only
+sr-only-focusable
+
+imghead
+
+bg-info
+bg-warning
+bg-danger
+bg-primary
+bg-success
+
+invisible - hides the elements, sets the opacity to 0, but the placeholder still takes place on the page
+
+Responsive utilities:
+Control visibility at breakpoint/print
+
+VISIBILITY-SIZE(-DISPLAY)
+
+Visibility: visible or hidden
+Size: xs, sm, mg, lg, print
+Display: block, inline, inline-block, print (the element is displayed only when the print browser dialog is evoked)
+
+Checkboxes and radio buttons:
+When we use any of these we wrap them in a div that has a class with the type of the button (e.g. checkbox and radio are the classes for divs which contain them). Then buttons are surrounded in a label element. Those label elements don't have a for attribute. The input elements need to have the same name. We can use the disabled class here also - to disable the button.
+
+form-inline - we can use this class for the form element to make the input elements look inline
+form-control-static
+
+has-error
+has-warning
+has-success
+
+Icons:
+glyphicon - class to specify that an element is an icon
+
+Dropdowns - they require JS
+html5 attributes used by bootstrap:
+data-container
+data-offset
+data-placement
+data-content
+data-toggle
+data-spy - can be used to make a scrollfix
+aria-expanded
+aria-haspopup
+aria-labelledby
+role
+tabindex
+aria-label
+aria-hidden
+
+classes:
+divider
+dropdown-menu
+dropdown-header
+disabled
+
+Button groups
+elements with the btn-group lay as containers for <button></button> elements. They should also have "group"
+as their role attribute. We can use btn-group-vertical to position them vertically.
+
+
+Roles
+
+Navigations
+types:
+- tabs
+- pills(nav-pills)
+- navbars (navbar-nav, navbar-default, navbax-fixed-bottom, navbar-fixed-top)
+
+role="presentation" - can be useful to notify screen readers that the nav tabs are going to be used for
+presentation
+nav-stacked - this class can be used to place the nav elements vertically
+nav-justified
+
+Navbars can have headers - we need the navbar-header class to specify an element for this purpose
+navbar-brand - a separate element inside the navbar
+
+Collapse menu
+id="collapsemenu"
+class="collapsed"
+class="icon-bar"
+
+Breadcrumbs
+Pagination - class="pagination"
+
+<nav>
+<ol class="pagination">
+	
+</ol>
+</nav>
+
+Pager (038 - Using breadcrumbs and pagination styles) - previous and next buttons
+<ul class="pager">
+	<li class="previous">
+
+	</li>
+	<li class="next">
+
+	</li>
+</ul>
+
+Headers
+class="page-header"
+jumbotron - similar to a page header; different styling
+
+Labels - we can use those classes to have elements look liked styled labels
+label - we use this class to tell that an element will be a label. We can use those classes on spans, header elements and h1-h5
+label-default (gray)
+label-primary
+label-success
+label-info
+label-danger (red)
+
+Thumbnails
+We can make thumnails out of <img/> elements. We can use the thumbail class for this. We can use this class on anchors that wrap <img/> elements. We can arange them in columns by wrapping them in a div that has a col-SIZE-SPAN class.
+
+Media elements - useful for positioning elements according to the position of text elements
+media - the container element for the media needs to have this class
+media-left
+media-right
+media-object
+media-middle - center vertically the media element
+media-body
+
+Video
+<video></video> 
+classes for the container element of the video:
+embed-responsive
+embed-responsive-XbyY (e.g. embed-responsive-4by3 or embed-responsive-16ny9)
+
+Lists and badges:
+
+We need to use anchor tags or buttons in order for our list items to be clickable
+<ul class="list-group">
+	<li class="list-group-item"> Item 1 </li>
+	<li class="list-group-item"> Item 2 </li>
+	<li class="list-group-item"> Item 3 <span class="badge"> 8 </span></li>
+	<li class="list-group-item"> Item 4 </li>
+	<li class="list-group-item"> Item 5 </li>
+	<li class="list-group-item"> Item 6 </li>
+</ul>
+classes:
+list-group-item-info
+list-group-item-danger
+list-group-item-success
+list-group-item-heading
+
+Panels
+
+<div class="panel panel-default <!-- other available: panel-primary, panel-success, panel-warning, panel-danger-->">
+	<div class="panel-heading">
+		<h1 class="panel-title"> Text </h1> <!-- all types of headings have the same text size -->
+	</div>
+
+	<div class="panel-body">
+
+	</div>
+	<div class="panel-footer">
+
+	</div>
+</div>
+
+Wells
+
+<div class="well well-lg <!-- or well-sm -->">
+
+</div>
+
+Carousel
+
+<div class="carousel slide">
+
+</div>
+carousel-control - element that is used for controlling the carousel behavior
+glyphon
+glyphon-chevron-left
+glyphon-chevron-right - arrows for navigation
+
+data-slide - html5 attribute for carousel control
+
+<ol class="carousel-indicators">
+	<li data-target="#featured" data-slide-to"0" class="active"> </li>
+	<li data-target="#featured" data-slide-to"1" > </li>
+	<li data-target="#featured" data-slide-to"2" > </li>
+</ol>
+hidden-xs - this class will make the carousel hidden until the xs size of the page is exceeded
+
+We can make an element hidden for particular screen resolutions by applying the hidden-* class for that particular resolution.
+E.g. we can make an element appear only on a mobile version by adding the following classes:
+
+hidden-lg hidden-md hidden-sm
+
+Using JS and jQuery:
+$(function() {
+	$('.carousel').carousel({
+		interval: 2000,
+		pause: false,
+		wrap: false,
+		keyword: false,
+	});
+});
+
+Collapse
+<a href="#exoticpets" role="button"
+	data-toggle-="collapse" class="btn btn-primary"
+	aria-expanded="false"	aria-controls="exoticpets">
+Exotic Pets </a>
+
+<div class="collapse" id="exoticpets">
+	<p> We offer specialized care for reptiles, rodents, birds and other exotic pets.</p>
+</div>
+
+WE can also use a button element, instead of an anchor, but the href attribute needs to be
+exchanged with a data-target attribute.
+
+Tooltips
+
+<a href="" data-toggle="tooltip" data-placement="bottom" title="Tooltip content"> Text to be tooltiped </a>
+We need to toggle this with jQuery:
+$(function() {
+	$('[data-toggle="tooltip"]').tooltip();
+});
+
+Popovers - similarly to tooltips they need to be activated with JS
+<button type="button" tabindex="0" class="btn btn-info"
+	data-container="body" data-toggle="popover"
+	data-placement="bottom"
+	data-title="Exotic Pets"
+	data-content="Popover text!"
+
+>
+Popover </button>
+
+ScrollFix - we can make an element "sticky" to the scrolling navigation.
+
+Bootstrap resources:
+https://www.bootply.com/new - the official Bootstrap editor
+https://blog.getbootstrap.com
+expo.getbootstrap.com
+Bootstrap layouts: Responsive Single Page Design (Lynda)
+Bootstrap 3: Advanced Web Development(Lynda)
+https://github.com/planetoftheweb/bootstrap

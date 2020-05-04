@@ -1,0 +1,47 @@
+p4 jobs / p4 job
+
+If p4 job is called with a jobname argument, a job of that name is created; if that job already exists, 
+it is edited. Once a job has been created, you can link the job to the changelist(s) that fix 
+the job with p4 fix, p4 change, or p4 submit.
+
+delete job:
+p4 job -d BCP-4591
+
+=======================================================================================================
+
+p4 annotate
+
+=======================================================================================================
+
+p4 changelists
+
+=======================================================================================================
+
+p4 fix
+
+Link a job to a changelist:
+p4 fix -c <changelist-id> <job-jira-id>
+
+Unlink a job from a changelist:
+p4 fix -d -c <change> <wrongjob>
+p4 fix -c <change> <rightjob>
+
+
+=======================================================================================================
+
+p4 change
+
+To delete a pending changelist, you must first remove all files and jobs associated with it and then 
+issue the p4 change -d changenum command. 
+
+=======================================================================================================
+
+p4 have
+
+Check which revision you have locally
+
+=======================================================================================================
+
+Checkout progress state at a specified revision:
+
+p4 sync //depot/project-root/...@123456

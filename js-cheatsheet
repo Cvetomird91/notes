@@ -1,0 +1,1196 @@
+Java Script is case sensitive!
+/* this is a comment */
+// this is a comment
+# this is not a comment in JS
+
+Months in JS are identified from 0 to 11. JS works with milliseconds instead of seconds.
+
+http://javascript.crockford.com/
+http://www.json.org/
+http://adsafe.org/
+https://egghead.io/courses/understand-javascript-s-this-keyword-in-depth
+
+JS Data types:
+functions, numbers, strings, booleans, objects, undefined
+There's also a null value that is similar to undefined. It is kept because
+of legacy from previous ECMA Script standarts.
+There are implementational, engine-level differences between both.
+Undefined is more preferred nowadays.
+
+Cast value into boolean:
+val = 1;
+Boolean(val)
+-> true
+
+JS stores single numeric values as 64 bits.
+
+Properties vs Attributes:
+attributes are part of HTML
+properties are assigned and manipulated by the DOM.
+
+There is no difference when using single and double quites in JS!
+There's no variable expansion when using double quotes as in other languages.
+If special characters appear within single quited strings they need to be escaped!
+
+var str = "my\n";
+str.length will return 3 - \n counts as a single character, as well as the other
+special characters.
+
+typeof null - this will return "object"
+void init - in JS this operator always takes an operand and returns undefined. It doesn't
+make the variable undefined. This is way it is good to avoid it.
+
+There are two syntaxes of typeof:
+
+typeof value - operator-like
+typeof(value) - function-like
+
+Command line JSON tools:
+http://jeroenjanssens.com/2013/09/19/seven-command-line-tools-for-data-science.html
+
+The following variable initiation is possible in JS:
+var year, month, day;
+var year = 2015, month = 12, day = 23;
+
+Booleans, numbers and strings are immutable data types.
+A string cannot be changed. Instead a new string should be created with the new value.
+
+We can perform string interpolation with back ticks with the following syntax:
+`${variable}`
+
+Object properties can be mutated.
+Object properties can not be of type undefined.
+Object keys can be empty strings.
+
+var obj = {'': 1};
+obj[''] //returns 1
+
+parentheses - ()
+brackets - []
+braces - {} - they group a section of code together. The code between them is a 'code block'.
+			  They are also used for Object notation and thus for hashes.
+
+Some math operators/literals:
++=
+-=
+*=
+/=
+>=
+<=
+
+prefix/postfix(or suffix)
+a++ / ++a
+
+Types of operators:
+unary (a++, a--)
+binary
+ternary ( expression ? true : false ) - otherwise known as shorthand if
+
+In JavaScript there's a special comma operator.
+
+var a = (5, 6);
+
+The last value is returned.
+
+An assigment experssion always returns true in Java Script:
+a = b
+
+String comparison:
+
+Strings are compared in lexicographical order. Lowercase letters precede uppercase letters!
+
+When comparing numbers and strings that contain only digits:
+
+alert(2 > 14);  // false
+alert("2" > "14"); // true, because "2" > "1" (first char matters)
+
+When some of the operands is a number the string is typecast to a number and then the
+comparison is executed.
+alert(2 > "14"); // false
+
+
+The variable through which we keep track of a while or for loop is called an index variable.
+
+break exits from the whole loop on a certain condition.
+continue exits from the current interration of the loop and continues to the next.
+
+All Java Script numbers are floating point 64-bit numbers, no matter the "subtype".
+All strings are Unicode in JS!
+
+NaN - not a number
+Mathematical operatins cannot lead to a crash in JS. NaN is returned in the worst.
+Each mathematical operation with NaN returns NaN.
+
+By bassing a non-integer value to the Number built-in object, the value will be type-coersed into a
+number.
+
+var num = '55';
+var myNumber = Number(num);
+
+parseInt and parseFloat will return a number value. We can use them with CSS values:
+
+parseInt('12px');
+parseFloat('10pt');
+
+1.5.toFixed() - returns 1
+
+Math object
+x = 100.6;
+var y = Math.round(x); //returns 101
+var z = Math.max(99,100,101); //returns 101
+var z = Math.min(99,100,101); //returns 99
+Math.random - returns floating point number between 0 and 1
+Math.round - rounds the number by returning the nearest whole number
+Math.ceil - returns next whole number when floating point is passed
+
+String comparison:
+
+Rule of sort order:
+All uppercase letters are considerred less than all the lowercase letters.
+
+In case of string comparison with the > and < operators
+if (str1 < str2 ) { ... } here the first letters will be compared.
+
+var today = new Date();
+//or
+var today = Date();
+today.getMonth();
+today.getFullYear();
+today.getYear(); //deprecated
+today.getDate(); //1-31 day of month
+today.getTime(); //Unix timestamp
+
+comparing dates:
+var date1 = new Date(2000, 0, 1);
+var date2 = new Date(2000, 0, 1);
+if (date1 == date2) { ... //false because == checks if those are the same object
+
+Proper way:
+if (date1.getTime() == date2.getTime()) { ...
+
+Object creation (shorthand):
+var player_1 = { name: "Fred", score: 10000, rank: 1 }
+
+creating methods in Java Script:
+function playerDetails() {
+	//display player information
+	console.log(this.name);
+}
+
+//adding the function as method to the player_1 object
+player_1.logDetails = playerDetails; - we are not calling the function here, we're associating it with
+		 the player_1 object.
+
+Java Script doesn't stick to the 'standard' OOP paradigm. We can't create a class in the familiar
+way but we can use prototyping, a function and the this language construct to declare a 'class'.
+
+When declaring a function the **arguments** language construct can be used to return an object
+with all the arguments of the function.
+
+arguments.callee contains the currently called function itself. This is deprecated
+since ECMA-262. Strict mode will throw errors in code containing such calls.
+arguments.callee.caller is also deprecated.
+
+If we attempt to select elements with document.getElementByTagName and there are no such elements on
+the page, an empty array will be returned.
+
+function calculateSum(a, b, c) {
+	return a + b + c;
+}
+
+In Javascript the following will not throw an error but return NaN:
+result = calculateSum(9, 10);
+
+Assigning an undefined value is prefered to using the delete language keyword.
+
+Objects can be used also as hash maps / dictionaries.
+
+Asynchronous programming semantics
+//$(document).on('customEvent', function() {
+// Execute handler
+//});
+//Code
+//Code
+//Code
+//Fire custom event
+//Code
+//Code
+//Code
+
+Function hoisting, variable hoisting - using a variable or a function before its declaration.
+JavaScript supports variable hoisting. PHP supports function hoisting.
+
+We can call an function(anonymous and regular) right after it is declared with the following syntax:
+
+(function() {
+	console.log('hello world!');
+})();
+
+function Name(str) {
+    console.log(str);
+}('hello');
+
+(function(str) {
+    console.log(str);
+})('hello world!');
+
+We can attach event handlers within the body of an anonymous function.
+
+Labels:
+
+labels can be assigned to loops and blocks of code. This is
+similar to goto:
+
+outer:
+for (;;) {
+
+	for (var i=0; i < 10; i++) {
+		//this breaks of the loop labeled as 'outer'
+		if (i == 3) break outer;
+	}
+
+}
+
+We can use labels with break and continue.
+
+There's no goto in JS.
+
+In JavaScript all local variables and functions are properties of the special internal object, called
+LexicalEnvironment.
+The top-level LexicalEnvironment in the browser is window. It is also called a global object.
+
+We can't have variables and functions with the same name.
+
+JavaScript script execution in a nutshell:
+
+1. Function declarations are initialized before the code. This is why we have function hoisting
+as a side effect.
+window = { f: function }
+
+2. Variables are added as window properties. Their values aren't assigned yet. Values start as
+undefined when they are declared.
+
+3. Assignment of variables happens later when execution reaches them.
+
+How closures work:
+
+The inner function keeps a reference to the outer LexicalEnvironment.
+The inner function may access variables from it any time even if the outer function is finished.
+The browser keeps the LexicalEnvironment and all it’s properties(variables) in memory until there
+is an inner function which references it.
+Variables in outer LexicalEnvironment may change.
+Inner functions always see the last value.
+
+Blocks in JS aren't a scope gate.
+for loops aren't a scope gate either. The index variable remains in the LexicalEnvironment
+after loop execution completes.
+
+The scope for a function becomes window, not its LexicalEnvironment when it is decared with
+new Function();
+
+=======================================================================================================
+
+JS Arrays / Arrays in java script
+
+the Array object itself is an array.
+
+array = new Array();
+array = Array();
+array = Array(5); - creates an array preset to have five slots; an array of five undefined elemnts
+array = new Array (1,2,3); - returns [1, 2, 3]
+
+typeof array - this will return Object.
+
+Array.prototype.shift, Array.prototype.unshift - the opposites of pop/push.
+unshift returns the number of array elements
+Array.prototype.push - also returns the number of array elements
+Array.prototype.indexOf(5) - returns the index of 5 in the Array
+Array.prototype.lastIndexOf(5) - returns the index of 5 in the Array, starting the search from the
+last element
+Array.prototype.reduce(callback[, initialValue]) - the callback can take up to 4 arguments:
+	previousValue, currentValue, currentIndex, array(the array reduce was called upon)
+
+Array.prototype.length - actually returns the last element's key + 1. Even if the array contains
+only two elements who have keys 2 and 99 Array.prototype.length will return 100.
+
+JavaScripts sorts elements in arrays by converting them to strings first with
+Array.prototype.sort
+
+A way to repeat a string:
+var indent = new Array(5).join('a');
+
+How to get the type of a built-in object:
+
+var toClass = {}.toString;
+toClass.call([1,2,3]) # returns [object Array]
+toClass.call(new Date()) # returns [object Date]
+toClass.call(document) # returns [object HTMLDocument]
+
+In user defined objects the use of instanceof is preferred.
+
+=======================================================================================================
+
+OOP in JS/Object-oriented programming/object oriented programming
+
+Function.prototype - the prototype of every function
+Object.prototype - the prototype of every object
+
+A prototype is another object that is the default source of properties for an object.
+If a property is not present in an object, its prototype will be looked up for such a property.
+
+properties in JavaScript can be enumerable and non-enumerable
+We can iterate over object properties with a for loop. Properties in JavaScript are enumerable and
+non-enumerable.
+var map = Object.create(String)
+
+Initialize empty object:
+obj = {};
+obj = new Object();
+obj = Object();
+
+Calling nonexistant properties on an object returns undefined.
+
+Creating an object with and without the 'new' keyword creates different side effects.
+When you call the constructor with the new keyword, you get a new object allocated and the
+constructor is called with the new object.
+If you don't explicitly return anything from the constructor, you get the new object as the result.
+If we initialize an object without the new keyword in strict mode, a TypeError will be thrown.
+
+A JavaScript constructor problem and three solutions:
+http://raganwald.com/2014/07/09/javascript-constructor-problem.html
+
+Obj.hasOwnProperty('propertyName') - hasOwnProperty doesn't lookup the prototypes
+
+The following two statements create and assign a property in the object 'hash'.
+hash['oblast'] = 'place'
+hash.oblast = 'place'
+
+We can check if an object has a property with the "in" operator:
+'oblast' in map
+-> true
+
+Object.create - create object with a specific prototype.
+var map = Object.create(null)
+
+In objects we can use the get and set literals to specify getters and setters.
+
+var pile = {
+	get height() {
+		return this.elements.length;
+	}
+
+	set height(val) {
+		this.elements.length = val;
+	}
+}
+
+We can create objects with a specified prototype with Object.create.
+
+map = Object.create(String)
+
+We can create prototypeless object with Object.create by passing null to it.
+
+var map = Object.create(null);
+console.log('toString' in map)
+-> false
+
+Get the object prototype:
+Object.getPrototypeOf(dateFields);
+document.body.constructor.name - returns "HTMLBodyElement" //ECMA 6 Syntax
+
+In JavaScript, calling a function with the new keyword in front of it causes it to be treated as a
+constructor.
+
+We can use this to initialize a 'class':
+function newClass(property) {
+	this.property = property; //this block of code is the body of the constructor method.
+}
+
+How to use a method generically:
+var map = Array.prototype.map;
+ary = [1, 2, 3];
+map.call(ary, function(a) { a++; });
+
+Object values are sorted differently in different browsers.
+
+IE<9, Firefox, Safari always iterate in the order of definition.
+Opera, IE9, Chrome iterate in the order of definition for string keys.
+	Numeric keys become sorted and go before string keys.
+
+Variables' values are copied when a new variable is assigned to them, but objects are referrenced.
+
+In other words,
+Variables are passed by value and objects are passed by referrence in JS.
+var a = 5;
+var b = a;
+b++; //the value of a is 5, the value of b is 6.
+
+var obj = {key: 1};
+var obj_1 = obj;
+obj_1.another_key = 100;
+//we can access the same object both through obj and obj_1
+
+If a function returns an object the use of this is ignored.
+
+function Animal() {
+  this.name = 'Mousie'
+  return { name: 'Godzilla' }  // <-- will be returned
+}
+alert( new Animal().name )  // Godzilla
+
+In JS's OOP model this is determined when a function is called, not when we declare it.
+
+Using this with call and apply:
+
+The main difference between call and apply is that apply (A as in 'array') accepts the arguments
+as an array and call (C as in 'comma') requires the arguments to be passed explicitly.
+
+Both methods from Function.prototyle accept the context which shall be treated as "this" in the
+function call as first argument.
+
+func.apply(this, [arg1, arg2]);
+func.call(this, arg1, arg2);
+
+function Test() {
+	return this;
+}
+
+In this case this will become an empty object:
+var stuff = new Test();
+# returns {}
+
+In this case this will return the window object:
+var stuff = Test();
+
+static methods and variables in JavaScript:
+function f() {
+	f.count = ++f.count || 1;
+
+	console.log(f.count);
+}
+
+f();
+f();
+# the value of f.count will become 2
+
+function Animal(name) {
+	arguments.callee.count = ++arguments.callee.count || 1;
+
+	this.name = name;
+}
+
+Animal.showCount = function() {
+	console.log(Animal.count);
+}
+
+Type conversion to boolean primitive:
+Undefined  => false
+null	=> 	  false
+NaN     =>    false
+0       =>    true
+numbers other than NaN => true
+Object  =>    true
+
+=======================================================================================================
+
+The DOM Tree
+
+There are officially 12 DOM node types:
+Node.ELEMENT_NODE == 1
+Node.ATTRIBUTE_NODE == 2
+Node.TEXT_NODE == 3
+Node.CDATA_SECTION_NODE == 4
+Node.ENTITY_REFERENCE_NODE == 5
+Node.ENTITY_NODE == 6
+Node.PROCESSING_INSTRUCTION_NODE == 7
+Node.COMMENT_NODE == 8
+Node.DOCUMENT_NODE == 9
+Node.DOCUMENT_TYPE_NODE == 10
+Node.DOCUMENT_FRAGMENT_NODE == 11
+Node.NOTATION_NODE == 12
+
+A <script></script> tag always has to be closed, even if we use the
+src attribute for outer JS. We cannot use both the src attribute and insert inner html inside
+a script tag. If the src attribute is present the script tag content is ignored.
+
+document.documentElement - contains the element at the top. Usually this is document.body.
+document.documentElement can never be null! document.body can return null if we
+call it before the page has loaded. This is the reason the use of document.onload
+is needed to attach events to elements in the head of the document and outer scripts!
+
+children - returns only HTML elements
+childNodes - returns child DOM elements of all types (also text etc.)
+
+The same relation between document.body.firstChild and firstElement
+and lastChild/lastElementChild is present.
+
+Element attributes can be accessed via the $0.attributes collection.
+
+A DOM object's node type id is stored in the nodeType property.
+
+The DOM can be accessed through the document JS object.
+
+NB!!!
+There are Document-based and Window-based coordinates:
+http://javascript.info/tutorial/coordinates#coordinate-systems
+
+Adding inner HTML:
+
+newHeading = document.createElement('h1')
+h1Text = document.createTextNode("inner text")
+newHeading.appendChild(h1Text);
+
+cloning an element:
+elem.cloneNode(true) - clones an element deeply with all child nodes
+elem.cloneNode(false) - clones the element without its descendants
+
+elem.createTextNode and adding it wit appendChild is faster than assigning a value to
+elem.innerHTML, but innerHTML has simpler syntax.
+
+The other way is directly using the innerHTML property:
+
+newHeading = document.createElement('h1')
+newHeading.innerHTML = 'inner text'
+
+document.activeElement - element that is focused in the DOM
+
+We can set an element on focus like this:
+document.querySelector('input').focus();
+
+The following wildcard argumends can be used with document.querySelector:
+
+[id^='someId'] will match all ids starting with someId.
+[id$='someId'] will match all ids ending with someId.
+[id*='someId'] will match all ids containing someId.
+
+Difference between document.getElementById and document.querySelector:
+
+document.getElementById - returns a "live" list of elements that
+gets updated automatically when dom changes occur.
+
+document.querySelector - returns a "fixed" list of elements. It
+doesn't get updated, no matter the state of the DOM tree.
+
+Adding an element to the DOM:
+1.
+newElement.appendChild(element);
+
+2.
+newElement.insertBefore(element, item) - element being the element we would like to add and
+item being a child to newElement before which we would like to insert element.
+
+appendChild and insertBefore can be used to move an element directly.
+
+Both of these methods return the removed element:
+parentElem.removeChild(elem)
+parentElem.replaceChild(prevElem, currentElem);
+
+document.forms - an array containing all the forms on a document.
+
+document.forms['element-name'] - access form child
+
+table elements have rows and cells properties:
+
+var table = document.querySelector('table');
+table.row[0].cells[0]
+
+The following objects were used here:
+HTMLTableElement, HTMLTableRowElement
+
+Select elements:
+
+var select = document.querySelector('select');
+select.options['option-name']
+select.selectedIndex
+select.options['option-name'].selected
+select.type // can be select-one or select-multiple
+
+Changing CSS style and properties:
+
+element = document.getElementById('elem');
+element.style.backgroundColor = 'black';
+element.style.display = 'inline';
+
+Window.getComputedStyle(element) - get an object of the compiled CSS of an element.
+
+NB!!!
+CSS properties who are entered with a hyphen are entered with a camelCase in JS, because the
+interpreter will consider it as a token representing supstraction.
+
+Also:
+
+element.style.className = 'new-class'; //not element.style.class
+
+Class is a reserved word in JS, althought there's no such language construct yet.
+
+Browser specific CSS properties:
+
+button.style.MozBorderRadius = '5px'
+button.style.WebkitBorderRadius = '5px'
+
+'raw' CSS:
+
+div.style.cssText = 'color: red !important; \
+    background-color: yellow; \
+    width: 100px; \
+    text-align: center; \
+    blabla: 5;'
+
+You cannot use !importand with the style property.
+
+We can only access CSS values with the style property only if they're set
+through it.
+
+window.currentStyle - IE specific
+
+http://erik.eae.net/archives/2007/07/27/18.54.15/#comment-102291
+
+confirm('Text to confirm') - confirm popup
+prompt('Please, provide me with your user name') - prompt popup('open question')
+
+document.cookie - contains the cookie of the current page
+document.execCommand - another way for copying into the clipboard
+document.forms - contains an array with all the forms on the current DOM
+
+How to append child in pure JavaScript:
+referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+
+Various ways to scroll to an element:
+https://praveenlobo.com/blog/how-to-scroll-elements-smoothly-in-javascript-jquery-without-plugins/
+
+=======================================================================================================
+
+BOM - Browser object model
+
+window.frames
+window.history
+window.location
+
+=======================================================================================================
+
+JavaScript Environment variables and objects
+
+localStorage - can be used to store keys and values in the browser local storage
+localStorage.setItem('image', 'landscape.png');
+localStorage.removeItem('image');
+
+FileReader - object for manipulating files uploaded through file uploading forms
+
+=======================================================================================================
+
+object
+	{}
+	{ members }
+		members
+			pair
+			pair, members
+		pair
+			string : value
+array
+	[]
+	[ elements ]
+		elements
+			value
+			value , elements
+				value
+					string
+					number
+					object
+					array
+					true
+					false
+					null
+=======================================================================================================
+
+Snippets
+
+function for adding hours to a Date object:
+
+Date.prototype.addHours=function(h) {
+    var copiedDate = new Date(this.getTime());
+    copiedDate.setHours(copiedDate.getHours()+h);
+    return copiedDate;
+}
+
+Call a function several times, passing an array member to each call:
+Function.prototype.sequence = function(vals) {
+ 	for (var i = 0; i < vals.length; ++i) this(vals[i]);
+}
+
+Download HTML as a file (the new filename cannot be manipulated):
+
+var myHTMLDoc = "<html><head><title>mydoc</title></head><body>This is a test page</body></html>";
+var uri = "data:application/octet-stream;base64,"+btoa(myHTMLDoc);
+document.location = uri
+
+Use BlobBuilder API for downloading an HTML filename:
+https://developers.google.com/web/updates/2011/08/Saving-generated-files-on-the-client-side
+
+More Blob object snippets:
+http://qnimate.com/an-introduction-to-javascript-blobs-and-file-interface/
+
+Argument unpacking with Function.prototype.apply:
+
+Function.prototype.sequence = function(vals) {
+	for (var i = 0; i < vals.length; ++i) {
+		func = this;
+		func.apply(this, vals[i]);
+	}
+}
+
+
+=======================================================================================================
+Java Script Type casting/type hinting/type coersing explained
+
+http://i.stack.imgur.com/MKgie.png
+http://i.stack.imgur.com/5bdbd.png
+http://i.stack.imgur.com/mmvud.png
+
+=======================================================================================================
+
+Java Script Events
+
+An onload event can only be attached to the document body itself, frames, images and scripts.
+
+EventHandler, EventListener - terms for the same thing
+
+Ways for adding events:
+
+1.
+Inline JavaScript for handling events(via the onclick, onmouseover etc attributes).
+This method is deprecated.
+
+2.element.eventname
+
+Adding the event as a property to a DOM object.
+
+  element.onclick = function() { 
+
+  }; //mind the semi-colon here. It can be ommited but it's good to place it
+
+3.
+document.addEventListener('click', myFunction, false);
+
+document.attachEvent - available on Internet Explorer 8 and previous instead of addEventListener
+
+setTimeout(function, milliseconds)
+
+	!!!JS WTF
+	We have to pass the function name without parentheses at the end. Otherwise,
+	setTimeout will fire it up immediatelly, ignoring the timeout period.
+
+setInterval
+clearTimeout
+clearInterval
+
+-- Events
+
+https://developer.mozilla.org/en-US/docs/Web/Events
+
+onfocus
+onblur - this event is always triggered after we leave an element, even if we don't change anything
+onchange
+onkeypress
+onkeydown
+onkeyup
+onsubmit
+
+Event Order:
+http://www.quirksmode.org/js/events_order.html
+event bubbling
+event capturing
+
+Java Script Event Loop:
+http://blog.carbonfive.com/2013/10/27/the-javascript-event-loop-explained/
+
+When setting up event handlers, we can prevent the default behaviour. Each event has one:
+
+link = document.querySelector('a');
+link.addEventListener('click', function(event) {
+	event.preventDefault();
+	console.log('Nope');
+});
+
+The pointer-events CSS property can be used to control how an element corresponds to a mouse/touch
+event.
+
+An event with the following property will not fire up a click event:
+
+.element {
+	pointer-events: none;
+}
+
+On older versions of IE when an event executes the event handler object becomes global.
+It can be accessed via (window.object). Also, IE<9 doesn't support event.preventDefault().
+The event.returnValue must be set to false to have the same effect as calling
+event.preventDefault(). Also in IE<9
+we can access the target of the event via event.srcElement, not
+event.target
+
+When we write inline a JS event handler the "this" keyword referrs to the DOM element on which
+the event is executed.
+
+Browser default action is independent from bubbling.
+Cancelling default action does not stop bubbling and vise versa.
+
+document.createEvent - mimic native browser events
+
+=======================================================================================================
+
+Java Script built-in objects and classes
+
+document
+
+window
+
+window.open - open new window. Useful for creating popups.
+
+window.print() - open print dialog to print page or save as PDF.
+
+WindowTimers
+
+WindowTimers.setInterval()
+
+Node
+
+The window object is the global object in JavaScript. It is named global in
+the NodeJS runtime.
+
+=======================================================================================================
+
+libraries
+
+moment.js - library for date and time manipulation
+
+http://gojs.net/latest/index.html - GoJS, library for tree diagrams
+
+jQuery plugins:
+
+Gridster - http://gridster.net/ - plugin for drag'n'drop grids
+Spectrum - jQuery color picker - https://bgrins.github.io/spectrum/
+jEditable - make an element editable and send a POST request to the server
+Datatables jQuery plugin - https://www.datatables.net/
+Excel for jQuery (jExel) - http://bossanova.uk/jexcel/using-a-calendar-column-type
+
+How to get the previous value - editableObj.revert property
+http://forums.asp.net/t/1624542.aspx?how+to+get+older+value+of+field+via+jquery+jeditable+js+plugin+in+mvc
+
+https://modernizr.com/ - Modernizr - check the user's browser's capabilities
+
+Clipboard.js for copying to clipboard through HTML5 and JavaScript without using Flash:
+https://clipboardjs.com/
+
+TweenMax.js - tweens and vector animations library, part of GreenSock JS
+
+GreenSock JS checktsheet:
+https://ihatetomatoes.net/wp-content/uploads/2015/08/GreenSock-Cheatsheet-2.pdf
+
+Bezier JS:
+https://pomax.github.io/bezierjs/
+
+Semantic UI:
+http://semantic-ui.com/introduction/getting-started.html
+
+Cross-domain messaging:
+http://easyxdm.net/wp/
+
+DayPilot - JS/jQuery/Angular libraries for timesheets, excel, calendars etc
+https://www.daypilot.org/
+
+jQuery 
+https://www.sitepoint.com/10-jquery-inline-editor-plugins/
+
+=======================================================================================================
+
+Tutorials and resources:
+
+JavaScript - from the Ground to Closures:
+http://javascript.info/
+
+Zero to hero with jQuery:
+https://www.youtube.com/watch?v=ELRNFtFxIs8
+
+Java Script - Understanding the weird parts:
+https://www.youtube.com/watch?v=Bv_5Zv5c-Ts
+
+Debugging JavaScript - 0 to Heisenberg
+https://www.youtube.com/watch?v=-q1z8BPFItw
+
+https://scotch.io/
+
+Java Script Planet on youtube (tutorials and lectures):
+https://www.youtube.com/channel/UCzVnCG4ItKitN1SCBM7-AbA
+
+Bianka Gondolfo - front-end masters:
+http://shop.oreilly.com/product/0636920049340.do?
+green=BCD4192E-B661-5ED8-0F56-C60D18D7A4B4&intcmp=af-mybuy-0636920049340.IP
+
+Advanced JavaScript:
+http://shop.oreilly.com/product/0636920049272.do
+
+Callback hell explained:
+http://callbackhell.com/
+
+Vanilla JS vs jQuery syntax:
+http://sharedfil.es/js-48hIfQE4XK.html
+
+JavaScript - The Right Way:
+http://jstherightway.org/
+
+FormCraft:
+http://formcraft-wp.com/
+
+Quircksmode (cross-browser reference):
+http://www.quirksmode.org/dom/events/keys.html
+
+Chrome Platform Status (metrics, changes and improvements for Chrome):
+https://www.chromestatus.com/features
+
+Google Developers:
+https://developers.google.com/web/
+
+OpenJS:
+http://www.openjs.com/
+
+JavaSciprt Performance PlayGround:
+http://jsperf.com/
+
+NodeJitsu:
+https://docs.nodejitsu.com/
+
+JavaScript Coder:
+http://javascript-coder.com/
+
+Douglas Crockford - JavaScript - The Early Years
+https://www.youtube.com/watch?v=JxAXlJEmNMg
+
+Douglas Crockford - And Then There Was JavaScript
+https://www.youtube.com/watch?v=RO1Wnu-xKoY
+
+Douglas Crockford - Function the Ultimate
+https://www.youtube.com/watch?v=ya4UHuXNygM
+
+=======================================================================================================
+Debugging Java Script with Chrome Developer Tools or FireBug
+
+http://www.jslint.com/
+http://jshint.com/
+Chrome developer Tools Protocol documentation:
+https://chromedevtools.github.io/devtools-protocol/
+
+$0 - references the last element that was highlighted in the Elements tab or with Ctrl + Shift + C or with the button for selecting elements.
+
+Different levels of error in the console API:
+console.debug
+console.info
+console.warn
+console.error
+
+console.dir(object) - alternative list for object properties
+
+Chrome debugger/Chrome DevTools/Chrome Developer Tools:
+
+Delete the last selected node in Chrome debugger:
+$0.parentNode.removeChild($0)
+$0.remove();
+Right click on element in Elements -> Delete element
+
+Command Line API Reference:
+https://developers.google.com/web/tools/chrome-devtools/console/command-line-reference?utm_source=dcc&utm_medium=redirect&utm_campaign=2016q3
+
+File editor:
+Ctrl + P - search for an assets file
+Ctrl + P -> :10 - go to the specified number on the file
+Edit multiple occurances of a selection:
+Select part of text -> each next press of Ctrl + D will select
+the next occurance in the text -> when you start editing each selection
+will be edited simultaneously (similar to Sublime Text)
+
+http://code.tutsplus.com/articles/chrome-dev-tools-networking-and-the-console--net-28167
+
+DOMLint - scan the DOM for dom conflicts:
+http://kangax.github.io/domlint/
+
+Monitor the events on a certain element and event listener:
+monitorEvents($0, 'mouse');
+
+Unmonitor events:
+unmonitorEvents($0, 'mouse');
+
+List of events that can be monitored through the Chrome Dev Tools:
+
+	mouse:  “mousedown”, “mouseup”, “click”, “dblclick”, “mousemove”, “mouseover”, “mouseout”,
+			“mousewheel”
+	key: “keydown”, “keyup”, “keypress”, “textInput”
+	touch:  “touchstart”, “touchmove”, “touchend”, “touchcancel”
+	control:  “resize”, “scroll”, “zoom”, “focus”, “blur”, “select”, “change”, “submit”, “reset”
+	no arguments: all of the above + “load”, “unload”, “abort”, “error”, “select”, “change”, “submit”,
+		“reset”, “focus”, “blur”, “resize”, “scroll”, “search”, “devicemotion”, “deviceorientation”
+
+Select an element in Chrome debugger:
+Ctrl + Shift + C
+
+Freeze the DOM and enter a DOM breakpoint state:
+Hover over the desired element and press F8
+
+Elements - how to force element state pseudo attribute:
+
+Right click -> Force State -> select from :active, :hover, :focus, :visited
+
+Get event handlers:
+https://blinkingcaret.wordpress.com/2014/01/17/quickly-finding-and-debugging-jquery-event-handlers/
+
+Get additional HTTP headers and info:
+Networking -> right click on "Name" column for example -> select different header information.
+
+-- Live Editing --
+
+We can edit and save a temprorary version of a Java Script file thought the Chrome Development Tools.
+
+-- Strict mode
+
+Strict mode disables the with construct in JS.
+Initializing a new object without the new keyword throws a TypeError in JavaScript with
+strict mode enabled.
+We cannot give a function multiple parameters with the same name.
+
+-- Console --
+
+Shift + Return - move the cursor to a new line without submitting the expression
+Esc - bring up or hide the console
+
+console.log();
+console.clear();
+console.debug() - similar to var_dump in PHP
+console.assert(expression, message); - it can be used to catch and throw custom errors in the JS console
+	myArray = [];
+	console.assert(myArray.length != 0, 'array is empty') - the message will be
+	displayed if the expression returns false.
+
+console.table() - displays an object as a table
+	console.table(json_object, ['name','email']) - the JSON object and the
+	fields that you would like to be displayed.
+
+	Works with a JSON object containing multible JSON objects with the same fields
+
+Timers - they can be used to see how much time various expressions take to execute.
+
+console.time('Timer Name'); - start a timer.
+console.timeEnd('Timer Name'); - stop a timer.
+
+Command Line Referrence:
+
+https://developers.google.com/web/tools/chrome-devtools/debug/command-line/command-line-reference?hl=en
+
+window.copy('string') - copy input to OS clipboard
+
+Change DevTools themes:
+http://stackoverflow.com/questions/25473766/changing-developer-tools-font-face-family
+
+15 Must know chrome devtools tips and tricks:
+http://tutorialzine.com/2015/03/15-must-know-chrome-devtools-tips-tricks/
+http://mo.github.io/2015/10/19/chrome-devtools.html
+https://www.keycdn.com/blog/chrome-devtools/
+
+Get current JavaScript memory allocation:
+"Customize and control Chromium" -> "Task Manager" -> Right click -> display "JavaScript memory"
+
+Debug Node.JS apps with Chrome/Chromium:
+1. Open chrome://inspect
+2. Open "Open dedicated DevTools for Node"
+3. Run the app with
+	$ node --inspect-brk app.js
+
+=======================================================================================================
+
+JavaScript Internals
+
+JavaScript: The Core
+http://dmitrysoshnikov.com/ecmascript/javascript-the-core-2nd-edition/?utm_source=ESnextNews.com&utm_medium=Weekly%20Newsletter&utm_campaign=2017-11-21
+=======================================================================================================
+
+Browsers
+
+-- Chrome/Chromium
+
+chrome://version - get browser build options, binary path, extension path, V8 version, browser version
+
+=======================================================================================================
+
+Node JS
+
+Figlet - ASCII art Node.js module
+
+=======================================================================================================
+
+Snippets
+
+function arrayFilter(ary, sanitizingFunction) {
+    passed = [];
+    for (i = 0; i < ary.length; i++ ){
+        if(sanitizingFunction(ary[i])) {
+            passed.push(ary[i]);
+        }
+    }
+    return passed;
+}
+
+get all property names:
+for (var name in objName) {
+    console.log(name);
+}
+
+get key for array value:
+function find(array, value) {
+    for (var i = 0; i < array.length; i++) {
+        if (array[i] == value) return i;
+    }
+
+    return -1;
+}
+
+substract from a Date() object:
+var d = new Date();
+d.setDate(d.getDate() - 5);
+console.log(d.toLocaleString());
+console.log(d.toLocaleDateString());
+
+Various ways to scroll to an element:
+https://praveenlobo.com/blog/how-to-scroll-elements-smoothly-in-javascript-jquery-without-plugins/
+=======================================================================================================
+
+Canvas
+
+HTML5 Canvas cheatsheet:
+http://cheatsheetworld.com/programming/html5-canvas-cheat-sheet/
+
+=======================================================================================================
+
+ECMA Script 6
+
+Features:
+http://es6-features.org/#Constants
+
+ECMA Script 5 and ECMA Script compatibility features and testing:
+http://kangax.github.io/compat-table/es6/
+
+The following keywords are reserved and are going to come in use in ECMA Script 6:
+
+implements
+interface
+let
+package
+private
+protected
+public
+
+=======================================================================================================
+
+NPM, Bower, Yeoman
+
+npm config - get/set config values
+npm config get path - get install prefix
+npm config ls -l -get all default values
+
+bower install --save <YOUR_PACKAGE>
+

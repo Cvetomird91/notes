@@ -1,0 +1,889 @@
+Log BASH history to syslog:
+http://blog.hellosa.org/2013/07/27/log-bash-history-to-syslog-on-centos-6.html
+
+Google's BASH scripting style guide:
+https://google.github.io/styleguide/shell.xml
+
+Resources:
+http://mywiki.wooledge.org/BashGuide
+http://tldp.org/LDP/Bash-Beginners-Guide/html/
+http://tldp.org/LDP/abs/html/
+https://www.gnu.org/software/bash/manual/
+http://wiki.bash-hackers.org/
+
+Configuration file priority:
+
+/etc/profile
+	Systemwide, executed for login shells
+~/.bash_profile
+	Personal, per user configuration file, executed for login shells
+~/.bashrc
+	Individual interactive shell startup file
+~/.bash_logout
+	executed after logout
+~/.inputrc
+	Readline configuration file
+
+Types of variables:
+
+declare
+	-a - array
+	-A - associative array/hash (in BASH 4)
+	-f - function - without arguements returns all the declared functions in the current environnment
+	-r - readonly variable - only the user who declared the variable can change it afterwards
+	-i - integer
+	-p - dump variable
+	-x - export variable that will be "inherinted" in the subshells' environment
+typeset
+	typeset and declare are aliases. Typeset is POSIX compliant.
+readonly
+	works the sames as declare -r
+export
+	works the same as declare -x
+
+	export -f function - export a function
+	export -p - list environment variables in the current shell (same as without arguments)
+
+declare -p
+	similar to var_dump in PHP
+local
+	adjust the variable scope to local (it can be used only within a function)
+declare -g
+	when used in functions, the variable becames global
+
+When decalred by the usual way (not with declare) variables have by default a global scope.
+This can be changes with local.
+
+NB!!!
+Using the declare builtin restricts the scope of a variable.
+
+local
+global
+
+All BASH variables are actually strings.
+
+bash -c - similar to sh -c and eval - execute a command in non-interactive mode
+bash -s
+bash -E
+bash -v - same as --verbose - output each command and expression before executing it
+
+bash --rpm-requires script.sh (on RedHat-based systems) - show the dependencies needed to run a script
+
+=======================================================================================================
+
+Calling variables:
+
+$a
+${a}
+file_no$a
+file_no${a} - better readability
+
+This will not work at the beginning of the line:
+$afile_no
+
+This is the proper way to do this:
+${a}file_no
+
+Variable names can include only alphanumeric characters and _
+
+Variables assignment(watch out for any spaces before and after the = sign )
+
+a=100
+a='100' / no interpolation /
+a="100" / with interpolation /
+
+=======================================================================================================
+
+File descriptors and redirects:
+
+0 stdin - uses pipe or <
+1 stdout - uses >
+2 stderr - uses 2>
+
+redirect stdout to a file:
+ls -l > list
+redirect stderr to a file:
+grep da * 2> error-list
+redirect stdout to a stderr:
+grep da * 1>&2
+redirect stderr to a stdout:
+grep * 2>&1
+redirect stderr and stdout to a file:
+rm -f $(find / -name core ) &> /dev/null
+
+redirect file content to a variable:
+files=$(<list)
+
+This is preferred over the following:
+files=$(cat list) - in this way a subshell for the cat command will be started.
+In the first example no subshell will be started and the cat command will not be executed in it,
+saving us resources.
+
+=======================================================================================================
+
+Logical operators with the let builtin
+Arithmetic expressions
+
+NB!!!
+integer and string comparison use a different set of operators
+
+The > and < signs need to be escaped.
+
++ - събиране
+- - изваждане
+* - умножение
+/ - деление
+% - остатък при деление
+> - по-голямо
+< - по-малко
+>= - по-голяма или равно
+<= - по-малко или равно
+== - равно
+!= - не е равно
+& - логическо И (AND)
+| - логическо ИЛИ (OR)
+! - логическо НЕ (NOT)
+=~ - регулярни изрази
+
+Няма === и !== оператори в BASH.
+
+Incrementation:
+
+Not correct:
+i=1
+i+=1
+This will make the value of i amount to 11. This operator is used for concatenation.
+
+Correct (mind the spaces between the operator and the operands):
+i=$((i+1))
+((var=var+1))
+((var+=1))
+((var++))
+
+let "var+=1"
+let "var++"
+
+echo $[12*24] - we can perform arithmetic operations with this construct. We don't need to escape
+				the asterisk here as with using echo and bc.
+
+=======================================================================================================
+
+-- Pipes --
+
+the stdout of this program | becomes stdin of that one
+ stdout | stdin
+
+The output from the first program becomes the first argument for the second program
+
+=======================================================================================================
+
+Debugging:
+#!/bin/bash -x
+This outputs each expression of the script before it gets executed.
+
+echo and read can also be used for debugging
+
+The caller builtin can be called in user defined functions to review the call stack.
+
+BASH "linter":
+bash -n scriptname - checks a script for syntax errors
+
+=======================================================================================================
+
+-- Parenthesis --
+
+() - execute commands in new shell
+{} - execute commands in the current shell
+(()) - arithmetic expressions
+[] - basic integer arithmetic, basic string comparison and file attributes check
+
+	Note that integer and string comparison use a different set of operators.
+
+	To perform integer comparison of real numbers (e.g. negative with positive integers)
+	we need to use the integer comparison literals(e.g. -gt, -le etc.).
+	Otherwise using \< and > might not work with negative integers.
+
+	E.g. the following expression will return true:
+	[ -2 > 0 ]
+
+[[]] - basic integer arithmetic, regular expressions and file attributes checks
+	Note:
+		When matching regex/regular expressions with the double square brackets, the regular expression
+		needs not to be wrapped in columns!
+
+	The operator for regex/regular expressions matching is =~
+
+=======================================================================================================
+Shell expansion:
+
+	Types:
+
+	Brace Expansion
+	mkdir {A,B} -> this will create the directories A and B
+	mkdir {A..E} -> this will create the directories A, B, C, D and E
+
+	Tilde Expansion
+	~/ -> this is an alias to /home/username/ (it displays the current user's homedir)
+	~username/	-> this is an alias to /path/to/home/of/username/ (it displays the homedir of
+	another user)
+
+	~+ - expands to the value of $PWD.
+	~- - expands to the value of $OLDPWD. If $OLDPWD is not set, it will not expand.
+
+	It can also be used to access directories from the dirstack. Please, check the dirs builtin.
+
+	The $ character may introduce parameter expansion, command substitution or arithmetic expansion.
+
+	Parameter Expansion - the parameter or variable may be covered with double quotes
+	or curly braces:
+
+	"$PARAMETER"
+	${PARAMETER}
+
+	The braces are required if the variable is successed by text which is not about to be interpreted.
+
+	Direct and indirect expansion:
+	Most commonly we use direct expansion:
+	"$PARAMETER"
+
+	Indirect expansion starts with an exclamation point:
+	echo ${!B*} - this will return all the variables whose name start with a capital B.
+				  The names of the variables will be taken 'literaly' and used as arguments
+				  for the expansion.
+
+	NB!!! This is one of the reasons BASH variables need to be surrounded by
+	double quotes when used.
+
+	The following construct allows for the creation of a variable if it does not exist yet
+	**upon first usage:**
+	${VAR:=value}
+
+	example:
+	$ echo $VAR
+
+	$ echo ${VAR:=value}
+	value
+
+	More on parameter expansion:
+	http://tldp.org/LDP/abs/html/parameter-substitution.html
+
+	Command substitution - this can be achieved with $(command) or `command`.
+		OUTPUT=`command_1 argument_1`
+		OUTPUT_1=$(command argument)
+
+	The main difference between both is that when using the $() syntax none of the symbols
+	are treated specially.
+
+	We can execute commands into a directory different from the current working one.
+
+	When using the backticks the backslash character has different behaviour when
+	preceeding "$", "`" or "\".
+
+	echo ${username-`whoami`} - this will echo the result from whoami if the $username variable is
+	not set yet.
+
+	The first backtick not preceeded by a backslash terminates the command substitution.
+
+	Command substitution can be nested. When using the backquotes,
+	we should escape the inner backquotes. Nevertheless, nested substitution is preferred to be
+	done with the $(command) notation for readability.
+
+	If the substitution appears within double quotes, word splitting and file name expansion are
+	not performed on the results.
+
+	Arithmetic Expansion
+	Process Substitution
+	Word Splitting
+	Pathname Expansion
+
+=======================================================================================================
+BASH Arrays
+
+NB!!!
+Array variables may not (yet) be exported.
+
+Arrays in BASH are single-dimensional. BASH supports associative arrays since BASH 4.
+
+a=(x y z)
+echo ${a[0]} - prints 'x' to standard output
+echo ${a} - prints 'x' to standard output (not the whole array)
+
+Note:
+echo $a
+echo ${a} - in these cases the first element of an array will be returned, not the whole array
+
+Declare an (empty) array:
+ARRAY=()
+
+shell expansion into array:
+ARRAY=($( ls docs* )) - each line of output will become an array value
+
+return the number of array entries:
+echo ${#a[*]}
+
+If we pass a string to the same syntax construct, it will return the string's length:
+${#str}
+
+create an array with each line of a file as an entry:
+readarray array < filename
+mapfile array < filename
+
+mapfile and readarray are builtin aliases
+
+get all entries in the array:
+${array[@]}
+${array[*]}
+
+get an array with all the array keys:
+${!array[@]}
+
+Associative arrays can be declared in the following way with declare(since 4.2)
+declare -A asoc=([hello]=world [ubuntu]=debian)
+
+Extracting a slice from an array:
+${ARRAY:0:2} - this will extract two elements, starting from the one with key 0.
+${ARRAY:3:4} - this will extract four elements, starting from the one with key 3.
+${ARRAY:2} - this will extract the elements starting from the one with key 2
+
+Extracting a portion of symbols from a single array element:
+${ARRAY[3]:4:5} - this will return five symbols off the third element starting from the
+				  sixth character
+
+Remove an array element:
+unset ${Unix[3]}
+
+Copying an array:
+Unix=('BSD' 'OpenSuse' 'Debian')
+Unix_2=("${Unix[@]}")
+
+Search and replace in an array:
+${Unix[@]/Ubuntu/CentOS}
+
+Search and replace using a pattern:
+${Unix[@]/Deb*/Debian}
+
+Add array elements/increment array elements:
+Unix=('BSD' 'OpenSuse' 'Debian')
+Unix=(${Unix[@]} "HP-UX" "AIX")
+
+BASH arrays support negative indexes:
+${Unix[-1]} will return "AIX" in case of the previous array.
+
+Negative indexes are supported since version 4.2.
+
+=======================================================================================================
+
+Control structures
+(the semi-colons aren't obligatory if each logic line/expession is separated with a new line)
+
+if [ -e file ]; then
+	//do something;
+fi
+
+We can check if a file exists in the following way:
+if [ "$filename" ]; then
+	//do something if the file exists in the current directory
+fi
+
+if [ -e file ]; then
+	#do something
+	elif [ ! -e file ];  then
+	#do something else
+fi
+
+case "$1" in
+	'start'|'run')
+		make_me_start;;
+	'stop')
+		make_me_stop;;
+	# default value
+	*)
+		echo "Usage: $0 variable";
+esac
+
+for i in ${array[@]}; do
+	echo $i;
+done
+
+seq 1 10 - command for returning a numeric sequence
+
+for i in $(seq 1 10); do echo $i; done - will execute seq in a subshell as a separate command
+for i in {1..10}; do echo $i; done - will use the current shell to return the sequence
+
+We can specify steps in sequences:
+for i in {1..10..2}; do echo $i; done - this will output the following:
+1
+3
+5
+7
+9
+
+select FILENAME in *; do something; done - loop for creating select menus
+
+**BASH if arguements/if options for file property and file attribute evaluation**
+
+return TRUE if
+
+-a - file exists
+-b - file exists and is a block file
+-c - file exists and is a character-special file
+-d - file exists and is a directory
+-e - file exists
+-f - file exsits and is a regular file
+-g - file exists and has SGID bit set
+-k - file exists and its sticky bit is set
+-p - file exists and is a named pipe (FIFO)
+-r - file exists and is readable
+-s - file exists and has a size
+-t - file descriptor is open and is a terminal
+-u - file exists and its SUID bit (set user ID) is set
+-w - file exists and is writable
+-x - file exists and is executable
+-O - file exists and is owned by the efective user ID
+-G - file exists and is owned by the efective group ID
+-L - file exists and is a symbolic link
+-N - file exists and and has been modified since it was last read
+-S - file exists and is a socket
+
+-- Integer Comparison --
+
+-eq - equal
+-nq - not equal
+-gt - greater than
+-ge - greater than or equal to
+-lt - less than
+-le - less than or equal to
+
+Within **Double Parenthesis**
+< - less than
+> - greater than
+<= - less than or equal to
+>= - greater than or equal to
+
+=======================================================================================================
+
+BASH Functions
+
+You can't have empty functions in BASH.
+
+empty_func() {} will return an exit status 2.
+
+You can't declare function arguments upon declaring them. For example this isn't possible in BASH:
+
+function(arg_1, arg_2) {
+	//some side effect
+}
+
+We have to use $1, $2 etc special variables to work with function arguments:
+
+function() {
+	arg_1="$1"
+	arg_2="$2"
+	//some code that uses $arg_1 and $arg_2
+}
+
+We can declare BASH functions with or without braces after the function name identifier:
+
+E.g. the following are valid BASH functions:
+function sample() { ... }
+sample() { ... }
+function sample { ... }
+
+=======================================================================================================
+
+Shell builtins
+
+alias - create an alias or list all aliases (without arguments)
+	\aliasname - execute a command with the same name by ignoring the alias
+unalias - unset an alias
+unset - unset a shell variable
+	unset variable (we pass the variable name without dollar sign)
+dir - display the dirstack that can be manipulated with pushd and popd
+	dir -v - display the dirstack like a numeric array
+	Then any of those directories can be accessed via tilde expansion:
+	cd ~2 - enter the second directory from this directory list
+	cd ~+N - enter the Nth directory off the dirstack counting from the right, starting with zero
+	cd ~-N - enter the Nth directory off the dirstack counting from the left, starting with zero
+complete - enable custom autocompletion
+compgen - generate possible completion matches
+echo
+export
+
+	export -f - export function
+	export -p - (same as without arguments) - list environment variables
+
+shift - unset the first element of $@
+printf - enchanced echo
+getopts - parses command line arguments passed to the script (analog of the getopt external command)
+	http://www.bahmanm.com/blogs/command-line-options-how-to-parse-in-bash-using-getopt
+
+	http://wiki.bash-hackers.org/howto/getopts_tutorial
+
+	 getopts "a" opt
+
+	synopsys:
+	getopts OPTSTRING VARNAME [ARGS...]
+	OPTSTRING - tells getopts which options to expect and where to expect arguments
+	VARNAME - tells getopts which shell-variables to use for option reporting
+
+caller - echoes information about the caller of a function.
+		 Can be used only in functions. Useful for debugging
+bind - display or modify readline key bindings
+let - used for incrementation and decrementation and other mathematical operations
+	!!!NB - variables are passed to let without the dollar sign
+
+set - set BASH options (they are contained in $-)
+
+	Options in $-
+	h - shell hashing is enabled
+	i - the shell is in interactive mode
+	pipefail - the piped command always returns a failed status
+
+enable - enable and disable builtin shell commands
+	enable -a - list all enabled builtins
+	enable (without arguments) - list all enabled builtins
+fc - open the last executed command in a buffer of the default text editor
+: - legacy builtin that was used along with ; instead of true and false in the Thompson shell
+		:> filename - delete file contents
+command - run a command from the shell path, ignoring aliases and BASH functions with the same name
+
+	command command-name
+
+pushd - push current directory to $DIRSTACK
+popd - chande directory to the last one from the $DIRSTACK variable and remove it from the $DIRSTACK list
+builtin - run a shell builtin, ignoring aliases, functions and external executables
+		  from the shell path of the same name
+
+	builtin builtin-name
+
+basename - strip directory and suffix from filenames (similar to basename() in PHP)
+
+read - read standard input into a shell variable
+
+	read -a - create array from input. Each line is treated as a separate array value
+	read each line passed to the script and store it in an array:
+	while read -r line; do echo $line; done
+	cat file | bash readlines.sh
+
+	checking if a string is not null:
+	while read line || [ -n "$line" ]; do 
+		# code
+	done
+
+eval - the same as running bash -c "shell code" but it is executed in the same process
+	executes the resulting string as BASH code
+
+coproc - coproccess - BASH asynchronous programming
+
+	There may be only one active coprocess at a time.
+
+hash - store command names into a hash table (the associative array $BASH_CMDS builtin)
+	   when executing the builtin without arguments, we will see a list of the last commands
+       that are hashed. We can check if a command is hashed with the type builtin.
+
+	hash -r - clean hash map
+	hash -d command - remove command from hash map
+
+shopt - set and view shell options
+
+	shopt -p - list shell options and their values
+	shopt -u option - disable option
+	shopt -s option - enable option
+
+set - set and shopt are different. Enabled options that can be manipulated with set are
+	  stored in the $- builtin.
+	  set is POSIX compliant
+
+Backslash:
+
+\ - in one liner bash scripting when used solely it moves the cursor to the next line.
+	This can be used to make the input more readable. In this case the backslash
+	isn't an escape character.
+
+* - this is an alias for all the files in the current directory when used not in
+combination with other characters
+For example:
+echo *
+
+When using the asterisk in such a way, it isn't interpreted as a regex multiplication quantifier
+For example:
+echo *
+
+This will output a list with all the files in the CWD.
+
+When used in a combination of characters it works as the BASH wildcard symbol.
+Colon BASH builtin:
+http://stackoverflow.com/questions/3224878/what-is-the-purpose-of-the-colon-gnu-bash-builtin
+
+=======================================================================================================
+Shell options
+
+They can be set and unset via the set builtin
+
+http://wiki.bash-hackers.org/internals/shell_options
+
+=======================================================================================================
+Errors
+
+http://tldp.org/LDP/abs/html/exitcodes.html - exit codes with special meaning
+
+0 - true has 0 as exit code
+1 - usually false has 1 as exit code
+2 - misuse of BASH builtins (e.g. empty functions)
+126 - 165
+127
+128
+128+n
+130
+255 - exit status out of range (exit statuses in BASH range from 0 to 255)
+
+=======================================================================================================
+
+-- BASH special variables --
+
+environment variables
+internal variables
+builtin variables
+
+$0 - the name of the script or shell
+$# - number of parameters/arguements - is 0 if none, albeit $BASH_ARGC wouldn't be set in the same case
+$! - PID of the last executed background command
+$$ - the PID of the script (not to be confused with $BASHPID)
+$? - exit status of the last executed command
+$* - all of the passed parameters to the script in a single string
+$@ - all of the passed parameters to the script in an array
+$- - current bash/flag options (can be configured with the set builtin)
+$1, $2 etc. - the number of an argument passed to the script
+${@:2} - from the second argument (not second index) to the last
+$_ - final argument of previous command executed (!!:$ is prefered, because $_ doesn't expand in the
+	 shell history
+$FUNCNAME - get name of function. Returns null if called outside of function
+$BASHPID - current process ID
+$SHLVL - the level of bash subshell. If equal to one, the process is the parent shell
+$IFS - internal field separator
+
+	It can be used with read to define how words are separated:
+	$ IFS='-'
+	$ read -a ary
+	word1-word2-word3
+	$ echo ${ary[2]}
+	word3
+
+	It also affects the values of $@ and $*.
+
+	if IFS is set to '-' in a script, passing
+	a-b-c as an argument to it will split it into three different arguments(a, b and c)
+
+	Parse a string using a delimiter(e.g. $PATH) into an array:
+	IFS=':'
+	read -a paths_array <<< "$PATH" # this breaks if we don't double quote the string
+
+$BASHOPTS - BASH options
+$DIRSTACK - the top of the dirstack we can manipulate with pushd and popd
+$HISTSIZE -
+$HISTFILESIZE - The maximum size of ~/.bash_history
+$HISTCONTROL -
+$HISTIGNORE - commands to be ignored when updating the shell history. They are entered in the following
+			  format: '&:ls:ll:la:cd:exit:clear:history'
+$RANDOM - returns random four or five digit number
+$LINES - number of lines in terminal
+$COLUMNS - number of columns in terminal
+
+=======================================================================================================
+BASH History
+
+HISTSIZE -
+HISTFILESIZE - The maximum size of ~/.bash_history
+HISTCONTROL -
+HISTIGNORE - commands to be ignored when updating the shell history. They are entered in the following
+way:
+HISTIGNORE='ls:pwd:&:file'
+
+A command preceded by a space in the command line will not be written into BASH history.
+
+=======================================================================================================
+
+BASH History Expansion
+
+!4 - execute the forth command recorded in shell history (.bash_history)
+!-4 - execute the forth command counting back in the current shell (different than !4)
+!! - execute previous command
+!-1 - execute previous command
+
+!ps - execute the last command starting with "ps"
+!?ps - execute the last command containing "ps"
+
+^ls^cat^ - execute the last command by replasing "ls" with "cat"
+
+!cp:^ - get the first argument of the last "cp" command
+!cp:$ - get the last argument of the last "cp" command
+!cp:* - get all the arguments of the last cp command
+!!:^ - get the first argument of the previous command in the current shell (not counting the command
+	   itself)
+!!:$ - get the last argument of the previous command in the current shell
+$_ - get the last argument of the last command executed in the current shell
+
+Get the n-th argument of a command:
+!tar:3 - get the third argument of the previous command starting with tar
+!% - match the whole last command matched with !?keyword
+
+!tar:3-5 - get from the third to the fifth argument from the last command starting with tar
+!tar:2-$ - get from the second to the last argument
+
+!!:* - get all arguments from the previous command
+!!:2* - get all arguments from the previous command starting from the second
+!!:2-$ - get all arguments from the previous command starting from the second
+!!:2 - get all arguments from the previous command starting from the second except the last
+
+Only print command without executing it. Works with all identifiers specified in this section:
+!!:p
+!-4:p
+!-tar:p
+etc
+
+BASH history modifiers - they are followed after the history expansion - t, h, r, e, p, q, x, &, g,
+a, G
+!!:$:t - take the last argument of the previous command and remove all path names leaving only the file
+name.
+
+!!:$:r - removes the file extension from the last argument of the last command
+!!:s/ls -l/cat/ - same as ^ls^cat^ - sed-like substitution
+
+!!:gs/password/passwd/ - global substitution
+!!:g& - repeat last substitution
+
+=======================================================================================================
+GNU Readline hotkeys
+
+Moving around:
+Ctrl-b			Move the cursor	one character	⇦ to the left
+Ctrl-f			Move the cursor	one character	⇨ to the right
+Alt-b			Move the cursor	one word		⇦ to the left
+Alt-f			Move the cursor	one word		⇨ to the right
+Ctrl-a			Move the cursor					⇤ to the start of the line
+Ctrl-e			Move the cursor					⇥ to the end of the line
+Ctrl-x-x[1]		Move the cursor					⇤⇥ to the start, and to the end again
+
+History:
+Ctrl-p	Move in history	one line	⇧ before this line
+Ctrl-n	Move in history	one line	⇩ after this line
+Alt-> 	Move in history	one token parser at a time
+Ctrl-J	End an incremental search. By pressing Ctrl+J again the command will be executed.
+Ctrl-G	Abort an incremental search and restore the original line
+
+Move characters and words forward:
+Ctrl-t			drag			Drag forward the character before the cursor with one position
+Alt-t			Transpose/drag	Drag forward the word before the cursor with one position
+
+-- BASH Hotkeys --
+
+https://bg.wikipedia.org/wiki/Bash
+
+readline-editor - command for customizing readline hotkeys
+
+=======================================================================================================
+BASH PitFalls
+
+=======================================================================================================
+-- BASH Substitutions --
+
+http://www.tldp.org/LDP/abs/html/refcards.html#STRINGOPSTAB
+
+=======================================================================================================
+
+http://wiki.bash-hackers.org/
+http://www.tldp.org/LDP/abs/html/
+https://bash.cyberciti.biz/guide/Main_Page
+http://www.thegeekstuff.com/tag/bash-tutorial/
+
+Colourful output in BASH --
+
+https://wiki.archlinux.org/index.php/Color_Bash_Prompt
+http://www.tldp.org/HOWTO/Bash-Prompt-HOWTO/x405.html
+
+Blinking, bold, underlined text in BASH:
+http://misc.flogisoft.com/bash/tip_colors_and_formatting
+
+How to increment a variable in Bash:
+	http://askubuntu.com/questions/385528/how-to-increment-a-variable-in-bash
+
+Create directories recursively, using BASH:
+
+http://stackoverflow.com/questions/1731767/how-to-create-nonexistent-subdirectories-recursively-using-bash
+
+Multithreaded BASH extension:
+http://kmkeen.com/multithreaded-bash/
+
+Make an HTTP request with BASH:
+http://stackoverflow.com/questions/8467096/how-do-i-execute-an-http-put-in-bash
+http://www.linuxjournal.com/content/more-using-bashs-built-devtcp-file-tcpip
+
+read -a array_name
+create an array from standard input with each element separated by a space
+
+rev - revert each line from an input file
+
+How to sum up array elements in BASH:
+
+t=0
+for i in ${array[@]}; do
+  let t+=$i
+done
+echo "Total: $t"
+
+	--Snippet - how to count lines of files
+
+find -type f -name "*.php" ! -empty > files
+readarray list < files
+rm files;
+//
+t=0
+for i in ${files[@]}; do
+	let t+=$i;
+done
+echo $t
+
+	-- Snippet - how to get count of opened file handles
+
+for p in $(ps -A -o pid); do
+    nh=$(ls /proc/$p/fd  2>/dev/null | wc -l) &&
+    exe=$(readlink -f /proc/$p/exe  2>/dev/null) &&
+    echo "$p ($exe): $nh"
+done
+
+Implementing silent mode for a function:
+
+	function exec_debug {
+
+		local BASH_CODE="$1";
+		local MODE="$2";
+
+		if [ "$MODE" == 'silent' ]; then
+			sh -c "$BASH_CODE > /dev/null 2>&1";
+		else
+			sh -c "$BASH_CODE";
+		fi;
+
+	}
+
+-- Snippet - how to return safely to default IFS:
+
+	oldIFS="$IFS"
+	IFS='-'
+	//work with new ifs
+
+	//switch to previous:
+	IFS="$oldIFS"
+
+-- Snippet - how to get running and stopped jobs
+
+jobscount() {
+   local stopped='$(jobs -s | wc -l | tr -d " ")'
+   local running='$(jobs -r | wc -l | tr -d " ")'
+   echo -n "${running}r/${stopped}s"
+}
+
+-- Snippet - check if the kernel supports modules
+
+[ -f /proc/modules ] || exit 0
+[ -x /sbin/modprobe  ] || exit 0

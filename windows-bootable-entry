@@ -1,0 +1,22 @@
+default=1
+timeout=15
+color_normal=light-cyan/dark-gray
+menu_color_normal=black/light-cyan
+menu_color_highlight=white/black
+
+menuentry "Start Windows Installation" {
+    insmod ntfs
+    insmod search_label
+    search --no-floppy --set root --hint hd0,msdos1
+    ntldr /bootmgr
+}
+
+menuentry "Boot from the first hard drive" {
+    insmod ntfs
+    insmod chain
+    insmod part_msdos
+    insmod part_gpt
+    set root=(hd1)
+    chainloader +1
+    boot
+}

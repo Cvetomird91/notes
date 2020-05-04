@@ -1,0 +1,114 @@
+Phalcon
+	Phalcon Documentation - https://docs.phalconphp.com/en/3.2
+	Learning Phalcon PHP (?)
+	Sample Phalcon MVC apps - rewrite and read code
+
+PHP
+
+	PHP Manual
+	PHP Membership functions
+	PHP Programming (O'Reilly Media)
+	PHP Design Patterns (O'Reilly Media)
+	PHP Design Patterns - https://github.com/domnikl/DesignPatternsPHP
+	http://www.phptherightway.com
+	PHP Cookbook (O'Reilly Media)
+	Modern PHP (O'Reilly Media)
+	PSR Standards
+
+Bootstrap 3
+	Bootstrap 3 official documentation
+
+MySQL
+
+	MySQL official documentation - https://dev.mysql.com/doc/
+	MySQL tutorial - http://www.mysqltutorial.org/
+	MySQL Workbench Manual - https://dev.mysql.com/doc/workbench/en/
+
+jQuery
+
+	jQuery API documentation
+	jQuery Learning Center - https://learn.jquery.com
+	jQuery Cookbook (O'Reilly)
+	jQuery UI documentation
+	jQuery Mobile documentation
+
+JS
+	Eloquent JavaScript
+	Java Script - The Good Parts
+	http://javascript.info/ - old version
+	http://javascript.info/ - new version
+	http://es6-features.org
+	DOM Events - http://devdocs.io/dom_events/
+	Chrome Dev Tools - https://developer.chrome.com/devtools
+
+JS Libraries
+
+	Underscore.js
+	Babel
+
+CSS3
+
+	Basic Visual Formatting in CSS
+	CSS and documents
+	CSS Cookbook 3rd
+	CSS Pocket reference
+	CSS - The missing manual
+	HTML and CSS - the good parts
+	Padding Borders Outlines and Margins in CSS
+	Positioning in CSS
+	Transitions and Animations
+
+HTML5
+
+	Practical HTML5 (Pluralsight)
+	HTML5 Web Component Fundamentals (Pluralsight)
+	WebRTC Fundamentals (Pluralsight)
+	HTML5 Web Storage, IndexedDB and File System (Pluralsight)
+	Semantic HTML (Pluralsight)
+	HTML5 Browser Caching (Pluralsight)
+	HTML5: Up and Running - O'Reilly
+
+Git
+	Pro Git (Apress)
+
+Jira
+
+Nginx - Digital Ocean Materials
+
+	https://www.digitalocean.com/community/tutorials/nginx-essentials-installation-and-configuration-troubleshooting
+	https://www.digitalocean.com/community/tutorials/understanding-nginx-http-proxying-load-balancing-buffering-and-caching
+	https://www.digitalocean.com/community/tutorials/apache-vs-nginx-practical-considerations
+	https://www.digitalocean.com/community/tutorials/understanding-the-nginx-configuration-file-structure-and-configuration-contexts
+	https://www.digitalocean.com/community/tutorials/how-to-optimize-nginx-configuration
+	https://www.digitalocean.com/community/tutorials/how-to-add-the-log-module-to-nginx-on-debian-8
+	https://www.digitalocean.com/community/tutorials/how-to-set-up-let-s-encrypt-with-nginx-server-blocks-on-ubuntu-16-04
+	https://www.digitalocean.com/community/tutorials/how-to-host-multiple-web-sites-with-nginx-and-haproxy-using-lxd-on-ubuntu-16-04
+	https://www.digitalocean.com/community/tutorials/how-to-create-temporary-and-permanent-redirects-with-nginx
+	https://www.digitalocean.com/community/tutorials/how-to-add-the-gzip-module-to-nginx-on-ubuntu-16-04
+	https://www.digitalocean.com/community/tutorials/how-to-set-up-real-time-performance-monitoring-with-netdata-on-ubuntu-16-04
+	https://www.digitalocean.com/community/tutorials/how-to-implement-browser-caching-with-nginx-s-header-module-on-centos-7
+	https://www.digitalocean.com/community/tutorials/how-to-set-up-nginx-server-blocks-virtual-hosts-on-ubuntu-16-04
+	https://www.digitalocean.com/community/tutorials/how-to-use-nginx-s-map-module-on-ubuntu-16-04
+	https://www.digitalocean.com/community/tutorials/how-to-set-up-nginx-with-http-2-support-on-ubuntu-16-04
+	https://www.digitalocean.com/community/tutorials/how-to-set-up-basic-http-authentication-with-nginx-on-ubuntu-14-04
+	https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-on-ubuntu-14-04
+	https://www.digitalocean.com/community/tutorials/how-to-add-ngx_pagespeed-to-nginx-on-centos-7
+	https://www.digitalocean.com/community/tutorials/how-to-install-hhvm-with-nginx-on-ubuntu-14-04
+	https://www.digitalocean.com/community/tutorials/how-to-redirect-www-to-non-www-with-nginx-on-ubuntu-14-04
+	https://www.digitalocean.com/community/tutorials/how-to-serve-flask-applications-with-uwsgi-and-nginx-on-centos-7
+	https://www.digitalocean.com/community/tutorials/how-to-use-martini-to-serve-go-applications-behind-an-nginx-server-on-ubuntu
+	https://www.digitalocean.com/community/tutorials/how-to-compile-nginx-from-source-on-a-centos-6-4-x64-vps
+	https://www.digitalocean.com/community/tutorials/how-to-stream-videos-with-nginx-and-jwplayer-on-centos-6
+
+Regex
+	Lynda - Regular Expressions (Lynda)
+
+PHP-FPM
+
+BASH & Shell scripting
+	AWK - Essential Training (Lynda)
+	SED - Essential Training (Lynda)
+	Official BASH guide
+
+Linux
+	Linux-training.be PDFs

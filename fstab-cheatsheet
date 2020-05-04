@@ -1,0 +1,165 @@
+UUIDs can be obtained with blkid or ls
+
+	sudo blkid /dev/sda1
+	ls -l /dev/disk/by-uuid
+
+		cvetomir@nintendo:~$ ls -l /dev/disk/
+		total 0
+		drwxr-xr-x 2 root root 260 Jun 19 19:02 by-id
+		drwxr-xr-x 2 root root 160 Jun 19 19:02 by-path
+		drwxr-xr-x 2 root root 100 Jun 19 19:02 by-uuid
+
+UIDs and GIDs of a user can be obtained with id
+
+	id - without arguments returns information about current user
+	id cvetomir - returns information about user cvetomir
+
+Available locales can be checked with the locale command:
+
+	locale -a
+
+	Difference between ctime, mtime and atime:
+	http://www.linux-faqs.info/general/difference-between-mtime-ctime-and-atime
+
+	NB!!!
+	A new line should be placed after the last line of /etc/fstab
+
+-- FSTAB FIELDS
+
+	file system
+			block or remote filesystem to be mounted
+
+	mount point
+
+	type
+
+		udf, iso9660 - for mounting iso images and CDs
+		swap (the mountpoint should be also swap)
+		vfat (also known as FAT32)
+		ntfs - MS-DOS partition
+
+	affs, autofs, cifs, coda, coherent, cramfs, debugfs, devpts, efs, ext, ext2, ext3, ext4,
+	fat, hfs, hfsplus, hpfs, iso9660, jfs, minix, msdos, ncpfs, nfs, nfs4, ntfs, proc, qnx4,
+	ramfs, reiserfs, romfs, squashfs, smbfs, sysv, tmpfs, ubifs, udf, ufs, umsdos, usbfs, vfat, xenix, xfs, xiafs,
+
+	Sample options for mounting an NTFS partition:
+	UUID=1816EFAA16EF86DA /media/winC ntfs nls-utf8,umask-0755,uid=1000,gid=1000,rw  	0 		0
+
+	Using usermapping for synchronizing between Windows and Linux OS file ownership and permissions:
+	http://askubuntu.com/questions/11840/how-do-i-use-chmod-on-an-ntfs-or-fat32-partition
+
+	dump - legaxy journaling file system backup tool - 0 to disable, 1 to enable
+
+	pass - file system check
+
+			0 - do not check
+			1 - check this partition first
+			2 - check this partition next
+
+-- OPTIONS
+
+	default - use the default options. Those amount to:
+	rw, suid, dev, exec, auto, nouser, async
+
+	rw - read and write operations can be performed
+
+	suid - permit the usage of SUID/SGID file permissions
+
+	dev -
+
+	exec - executables can be executed
+
+	nouser - file system can be mounted only by root (default behavior)
+
+	sync/async - chooses if changes should be writen synchronously to disk or not
+
+		Synchronously means that the changes will be written to disk right after the command is issues
+		Asynchronously means that the changes will be written before the disk is unmounted
+
+	auto - file system will be mounted on boot (default behavior)
+
+	ro - read-only file system
+
+	noatime - disables tracking of access times
+
+	nodiratime - disable changing of atime on directories
+
+	strictatime - the atime is changed every time a file is accessed
+
+	user - every user can mount the file system.
+			This option also sets the following options, unless overriden:
+									noexec, nosuid, nodev
+
+	owner - allow the owner of the device to mount it
+
+	!!!Permissions for ntfs and vfat file system should be set with the dmask, umask and fmask options
+	dmask - controls permissions for directories
+	fmask - controls permissions for files
+	umask - controls permissions for both
+		those permissions aren't set the usual way, but reverse to the default chmod options
+		755 permissions should be set as 022
+
+	permissions - you can use chmod/chown on the filesystem mount point
+				  downside compared to masks is you have to use it each time the partition is mounted
+
+	acl - enable Access Control Lists in case the filesystem supports them
+
+	grpid - allows new files on the partition to have the parent directory's group id, not the groupd id of the
+			process creatign it
+
+	relatime - access time (atime) is modified only if they are earlier than the modification time (mtime)
+
+	noauto - don't mount automatically (on boot or when mount -a is used)
+
+	exec/noexec - executables can/can not be executed on the file system
+
+	suid, nosuid - SUID, SGID permissions can/can not be set on a file from the filesystem
+
+	uid=1000 - files are owned by user with uid 1000
+
+	utf8
+
+	locale - can be used to set a locale on the filesystem
+
+	nobootwait
+
+	nofail - the boot sequence will not continue if the mount of the device fails
+
+	fg - mounting is performed as foreground task. The default setting is on
+
+	bg - mounting is performed as background task if the first attempt fails. This is off by default
+
+-- NFS, SMP, Cifs and FUSE
+
+	port - specifies an alternative port for NFS (default is 2049)
+
+	vers - specify NFS protocol version (version 3 is default)
+
+-- mount command options
+
+	-without arguments - list all current mounts (same as cat /etc/mtab)
+		mount | column -t
+	-t - type
+	-o - options
+		-o remount - remount file system
+	-a - mount all
+	-l -t ext4 - list all mounts of a specific type
+	-n - mount without an entry in /etc/mtab
+
+	mount /path/to/mount-point - mount an already described in /etc/fstab file system
+
+	mount -M /path/to/mount-point /path/to/new/mount-point - change file system mount point
+
+	mount a .iso Disk Image
+
+		mount -t iso9660 -o loop pdf_collections.iso /mnt
+
+	Bind mounts:
+
+	mount all or part of already mounted file system to another location in the hierarchy
+
+	mount --bind /media/storage /home/username/files
+
+-- umount command options
+
+	umount -f - force unmount

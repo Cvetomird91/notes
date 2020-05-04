@@ -1,0 +1,8 @@
+Opteron_G1 - AMD Opteron 240 (Gen 1 class opteron)
+Opteron_G2
+Opteron_G3
+Opteron_G4
+Opteron_G5
+
+Flags:
+http://unix.stackexchange.com/questions/43539/what-do-the-flags-in-proc-cpuinfo-mean

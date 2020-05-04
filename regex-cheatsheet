@@ -1,0 +1,342 @@
+character sets:
+
+Resources:
+http://regular-expressions.mobi/
+http://regular-expressions.info/
+https://regexper.com/
+http://regex101.com/
+https://www.debuggex.com/
+https://regexcrossword.com/
+http://www.rexegg.com/
+http://regexlib.com/
+https://www.regexpal.com/
+http://www.rexv.org
+https://regexcrossword.com/
+
+History:
+
+1943 - Warren McCulloch and Walter Pitts develop models of how the nervous system works (i.e., how a machine could be built like a brain)
+1956 - Stephen Kleene describes these models with an algebra called "regular sets" and creates a notation to express them called
+	   "regular expressions"
+1968 - Ken Thompson implements regular expressions in ed, an early Unix text editor
+
+Original Unix tools were line based. This is why there's a separate PCRE modifier where the . matches new lines.
+
+Regular expression standards/implementations:
+BRE - Basic regular Expressions
+ERE - Extended Regular expressions
+PCRE - Perl compatible regular expressions
+
+PCRE Character Modifiers:
+
+i - Case-insensitive
+s - period(.) matches newline also. By default it matches any character except newline.
+	/text/s - dot matches all mode/modifier
+m - ^ and $ match beyond the \n symbol (usually they match characters within a single line)
+U - ungreedy matching
+e - (deprecated from PHP 5.5 onwards) - eval matching string it it's PHP code
+x - strip whitespaces and Unix-style comments from regex expressions
+
+PHP specific PCRE modifies ("PHP Programming" by O'Rilley, page 109):
+U - reverses greediness
+u - force UTF-8 encoding on pattern
+X - an error is returned when there's a backslash followed by a character with no special meaning
+A
+D
+S - regex parser optimization for expressions that need to be checked multiple times
+
+In regex engines implementing the PCRE standard, regular expressions are usually wrapped around forward slashes.
+In BASH even columns should be ommited when regex matching with double square brackets.
+
+. - matches one occurence of any character except for a newline.
+
+[^0-9] - one character not matching this range.
+^ - not any of several characters; matches one character
+	a charset with this symbol can also match a white space.
+
+[^asd] - negates ALL of the characters in the charset
+[a^sd] - matches a, d and all characters that are not s.
+
+We cannot group expressions within charsets.
+
+There's no need to escape meta characters within charsets, e.g. [.:*] will match . and * literally.
+], - ^ and \ need to be escaped within charsets to be matched literally.
+
+/.+/ is faster than /.*/
+Replacing the wild card with a more concise expression will optimize it.
+
+<.+> can become <[^>]+> when matching markup.
+
+| - alternation. Leftmost expressions are of higher precedence.
+
+Regex engines are eager to return a result.
+
+runs? and run(s)? are the same but the second is preferred for readability.
+
+The pipe symbol is used to specify a subpatern (similar to logical OR)
+/(cat|dog)/
+
+/see[^mn]/ - matches "see " but not "see"
+
+NB!!!
+Metacharacters are already escaped inside a character set
+
+For example:
+
+/h[abc.xyz]t/ - this will match "hat" and "h.t" but not "hot"
+These are the exceptions:
+
+] - ^ \  - those metacharacters need to be escaped to be used as regualr characters inside a charset
+
+Shorthand character sets in PCRE:
+
+\c - control character
+\d - digit - [0-9]
+\w - word character(letter, digit, underscore) - [a-zA-Z0-9_]
+\s - whitespace - [ \t\r\n]
+\D - not digit - [^0-9]
+\W - not word character(nor digit or underscore) - [^a-zA-Z0-9_]
+\S - not whitespace, tab or newline - [^ \t\r\n]
+\x - hexadecimal digit
+\O - octal digit
+
+Underscore is a word character
+Hyphen is not a word character. Hyphen is considered punctuation.
+
+In most PCRE implementations usually / is used as delimiter for the regular expression.
+Parentheses, curly braces, square brackets and angle brackets (<, >) can also be used.
+This can be useful when matching strings which contain forward slashes.
+Otherwise, we need to escape the forward slashes.
+
+Shorthand charsets can be used inside character sets
+[^\d\s] is not the same as [\D\S]
+[^\d\s] = not digit and space character (matches two characters)
+[\D\S] = either not a digit or not space character
+
+NB!!!
+Shorthand charsets originated in Perl. Some of the older Unix tools not include them.
+
+POSIX bracket expressions (POSIX charsets)- supported in Perl, PHP, Ruby and Unix CLI tools:
+[:ascii:] - 7-bit ASCII
+[:alpha:] - Alphabetic character - A-Za-z
+[:digit:] - Numeric characters - 0-9
+[:alnum:] - Alphanumeric characters - A-Za-z0-9
+[:lower:] - Lowercase alphabetic characters - a-z
+[:upper:] - Uppercase alphabetic characters - A-Z
+[:punct:] - Punctuation characters
+[:space:] - Space characters - \s
+[:blank:] - Blank spaces - space, tab
+[:print:] - Printable characters, spaces
+[:graph:] - Printable characters, no spaces
+[:cntrl:] - Control characters, non printable
+[:xdigit:] - Hexademical characters - A-Fa-f0-9
+
+They are placed within square brackets themselves when used within a charset
+[[:alpha:]]
+
+The POSIX bracket expressions are not supported in Java, Java Script, .NET and Python.
+
+We can't use a character class at the endpoint of a range:
+preg_match("/[A-[:lower:]]/", "string"); # => invalid regular expression
+
+The ? and + metacharacters AREN'T supported in BREs (for example in the grep tool)
+
+* - zero or more times
++ - one or more times
+? - zero or one time
+
+NB!!! The asterisk quantifier is gready. In case of parsing XML the following will
+match the whole line, not only the opening tag:
+
+/<.*>/
+
+<xml>Some option here</xml>
+
+To match only the opening tag we can use the following:
+/<[^>]*>/
+
+PECL support non-greedy quantifiers:
+Non-greedy qunatifier	Greedy equivalent:
+??						?
+*?						*
++?						+
+
+{n,m}
+{n,}
+{n}
+
+{0,} - same as *
+{1,} - same as +
+{0,1} - same as ?
+
+e{4} - a charset that matches a sequence of 4 times "e" in PCRE.
+In some old Unix tools (like grep) those quantifiers need to be placed before
+the sequence of characters we would like to search for:
+{4}e
+
+Perl Vim Explanation --------------------------- x? x\= Match 0 or 1 of x x+ x\+ Match 1 or more of x (xyz) \(xyz\) Use brackets to group matches x{n,m} x\{n,m} Match n to m of x x*? x\{-} Match 0 or 1 of x, non-greedy x+? x\{-1,} Match 1 or more of x, non-greedy \b \< \> Word boundaries $n \n Backreferences for previously grouped matches
+http://stackoverflow.com/questions/3864467/whats-the-difference-between-vim-regex-and-normal-regexn 
+
+Simple expressions:
+- Literal text
+- Character classes
+- No repetition or optional expressions
+- Alternation only with fixed length items
+	Example: (cat|dog|bat)
+
+=======================================================================================================
+-- ANCHORS --
+
+Anchors are said to be "zero width", because they don't represent a symbol.
+They represent a position.
+
+^ - matches the beginning of the line. Supported in all regex engines.
+$ - matches the end of the line. Supported in all regex engines.
+\b - word boundary (between \w and \W or at the start or end of a string)
+\B - non-word boundary
+\A - matches the beginning of the line
+\Z - matches the end of the line before \n or the end of a string
+\z - matches the end of a string
+^ and $ are supported in all regular expression engines
+\< - start of word
+/> - end of word
+[[:<:]] - start of word
+[[:>:]] - end of word
+
+\A, \Z - supported in Java, .NET, Perl, PHP, Python, Ruby
+
+NB!!!
+\A and \Z never match at line breaks and they always search the full string.
+They don't have single line mode.
+
+The . wildcard symbol works within a single line context only, not the whole text. This is
+because legacy from the old Unix tools. Some regex engines have a dot-matches-everything mode.
+
+Usually ^ and $ don't match at the line breaks. Some older Unix tools support only single line
+
+Multiline mode
+
+-- Word Boundaries --
+
+\b - word boundary
+\B - not a word boundary
+
+\1, $1 - backreferencing to captured expressions. Most engines support from \1 to \9.
+PECL support up to \99.
+
+In JS backreferences don't fail. They match a position if they don't match an expression.
+
+Those are available only in Vim and BASH:
+
+< - Match the empty string at the beginning of word.
+> - Match the empty string at the end of word.
+
+They, being anchors, also represent a position, not a certain character.
+
+Conditions for matching:
+ - Before the first word character in the string
+ - After the last word character in the string
+ - Between a word character and a non-word character
+
+Word characters = \w charset
+
+Most regex engines, not the earliest UNIX tools.
+
+A space is not a word boundary.
+
+Example:
+String: "apples and oranges"
+No match: /apples\band\boranges/
+Match: /apples\b and\b oranges/
+
+Non-capturing group expressions
+
+?: - the group is matched but it will not be stored in memory for backreferencing afterwards with
+\1 and $1.
+
+Named capturing groups:
+(?P<group_name>some pattern here) - this will be a named match and can be referred as "group_name"
+
+=======================================================================================================
+-- Inline options --
+
+/(?flags:pattern)[abc]$/ - 'pattern' will be searched for in an insensitive manner,
+							the rest of the expression will be treated without the
+							insensitive flag
+
+Alternatively, an option can be prefixed to be disabled for a certain subexpression:
+/(?-i:pattern)[abc]/i - 'pattern' will be matched in an case sensitive manner explicitly
+
+Enable or disable flag until the end of the expression:
+/regular (?i)expression/
+/regular (?-i)expression/i
+
+Example
+preg_match('/(?i:rails)/', 'Ruby on Rails');
+
+=======================================================================================================
+-- Positive and Negative lookahead and lookbehind assertions --
+
+Assertions don't match a particular expression - they just make sure that there is(n't) a particular
+expression before and after an expression
+
+lookahead and lookbehind assertions should be fixed length in most regex engines
+
+Positive lookahead assertions:
+(?=pattern)expression
+
+/(?=seashore)sea/
+/sea(?=shore)/
+
+Negative lookahead assertions:
+
+/(?!=pattern)expression/ - makes sure the pattern doesn't preceed expression to make the match
+
+Positive lookbehind assertions:
+/(?<=pattern)expression/
+/(?<!pattern)expression/
+
+JAVA, Perl, PHP, Python, Ruby (since 1.9) support them
+JS and Ruby >= 1.8 and the Unix text filters don't support them
+
+=======================================================================================================
+-- Regex and Unicode --
+
+Unicode uses 8 bytes for storing a single character. It contains over 109, 000 characters.
+	Unicode mapping between a character and a number:
+	"U+" followed by a four digit hexadecimal number
+	U+221E - infinity symbol
+
+\u - unicode indicator
+\u followed by a four digit hexadecimal number (0000-FFFF)
+This is supported in Java, Java Script, Python, Ruby and .NET
+
+Perl and PHP also support it but instead use the following symbol:
+
+\x - hexadecimal digit
+
+Unicode is not supported in most old Unix tools
+
+\X - Unicode wildcard - only supported in Perl in PHP currently. Matches all Unicode characters.
+
+-- Unicode properties
+
+\p{property} - property to match
+\P{property} - property not to match
+
+L
+M
+Z
+S
+N
+P
+C
+
+=======================================================================================================
+
+-- Notable Regex examples/regular expression examples and snippets
+
+^$ - matches all empty lines
+ *$ - matches all spaces at the end of the lines
+/<[^>]*>/ - matches all opening and closing XML/HTML tags
+<(.+)>(.*?)</\1> - HTML tag

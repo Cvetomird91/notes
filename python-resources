@@ -1,0 +1,343 @@
+Python for beginners:
+http://www.pythonforbeginners.com/
+http://www.practicepython.org/
+
+get installed python modules:
+http://stackoverflow.com/questions/739993/how-can-i-get-a-list-of-locally-installed-python-modules
+
+https://jupyter.org/
+
+Apache libcloud:
+
+https://libcloud.apache.org/
+
+Python library for interfacing with most famous VPS providers
+
+Python Bytecodes:
+http://security.coverity.com/blog/2014/Nov/understanding-python-bytecode.html
+
+Tokens:
+
+https://docs.python.org/2/library/token.html
+
+http://www.php2python.com/wiki/function.token-get-all/
+http://www.php2python.com/wiki/function.token-name/
+
+python-sh - converts Unix sh commands into valid Python code
+			-> pip install sh
+
+Pocoo - famous Python libraries:
+http://www.pocoo.org/
+
+Python testing standartization:
+https://tox.readthedocs.io/en/latest/
+
+Python 2 scripts can be indented with both 4 spaces and tabs.
+Python 3 scripts can only be indednted with 4 space-wide tabs.
+
+-- PEP-8 in a nutshell
+Maximum numbers of chars per lines are 79.
+Use tabs in both Python 2 and Python 3.
+Only constants are declared in the global scope. Their names start with a capital letter.
+Each import should be placed on a single line.
+Variables are named in lower_case. Camel case may be used if
+extending a script where this already is the prevailing convention.
+
+SU course
+
+There are also complex numbers in Python. They use the j notation instead of i, as in other languages.
+
+Python 2.x doesn't support Unicode.
+Strings in Python are immutable.
+Стринговете се интернират, т.е. на interpreter level
+сочат към един и същ обект в паметта когато са еднакви.
+
+string pool
+
+ВСИЧКО в Python e обект, ВКЛЮЧИТЕЛНО функциите и самите типове данни.
+
+Имената (identifiers) нямат тип.
+
+обекта type e тип type.
+>>> type(type)
+<class "type">
+type(type(type(type)))
+
+Списък - list, масив (array)
+	Бързи за търсене по индекс, бавни за търсене по стойност
+	списъците са хетерогенни - могат да съдържат разнороден тип данни
+Речник
+Tuple (кортеж)
+	Подобни са на списъците, но са immutable
+	t = (1, 2, 3, 4, 5)
+	t = 1, 2, 3, 4, 5
+	t = (1,)
+	t = (1) - returns an integer
+	They can contain lists.
+Set(множество)
+	all elements in a set are unique
+	Sets are mutable
+
+Няма === в Python, както и ++/--
+
+Python e динамично типизиран, но строго типизиран.
+
+In [20]: list_2 = ['foo', 'bar']
+
+In [21]: 'foo' in list_2
+Out[21]: True
+
+числата, низовете, True, False, None - immutable
+
+Only immutable objects can be dictionary indexes because of collisions on C-level.
+
+Ползват се and, or и not, a не &&, || и !
+
+false, none, empty list/container/set/dict
+
+в Python нямa curly braces.
+
+4 празни места = нов блок
+
+for loops are different than C-style loops:
+
+for e in primes:
+    print(e ** 2)
+
+for e като foreach в другите езици
+
+for се използва за обхождане на структури от данни
+
+range(1,10) -> от 1 до 9
+
+for i in range(20, 0, -3)
+    print(i)
+
+This is inspired by mathematical notation.
+
+Range-овете са отделен тип данни
+в Python 2.x range връща списък
+
+x_range - Python 2.x range alternative
+
+Няма switch/case у Python.
+
+Когато няма return в тялото на една функция, тя връща None.
+
+То research - някой тип аргументи е нужно да се подадат накрая при инициализиране на функцията.
+
+В Python функциите също са обекти. Те са и тип данни.
+
+Можем да използваме _ когато не ни интересува наименуването на дадена променлива.
+Това е конвенция, не специфика на синтаксиса в Python.
+
+for _ in range(1, 10)
+    print(_)
+
+Има анонимни функции в Python.
+
+add = lambda a, b: a + b
+
+Ламбдите се пишат на един ред! Интерпретатора ще изведе грешка.
+Не можем да използваме return в ламбди.
+
+Съответно не можем да използваме ; в ламбдите, защото интерпретатора ще го третира като
+нов ред, а в ламбдите не можем да използваме повече от 1 ред.
+
+В Ruby функциите, които дефинираме без да са към определен обект отиват като private
+methods на Object.
+
+В Python функциите са отделен обект сам по себе си.
+
+В iPython _ се държи подобно на variable-a _ в PRY.
+
+В Python има побитови оператори също.
+
+Splat operators
+
+Имаме multiple assignment в Python:
+
+a, b, c = 1, 2, 3
+
+a, *b, c = 1, 2, 3, 4, 5, 6, 7
+# => a == 1, c == 7, b == (2, 3, 4, 5, 6)
+
+a, [b, [c, d]], e = 1, [2, [3, 4]]
+
+t = 1, 2, 3, 4, 5
+
+p, o, i, x, a = t
+# => p == 1, o == 2, i == 3, x == 4, a == 5
+
+scope gate-овете в Python са функциите и класовете. Циклите и контролните
+структури не са scope gate.
+
+pass keyword
+
+list = ['asd', 'fgh', 'qwerty']
+list[::2]
+list[:2]
+list[2:]
+list[1:3]
+
+dimsort - algorythm, written especially for the Python language
+
+list comprehensions - "alternative" to the five most populat functional languages
+Generator Expression - като list comprehension ама "мързеливо"
+Set comprehension
+
+Модул collections
+
+Working with arguments from stdin:
+http://www.cyberciti.biz/faq/python-command-line-arguments-argv-example/
+
+year = file[12:]
+month = file[9:11]
+http://www.cyberciti.biz/faq/python-command-line-arguments-argv-example/
+http://stackoverflow.com/questions/123198/how-do-i-copy-a-file-in-python
+http://pythoncentral.io/how-to-recursively-copy-a-directory-folder-in-python/
+https://mkaz.tech/python-argparse-cookbook.html
+
+List comprehensions semantics:
+[израз for променлива in поредица if условие]
+
+Generator expression
+Set comprehension
+
+__init__ -> constructor-a у Python. Не може да връща стойност(може
+само да връща None). Първия аргумент е прието винаги да е 'self'.
+
+dunder method - "double under" - similar to magic methods in other
+languages
+
+__call__ - магически метод, чрез който можем да викаме класа като функция.
+Всички функции в Python са обекти, които викаме чрез този клас
+
+getattr, setattr - getters and setters in Python
+
+%editor - opens the default editor in ipython3
+
+in OOP
+__str__ - defines how we transform a classes object into a string
+
+[1, 2].get(1, "няма такава стойност") - втората стойност ще бъде изведена,
+ако няма елемент с ключ едно. Ако не я използваме Python ще върне грешка,
+че стойността не е дефинирана.
+
+Можем да предифинираме начина, по който достъпваме атрибути на наши обекти
+
+_getattr_
+
+Всеки обект в Python унаследява от Object.
+obj._dict_ - връща свойства и методи на клас.
+
+Синтаксис за наследяване на класове:
+class Japanese(Language)
+
+Имаме множествено наследяване в Python:
+class Japanese(Language, Nationality)
+
+issubclass - проверяваме дали даден клас унаследява друг
+isinstance
+
+MRO - method resolution order - Python интерпретатора нарежда в дърворидна структура обектите под Object.
+За да избере как да разреши method resolution order, ти ги обхожда (traverse) в Pre-Order.
+
+Множественото наследяване може да се използва за Mixin-и.
+
+Python не извиква по подразбиране init-a на father class-a. Нужно е да го направим "ръчно".
+
+Python3 disallows mixing the use of tabs and spaces for indentation.
+
+Python global variable:
+
+global_var = 1
+
+def example1():
+    # global keyword is not needed, local_var will be set to 1.
+    local_var = global_var
+
+def example2():
+    # global keyword is needed, if you want to set global_var,
+    # otherwise you will create a local variable.
+    global_var = 2
+
+def example3():
+    # Without using the global keyword, this is an error.
+    # It's an attempt to reference a local variable that has not been declared.
+    global_var += 1
+
+-- Context manages
+
+The contextlib from stdlib offers us a set of useful context managers
+
+the 'with statement return a context manager object. When we execute it the
+__enter__() method of the ContextManager class is executed.
+
+Ако е настъпило излючение се изпълнява __exit__(type, value, traceback) на CM
+Ако не е настъпило излючение се изпълнява __exit__(None, None, None) на CM
+
+Nested with:
+with foo() as f, bar() as b:
+	# block
+
+This has the same semantics as the following statement:
+with foo() as f:
+	with bar() as b:
+		# block
+
+=======================================================================================================
+
+Modules
+
+PyPI - Python Package Index
+
+.pyc - прекомпилирани версии на .py скриптове
+
+В Python 3 стоят в ./__pycache__
+В Python 2 стоят до .py файловете
+
+from module import a, b, c
+a()
+
+from module import a as b
+b()
+
+from django.contrib.auth.models import User
+my_user = User()
+
+dir() - връща списък
+
+Можем да импортираме директно от директория:
+
+from . import panda
+Можем да търсим и в "горния" възел
+
+from .. import panda
+Или:
+
+from ..panda import tail
+
+virtualenv
+
+virtualenvwrapper
+
+Видове Python модули (https://wiki.python.org/moin/PythonPackagingTerminology):
+module
+pure python module - it is usually contained in a single .py file
+extension module - contains native extensions for the Python interpreter (written in C or Java,
+	depending on the implementation)
+package - a module that contains other modules. Usually contains an __init__.py file
+		and is located in the file system.
+root package
+egg
+
+timeit - module for profiling timing for expression execution
+
+iPdb - iPython interactive debugger:
+https://www.safaribooksonline.com/blog/2014/11/18/intro-python-debugger/
+
+pudb - full-screen ncurses python debugger
+
+filecmp - module for quick comparing file differences
+heapq - python heap implementation in the standard library

@@ -1,0 +1,155 @@
+svn help
+svn --version
+svn --version --quiet
+SVN status codes:
+http://gotofritz.net/blog/howto/svn-status-codes/
+http://stackoverflow.com/questions/2034/what-do-the-result-codes-in-svn-mean
+
+Enable colorful svn diff:
+install colordiff through cpan or distro package manager.
+In ~/.subversion/config add:
+diff-cmd = colordiff
+
+Most svn commands when taken directories as arguments, recurse in the specified directories.
+
+Output the content of specified files or
+URLs with revision and author information in-line:
+svn blame
+svn ann
+svn annotate
+svn praise
+
+svn --changelist
+svn -cl
+
+svn update
+svn update -r 12345 - revert to revision 12345 locally
+
+Revert recursively:
+svn revert -R branches/stable/
+
+svn checkout - creates a local working copy of a repository
+svn co - alias of svn checkout
+
+svn cleanup - remove locks and unfinished transfers
+
+$ svn checkout http://svn.example.com/svn/repo/trunk my-working-copy
+A    my-working-copy/README
+A    my-working-copy/INSTALL
+A    my-working-copy/src/main.c
+A    my-working-copy/src/header.h
+…
+Checked out revision 8810.
+
+$
+
+svn import - copy an unversioned tree of files into a repository, creating intermediate directories
+			 It doesn't require a working copy and the new files are automatically commited into the repository
+			 This can be useful to add an already existing tree of files into the local Subversion repository you
+			 would like to start keeping track of.
+
+				$ svn import /path/to/mytree \
+							 http://svn.example.com/svn/repo/some/project \
+							 -m "Initial import"
+				Adding         mytree/foo.c
+				Adding         mytree/bar.c
+				Adding         mytree/subdir
+				Adding         mytree/subdir/quux.h
+
+				Commited revision 1.
+				$
+
+
+		svn import will create a copy of the repository, even if it's located upper in the directory tree.
+				   It will also commit it into the repository
+
+svn copy - same as cp foo bar && svn add bar
+svn move - same as mv foo bar && svn add bar
+svn mkdir
+svn delete
+
+svn commit -F msg - read commit message from a file
+svn ci - alias of svn commit
+
+svn diff - show line-level changes of a particular change
+svn log
+svn log -r revision_number http://svn.example.com/
+svn cat - retrieve file content from a particular revision
+
+SVN statuses:
+    A  Added
+    D  Deleted
+    U  Updated
+    C  Conflict
+    G  Merged
+    E  Existed
+    R  Replaced
+    X  Related to an externals definition
+    !  Missing (moved or deleted without svn)
+	L  Locked (there's a commit currently running by a user on the system)
+	_M Changes in the file properties
+
+svn list
+svn list -v - list directories with versioning information
+svn info -r revision_number http://svn.example.com/
+svn info -r HEAD - information about latest revision
+
+svn revert - restores a file or directory to the state in the SVN repository
+
+svn merge SOURCE[@REV] [TARGET_WCPATH]
+
+svn info - can be useful to see the root of the repository, as well as full and relative links and other information
+
+types of conflicts:
+http://tortoisesvn.net/docs/release/TortoiseSVN_en/tsvn-dug-conflicts.html
+
+Select: (p) postpone, (df) show diff, (e) edit file, (m) merge,
+        (mc) my side of conflict, (tc) their side of conflict,
+        (s) show all options
+
+Edit commited revision log message
+
+svn propedit -r N --revprop svn:log URL
+svn propedit -r N --revprop svn:log svn://svn.xs-software.com/ladypopular3/trunk
+svn propset -r N --revprop svn:log "new log message" URL
+
+svn cleanup - run to fix the current working copy if an SVN client has crashed recently and left locks on the files
+
+Before commit:
+
+svn update && resolve any conflicts
+avoid using $_, !! and other history shell expansion variables
+make sure to include only files relevant to the ticket(e.g. exclude any personal config files etc.)
+svn diff - to make sure unwanted changes aren't commited
+php -l - check for syntax errors
+copy changed files into another place in the file system (shell script)
+
+Revert and update:
+svn merge -r 20931:20930 trunk/ trunk/
+Then the files will be reverted locally and can be commited without the unwanted changes.
+
+Merging changes and deploying to production:
+
+1. svn up on stable & trunk
+2. warn colleagues with flag
+3. cd workspaces/ladypopular
+4. php trunk/internal/svn_merge_prepare.php - runs dry-run and check for conflicts. Resolve if any.
+If conflicts are resolved or there aren't any, you can proceed with merging.
+
+Reverting non-commited changes recursively:
+
+svn revert -R branches/stable/
+
+5. svn st branches/stable
+svn commit branches/stable - merge commit
+
+Message: "Merging ticket-ids"
+
+6. svn update on multiple machines:
+cd workspaces/ladypopular3
+
+php trunk/internal/svnup.php .
+
+The SSH public key should be set on the remote machines. Otherwise the update script can be run from Web1 with key forwarding( ssh -A
+
+7. comment on ticket and add "deployed" flag (Ctrl + l)

@@ -1,0 +1,18 @@
+Service management with brew:
+
+brew services start tomcat@8
+
+Change default executable of packages with the same name:
+
+brew unlink node
+brew link node@8
+
+Search for a package:
+
+brew search pwgen
+
+Install a package:
+brew install pwgen
+
+Cleanup unused artifacts:
+brew cleanup

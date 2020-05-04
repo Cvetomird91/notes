@@ -1,0 +1,1348 @@
+Glossary
+
+container hash = container id
+
+docker objects:
+images, containers, networks, volumes, local daemons, swarm nodes,
+swarm services, docker machines
+
+Management commands:
+
+  builder     Manage builds
+  checkpoint  Manage checkpoints
+  config      Manage Docker configs
+  container   Manage containers
+  image       Manage images
+  network     Manage networks
+  node        Manage Swarm nodes
+  plugin      Manage plugins
+  secret      Manage Docker secrets
+  service     Manage services
+  stack       Manage Docker stacks
+  swarm       Manage Swarm
+  system      Manage Docker
+  trust       Manage trust on Docker images
+  volume      Manage volumes
+
+UnionFS - standard for layered file systems e.g. AUFS, vfs, btrfs and DeviceMapper, OverlayFS, zfs
+
+Docker engine combines the namespaces, control groups and UnionFS into a wrapper called a container
+format. The default container format is libcontainer, written in Go. It is now part of the Runc
+project.
+
+Docker uses namespaces to provide a layer of isolation for each aspect of a container.
+Docker uses the following namespaces in the Linux kernel:
+pid - Process isolation (PID: Process ID)
+net - Networking
+ipc - Inter process communication
+mnt - manage filesystem mountpoints (MNT: Mount)
+uts - Isolating kernel and version identifiers (UTS: Unix Timesharing system)
+
+Docker Engine on Linux also relies on another technology called control groups (cgroups). 
+A cgroup limits an application to a specific set of resources. Control groups allow 
+Docker Engine to share available hardware resources to containers and optionally enforce limits 
+and constraints. For example, you can limit the memory available to a specific container.
+
+Multi-stage builds (since 17.05)
+An image is build during the final stage of the build process. Multi-stage builds allows us
+to minimize image layers by leveraging build cache.
+
+Docker for Java developers lab: https://github.com/docker/labs/tree/master/developer-tools/java/
+Porting a NodeJS app to Docker: https://github.com/docker/labs/tree/master/developer-tools/nodejs/porting
+
+When building an image, Docker steps through the instructions in your Dockerfile, executing each 
+in the order specified. As each instruction is examined, Docker looks for an existing image in 
+its cache that it can reuse, rather than creating a new (duplicate) image.
+
+Default docker daemon port is 2376
+docker swarm node port is 2377
+
+The processes inside a docker container are visible for the host OS, but with different PIDs from the
+PIDs visible in the container.
+
+=======================================================================================================
+
+Docker pull
+
+Pull an image from the registry
+
+=======================================================================================================
+
+Docker system
+
+Manage the docker daemon
+
+docker system df - display local disk usage
+docker system prune - cleans up data. Removes the following:
+        - all stopped containers
+        - all networks not used by at least one container
+        - all dangling images
+        - all dangling build cache
+
+=======================================================================================================
+
+Docker cp
+
+Copy files/folders between a container and the local file system
+
+From local filesystem to container file system:
+docker cp <filename> <container-id>:/path/to/destination
+
+From container to local file system:
+docker cp <container-id>:/path/to/destination <filename> 
+
+=======================================================================================================
+
+Docker ps
+
+List running containers:
+
+The same as
+docker container list
+docker container ls
+
+List the full docker IDs:
+docker ps --no-trunc
+
+=======================================================================================================
+
+Docker create
+
+Create a new container
+
+docker create <image-name>
+
+=======================================================================================================
+
+Docker commit
+
+Create a new image from a container's changes
+
+=======================================================================================================
+
+Docker build
+
+Build a new image from a Dockerfile. Each instruction in the Dockerfile creates a layer in the image.
+
+Build context - directory, where the build is taking place. Presumably it contains the Dockerfile.
+The build context can be a URL or a PATH. The URL contains a git repository.
+
+A context is processed recursively.
+The build is executed by the docker daemon, not by the CLI.
+
+A Dockerfile must start with a `FROM` instruction.
+
+The Dockerfile can be read from a different directory
+docker build -t helloapp -f $HOME/build/Dockerfile
+
+Create image using this directory's Dockerfile:
+docker build -t friendlyhello .
+
+Tag the build:
+docker build -t repo/friendlyhello:mytag . 
+
+Tag the build for multiple repositories:
+docker build -t repo1/friendlyhello:mytag -t repo2/friendlyhello:mytag .
+
+Build an image without relying on cache from the last build:
+docker build --no-cache -t helloapp:v2 
+
+Build cache is only used from images that have a local parent chain - built locally previously
+or loaded with docker load.
+
+To see how big your build context is, look for a message like this when building your Dockerfile:
+Sending build context to Docker daemon  187.8MB
+
+We can pipe a remote Dockerfile through STDIN:
+docker build -t myapp https://github.com/thajeztah/pgadmin4-docker -f-<<EOF
+FROM busybox
+COPY LICENSE config_distro.py /usr/local/lib/python2.7/site-packages/pgadmin4/
+EOF
+
+docker build --secret - pass secret data for the build that will not be available in the output
+docker image (available only in BuildKit)
+
+=======================================================================================================
+
+Docker container
+
+Manage containers
+
+docker containers list - list the currently running containers
+docker container list --all - list all containers (including stopped ones)
+
+docker containers ls- list the currently running containers
+docker container ls --all - list all containers (including stopped ones)
+
+docker container stop <hash>           # Gracefully stop the specified container
+docker container kill <hash>         # Force shutdown of the specified container
+docker container rm <hash>        # Remove specified container from this machine
+docker container rm $(docker container ls -a -q)         # Remove all containers
+
+docker container list --all -q --no-trunc - list the hashes of all containers on the host
+
+=======================================================================================================
+
+Docker run
+
+Run a comman within a NEW container
+
+docker run <image-name> <command> <arguments>
+
+Run a command with output:
+docker run -i <image-name> <command>
+
+Create a container and open a bash shell:
+docker run -i -t ubuntu /bin/bash
+
+Setup a specific mac address when you run a container:
+docker run -dit --mac-address 00:00:00:00:00:11 ubuntu:trusty
+
+The -t option is for opening a TTY
+
+The image-name, not the hash should be passed
+
+Run with port mappings:
+docker run -p <host-port>:<container-port> <image-name>
+
+run in detached mode:
+docker run -d -p <host-port>:<container-port> <image-name>
+
+pull and run an image from the remote repository:
+docker run -p 4000:80 username/image:tag
+
+Forward a port via a specific layer 2 protocol:
+docker run -p 80:80/tcp -p 80:80/udp ...
+
+Mount docker volumes with specific options:
+docker run -d \ 
+	--mount source={source-volume},destination={dir}
+
+docker run --rm ... - remove container and anonymous volumes after container stops
+docker run --rm -v /foo -v awesome:/bar busybox top - after the container stops the anonymous
+volume mounted at /foo will be removed
+
+Run a container and mount a volume via SSH:
+docker run -d \
+  --name sshfs-container \
+  --volume-driver vieux/sshfs \
+  --mount src=sshvol,target=/app,volume-opt=sshcmd=test@node2:/home/test,volume-opt=password=testpass \
+  nginx:latest
+
+These are the following options for bind propagation when bind mounting directories from the host:
+- private
+- rprivate
+- shared
+- rshared
+- slave
+- rslave
+
+When running Docker on a Linux host the tmpfs mount option is available.
+
+System resource limitations and configurations:
+b, k, m, g - bytes, kylobytes, megabytes or gigabytes
+docker run -d -it --memory	\	 # maximum amount of user-space memory (min is 4m)
+--memory-swap \					 # amount of swap that can be used (--memory must be set)
+--memory-swapiness \			 # must be between 0 and 100. It it's unset it's inherited from the host
+								 # sets the percentage of anonymous pages that can be used
+--memory-reservation \			 # a soft limit, must be lower than the --memory limit
+--kernel-memory \ 				 # maximum amount of kernel-space memory a container can use (min. is 4m)
+--oom-kill-disable \			 # disable oom kill when container uses much memory (--memory must be set)
+--cpus=<number>					 # the number of CPUs a container can use
+--cpu-period=<value>			 # specify CFS CPU scheduler period. Defaults to 100 microseconds
+--cpu-quota=<value>				 # the number of microseconds per CPU period that the container is
+								 # limited to before throttled
+--cpuset-cpus					 # specify the CPU cores a container can use, e.g. 0-3 or 1,3
+--cpu-shares					 # default value is 1024. Specify host machine cycles a container can use
+
+Memory swap usage specifics:
+https://docs.docker.com/config/containers/resource_constraints/#prevent-a-container-from-using-swap
+
+Memory swapiness details:
+https://docs.docker.com/config/containers/resource_constraints/#--memory-swappiness-details
+
+Kernel memory details:
+https://docs.docker.com/config/containers/resource_constraints/#--kernel-memory-details
+
+Use 50% of the CPU every second:
+docker run -it --cpus=".5" ubuntu /bin/bash
+
+Use a sepcific log driver and setup options for it:
+docker run --logdriver=splunk --log-opt splunk-token=VALUE --log-opt splunk-url=VALUE ...
+
+=======================================================================================================
+
+Docker exec
+
+Run a command within an already running container
+
+Open a TTY in the container:
+docker exec -t <container> /bin/bash
+
+=======================================================================================================
+
+Docker network
+
+Manage docker networks
+
+Docker's networking subsystem is pluggable using drivers. These drivers exist by default:
+- bridge - the default network driver
+- host - for standalone containers. Removes network isolation between the host and the containers
+- overlay - connect multiple docker daemons together and enable swarm networks to communicate with
+			each other. This strategy removes the need to use OS-level routing between the containers
+- macvlan - allows a MAC address to be assigned to a container making it appear as a physical device
+			on the network. Then the docker daemon routes traffic to containers by their MAC addresses
+- none - disable all networking for a particular container. The loopback interface is still present
+
+Docker networks create iptables rules, bridge network devices, and routing table entries.
+
+create a user-defined bridge:
+docker network create mybridge
+
+create a network of a certain type
+docker network create --driver {overlay,bridge,macvlan,host,none} mynetwork
+
+create an overlay network that can be used with docker swarm nodes:
+docker network create -d overlay my-overlay
+
+create an overlay network which can be joined by standalone containers also:
+docker network create -d overlay --attachable my-overlay
+
+create a Macvlan network:
+docker network create -d macvlan --subnet=172.16.86.0/24 --gateway=172.16.86.1 -o parent=eth0 pub_net
+
+run a container without a network:
+docker run --rm -dit --network none --name no-net-alpine alpine:latest ash
+
+Create an IPv6 network:
+docker network create --ipv6 myipv6network
+
+docker network create \
+  --driver overlay \
+  --ingress \
+  --subnet=10.11.0.0/16 \
+  --gateway=10.11.0.2 \
+  --opt com.docker.network.driver.mtu=1200 \
+  --opt encrypted
+  my-ingress
+
+traffic from containers connected to the default bridge network is not forwarded to the outside world. 
+To enable forwarding, you need to change two settings:
+sysctl net.ipv4.conf.all.forwarding=1
+iptables -P FORWARD ACCEPT
+
+The following ports need to be available when creating an overlay network:
+2377 (TCP) - for docker swarm cluster management
+7946 (TCP, UDP) - for communication inbetween nodes
+4789 (UDP) - for overlay network traffic
+
+When you initialize a swarm or join a Docker host to an existing swarm, two new networks are created on that Docker host:
+
+an overlay network called ingress, which handles control and data traffic related to swarm services. 
+When you create a swarm service and do not connect it to a user-defined overlay network, it connects 
+to the ingress network by default. We can have only one ingress network.
+a bridge network called docker_gwbridge, 
+which connects the individual Docker daemon to the other daemons participating in the swarm.
+
+Network security for docker daemon hosts:
+Restrict access from IPtables to only a certain IP:
+iptables -I DOCKER-USER -i ext_if ! -s 192.168.1.1 -j DROP
+
+Allow access for only a certain subnet to the docker host:
+iptables -I DOCKER-USER -i ext_if ! -s 192.168.1.0/24 -j DROP
+
+=======================================================================================================
+
+Docker top
+
+Display running processes within a container
+
+docker top <container-hash>
+
+=======================================================================================================
+
+Docker stop
+
+Stop a running container
+
+docker stop <container-hash>
+=======================================================================================================
+
+Docker pause
+
+Pause a running container
+
+=======================================================================================================
+
+Docker logs
+
+Display the logs of a container
+
+Output the recent STDOUT output from a container
+
+=======================================================================================================
+
+Docker rm
+
+Remove a container
+=======================================================================================================
+
+Docker rmi
+
+Remove a container image
+=======================================================================================================
+
+Docker version
+
+Display docker version information
+
+=======================================================================================================
+
+Docker info
+
+Display system-wide information
+
+=======================================================================================================
+
+Docker history
+
+Display image command history
+
+docker history <image-name>
+
+=======================================================================================================
+
+Docker restart
+
+Restart a container
+
+docker restart <container-hash>
+
+=======================================================================================================
+
+Docker load
+
+Load an image from a tar archive or STDIN
+
+=======================================================================================================
+
+Docker login
+
+Login into a docker registry
+
+=======================================================================================================
+
+Docker logout
+
+Log out of a docker registry
+
+=======================================================================================================
+
+Docker stats
+
+Display resource and input/output statistics of a container
+
+=======================================================================================================
+
+Docker save
+
+Save a container state into a tar archive (outputs to STDIN)
+
+docker save <image-name> > docker-image-snapshot.tar.gz
+
+=======================================================================================================
+
+Docker import
+
+Import a docker image from a tarball
+
+Create a full debian-based image using debootstrap:
+$ sudo debootstrap xenial xenial > /dev/null
+$ sudo tar -C xenial -c . | docker import - xenial
+
+a29c15f1bf7a
+
+$ docker run xenial cat /etc/lsb-release
+Sample scripts for creating base images with BusyBox and debootstrap:
+https://github.com/moby/moby/blob/master/contrib/mkimage/busybox-static
+https://github.com/moby/moby/blob/master/contrib/mkimage/debootstrap
+https://github.com/moby/moby/blob/master/contrib/mkimage/rinse
+https://github.com/moby/moby/blob/master/contrib/mkimage-yum.sh
+
+=======================================================================================================
+
+Docker image
+
+list docker image on this machine:
+docker image ls
+docker image ls -a
+
+Remove specified image from this machine:
+docker image rm <image id> 
+
+Remove all images from this machine:
+docker image rm $(docker image list -qa)
+
+Remove dangling images:
+docker image prune
+
+=======================================================================================================
+
+Docker port
+
+List container port mappings
+
+=======================================================================================================
+
+Docker kill
+
+=======================================================================================================
+
+Docker diff
+
+Inspect changes to files or directories on a container's filesystem. List the changed files
+since the creation of the container
+
+=======================================================================================================
+
+Docker rename
+
+docker rename <container-name> <new-container-name>
+
+=======================================================================================================
+
+Docker update
+
+Update configuration of one or more containers
+
+=======================================================================================================
+
+Docker unpause
+
+=======================================================================================================
+
+Docker wait
+
+=======================================================================================================
+
+Docker push
+
+Upload tagged image to registry
+docker push username/image:tag
+
+=======================================================================================================
+
+Docker inspect
+
+Return low-level information on docker objects (networks, volumes, images and containers)
+
+Get container info in JSON format:
+docker inspect <container-id>
+
+get IP of container:
+docker inspect --format "{{ .NetworkSettings.IPAddress }}" <container-id>
+
+=======================================================================================================
+
+Docker export
+
+Export a container's system as a tar archive
+
+=======================================================================================================
+
+Docker events
+
+=======================================================================================================
+
+Docker attach
+
+Attach local standard input, output, and error streams to a running container
+
+docker attach <container-name>
+
+To detach TTY output without stopping a container:
+Ctrl + P + Q (hold down Ctrl and press P and Q subsequentyl)
+
+=======================================================================================================
+
+Docker machine
+
+Downlaod and import hypervisor images to run docker stacks and swarms
+
+Download boot2docker image and import it into virtualbox (Linux, macOS, Windows 7-8):
+docker-machine create --driver virtualbox myvm1
+
+Download boot2docker image and import it into virtualbox (Windows 10 with hyper-v):
+docker-machine create -d hyperv --hyperv-virtual-switch "myswitch" myvm1
+
+The following directory contains the metadata, configs, ssl certificats for docker-machine
+boxes:
+~/.docker/machine
+
+To opt out of Bugsnag error reporting touch the following file:
+$HOME/.docker/machine/no-error-report
+
+List the IPs of running machines:
+docker-machine ip
+
+Start docker machine:
+docker-machine start <machine-name>
+
+List docker machines:
+docker-machine ls
+
+SSH into machine:
+docker-machine ssh <machine-name>
+
+List docker machines:
+docker-machine ls
+
+Add an already existing Docker host to be manipulated with docker machine:
+docker-machine create --driver none --url=tcp://50.134.234.20:2376 custombox
+
+Regenerate SSH certificates:
+docker-machine regenerate-certs <machine-name>
+
+Get the needed environment variables to be imported to talk with a docker machine
+docker-machine env <machine-name>
+
+Configure local shell:
+eval $(docker-machine env <machine-name>)
+
+Unset Docker machine shell variables:
+eval $(docker-machine env -u)
+
+Remove docker machine node:
+docker-machine rm <machine-name>
+
+Remove all docker machines:
+docker-machine rm $(docker-machine ls -q)
+
+Stop all running docker machines:
+docker-machine stop $(docker-machine ls -q)
+
+Environment variables:
+export DOCKER_TLS_VERIFY="1"
+export DOCKER_HOST="tcp://192.168.99.100:2376"
+export DOCKER_CERT_PATH="/Users/sam/.docker/machine/machines/myvm1"
+export DOCKER_MACHINE_NAME="myvm1"
+export COMPOSE_FILE="~/redis/docker-compose.yml"
+export COMPOSE_PROJECT_NAME=myproject
+
+print which machine is active
+docker-machine active
+
+print machine metadata:
+docker-machine inspect
+
+Dump config arguments for a machine:
+docker-machine config
+
+docker-machine kill
+
+Mount locally a mount from the machine via SSHFS (the sshfs binary needs to be present):
+docker-machine mount vmname:/home target/
+
+Unmount partitions instead of mount
+docker-machine mount -u vmname:/home target/
+
+Re-provision existing machines
+docker-machine provision
+
+Regenerate TLS Certificates for a machine
+docker-machine regenerate-certs
+
+Restart a docker machine:
+docker-machine restart
+
+Remove a docker machine:
+docker-machine rm
+
+Copy a file over SSH to the machine or vice-versa:
+docker-machine scp
+
+Upgrade a machine to the latest version of Docker:
+docker-machine upgrade
+
+Get URL of docker host:
+docker-machine url
+
+=======================================================================================================
+
+Docker daemon
+
+To edit daemon.json on MacOS:
+Right click on icon -> Preferences -> Daemon -> Advanced
+
+Default docker daemon port: 2376
+
+{
+  "dns": ["8.8.8.8",] //setup custom IP for docker DNS
+  "ipv6": true,		  //enable IPv6
+  "iptables": false,  //disable Docker to change iptables rules (they need to be changed by hand then)
+  "live-restore": true //containers remain running if the daemon becomes unavailable
+}
+
+Use BuildKit instead of the legacy build engine:
+"features" : {
+    "buildkit" : true
+}
+
+This enables more output with the docker build command.
+
+dockerd --live-restore - allows you to keep your containers running during a Docker upgrade, though
+networking and user input are interrupted
+
+The live restore option only pertains to standalone containers, and not to swarm services. 
+Swarm services are managed by swarm managers. If swarm managers are not available, swarm services 
+continue to run on worker nodes but cannot be managed until enough swarm managers 
+are available to maintain a quorum.
+
+=======================================================================================================
+
+Docker registry API
+
+Query the API for all tags of an image:
+curl https://registry.hub.docker.com/v1/repositories/<image-name>/tags
+
+=======================================================================================================
+
+Docker Daemon REST API
+
+Force a specific older version of the API:
+export DOCKER_API_VERSION='1.27'
+
+Run a container:
+curl --unix-socket /var/run/docker.sock -H "Content-Type: application/json" \
+  -d '{"Image": "alpine", "Cmd": ["echo", "hello world"]}' \
+  -X POST http:/v1.24/containers/create
+{"Id":"1c6594faf5","Warnings":null}
+
+curl --unix-socket /var/run/docker.sock -X POST http:/v1.24/containers/1c6594faf5/start
+
+curl --unix-socket /var/run/docker.sock -X POST http:/v1.24/containers/1c6594faf5/wait
+{"StatusCode":0}
+
+curl --unix-socket /var/run/docker.sock "http:/v1.24/containers/1c6594faf5/logs?stdout=1"
+hello world
+
+List docker containers:
+curl --unix-socket /var/run/docker.sock http:/v1.24/containers/json
+
+Stop a running container:
+curl --unix-socket /var/run/docker.sock \
+  -X POST http:/v1.24/containers/ae63e8b89a26/stop
+
+List all available images:
+curl --unix-socket /var/run/docker.sock http:/v1.24/images/json
+
+pull an image:
+curl --unix-socket /var/run/docker.sock \
+  -X POST "http:/v1.24/images/create?fromImage=alpine"
+
+Commit a container to create an image from its contents:
+docker run -d alpine touch /helloworld
+0888269a9d584f0fa8fc96b3c0d8d57969ceea3a64acf47cd34eebb4744dbc52
+curl --unix-socket /var/run/docker.sock\
+  -X POST "http:/v1.24/commit?container=0888269a9d&repo=helloworld"
+
+Setup restart policy:
+docker run --restart <policy>
+
+The available restart policies are:
+- no - Do not automatically restart the container
+- on-failure - Restart the container if it exits due to an error (a non-zero exit code).
+- unless-stopped - Restart the container unless it is explicitly stopped 
+					or Docker itself is stopped or restarted.
+- always - Always restart the container if it stops
+
+=======================================================================================================
+
+Docker service
+
+A service is a group of containers deployed with docker stack and docker-compose.yml to a docker
+swarm node. There are worker and manager nodes.
+A single container running within a service is called a task.
+
+Tasks are given unique IDs that numerically increment, up to the number of replicas you defined in 
+docker-compose.yml
+
+Docker service modes:
+- replicated
+- global
+
+Create a service with specific options:
+docker service create \
+--with-registry-auth \					    # pull image from a specifig registry
+--name my_service \ 						# set service name
+--secret my_secret \ 						# pass a docker secret
+--env MYVAR=value \ 						# pass an environment variable
+--workdir /tmp								# set working directory inside the container
+--user user	\								# username or UID using the --user flag
+--mode global \								# specify service mode
+--network my_network \						# specify docker network
+--replicas 3	\							# specify number of replicas
+--config source=site.conf,target=/etc/nginx/conf.d/site.conf,mode=0440 \ # store a docker config as a file
+--update-delay 10s \						# the interval for update between a task or set of tasks
+--update-parallelism 2 \					# specify how much tasks the scheduler will update at a time
+--update-failure-action continue			# action to take when a task returns FAILED
+registry.example.com/acme/my_image:latest
+
+docker service ls                 # List running services associated with an app
+docker service ps <service>                  # List tasks associated with an app
+docker service rm <service>			# Remove a service
+
+Removing a service does not remove the volumes used in it. It is a separate step.
+
+Update the network of a docker service:
+docker service update --network-add nginx-net-2 --network-rm nginx-net my-nginx
+
+Add a service port to an existing docker service:
+docker service update --publish-add 80 my_web
+
+Update the command an existing service runs:
+docker service update --args "ping docker.com" <service-name>
+
+Add a running service to a network
+docker service update --network-add <network-name> <service-name>
+
+Add a running service to a network
+docker service update --network-rm <network-name> <service-name>
+
+Rollback a service to a previous version:
+docker service update --rollback
+
+Remove docker config from service:
+docker service update --config-rm my-config redis
+
+inspect service info (can only be run on a swarm manager):
+docker service inspect --pretty servicename
+
+Extend the number of tasks for a service:
+docker service scale <service-name>=<replicas>
+
+Inspect the nodes where different tasks are running for a service:
+docker service ps <service-name>
+
+Remove a service:
+docker service remove <service-name>
+
+=======================================================================================================
+
+Docker swarm
+
+default docker swarm port: 2377
+
+A swarm is a group of machines that are running docker and joined into a cluster.
+
+After that has happened, you continue to run the Docker commands you’re used to, but now they are 
+executed on a cluster by a swarm manager. The machines in a swarm can be physical or virtual. 
+After joining a swarm, they are referred to as nodes.
+
+Swarm managers are the only machines in a swarm that can execute commands.
+
+docker swarm init - enable swarm mode and make current machine swarm manager
+docker swarm join - join a swarm as worker node
+
+docker swarm leave --force # drop a swarm manager from the swarm and kill the swarm
+docker swarm leave # remove a worker node from the swarm
+
+docker swarm join --token <manager-token> <manager-ip>:<manager-port>
+
+View join token on a swarm worker:
+docker swarm join-token -q worker
+
+Rotate the tockens from a docker swarm manager:
+docker swarm join-token --rotate worker
+docker swarm join-token --rotate manager
+
+Init a locked swarm manager (the unlock key will be printed):
+docker swarm init --autolock
+
+Disable autolock:
+docker swarm update --autolock=false
+
+Print unlock key for locked swarm manager:
+docker swarm unlock-key
+
+Rotate the unlock key for a locked swarm manager:
+docker swarm unlock-key --rotate
+
+Swarm task states:
+https://docs.docker.com/engine/swarm/how-swarm-mode-works/swarm-task-states/
+
+=======================================================================================================
+
+Docker stack
+
+Manage docker stacks
+
+docker stack ls # List stacks or apps
+
+docker stack deploy -c <composefile> <appname>  	  # Run the specified Compose file
+docker stack rm <appname>                             # remove an application from the stack
+
+=======================================================================================================
+
+Docker compose
+
+sample compose file:
+version: "3"
+services:
+  web:
+    # replace username/repo:tag with your name and image details
+    image: username/repo:tag
+    deploy:
+      replicas: 5
+      resources:
+        limits:
+          cpus: "0.1"
+          memory: 50M
+      restart_policy:
+        condition: on-failure
+    ports:
+      - "4000:80"
+	depends_on: # with this directive we can control the order of startup and shutdown for the services
+	- "db"
+    networks:
+      - webnet
+  db:
+    image: username/repo:tag
+    deploy:
+      replicas: 2
+networks:
+  webnet:
+
+docker-compose up - start application based in docker-compose.yml in current directory
+docker-compose up -d -start in dettached mode
+docker-compose ps - print the running services
+docker-compose config - validate and print the config
+docker-compose build - build or rebuild services
+docker-compose images - list images
+docker-compose logs - print logs for containers
+docker-compose restart - restart services
+docker-compose run - run a one-off command (similar to docker run)
+docker-compose -f docker-compose.admin.yml - specify a compose file
+
+=======================================================================================================
+
+Docker node
+
+List nodes status within a swarm manager. This can be run only by manager node.
+docker node ls
+
+Docker swarm node availability modes:
+- active - the scheduler can assign tasks to the node
+- pause  - the scheduler doesn’t assign new tasks to the node, but existing tasks remain running.
+- drain  - the scheduler doesn’t assign new tasks to the node. 
+		   The scheduler shuts down any existing tasks and schedules them on an available node.
+
+Change availability status:
+docker node update --availability drain node1
+
+Update node labels / metadata:
+docker node update --label-add foo --label-add bar=baz node1
+
+Docker manager statuses:
+- leader - the node is the primary manager node
+- reachable - the node is a manager node participating in the Raft consensus quorum
+- unavailable - the node is a manager that can’t communicate with other managers
+
+Filter by node role
+docker node ls --filter role=manager
+
+Inspect swarm node data:
+docker node inspect <node ID>
+docker node inspect self --pretty # to inspect the current node
+
+Promote a node to a swarm manager:
+docker node promote node1
+
+Demote a node from a swarm manager to a worker node:
+docker node demote node1
+
+=======================================================================================================
+
+Docker deploy (experimental)
+
+This feature is still experimental and needs to be enabled in daemon.json for the daemon
+
+=======================================================================================================
+
+Docker tag
+
+Tag <image> for upload to registry:
+docker tag <image> username/repository:tag
+
+=======================================================================================================
+
+Docker volume
+
+Manage docker volumes
+
+There are named and anonymous volumes.
+
+/var/lib/docker/volumes - system directory that contains the volume files
+
+docker volume prune - remove unused local volumes
+docker volume ls - list local volumes
+docker volume ls -q - list local volumes with supressed output
+
+Inspect a volume:
+docker volume inspect <objhash>
+
+Create a volume:
+docker volume create my-vol
+
+Create a volume using a specific volume driver:
+docker volume create --driver vieux/sshfs \
+	-o sshcmd=test@node2:/home/test \
+	-o password=testpassword \
+	sshvolume
+
+If you need to specify volume driver options, you must use --mount.
+
+-v or --volume: Consists of three fields, separated by colon characters (:). The fields must be in the correct order, and the meaning of each field is not immediately obvious.
+In the case of named volumes, the first field is the name of the volume, and is unique on a given host machine. For anonymous volumes, the first field is omitted.
+The second field is the path where the file or directory are mounted in the container.
+The third field is optional, and is a comma-separated list of options, such as ro. These options are discussed below.
+--mount: Consists of multiple key-value pairs, separated by commas and each consisting of a <key>=<value> tuple. The --mount syntax is more verbose than -v or --volume, but the order of the keys is not significant, and the value of the flag is easier to understand.
+The type of the mount, which can be bind, volume, or tmpfs. This topic discusses volumes, so the type is always volume.
+The source of the mount. For named volumes, this is the name of the volume. For anonymous volumes, this field is omitted. May be specified as source or src.
+The destination takes as its value the path where the file or directory is mounted in the container. May be specified as destination, dst, or target.
+The readonly option, if present, causes the bind mount to be mounted into the container as read-only.
+The volume-opt option, which can be specified more than once, takes a key-value pair consisting of the option name and its value.
+
+The -v / --volume option can only be used with single container. It cannot be used with
+docker services.
+
+it is not possible to modify the selinux label via the Z and z options via the --mount option
+
+=======================================================================================================
+
+Docker checkpoint
+
+Make a checkpoint from a running container
+
+=======================================================================================================
+
+Docker trust
+
+Manage key signing of docker images
+
+=======================================================================================================
+
+Docker secret
+
+Manage docker secrets. This is available only for docker services.
+
+docker secret create
+docker secret inspect
+docker secret ls
+docker secret rm
+
+Store a string as a secret:
+echo "This is a secret" | docker secret create my-secret -
+
+=======================================================================================================
+
+Docker config
+
+Manage docker configs. This is available only for docker services.
+
+docker config create
+docker config inspect
+docker config ls
+docker config rm
+
+Store a string as a docker config:
+echo "This is a config" | docker config create my-config -
+
+=======================================================================================================
+
+Docker plugin
+
+A plugin is a process running on the same or a different host as the docker daemon, which registers 
+itself by placing a file on the same docker host in one of the plugin directories.
+
+Plugins can run inside or outside containers. running them outside containers is recommended.
+
+There are three types of files which can be put in the plugin directory.
+
+.sock files are UNIX domain sockets.
+.spec files are text files containing a URL, such as unix:///other.sock or tcp://localhost:8080.
+.json files are text files containing a full json specification for the plugin.
+
+Plugins with UNIX domain socket files must run on the same docker host, whereas plugins with spec 
+or json files can run on a different host if a remote URL is specified.
+
+UNIX domain socket files must be located under /run/docker/plugins, whereas spec files can be 
+located either under /etc/docker/plugins or /usr/lib/docker/plugins.
+
+The name of the file (excluding the extension) determines the plugin name.
+
+For example, the flocker plugin might create a UNIX socket at /run/docker/plugins/flocker.sock.
+
+Useful docker plugins:
+Cloudstore plugin - share data among swarm service nodes.
+vieux/sshfs
+
+docker plugin install --grant-all-permissions vieux/sshfs
+
+=======================================================================================================
+
+Dockerfile
+
+A Dockerfile is used to describe an image.
+Each instruction in the Dockerfile creates a layer in the image.
+
+Dockefile best practises:
+https://docs.docker.com/develop/develop-images/dockerfile_best-practices/
+
+scratch - docker base image for creating images
+
+Dockerfile syntax:
+# Comment
+INSTRUCTION arguments
+
+Instructions are case insensitive but the convention is to use UPPERCASE for them.
+
+Parser directives look like comments. They are key/value based and don't add layers and will
+not affect the build. A single directive may only be used once. All parser directives must be
+at the very top of the Dockerfile. If there's a comment before the directive it will be invalid.
+
+# directive=value
+
+The following parser directives are supprted currently:
+- syntax
+- escape - this directive sets the escape character within the docker file.
+The escape character is used both to escape a new line and to escape a character.
+
+FROM
+
+	FROM <image> [AS <name>]
+	FROM <image>[:<tag>] [AS <name>]
+	FROM <image>[@<digest>] [AS <name>]
+
+	FROM instructions support variables that are declared by any ARG instructions that occur before the first FROM.
+
+	ARG  CODE_VERSION=latest
+	FROM base:${CODE_VERSION}
+	CMD  /code/run-app
+
+	FROM extras:${CODE_VERSION}
+	CMD  /code/run-extras
+
+ARG
+
+	The ARG instruction defines a variable that users can pass at build-time to the 
+	builder with the docker build command using the --build-arg <varname>=<value> flag.
+	
+	An arg instruction can optionally include a default value:
+	ARG user1=someuser
+	ARG buildno=1
+
+	An ARG declared before a FROM is outside of a build stage, so it can’t be used in
+	any instruction after a FROM. To use the default value of an ARG declared before the 
+	first FROM use an ARG instruction without a value inside of a build stage:
+
+	ARG VERSION=latest
+	FROM busybox:$VERSION
+	ARG VERSION
+	RUN echo $VERSION > image_version
+
+	Docker has a set of predefined ARG variables:
+	HTTP_PROXY
+	http_proxy
+	HTTPS_PROXY
+	https_proxy
+	FTP_PROXY
+	ftp_proxy
+	NO_PROXY
+	no_proxy
+
+RUN
+	Run has two syntaxes:
+	RUN <command>
+	RUN ["executable", "param1, "param2"] # parsed as JSON array, so elements should be double-quoted
+
+WORKDIR
+	Sets the working directory for any following RUN, CMD, ENTRYPOINT, COPY and ADD instructions
+	If the WORKDIR doesn't exist it will be created. If a relative path is provided, 
+	it will be relative to the path of the previous WORKDIR instruction. For example:
+
+	WORKDIR /a
+	WORKDIR b
+	WORKDIR c
+	RUN pwd
+	The output of the final pwd command in this Dockerfile would be /a/b/c.
+
+COPY
+EXPOSE
+	Expose port via a specified layer 2 protocol:
+	EXPOSE 80/tcp
+	EXPOSE 80/udp
+
+	The EXPOSE instruction does not actually publish the port. 
+	It functions as a type of documentation between the person who builds the image and 
+	the person who runs the container, about which ports are intended to be published. 
+	To actually publish the port when running the container, use the -p flag on docker run to publish 
+	and map one or more ports, or the -P flag to 
+	publish all exposed ports and map them to high-order ports.
+
+CMD
+
+	CMD ["executable","param1","param2"] (exec form, this is the preferred form)
+	CMD ["param1","param2"] (as default parameters to ENTRYPOINT)
+	CMD command param1 param2 (shell form)
+
+	There can only be one CMD instruction in a Dockerfile. If you list more than one CMD then only the last CMD will take effect.
+
+	Don’t confuse RUN with CMD. RUN actually runs a command and commits the result; 
+	CMD does not execute anything at build time, but specifies the intended command for the image.
+
+LABEL - A label is a key-value pair, stored as a string. You can specify multiple labels 
+for an object, but each key-value pair must be unique within an object. 
+If the same key is given multiple values, the most-recently-written value overwrites all previous values.
+
+	The com.docker.*, io.docker.*, and org.dockerproject.* namespaces are reserved by Docker for internal use.
+
+	# Set multiple labels on one line
+	LABEL com.example.version="0.0.1-beta" com.example.release-date="2015-02-12"
+
+	We can view an image's labels with the inspect command
+
+ADD - similar to COPY but supports the extraction of tarballs and remote URL support.
+	It is generally used to extract a base image's root file system from a tarball.
+
+ENV - set Docker environment variables. They are similar to shell variables but are separate.
+They have similar syntax and support the following bash modifiers:
+
+The ${variable_name} syntax also supports a few of the standard bash modifiers as specified below:
+
+	${variable:-word} indicates that if variable is set then the result will be that value. 
+	If variable is not set then word will be the result.
+	${variable:+word} indicates that if variable is set then word will be the result, 
+	otherwise the result is the empty string.
+
+	Environment variables are supported by the following list of instructions in the Dockerfile:
+
+	ADD,COPY,ENV,EXPOSE,FROM,LABEL,STOPSIGNAL,USER,VOLUME,WORKDIR
+	ONBUILD is also supported but when it is used with one of the listed instructions.
+
+	Environment variable substitution will use the same value for each variable throughout 
+	the entire instruction. In other words, in this example:
+
+	ENV abc=hello
+	ENV abc=bye def=$abc
+	ENV ghi=$abc
+	will result in def having a value of hello, not bye. However, 
+	ghi will have a value of bye because it is not part of the same instruction that set abc to bye.
+
+USER
+	Sets user and group to use when running the image and for any RUN, CMD and ENTRYPOINT 
+	instructions that follow after it in the Dockerfile. If omitted, the container runs
+	as root
+
+VOLUME
+	Creates a mount point and marks it as externally mounted volumes
+	This value can be a JSON array or a plain string with multiple arguments
+
+STOPSIGNAL
+	A kernel signal to be emitted when the container exits. Can be a valid id 
+	of the signals the kernel supports (listed with `kill -l`) or a valid name of a signal
+
+HEALTHCHECK
+	HEALTHCHEACK [OPTIONS] CMD command - check container health by running a command
+	HEALTHCHECK NONE - disable healthcheck inherited from parent image
+
+	HEALTHCHECK --interval=5m --timeout=3s \
+	CMD curl -f http://localhost/ || exit 1
+
+	The options that can appear before CMD are:
+
+	--interval=DURATION (default: 30s)
+	--timeout=DURATION (default: 30s)
+	--start-period=DURATION (default: 0s)
+	--retries=N (default: 3)
+
+	There can only be one HEALTHCHECK instruction in a Dockerfile. 
+	If you list more than one then only the last HEALTHCHECK will take effect.
+
+ONBUILD 
+	The ONBUILD instruction adds to the image a trigger instruction to be executed 
+	at a later time, when the image is used as the base for another build. 
+	Any build instruction can be registered as a trigger.
+	ONBUILD can be useful when creating a base image.
+
+SHELL - allows the default shell to be overriden. It is "/bin/sh -c" on linux-based containers
+
+ENTRYPOINT - sets the commands that will be run first when a container is run. Any arguments to
+"docker run" will be appended to the command specified with ENTRYPOINT and override all elements
+specified with CMD.
+
+ENTRYPOINT and CMD rules:
+1. Dockerfile should specify at least one of CMD or ENTRYPOINT commands
+2. ENTRYPOINT should be defined when using the container as an executable.
+3. If CMD is defined from the base image, setting ENTRYPOINT will reset CMD to an empty value.
+
+=======================================================================================================
+
+Dockerignore
+
+Exclude files from the local build context. The syntax is similar to that of .gitignore.
+
+You can even use the .dockerignore file to exclude the Dockerfile and .dockerignore files. 
+These files are still sent to the daemon because it needs them to do its job. 
+But the ADD and COPY instructions do not copy them to the image.
+
+# comment	A comment. Ignored.
+*/temp* 	Exclude files and directories whose names start with temp in any immediate subdirectory of the 
+		    root. For example, the plain file /somedir/temporary.txt is excluded, as is the directory 
+		    /somedir/temp.
+*/*/temp*	Exclude files and directories starting with temp from any subdirectory that is 
+			two levels below the root. For example, /somedir/subdir/temporary.txt is excluded.
+temp?		Exclude files and directories in the root directory whose names are a one-character 
+			extension of temp. For example, /tempa and /tempb are excluded.
+!README.md	! makes exceptions to exclusions, e.g. if *.md was used beforehand
+*/**/temp*  ignore all files starting with temp without considering the directory level
+
+=======================================================================================================
+
+Environment variables
+
+HTTP_PROXY	ENV HTTP_PROXY "http://127.0.0.1:3001"	--env HTTP_PROXY="http://127.0.0.1:3001"
+HTTPS_PROXY	ENV HTTPS_PROXY "https://127.0.0.1:3001"	--env HTTPS_PROXY="https://127.0.0.1:3001"
+FTP_PROXY	ENV FTP_PROXY "ftp://127.0.0.1:3001"	--env FTP_PROXY="ftp://127.0.0.1:3001"
+NO_PROXY	ENV NO_PROXY "*.test.example.com,.example2.com"	--env NO_PROXY="*.test.example.com,.example2.com"
+
+DOCKER_TLS_VERIFY="1"
+DOCKER_HOST="tcp://192.168.99.100:2376"
+DOCKER_CERT_PATH="/Users/tdenchev/.docker/machine/machines/myvm1"
+DOCKER_MACHINE_NAME="myvm1"
+
+=======================================================================================================
+
+System folders
+
+On Docker for MacOS the docker host runs on a QEMU virtual machine. It can be found at
+~/Library/Containers/com.docker.docker/Data/ . There's a TTY symlink there to which we can
+attach via screen and open a terminal in the docker host.
+
+On Linux control groups are exposed through a pseudo file system located under /sys/fs/cgroup.
+Each subdirectory there corresponds to a different cgroup.
+
+We can have a look at the memory metrics of a container:
+/sys/fs/cgroup/memory/docker/<longid>/.
+
+We can use lsof to troubleshoot errors connected with bind mounts:
+sudo lsof /var/lib/docker/containers/74bef250361c7817bee19349c93139621b272bc8f654ae112dd4eb9652af9515/shm
+
+/var/lib/docker/swarm - docker swarm services
+
+=======================================================================================================
+
+Links:
+
+Running GNOME applications in docker:
+https://medium.com/@waltervargasme/docker-gnome-builder-bdbc1bdd3c9a

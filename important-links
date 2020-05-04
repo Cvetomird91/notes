@@ -1,0 +1,162 @@
+SysAdmin blogs:
+https://blog.heckel.xyz/
+http://www.linuxscrew.com/
+https://sysadmincasts.com/
+http://www.zfsbuild.com/
+http://theurbanpenguin.com/
+https://sto.blog.remote-admins.com/
+https://neo2shyalien.eu/
+http://prefetch.net/blog/index.php
+http://daemon-notes.com/ (BSD blog)
+http://etherealmind.com/
+http://hypervsir.blogspot.bg/ (Virtualization blog)
+http://www.virtualizationadmin.com/ (Virtualization blog)
+http://blog.vmsplice.net/ (Virtiualization blog)
+http://www.desktop-virtualization.com/
+http://dailyvim.blogspot.bg/ (Vim and Linux)
+https://debian-administration.org/
+http://www.dedoimedo.com/
+http://xmodulo.com/
+https://jimshaver.net
+http://blog.terminal.com/
+http://centoshowtos.org/
+http://www.jupiterbroadcasting.com/show/techsnap/
+http://thegeekstuff.com/
+http://ram.kossboss.com/
+http://www.routergods.com/links/topologies/
+http://gns3vault.com/ - Networking with GNS3
+http://misc.flogisoft.com/home
+https://linuxconfig.org/
+https://serversforhackers.com/ - video tutorials; how to build curl with http2 support; Ansible; Envoy; Supervisord; Let's Encrypt; Nginx;
+https://wiki.xtronics.com/
+http://z-issue.com/wp/apache-2-4-the-event-mpm-php-via-mod_proxy_fcgi-and-php-fpm-with-vhosts/
+http://www.shellhacks.com/
+http://www.systutorials.com/
+http://www.mysqltutorial.org/
+http://www.hyper-v-mart.com/
+http://learnvimscriptthehardway.stevelosh.com/ - Learn VimL The Hard Way
+https://www.server-world.info/en/ - Server World
+https://cto.pizza/	- CTO blog
+https://gist.github.com/ssmythe/ae1449b116ece85dc10d - DevOps materials
+http://www.karan.org/blog/ - CentOS project leader blog
+https://shreevatsa.wordpress.com/
+https://blog.marceloaltmann.com/ - MySQL administration
+http://www.glennklockwood.com/hpc-howtos/process-affinity.html	- manage Linux process affinity
+
+Interactive programming tutorials, challenges and online competitive programming platforms:
+https://codefights.com/
+http://coderbyte.com/
+https://codecombat.com/
+https://paiza.jp/poh/enshura
+https://www.codeeval.com/
+https://www.hackerearth.com/
+http://www.checkio.org/
+http://www.codechef.com/
+https://www.codingame.com
+http://www.topcoder.com/
+http://www.spoj.com/
+http://devdraft.com/
+
+Rendering and graphics:
+http://www.pbr-book.org/
+https://github.com/RayTracing/raytracing.github.io
+
+Interesting blogs:
+http://www.saltycrane.com/
+https://robots.thoughtbot.com/
+
+Ivan Pepelnjak:
+http://blog.ipspace.net/
+
+Developer blogs:
+http://www.augustcouncil.com/~tgibson/tutorial/ - basic C/C++/Unix tutorials
+http://wiki.bash-hackers.org/ - BASH hackers wiki
+http://mywiki.wooledge.org/BashGuide - BASH Wiki
+http://codular.com/
+http://joearms.github.io/ - blog of Erlang creator Joe Armstrong
+https://hedgehogjim.wordpress.com/
+https://www.gerd-riesselmann.net/
+http://developed.be/ - PHP, Laravel
+https://lexborisov.github.io/myhtml/ - HTML parser, written in C
+http://btorpey.github.io/ - Wallstreet C/C++ developer, using RedHat, Clang & other open source projects
+http://eddmann.com/ - PHP, JS, C, Clojure
+https://kukuruku.co/ - C++, Python, PHP, Erlang, Algorithms, Linux system programming and administration
+http://www.bfilipek.com/ - C++
+https://blog.daftcode.pl/ - Ruby, Python
+https://nordicapis.com/author/sandovaleffect/ - Nordic API developers; blog
+https://nordicapis.com/api-ebooks/ - API developers; ebooks
+http://www.lihaoyi.com/ - Scala
+http://todomvc.com/ - To Do applications examples written in the most popular JS frameworks
+http://raganwald.com/ - Java Script, JS, JavaScript
+http://www.vogella.com/tutorials/ - Java, Android
+https://jtreminio.com/ - Web, PHP, Puppet, DevOps
+https://www.fluentcpp.com/ - C++
+https://joyofhaskell.com/ - Haskell
+https://blapid.github.io/ - C++, llcpp - library for C++ logging
+http://learningwebgl.com - WebGL, JS
+https://github.com/donnemartin/system-design-primer - book on system design
+https://scottwhittaker.net/ - Web, JS
+http://dmitrysoshnikov.com/	- JS, ECMAScript specifications in detail, Regex, Parsing (Rust, ASM), "Essentials of Interpretation" course
+https://www.inqbation.com/ - PHP, Symfony
+https://solarianprogrammer.com/ - C++
+http://www.partow.net/programming/hashfunctions/ - C++ and algorithms
+https://www.alchemistowl.org/pocorgtfo/ - Reverse engineering magazine
+http://www.baeldung.com/ - Spring MVC, Java, Jackson, Hibernate
+http://www.fredosaurus.com/notes-java/index.html - Java
+http://zetcode.com/ - eBooks on Java, Windows C API, Python, PyQt, Java, Tkinter, wxPython
+https://www.ng-newsletter.com/ - AngularJS
+https://12factor.net/ - 12 principles of modern-day web application development
+https://www.petrikainulainen.net/ - Spring, Maven
+http://featureflags.io/ - Feature flags
+
+Book on programming interview questions:
+https://yangshun.github.io/tech-interview-handbook/algorithms/dynamic-programming
+
+Design patterns:
+http://refactoring.guru
+http://sourcemaking.com
+http://oodesign.com
+
+Snippet sharing website:
+https://coderwall.com/
+
+Quality assurance blogs:
+http://softwaretestingfundamentals.com/
+http://atodorov.org/
+
+Java:
+http://crunchify.com
+http://tutorials.jenkov.com/
+https://dzone.com/
+https://www.baeldung.com/
+http://coderanch.com/
+http://www.javapractices.com/home/HomeAction.do
+http://www.fredosaurus.com/notes-java/index.html
+
+Open source bug bounty:
+http://up-for-grabs.net/
+https://www.bountysource.com/
+
+Intellij / PhpStorm key server:
+http://www.aku.vn/idea
+
+http://changelog.org - the Changelog podcasts
+http://cppcast.com/ - the C++ casts
+
+De Morgan Laws:
+https://en.wikipedia.org/wiki/De_Morgan%27s_laws
+
+Beginner programming tutorials:
+http://codeindepth.com/
+
+C++, Design Patterns, Algorithms, Python, Java, Interview questions:
+http://www.geeksforgeeks.org/c-plus-plus/
+
+Python, Wordpress, JS, CSS, Jenkins, Selenium:
+http://infoheap.com/
+
+Computer Science and Neuroscience Papers:
+https://www.semanticscholar.org/?gclid=CPLB5KbV7dUCFQeeGwodAPMPLg
+
+Proof of concept projects:
+https://cstack.github.io/db_tutorial/ - building a sqlite clone, How does a database work?

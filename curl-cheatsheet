@@ -1,0 +1,113 @@
+curl
+
+	curlrc configs:
+
+	progress-bar - display progress bar
+
+	curl -I - returns HTTP response headers
+	curl -s - silent mode - don't show progress level or error messages
+	curl -X - specify HTTP Method (HEAD, POST, GET, PUT or DELETE)
+	curl -H - add HTTP Request header
+		 -H 'Content-Type: application/json'
+		 --header 'Content-Type: application/json'
+		 -S - show error message if curl call fails
+		 -A, --user-agent - set user agent
+
+		 for exampe:
+		 Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_3_3 like Mac OS X; en-us) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8J2 Safari/6533.18.5
+
+	Download files via curl:
+	curl -O http://example.com/archive.tar.gz
+
+	Get upstream IP address:
+	curl -s icanhazips.com
+
+	Include sent headers and enable a more verbose mode:
+	curl -v google.com
+
+	Get geo-location in json format:
+	curl ipinfo.io
+
+	Check dictionary word:
+	curl dict://dict.org/d:book
+
+	POST request syntax to a form:
+	http://superuser.com/questions/149329/what-is-the-curl-command-line-syntax-to-do-a-post-request
+
+	curl -X POST --data "Key: Value" http://example.com
+
+	HTTP Digest authentication user and password (different from form fields user and password):
+	curl -u username:password http://website.com/
+
+	empty POST request
+
+	curl --data '' http://example.com/resource.cgi
+	curl --request POST http://example.com/resource.cgi
+	curl -X POST http://example.com/resource.cgi
+
+	Recompile cURL to add SSH support:
+	http://andrewberls.com/blog/post/adding-sftp-support-to-curl
+
+	Send HTTP request With query string:
+	curl --data "param1=value1&param2=value2" http://example.com/api.php
+	curl -d "param1=value1&param2=value2" http://example.com/api.php
+
+	Without data:
+	curl -d '' http://example.com/
+	curl http://example.com/
+
+	Send a specific type of HTTP request:
+	curl -X POST http://example.com/ (without data)
+	curl --request POST http://example.com/ (without data)
+
+	Send a POST request to a form field:
+	curl --form "fileupload=@my-file.txt" http://example.com/
+	curl --form "fileupload=@my-file.txt;filename=desired-filename.txt" --form param1=value1 --form param2=value2 https://example.com/resource.cgi
+
+	Send a request with json data (where filename.txt containts data in json format):
+	curl --header "Content-type:application/json" -X POST -d @filename.txt
+	curl -H - same as --header
+
+	Send a request with XML data (where doc.xml containts data in XML format):
+	curl --header "Content-type:text/xml" -X POST -d @doc.xml
+
+	--cookie, -b - set a cookie
+
+	-c, --cookie-jar - specify to which file you would like cURL to write cookies after a specific operation
+
+	Dump headers to a specific file:
+	curl -D fb-headers http://facebook.com
+	curl --head http://facebook > fb-headers
+	curl -I http://facebook > fb-headers
+
+	Use a specific interface for the request:
+	curl --interface eth0 http://facebook.com/
+
+	Limit transfer rate:
+	curl http://abv.bg --limit-rate=2000B
+
+	Upload multiple files through POST with curl:
+	http://stackoverflow.com/questions/11599957/upload-multiple-files-to-php-server-using-curl-command-line
+
+	Use a specific pair of host and port:
+	curl --resolve hostname.com:80
+
+	Submit forms with curl:
+	curl --form
+	curl -F
+
+	Send mail using curl:
+	curl --connect-timeout 15 -v "smtp://mail.xs-software.com" -u "tzvetomir@remote-admins.com:password123"
+	--mail-from "tzvetomir@remote-admins.com" --mail-rcpt "cvetomirdenchev@gmail.com" -T email.txt --ssl
+
+	Send IMAP request via curl:
+	curl --url "imaps://mail.xs-software.com" --user "user@host.com:password123" --ssl
+
+	Get UIDs of all messages in a folder:
+	curl --url "imaps://mail.xs-software.com/INBOX?ALL" --user "user@host.com:password123" --ssl
+
+	Get a signle message:
+	curl --url "imaps://mail.xs-software.com/INBOX;UID=512" --user "user@host.com:password123" --ssl
+
+	Get information about an IMAP folder:
+	curl --url "imaps://mail.xs-software.com/INBOX" --user "user@host.com:password123" --ssl --request "EXAMINE INBOX"

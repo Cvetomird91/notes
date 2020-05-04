@@ -1,0 +1,81 @@
+find - the find utility
+
+Options
+
+- without arguements - lists all files in current and child directories
+-type - filetype
+	d - directory
+	b - block device
+	f - file
+	p - named pipe (FIFO)
+	s - socket
+	D - door
+	l - symbolic link
+
+-name - case sensitive search
+-iname - case insensitive search by name
+-maxdepth - specify the depth of child directories to search in
+-mindepth - minimum depth for directory search (e.g. for skipping the first n-th directories in the search)
+-perm - specify file permissions as search criteria
+! - negation symbol; display files not matching the rule
+example:
+
+! -perm - list files with permissions different than the specified
+	find . ! -perm 0644
+
+-empty - return empty files
+
+-mtime - search within period in days during which the files were modified
+	find . -mtime 50 - find the files who were changed during the last 50 days
+
+-or - similar to OR in MySQL:
+
+	find . -name ".html" -or -name ".php" 
+
+-not - same as ! -expression, but not POSIX compliant
+
+-o - the same as -or
+
+Find files modified within a range of days: 
+	find / -mtime +50 -mtime -100 - find files modified within 50 and 100 days 	
+
+-atime - search within period in days during which the files were accessed 
+	find . -atime 50 -  find the files who were accessed during the last 50 days 
+
+-ctime -  search within period in days during which the files were changed 
+-cmin - search for files changed within the specified number of minutes 
+-mmin - search for files modified within the specified number of minutes
+-amin - search for files accessed within the specified number of minutes
+-size - search for files depending on their size 
+	find . -size 50M
+
+	Find all files whose size is between 50M and 100M
+	find / -size +50M -size -100M
+
+-not - exclude a search criteria
+
+	exclude directory from search
+
+	find . -type f -iname "*.iso" -not -path "./path/*"
+
+-user - search by file owner
+-group - search by group owning the file
+
+-exec - execute a command for the found files
+
+	find -exec grep chrome {} \; - executes grep for each file
+	find -exec grep chrome {} +; - the first file becomse first argument, the second
+								   next argument and so forth
+
+-delete - delete the found files
+
+-print - on some Unix-based systems this is needed to print out the results
+-print0 - ommit new lines
+
+-prune - do not descend into directories
+	find . -path ./src/emacs -prune - skip the search in the supplied directory
+
+-readable - search for files that are readable by the user
+	! -readable - avoid non-readable files not to output "Permissions Denied" error
+
+-ls - list found files in ls type output

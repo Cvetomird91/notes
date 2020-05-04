@@ -1,0 +1,32 @@
+iptables is a front-end to the Netfilter firewall, implemented in the Linux kernel.
+
+iptables -> Tables -> Chains -> Rules
+
+iptables has the following built-in tables:
+
+- Filter table - default one; if a table isn't specified, the filter table will be used
+	iptables --list (without the -t argument) - displays the Filter table rules
+
+	INPUT
+	OUTPUT
+	FORWARD
+
+- NAT Table
+- Mangle Table
+- Raw Table
+
+Select a table
+
+	iptables -t filter --list
+
+iptables -F
+
+	flush iptables rules
+
+iptables-save
+
+Decent IP Tables beginner tutorial:
+https://www.booleanworld.com/depth-guide-iptables-linux-firewall/
+
+https://vincent.bernat.im/en/blog/2017-ipv4-route-lookup-linux
+https://likegeeks.com/linux-iptables-firewall-examples/?utm_source=facebook&utm_medium=social

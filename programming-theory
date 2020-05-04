@@ -1,0 +1,456 @@
+C-style comments:
+
+/*
+ one line
+ another line
+			*/
+
+C++-style comments:
+int main(){
+	//comment here
+}
+
+Unix shell style comments:
+# comment here
+
+identifiers - class/variable/object names
+
+Scalar data types are the ones that have a single value.
+Collections/complex data types are those with multiple valies - e.g. arrays, objects, hashes.
+
+A pointer is an intiger that holds a memory address!!!
+
+Expressions contain identifiers, literals and operators and can
+amount to a value.
+Statements are build up of expressions.
+Expressions can be and are parts of statements.
+
+Types of control statemens:
+
+- Conditional - if/else, unless
+- Iterative - e.g. a loop
+- Jumping - e.g. goto, break, continue
+
+In C programming language terminology, a translation unit is the
+ultimate input to a C compiler from which an object file is generated.
+
+Предикатна функция - функция, която връща стойност от булев тип.
+
+Operand - a value passed to an operator.
+
+Primitive value - a value that cannot be broken up into smaller representations
+				  of data
+
+Literal - a value given exactly as it is meant to be interpreted
+
+Difference between bitwise and logical operator:
+
+A bitwise ("побитов" in Bulgarian) operator compares the values' binary representations.
+A logical operator compares the operands boolean representations.
+
+Operator's associativity(operator fixity):
+It can be three types - left-to-right, right-to-left or nonassociative.
+Operator associativity determines how operators of the same precedence are grouped in the
+absence of parentheses.
+
+Short-circuiting - when two values are evaluated with a logical OR operator, the evaluation stops
+if the first value is false (also called minimal evaluation and McCarthy Evaluation).
+
+Assignment operator - =, ^=, *=, += etc
+
+OOP Objects interaction:
+- Inheritance (Is a)
+- Composition (has a)
+- Aggregation (has a)
+The semantic difference between aggregation and composition is that in aggregation the child can exist independently in the parent.
+
+Generalization is a mechanism for combining similar classes of objects into a single, more general class. Generalization identifies commonalities among a set of entities. 
+
+Specialization is the reverse process of Generalization means creating new sub classes from an existing class.
+
+Lazy evaluation
+
+Във всички прогрмани езици оператора за присвояване връща присвоената стойност.
+
+reference counting
+symbol table - a data structure used by programming language interpreters
+copy-on-write
+copy ellision - C++ compiler optimization
+return value optiomization
+
+XOR(^) - eXclusive OR
+1 | 0 - returns true
+0 | 1 - returns true
+0 | 0 - returns false
+1 | 1 - returns false
+
+~ - bitwise NOT
+
+This operator makes the operand negative and then substracts one (e.g. if the
+operand is 100, -101 will be returned).
+
+It can be used for rounding:
+
+~~12.34 returns 12 in JS
+
+Race condition
+
+Difference between parameter and an argument:
+An argument is passed when calling the function.
+A parameter is passed when declaring the function.
+
+The variable through which we keep track of a while or for loop is called an index variable.
+
+int functionExample (int param) {
+	//some expression here
+}
+
+void main() {
+	functionExample(argument);
+}
+
+Deterministic function -a function that always returns the same output for a particular input
+
+A hashing function is a one-way function. Even a "return 0" statement may be considered a
+"hashing function". Information is lost when hashing.
+
+Hash collision - when different objects have the same hash value
+
+GNU style CLI options:
+--myoption
+
+XF86 style CLI options:
+-myoption
+
+command line options are also known as switches and flags
+
+Keyword and positional arguments:
+	In shell scripting and CLI a keyword argument is preceded by an identifier.
+E.g.:
+	command --name argument
+	A positional argument is parsed according to the position on which it is passed to the command
+
+Heap - not to be confused with the tree-like abstract data type. Memory pool from which dynamically
+allocated memory is allocated.
+
+map/filter/reduce/all/any - функции, типични за функционалните езици
+
+Event-Worker model
+PubSub - publish/subscribe pattern
+
+Explicit
+Implicit
+http://cboard.cprogramming.com/cplusplus-programming/24371-implicit-explicit.html
+(also see page 87 of "Eloquent JavaScript" for abstracton)
+
+Absatraction - abstractions hide implementation details and give us the ability to talk about problems at a higher
+or more abstract layer.
+
+The following are different types of assigning a type to a variable:
+Type coersing
+Type casting
+Type conversion
+Type juggling - like in a dynamic language like PHP when we specify implicitly the data type of a variable
+e.g.
+$int = (int) 1;
+
+index variable - the variable that gets mutated over loop executions and on which the loop execution
+				 depends
+
+% - remainder/modulo operator
+
+Pre-history of C:
+http://stackoverflow.com/questions/18125490/how-was-the-first-c-compiler-written
+
+vertical scaling
+horizontal scaling
+
+Parity bit (also check bit)
+A bit added at the end of binary code that indicates wether the number of bits in the string is odd
+or even. It is used in RAID to implement parity. It is a method for error detection.
+
+	mark parity - when parity bit is present and not used and is always 1
+	space parity - when parity bit is present and not used and is always 0
+
+Least significant bit (LSB) - the bit position in a binary integer which is determining wether if the
+number is odd or even. Usually this is the last bit position.
+Most significant bit (MSB) - 1. a bit position in a binary number having the highest value or
+2. the sign bit - the first bit which is responsible for determining a signed number's sign
+
+Method signature - the type of arguments, method name and return type of a method
+
+Transfer of control
+
+The code sqrt (a[i]), which is known as a function call on the static method sqrt(),
+causes a transfer ofcontrol (to the first line of code in sqrt ()),
+each time that it is encountered.
+The statements in sqrt() are executed in sequence, as usual, until reaching a return statement,
+which transfers control back to the statement in main().
+
+Function call
+
+Functional polymorphism:
+Some languages support the declaring of functions with the same name and different number of arguments.
+The function being called is designated upon the number of arguments being passed to the instance.
+
+Polymorphic function -a function that treats an argument accordingly to
+its type.
+
+Row-and-column maojr order:
+https://en.wikipedia.org/wiki/Row-_and_column-major_order
+
+|| - conjunction operator
+&& - disjunction operator
+
+*,[] and & are operators in C/C++.
+
+C structs are allocated on the stack. They don't have OOP behavior, this is just a way to group
+variables together. (Sometimes referred as "Plain old data structures").
+
+vectors are the resizable, dynamic high-level arrays in C++.
+
+Abstraction leak - an abstraction leaks when the user is expected to understand the underlying
+technology that is being abstracted.
+
+Higher-order functions:
+
+In mathematics and computer science, a higher-order function (also functional, functional form
+or functor) is a function that does at least one of the following:
+
+takes one or more functions as arguments (i.e., procedural parameters) or
+returns a function as its result.
+
+Permutation - множество от комбинации между няколко стойности
+
+high coupling
+high/low cohesion
+
+The Unix Epoch date (January 01 1970) is in the Greewich Mean Time (GMT) time zone.
+
+Big O notation
+In computer programming, we use big O notation to talk about the performance of
+algorithms. It’s pretty clear that it is better for code to take 1 second than 10 seconds to
+do the same thing. This is called an order of magnitude difference.
+
+Optimistic concurrency control (sometimes referred to as optimistic locking) is a
+method where instead of locking a piece of data and preventing it from being read or
+updated while the lock is in place, the piece of data includes a version number. Every
+time the data is updated, the version number increases. When updating the data, the
+version number is checked to see if it has increased between the time the client read
+the data and the time it submits the update. If this happens, the update is rejected
+and the client must re-read the new data and try to update it again.
+
+=======================================================================================================
+
+Algorythms
+
+-- String comparisson algorythms
+Levenstein - represents the number of deletions and insertions needed to be executed to
+			 convert one string to another.
+Soundex - represents how a string is pronounced in English.
+Metaphone - represents how a string is pronounced in English.
+Luhn - simple checksum formula used to validate a variety of identification numbers
+
+Static and Dynamic typing:
+http://stackoverflow.com/questions/2690544/what-is-the-difference-between-a-strongly-typed-language-and-a-statically-typed
+
+(n + 1) * n / 2 - calculate the sum of all numbers from 1 to n
+
+depth-first search - traverses the structure from the root to an arbitrary leaf and then navigates
+back up toward the root, traversing fully down any paths it skipped along the way
+breadth-first search - starts at the root and processes all elements of each particular depth
+before proceeding to the next level
+
+=======================================================================================================
+-- Hardware
+
+On a 32-bit architecture, the address space range for addressing RAM is:
+
+0x00000000 - 0xffffffff
+or 4'294'967'295 (4 GB).
+
+User space range:
+0x00000000 - 0xbfffffff
+
+Kernel space range:
+0xc0000000 - 0xffffffff
+
+http://unix.stackexchange.com/questions/4929/what-are-high-memory-and-low-memory-on-linux
+
+Volatile storage -RAM
+Non-volatile storage - HDD
+
+=======================================================================================================
+Object-oriented programming
+
+constructors besides being executed at the initialization of an object, also are actually functions that
+return a new object. This is the reason constructors are private in some design patterns
+(e.g. singleton).
+
+Mixins - language constructs (most commonly specific types of classes) that provide a way of code
+		 reusability without being inherited. (E.g. friend classes in C++, traits in PHP, Modules in
+		 Ruby).
+
+SOLID principles
+Single responsibility - a class has a single purpose
+Open closed - able to extend a classes behavior without modifying it
+Liskov Substite - 
+Interface segregation
+Dependency Inversion
+
+=======================================================================================================
+
+Data structures
+
+https://www.cs.cmu.edu/~adamchik/15-121/lectures/Stacks%20and%20Queues/Stacks%20and%20Queues.html
+http://introcs.cs.princeton.edu/java/43stack/
+
+Node, edge, root, child, children, siblings, parent, ancestor, descendant, predecessor,
+successor, internal node, leaf, depth, height, subtree
+
+Access, insert, delete, find, sort - most common operations for data structures
+
+edge - "ребро"
+sibling - nodes on the same "level", are on the same distance from the root
+ancestor
+descendant - all subsequent nodes
+predecessor - в контекста на конкретно обхождане това е предхождащия възел
+leaf - a node without child nodes
+internal node - a node with a child node(opposite of leaf)
+depth - "дълбочина" - определена позиция спрямо root-a
+height - "височина" - най-далечната позиция спрямо root-a (max depth)
+subtree - "поддърво"- и листото може да се счита за поддърво
+
+Types of data structures:
+- random access data structures - nodes can be accessed at any time by all means, e.g. arrays in
+  higher level programming languages
+- sequential access data structure - each element can be accessed only in particular order
+	- limited access data structure - subcase of sequential access data structure. Elements
+									 can be added and accessed only at a certain point.
+- linear structures - lists, stacks, queues
+
+Random access memory is called 'random' behause accessing each place in memory takes
+the same time (like an array).
+
+Different types of data structures are more suitable for particular types of operations.
+
+Array
+
+	Rectangular array = two-dimensional array
+	Jagged array - array of arrays with varying size
+
+	We can use binary search for optimization if the values are ordered and are all integers.
+
+	NB!!! Binary searches can be performed only in ordered data
+
+List - each element in a list holds a reference to the next element
+
+Stack - "купчина" - push and pop operations off the end of the data structure - LIFO (Last-in, First-out)
+	A pop operation should also return the value it removed off the stack.
+
+	Returning to the last pages opened by modern-day web browsers is implemented with a stack structure.
+	Another application are "undo" operations in text editors.
+
+Queue - "опашка" - first-in, first-out. The methods for removing elements off a queue are usually named
+	enqueue and dequeue. A queue is a linear collection. (Array.prototype.shift and Array.prototype.unshift)
+
+Deck or DEQ(ue)/Double-ended que - FILO structure - the elements can be enqueued and deqeueued in
+	both beginning and end.
+
+Ring buffer - FIFO structure with a fixed size.
+
+Set - all values in a set are unique. Similar to sets in math.
+
+Operations with the set abstract data type:
+- union - the elements from all the sets with removed duplicates
+- intersection - the set of elements the sets have in common
+- difference - the elements that are unique when comparing one of the sets against the rest
+
+A heap is a type of tree-like structure where the child nodes' values are ordered depending on their
+parents value.
+
+Binary heap - heap structure implemented with a binary tree
+
+	Binary max heap - each child node is smaller or equal to the parent
+	Binary min heap - each child node is bigger or equal to the parent
+
+heapq - python heap implementation in the standard library
+
+Linked list
+
+Trees
+
+	The root doesn't have child nodes. Each node carries information for their child node.
+	Each node in a tree can have exactly one parent node.
+
+	Връзките между node-овете са еднопосочни в дърветата винаги - от parent към child.
+
+	Binary tree - each node cannot have more than two children (left and right).
+	Usually the first node (root) of the binary tree starts from the top.
+	The children on the left of the root have lower values and those on the right
+	side have higher values of the root.
+
+	Unballanced tree - when the levels on both sides of the three are different.
+
+	Traversing binary trees:
+
+	Pre-order: root, left, right
+	In-order: left, root, child
+	Post-order:left, rigth, child
+
+	Binary search tree - foreach node(x) in the tree:
+
+		- All the elements in the left subtree of x are <=x
+		- All the elements in the right subtree of x are >=x
+
+	Binary search trees are balanced
+
+	Red-Black Tree
+	AVL Tree
+	B-Tree
+
+	Tree Set - type of Red and Black tree
+
+	Rope - type of balanced tree
+
+Two algorithms for traversing trees and graphs:
+BFS - Breadth-first Search
+DFS - Depth-first search
+
+Graphs
+
+	Similar to a tree. The main difference is that nodes may have more than one parent node.
+	The root of a graph has the same properties as the root of a tree.
+
+	Връзките в тях могат и да са двупосочни за разлика от тези в дърворидните структури,
+	които се обхождат само в една посока.
+
+	Linked lists, trees , heaps - types of graphs, but highly restricted
+
+Hash table
+
+	Each node in a hash table may have more than one value.
+	Collision - when two nodes need to enter the same position.
+	Collision resolutions - a method to resolve a collision.
+	One form of collision resolutions is to from a linked list with the colliding values.
+
+	Searching in a hash table is fast. Other operations may be slow.
+
+Linked lists
+
+	They usually end up with a null valie. Each node in a linked list contains the rest of the
+	subsequent nodes.
+
+=======================================================================================================
+
+Images and image processing
+
+Font rasterization is the process of converting text from a vector description.
+(as found in scalable fonts such as TrueType fonts) to a raster or bitmap description.
+
+Tweening -
+Short for in-betweening, the process of generating intermediate frames between two images to give the
+appearance that the first image evolves smoothly into the second image. Tweening is a key process in
+all types of animation, including computer animation. Sophisticated animation software enables you
+to identify specific objects in an image and define how they should move
+and change during the tweening process.

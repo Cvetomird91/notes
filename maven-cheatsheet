@@ -1,0 +1,137 @@
+Plugins
+
+Surefire - test runner; works with jUnit 3 and 4 and TestNG and jUnit 5 (partially)
+Compiler - plugin which manipulates the compile process
+Enforcer - it is used to apply and enforce rules on your Maven project
+Versions - plugin for managing the versions of artifacts and Maven modules
+Assembly - The Assembly Plugin for Maven is primarily intended to allow users to aggregate the project output along with its dependencies, modules, site documentation, and other files into a single distributable archive.
+Shade - This plugin provides the capability to package the artifact in an uber-jar, including its dependencies and to shade - i.e. rename - the packages of some of the dependencies.
+Dependency - analyze project dependencies - print dependency tree 
+Checkstyle - tool for checking code conventions
+
+Options:
+maven.repository.local
+maven.repository.remote
+maven.clean.skip
+maven.tests.skip - skip compilation and running of tests
+maven.surefire.debug
+https.protocols=TLSv1.2 - for Java 7 SSL issue
+skipTests	- skip execution of tests (compilation step of test isn't skipped)
+-T8 - specify a number of threads for maven to use. It can be used to run tests in parallel
+
+Maven variables namespaces:
+- env - exposes environment variables exposed by your OS or shell
+e.g.: ${env.PATH} - this is the $PATH bash variable
+- project - Exposes POMs variables: ${project.groupId}, ${prject.artifactId}
+- settings - values from settings.xml files
+- java system properties - e.g. java.source.version
+
+Workaround for older Tomcat classes missing - this compiles all *.java files, not only the modified ones
+<plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-compiler-plugin</artifactId>
+	<version>3.1</version>
+	<configuration>
+		<staleMillis>1</staleMillis>
+		<useIncrementalCompilation>true</useIncrementalCompilation>
+	</configuration>
+</plugin>
+
+Aggregator POM - manages a group of modules. It is located in the project's root dir. Must have packaging of type POM
+Reactor - another name for multi-module project in maven
+
+mvn archetype:create-from-project - create a Maven project from existing sources
+after a pom.xml file was added.
+
+mvn -offline - run maven in offline mode
+
+BOM - Bill of Material (special type of POM) - used to control the versions of project's dependencies. provides a central place to
+define and update those version
+
+mvn idea:idea - generate an Intellij idea config file from the project sources
+
+Dependency scope - used to limit the transitivity of a dependency and to affect the classpath used for various build
+tasks.
+Optional dependencies - it may be useful to think of optional dependencies as "excluded by default"
+
+There are 6 scopes available:
+
+- compile - the default scope. Used if none provided explicitly. Those dependencies are propagated to dependent projects.
+			Compile dependencies are available in all classpaths of a project.
+- import - this is supported only for dependencies of type POM. The dependency shall be replaced with the effective
+		   list of dependencies in the specified POM's <dependencyManagement/> directive.
+- system - similar to provided but we have to specify the path to the jar explicitly. The dependency is searched locally, it is not
+	looked up in a remote repository
+- provided - similar to compile, but it denotes that it is expected the JVM to provide the depencendy or a container at runtime.
+	This scope is only available in the compilation and test classpaths and is not transitive.
+- test - those dependencies are available only for the test compilation and execution phases
+- runtime - this scope denotes that the dependency is not required for compilation but only at runtime.
+
+Dependency types:
+
+- jar - default type chosen implicitly when none other is specified
+- war - Web Archive
+- bar - broker archive (IBM format)
+- ear - jar files for app server
+- pom - POM.xml dependency
+- so  - shared object - used for building JNI libraries
+
+Download a dependency to local repository without making a complete build:
+mvn dependency:get -DremoteRepositories=http://repo1.maven.org/maven2/ \
+                   -DgroupId=junit -DartifactId=junit -Dversion=4.8.2 \
+                   -Dtransitive=false
+
+Print classpath for current project to file:
+mvn dependency:build-classpath -Dmdep.outputFile=cp.txt
+
+mvn dependency:resolve - resolve the project dependencies from the repository
+
+The example below specifies two remote repositories and a custom local repository.
+mvn package -Dmaven.repo.remote=http://www.ibiblio.org/maven/,http://myrepo.com 
+  -Dmaven.repo.local="c:\test\repo"
+
+How to build only a single module from POM:
+mvn -pl library1 clean install
+
+Skip the clean step:
+mvn install -Dmaven.clean.skip=true
+
+Run only a specific test suite or specific test:
+mvn -Dtest=TestCircle test 				# runs only the TestCircle test suite
+mvn -Dtest=TestCircle#mytest test 		# runs mytest method from TestCircle
+mvn -Dtest=TestCircle#test* test  		# runs all methods starting with test from TestCircle
+mvn test -pl module						# run tests in a specific submodule
+
+Trigger the Java debugger and stop on breakpoints while running tests:
+mvn -Dmaven.surefire.debug test
+
+Show the current effective pom:
+mvn help:effective-pom
+
+Build a specific module from the POM with the modules and dependencies it depends on:
+mvn -pl namespace/library1 -amd -am clean install
+
+Skip a submodule from the build:
+mvn -pl '!submodule-to-skip' clean install
+
+Some optimizing JVM configs for JAVA 7:
+-Xss1m
+-Xmx8g
+-Xms8g
+-XX:PermSize=1g
+-XX:MaxPermSize=1g
+-XX:+TieredCompilation
+-XX:TieredStopAtLevel=1
+
+resume build after error:
+  mvn <goals> -rf :moduleName
+
+Trace dependencies using the dependency tree plugin:
+https://maven.apache.org/plugins/maven-dependency-plugin/examples/resolving-conflicts-using-the-dependency-tree.html
+mvn dependency:tree -Dverbose -Dincludes=commons-collections
+
+display versions that need an upgrade:
+mvn versions:display-dependency-updates
+
+Run maven checkstyle plugin:
+mvn checkstyle:check

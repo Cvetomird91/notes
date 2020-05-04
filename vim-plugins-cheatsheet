@@ -1,0 +1,44 @@
+Vim for PHP
+https://mwop.net/blog/164-Vim-Productivity-Tips-for-PHP-Developers.html
+
+conque
+ctrlp
+Dockerfile.vim
+emmet-vim
+eregex.vim
+matrix.vim--Yang
+nerdcommenter
+nerdtree
+rainbow_parentheses.vim
+SearchComplete
+sudo.vim
+vdebug
+vim-airline
+vim-better-whitespace
+vim-colorschemes
+vim-easymotion
+vim-fugitive
+vim-nerdtree-tabs
+vim-session
+vim-surround
+vim-unimpaired
+YankRing.vim
+
+========================================================================================================================
+
+Vdebug hotkeys:
+
+<F5>: start/run (to next breakpoint/end of script)
+<F2>: step over
+<F3>: step into
+<F4>: step out
+<F6>: stop debugging (kills script)
+<F7>: detach script from debugger
+<F9>: run to cursor
+<F10>: toggle line breakpoint
+<F11>: show context variables (e.g. after "eval")
+<F12>: evaluate variable under cursor
+:Breakpoint <type> <args>: set a breakpoint of any type (see :help VdebugBreakpoints)
+:VdebugEval <code>: evaluate some code and display the result
+<Leader>e: evaluate the expression under visual highlight and display the result
+

@@ -1,0 +1,643 @@
+C++ notes:
+
+#ifdef - the same as #if defined
+#ifndef - the same as #if !defined
+#ifdef
+#elif
+#else
+#endif
+
+#pragma - macro for compiler settings
+#pragma once - the file should be included only once
+
+macro functions
+
+#define FUNC(arg) arg / 2;
+
+char* str = "my str" // this is undefined behavior! Some compilers like Clang won't compile such code. we need to use const char* pointers.
+
+const char* str = "my str\0asd";
+cout << strlen(str) << endl; //this will output 7 because we terminated the string after the sixth character.
+
+std::string
+std::wstring
+std::u32string
+
+this - pointer to the current instance. We cannot call it within static methods (duh!).
+
+Within constant methods we need to mark pointers as constant.
+
+Когато не използваме access modifier, полето става private при дефиниране на клас. При
+дефиниране на struct, то става public по подразбиране.
+
+As the name implies, a double has 2x the precision of float[1].
+In general a double has 15 decimal digits of precision, while float has 7.
+
+std::array - stored on the stack
+std::vector - stored on the heap
+
+References need to refer to a variable, they cannot refer to a null value. We cannot change
+the variable to which they refer after a reference is declared.
+
+declaration - обявяване на сигнатурата на функция/метод/клас (без същинската логика, която ще се изпълни, без "тялото")
+definition - дефиниране на логиката на функция/метод/клас
+
+A pointer is an intiger that holds a memory address!!!
+We can have pointers of type void. By declaring a pointer of type void we
+tell the compiler that the type of the variable to whose address the
+pointer is pointing doesn't matter.
+
+void* ptr = 0; //0 is not a valid memory address. However, this is perfectly acceptable syntax. This is similar to nullptr.
+
+//this is the same as the following syntax from C++ 11:
+void* ptr = nullptr;
+
+In C programming language terminology, a translation unit is the ultimate input to a C compiler from which an object file is generated.
+It is preprocessed C code.
+
+The static keyword has three different usages in C++:
+- static member of a class
+- static function - it will be used only within this translation unit
+- static variable within a function - the variable isn't cleaned off the stack memory after calling the function
+
+In the functional procedural context:
+
+static int myFunction() { ... } - this function can be used only within this compilation unit (aka only within this file)
+int myFunction() {
+	static int result;
+	result++;
+	return result; 			- each time we call this function the value of result will NOT be removed off the stack.
+							  For each and every subsequent call of myFunction the value of result will persist among calls.
+}
+
+using namespace std; // нужно е да използваме namespace тук
+using std::string; //можем да пропуснем namespace тук
+
+string-овете са референтен тип - винаги се подават по референция като аргумент на функция/метод
+Запазват се в динамичната памет (managed heap-a).
+
+Начини за създаване на string:
+string()
+string(other_string);
+string(other_string,position,count);
+string(count, character);
+
+string.data() - returns char array
+string.empty() - returns boolean.
+string.c_str() - return C-style string char pointer
+
+Когато дефинираме string той има стойност NULL, което е различно от празен стринг ("");
+
+И C++ header-ите могат да имат .h окончание, освен .hpp.
+
+Include guard - проверка с макроси, която се прави, за да се подсигури, че библиотеката ще се компилира на
+по-голям брой компилатори.
+
+static полетата не се пишат в header файловете - когато разделяме декларацията от имплементацията им в header файла е достатъчно да използваме static keyword, в .cpp файла не е нужно да го използваме, но метода ще се компилира като статичен.
+
+type operator@(rightHandParam)
+
+type operator@(leftHandParam, rightHandParam);
+ostream& operator<<(ostream& s, const Person&);
+
+Overriding the ++/-- operator:
+
+Postfix(i++):
+	operator++(int) {} - the int parameter is just a dummy, used to distinguish that we overload the postfix ++ operator
+	operator++() {} - this is the prefix operator
+
+How to copy an object:
+Person p = x;
+Person p(x);
+
+Rule of three:
+	copy-construction
+	copy-assignment
+	destruction
+
+Special class members in C++:
+	Default constructor - gets called when creating an object without calling a specific constructor
+	Destructor - auto-called when an object goes out of scope
+	~Person() {}
+	Copy assignment operator
+
+We can dissable the constructor in the following way:
+
+class Log() {
+	public:
+		Log() = delete;
+};
+
+We can call the destructor manually (this will not cause the freeing of any resources
+if not stated otherwise in the body of the destructor):
+
+obj.~Object();
+
+Всеки клас има конструктор по подразбиране, който е празен. В C++ не се случва автоматично
+дефиниране на полета в класовете, както в JAVA, където те стават с нулева стойност.
+
+Copy assignment operator - нужно е да връща референция към същия обект:
+Object& operator=(Object& other)
+
+Когато използваме = оператора по време на декларация викаме copy constructor-a, не правим copy assignment
+Ако дефинираме едно от трите, е нужно да дефинираме останалите две.
+
+Rule of Zero - don't define any of three
+	This usually means that the job of the class isn't memory management
+
+C++11 has move semantics and the rule of five.
+
+The three distinct operators C++ uses to access the members of a class or class object, namely the double colon ::, the dot ., and the arrow ->, are used for three different scenarios that are always well-defined. Knowing this allows you to immediately know quite a lot about a and b just by looking at a::b, a.b, or a->b, respectively, in any code you look at.
+
+    a::b is only used if b is a member of the class (or namespace) a. That is, in this case a will always be the name of a class (or namespace).
+
+    a.b is only used if b is a member of the object (or reference to an object) a. So for a.b, a will always be an actual object (or a reference to an object) of a class.
+
+    a->b is, originally, a shorthand notation for (*a).b. However, -> is the only of the member access operators that can be overloaded, so if a is an object of a class that overloads operator-> (common such types are smart pointers and iterators), then the meaning is whatever the class designer implemented. To conclude: With a->b, if a is a pointer, b will be a member of the object the pointer a refers to. If, however, a is an object of a class that overloads this operator, then the overloaded operator function operator->() gets invoked.
+
+Each child class needs to declare its own constructor. It can call its parents' constructor in the following way:
+
+class LowestTermFraction : public Fraction {
+
+	public:
+		LowestTermFraction(int nominator) : Fraction(nominator) {
+
+		}
+}
+
+Slicing a descendant into ancestor:
+
+class Organism {
+
+}
+
+class Spider : public Organism {
+
+
+}
+
+Spider s;
+Organism o;
+
+o = s; // o ще има само полетата, които сме декларирали в класа Organism
+
+виртуална таблица - компилаторът я създава при употреба на virtual methods.
+
+NB!!!
+Polymorphism allows us to treat objects like their base class
+
+abstract class - classes with 1 or more pure-virtual methods. Can't be instantiated.
+Can be inherited, can be pointers. We cannot create objects from an abstract class.
+
+override - with this keyword we can set explicitly a method to override it's
+corresponding virtual one in the parent class.
+
+class Player : public Entity {
+    public:
+		void PrintName() override { std::cout << m_Name << std::endl; } //overrides Entity::PrintName();
+};
+
+With the explicit keyword we can disable implicit conversion/construction of data before being passed to the constructor.
+E.g. by using it here with the constructor that accepts a string it can only be instantiated by passing a std::string.
+Otherwise, we can instantiate it with a const char* also.
+class Entity {
+    private:
+        std::string m_Name;
+        int m_Age;
+
+    public:
+        explicit Entity(const std::string& name) : m_Name(name) {}
+        Entity(int age) : m_Name("Unknown"), m_Age(age) {}
+        Entity() { this->m_Name = "Unknown"; this->m_Age = 1;}
+
+};
+
+//implicit conversion or implicit construction
+Entity a = std::string("Ceco");
+Entity b = 26;
+
+Pure virtual method:
+
+virtual int methodName(int) = 0;
+
+Interface - an asbtract class with only pure-virtual methods, no other fields nor properties.
+
+Diamond of death
+
+class A{};
+class B : A{};
+class C: A, B {} //C will have two copies of class A
+
+Unlike in other languages, in C++ we can inherit multiple classes.
+
+Винаги когато правим полиморфизъм е нужно да използваме виртуални деструктори.
+Деструктора е нужно да е публичен.
+
+Когато един клас унаследява от друг, при инстанциране на обект от него първо се
+изпълнява конструктора на parent класа. Когато обектите се освобождават от паммета
+деструкторите се изпълняват от child към парент класовете.
+
+Виртуално наследяване:
+
+class Animal : virtual Organism {
+
+};
+
+Solving the diamond problem with virtual inheritance:
+
+class Organism {
+	float weight;
+};
+
+class Animal : virtual Organism {
+
+};
+
+class Plant : virtual Organism {
+
+};
+
+class GMO : Animal, plant {
+
+};
+
+Enums:
+There are two types of enums - regular enums and enum classes
+
+generic programming - програмиране без значение от типовете данни.
+
+We can actually declare in procedural style (like on OOP methods) functions with the same name to work with different data types:
+
+int calcPercentage(int a, int b) {
+	return (a * 100) / b;
+}
+
+double calcPercentage(double a, double b) {
+	return (a * 100) / b;
+}
+
+Moжем да постигнем същото с generic programming:
+template<typename T>
+също работи и следното:
+template<class T> - първоначалния синтаксис, въведен от Bjorne, после е заместен от горния.
+
+template<typename T> T calcPercentage(T a, T b) {
+	return (a * 100) / b;
+}
+
+или
+
+template<typename T> 
+T calcPercentage(T a, T b) {
+	return (a * 100) / b;
+}
+
+При темплейтите декларацията и имплементацията не могат да са на отделни места.
+В даден темплейт можем да имаме синтактична грешка и програмата да се компилира
+без error - темплейтите не се създават в адресното пространство, ако не ги извикаме
+(за function-level templates).
+
+Можем да правим следното мета програмиране с темплейти:
+
+template <typename T, int N>
+class Array {
+	private:
+		T m_Array[N];
+	public:
+		int GetSize() const { return N; }
+};
+
+Array<std::string, 5> ary;
+
+Това е метапрограмиране в C++, защото с темплейти не програмираме какво
+програмната логика прави в runtime, a какво прави компилатора с нея в
+compile time.
+
+calcPercentage(5, 5); - ще работи с int
+calcPercentage(4.0, 5.0) - ще работи с double
+
+Можем след това експлицитно да извикаме горната
+функция да работи с определен тип данни:
+
+calcPercentage<double>(5, 4.2);
+
+Ситуацията, в която е нужно да предпочетем template<class Т> синтаксиса е когато имаме template в template-a.
+
+Можем да използваме темплейти за аргументи от различни типове данни:
+
+template<typename T1, typename T2> 
+
+void printValues(const T1, const T2) - можем да я извикаме със string и int, например.
+
+C++ class templates - по същия начин можем да направим и класове, които са шаблони.
+
+template<typename T> class SmartArray {
+	T * data; int size;
+	T get(int index) { ... }	
+} SmartArray<double> doubleArr;
+
+Унаследяване на шаблонни класове:
+
+class QuadraticRoots : public Pair<double, double> {
+
+};
+
+Template definition and declaration must be in the same file! We can't have them in
+separate .h and .cpp files!
+
+Нещо сходно:
+std::array<int, 3> arr;
+int arr[3];
+
+template<class T, int N> array {}
+
+Templates can represent constant values: template<int N>.
+
+The Standard template library is part of the standard C++ library
+
+The standard C++ library contains STL and the standard C library.
+
+Each compiler that supports the ISO C++ supports the standard library.
+
+The STL contains:
+https://www.cs.helsinki.fi/u/tpkarkka/alglib/k06/lectures/containers.html#the-order-comparisons
+
+containers(e.g. vector, list, map)
+Adaptors - stack, queue, priority_queue
+Iterators - input, output, forward, bidirectional, random access
+Functors - predicates, negators
+Algorithms - sort(), copy(), find(), max(), binary_search()
+
+Iterators are objects that know how to access values from a sequence.
+Each STL container specifies its own iterator.
+
+std::vector<int> v;
+
+for (std::vector<int>::iterator i = v.begin(); i != v.end(); i++) {
+
+}
+
+iterators point to objects, we can derreference them with the * operator.
+They were called 'smart pointers' before C++ 11.
+
+Containers contain data and manage memory. They are class templates and work with
+any data type.
+
+They all have the following methods:
+size
+empty
+begin
+end
+
+std::string - container which holds chars - most commonly implemented as vector<char>
+in most compilers.
+
+There are these types of containers:
+- sequence containers - contain ordered values - vecotor, list, deque, array, forward_list
+
+vector<int> arr;
+vector<double> arr;
+vector<Person> arr;
+vector<vector<double> > matrix;
+
+Changes size automatically when a value is added
+push_back
+
+Assotiative containers - set, map, multiset, multimap
+
+При set-a числата се сортират при всяко добавяне.
+
+map - keys mapped to values
+
+map<string, string> dictionary;
+map["dog"] = "...";
+map["hi"] = "nihau";
+elements in a map are std::pair<K, V>
+
+map<string, int> cityPopulations;
+the [] operator in map will return the default value
+cout << cityPopulations["Chicago"] << endl; - работи добре, ако знаем дали има стойност с ключ Chicago;
+ако няма такава стойност ще бъде създадена със стойността на int по подразбиране
+cout << cityPopulations.find("Chicago") << endl;
+
+Complexity in Computer Science describes performance:
+- How fast an algorith runs & how much memory it consumes
+- based on the size of the input data - usually denoted as N
+- we usually care about the worst-case performance 
+How do we measeure complexity:
+- time - number of basic steps, memory = number of elements
+We usually care about X orders of magnitude, not +X or *X
+O(N+3) == O(2N) == O(N), i.e. we only care about the N parts
+You usually don't care if something takes 1 million or 2 million years
+
+Container Adaptors
+
+Търсене по дълбочина и търсене по широчина в graph
+
+std::sort(begin, end, comp);
+std::stable_sort(begin, end, comp);
+std::list::sort(comp);
+
+Итераторите са по-бавни от търсенето по индекс.
+
+Functor - function object
+
+f(); // скобите () са оператор, който може да бъде презаписан
+
+Можем да го презапишем със следния синтаксис:
+
+class Init {
+	public:
+		void operator()() const { //скобите са две тук
+
+		}
+};
+
+Алгоритмите в STL библитеката, освен function pointer-и, могат да приемат и функтури.
+
+Stack and heap
+
+- Stack-a използва FILO буфер, за да може да запазва променливи.
+- Heap - бърза памет, но при нея имаме събиране на данните в буфер и изкарване на информацията. Тя използва
+Tree-based structure. В центъра на дървото е или стойност с най-нисък, или с най-висок авторитет.
+
+Stack memory allocation - паметта се деалокира когато излезне извън scope. Добре е да използваме
+stack-a за данни с кратък живот. Нарича се "статична алокация". Може да направи програмата си по-бавна, ако се
+препълни стека.
+
+Dynamic memory allocation - данните отиват в heap-a. Алокирането става когато имаме pointer към някаква част от
+heap паметта. При динамичната алокация можем да прехвърляме един поинтър да сочи към много различни обекти.
+
+Stack pointer - адрес в паметта, който сочи върха на стека, към последната стойност в стека. Той се премества
+с толкова адреси колкото е голяма всяка нова стойност, която е добавена към стека.
+
+Всеки pointer в x86 има размер 8 байта.
+Stack allocation is faster - takes usually a single instruction.
+
+memory leak - when we forget to deallocate an object. This slows performance and memory is highly likely to run out.
+
+reference counter - брояч, който държи брой на пътите, в които е употребен даден обект.
+
+Smart pointer-a имплементира reference counting.
+
+std::auto_ptr<SomeClass> someObject(new SomeClass());
+
+Smart pointer types:
+
+- Unique
+- Shared
+- Strong
+- Weak
+
+std::unique_ptr<Dog>dog;
+std::strong<Dog>dog;
+
+//range-based for-loop
+for (Nums number : numbers) { 
+	// за да използваме този нов за C++11 синтаксис, е нужно обекта да е контейнер
+}
+
+decltype(expr) variable;
+
+double x = 1.1;
+decltype(x) y = 1.7; //y ще стане double
+
+nullptr - added in C++11 - typed constant
+
+делегиране на конструктори - подобно на JAVA - можем да викаме един конструктор от друг - това е въведено в C++ 11
+
+Person() : Person("[unknown]", 0) {}
+
+Person def{} - this will call the default constructor
+
+C++ 11 default constructors:
+Classname() = default; // instead of Classname() {}
+~Classname() = default; //instead of ~Classname() {}
+
+lambda function:
+[](const Person& p) { return p.getAge() == 69; }
+
+Move semantics - performance optiomization in C++
+rvalue and lvalue
+
+lvalue - locator value
+
+int a, b;
+cin>>a>>b;
+int c = a + b;
+
+rule of thumb - of something has an identifier it most probably is an lvalue
+
+copy ellision
+
+rvalue references - new in C++11. Не можем да имаме референция към стойност, която няма identifier
+(стойността, която стои вдясно от оператора за присвояване).
+
+DataType && val = (number - 1);
+return value optiomization
+
+C++11 move constructor:
+SmartArray(SmartArray&& other);
+
+SmartArray(SmartArray&& other) : data(other.data), length(other.data) {
+
+}
+
+Constants and pointers, const keyword in classes:
+
+//Those two examples are the same. They mean that the pointer value cannot be modified. We can
+//point it to another address in memory, but we cannot change the data after derreferencing it.
+const int* a = new int;
+int const* a = new int;
+
+//This usage is the opposite (notice the place of the pointer operator is before the const construct.
+//In this example we can change the value of the pointer, but we cannot change the memory address to which
+//it points to.
+int* const a = new int;
+
+//here we cannot change the value, nor the memory address of the pointer.
+const int* const a = new int;
+
+//We can use the mutable keyword to mark that a variable could be changed within a const function or method
+mutable int count = 1;
+
+We can use const in method declaration (not in function declaration in procedural style).
+By using const here we tell the compiler that no already existing properties' values will be changed
+in the body of the method.
+
+class Entity {
+  private:
+	int m_X, m_Y;
+  public:
+	int GetX() const {
+		return m_X;
+	}
+
+	//we can use all three usages at the same time
+  	const int* const GetY() const {
+		m_X = x;
+	}
+};
+
+mutable keyword - may be useful for debugging - a variable marked as mutable can be mutated inside a const
+method
+
+We can cast an lvalue to an rvalue with std::move:
+body = std::move(other.body) // casts other.body to an rvalue reference, hence move-assignment.
+
+This is C++ 11 syntax:
+template<typename PixelT> using PixelRow = std::vector<PixelT>;
+
+The difference between typedef and using is that we cannot use templates in typedef.
+
+C++ standard library headers:
+
+<algorithm> <fstream> <list> <regex> <typeindex>
+<array> <functional> <locale> <set> <typeinfo>
+<atomic> <future> <map> <sstream> <type_traits>
+<bitset> <initializer_list> <memory> <stack> <unordered_map>
+<chrono> <iomanip> <mutex> <stdexcept> <unordered_set>
+<codecvt> <ios> <new> <streambuf> <utility> <span>
+<complex> <iosfwd> <numeric> <string> <valarray>
+<condition_variable> <iostream> <ostream> <strstream> <vector>
+<deque> <istream> <queue> <system_error>
+<exception> <iterator> <random> <thread>
+<forward_list> <limits> <ratio> <tuple> <algorithm>
+
+C standard library headers that we can include in a C++ source file:
+
+<cassert> <cfloat> <cmath> <cstddef> <ctgmath>
+<ccomplex> <cinttypes> <csetjmp> <cstdint> <ctime>
+<cctype> <ciso646> <csignal> <cstdio> <cuchar>
+<cerrno> <climits> <cstdarg> <cstdlib> <cwchar>
+<cfenv> <clocale> <cstdbool> <cstring> <cwctype>
+
+C++ resources:
+http://www.geeksforgeeks.org/c-plus-plus/
+https://gcc.gnu.org/onlinedocs/cpp/ - the CPP preprocessor official documentation
+
+C++ GUI toolkits:
+ImGUI
+Nana
+GTKmm
+FLTK
+Qt
+
+FLTK Cheatsheet:
+http://seriss.com/people/erco/fltk/#Fl_Menu_Bar_Single_Callback
+
+Books:
+https://www.amazon.co.uk/dp/1933988770/ref=as_at?slotNum=1&linkCode=g12&imprToken=YcakfqoTROxbiKTE2417Vw&creativeASIN=1933988770&tag=httpsolaria0c-21
+
+A blog on C++ and algorithms:
+http://www.partow.net/programming/hashfunctions/
+
+GDB - finding segmentation faults:
+https://discover.cs.ucsb.edu/commonerrors/tutorial/gdbtutorial.html
+
+GDB STL views:
+https://sourceware.org/ml/gdb/2008-02/msg00064/stl-views.gdb
+
+
+--- Compiler flags
+g++ -fdump-class-hierarchy - This shows the class layouts and vtable layouts with all the offsets.

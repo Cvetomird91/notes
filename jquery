@@ -1,0 +1,347 @@
+jQuery
+
+	Selectors - CSS-like syntax:
+
+			$("tagname")
+
+			$("#identifier")
+
+			$(".classname")
+
+			$('*') - select all elements
+
+			$('div > p') - all paragraphs, which are immediate children
+
+			$('div p') - all paragraphs, which are children of a div, even those not immediate children of a div
+
+			$('prev + next') - next adjacent selector:
+				$('ul' + 'div') - this example selects all divs which are immediately preceded by an ul (are siblings with an ul element)
+
+			$('prev ~ siblings') - next sibling selector:
+				$('#para1 ~ p') - all sibling selector elements that come after a "prev" element
+
+			$('p[class]') - elements that have a particular attribute set (no matter the value of the attribute)
+			$('p[id=para1]') - elements that have a particular attribute with a particular value
+			$('p[id^=para1]') - elements that have a particular attribute with a value which STARTS WITH the expression
+			$('p[lang*=en-]') - elements that have a particular attribute with a value which CONTAINS the expression
+			We can use multiple of those selectors:
+			$('p[id^=para1][lang*=en-]')
+
+	Filters
+
+	Basic jQuery filters
+
+	:first, :last - first or last given selector type
+	:even, :odd - only even or odd items in the matched set
+		NB!!! - indexes start with zero as in arrays
+		:odd filter will return the second, fourth etc element from the selection
+	:gt - greater than an index
+	:lt - less than an index
+	:eq - equal to an index
+	:animated - items that are being animated
+	:focus - element that currently has the focus
+	:not(expr) - elements that don't match expr
+
+            $("#example p:gt(1)").css("border","3px solid red");
+            $("#example p:not(p:eq(2))").css("border", "3px solid red");
+
+	:contains(content) - elements that contain the specified patern
+	$('p:contains(packages)')
+
+	Attribute selectors:
+	http://api.jquery.com/attribute-equals-selector/#attributevalue
+
+	$(function() {}); is the shorthand for $(document).ready(function() {});
+	We can also use the following:
+	$().ready(function() {
+		//
+	});
+	The onready event is different from the onload event. The ready event fires much earlier than the onload event.
+	With the ready event we can operate on the dom before all of the static resources have been downloaded.
+	The vanilla JS equivalent of ready is DOMContentLoaded.
+
+Learn jQuery:
+http://www.learningjquery.com/
+
+Methods for changing elements in the DOM tree
+http://api.jquery.com/category/Manipulation/
+
+jQuery compatibility and new functions
+
+	deprecated function -> new function
+
+	jqXHR.done -> jqXHR.success
+	jqXHR.fail -> jqXHR.error
+
+jQuery Event handling
+
+Since v1.8 jQuery relies mainly on two methods to handle events:
+.on() and .off() to respectively bind and unbind events
+
+
+The .trigger() method cannot trigger native browser events, only those that
+are being handled by jQuery event handlers on elements.
+
+4 differences between .trigger() and .triggerHandler():
+
+.triggerHandler() only triggers the event on the first element of a jQuery object.
+.triggerHandler() cannot be chained. It returns the value that is returned by the last handler, not a jQuery object.
+.triggerHandler() will not cause the default behavior of the event (such as a form submission).
+Events triggered by .triggerHandler(), will not bubble up the DOM hierarchy. Only the handlers on the single element will fire.
+
+A jQuery plugin for simulating native browser events:
+https://github.com/jquery/jquery-simulate/
+
+.bind() is deprecated as of jQuery 3.0. This is differend from the Function.prototype.bind method.
+
+The .on() method binds event handlers only to elements which are already attached to the current DOM.
+
+We can use the following syntax to dynamically attach event handlers to dynamically added child elements:
+
+$(document).on('click', 'div.example' function() {
+    //handler logic
+});
+
+This will bind the event handler to child divs with the "example" class which appear after
+the handler was registered.
+
+We can attach handlers for multiple events:
+$('.elem').on('mouseover mouseleave', function(e) {
+
+});
+
+Binding multiple events with different handlers with a single call to the .on() method:
+$( "p" ).on({
+    "click": function() { console.log( "clicked!" ); },
+    "mouseover": function() { console.log( "hovered!" ); }
+});
+
+$('.elem').hover(arg1, arg2) - takes two event handlers as arguments. The first
+is executed on mouseenter, the second - on mouse leave.
+The same as using .on('mouseover mouseleave', function(e) {})
+
+jQuery has its own event object abstraction	that ensures cross-browser consistency
+for event information. Through it the following properties are normalized for all browsers:
+
+target
+relatedTarget
+pageX
+pageY
+which
+metaKey
+
+event.originalEvent - returns the JS object that was abstracted by the jQuery event object.
+
+We can pass values from the outer scope to be attached to the object:
+
+$('.elem').on('init', name: 'Div 3', function(event) {
+	//the second parameter will appear as property of the event object
+});
+
+$( "div" ).on({
+    mouseenter: function() {
+        console.log( "hovered over a div" );
+    },
+    mouseleave: function() {
+        console.log( "mouse left a div" );
+    },
+    click: function() {
+        console.log( "clicked on a div" );
+    }
+});
+
+.one() - attach an event handler to an element which will be executed only on the first
+occurence of the event
+
+.click(); - not just a shorthand for a click handler. Please, read further
+
+$('p').off('click') - unbinding all click handlers on a selection
+
+In jQuery, in event handlers the this keyword refers to the element on which the
+handler was called.
+
+NB!!!
+There are two types of jQuery events: direct bindings and delegated events!
+	http://stackoverflow.com/questions/6658752/click-event-doesnt-work-on-dynamically-generated-elements
+
+	This will attach the handler to elements that already exist on the page:
+	$('.element').click(function() {
+		//code
+	});
+
+	This can be used to attach an event to an element that is loaded dynamically:
+	$(body).on('.element', 'click', function() {
+		//code
+	});
+	Those are delegated events.
+
+	See also jQuery.live() - deprecated since 1.7:
+	http://api.jquery.com/live/ - all event handlers attached with live are bound to the document
+	root by default
+
+	Another workaround for this would be attaching an event to a child element
+	which would be attached dynamically:
+
+	$('.formBar').on('click', 'div.insert-inventory-field', function() {});
+
+.delegate() - deprecated method for event delegation
+
+$.ajaxSetup - setup global default AJAX function
+
+$('.element').load() - method to retrieve data via AJAX and replace the elements
+content with it.
+
+We can use load to append only a part of the fetched content:
+$('.element').load('/docs.html #p2');
+$.getJSON
+$.get
+$.post
+
+jQuery AJAX events:
+ajaxStart() -> ajaxSend()-> ajaxSuccess() -> ajaxComplete() -> ajaxStop()
+						 \-> ajaxError() /						(all requests ended)
+
+jQuery provides us with additional AJAX events. They are global, not only
+per object.
+$.ajaxComplete()
+$.ajaxError()
+$.ajaxSend()
+$.ajaxStart()
+$.ajaxStop()
+$.ajaxSuccess()
+
+Traversing the DOM:
+
+$('elem').parents() - return a collection with parents from all the preceding elements
+$('elem').parent() - get immediate parent
+$('elem').parentsUntil('html') - get all the parents UNTIL a particular element
+$('elem').prev() - next immediate sibling
+$('elem').next() - previous immediate sibling
+$('elem').find()
+
+$('elem').each(function(index, element) {
+	//
+});
+
+To exit out of $.each iteration we have to return boolean false. Returning true out of the closure will continue the iteration over the collection.
+
+jQuery Statement Chaining
+$(selector).fn1().fn2().fn3()
+
+$('div').is('.my-class') - we can also pass classes to the "is" method to see if an element has a class
+
+Properties vs Attributes:
+attributes are part of HTML
+properties are assigned and manipulated by the DOM.
+
+This is the difference in the .prop() and .attr() jQuery methods.
+
+Difference between .get() and .eq() methods:
+.get() returns a native DOM element, not a jQuery object. Withour arguments it returns an
+array of DOM elemetns.
+
+Altering the DOM with jQuery:
+
+	Inserting page content with jQuery
+
+	$('element').html(element); - replace with html
+	$('element p').html(element);
+
+	$('element').text(element); - replace with 'raw' text
+
+	$('.github').append('New text') - append text at the end of the content of the element
+	$('.github').prepend('New text') - same as .append, but adds them at the end
+
+	We can also add HTML elements with .append() and .prepend():
+	$('.github').append('<p>New text</p>')
+	$('.github').prepend('<p>New text</p>')
+
+	$('Text Node').appendTo('.github p'); - appends to the content of the first matching element
+	$('Text Node').prependTo('.github p'); - same as .appendTo, but adds content to the last matching element
+	We can also use appendTo and prependTo with jQuery element objects:
+	$('#elem:first').appendTo('#example');
+
+	$('element').after('content') - inserts content outside of an element, after it
+	$('element').before('content') - inserts content outside of an element, before it
+
+	$('<p> paragraf 1</p> ').insertAfter("#example p:first");
+	$('<p> paragraf 1</p> ').insertBefore("#example p:first");
+
+	$('.elem').wrap('<div style="color:red"/>') - wrap each matched element
+	$('.elem').wrapAll('<div style="color:red"/>') - wrap the group of matched element into a single div
+	$('.elem').empty() - remove all child elements
+	$('.elem').remove() - removes an element INCLUDING the event data and event listeners attached to it
+	$('.elem').detach() - removes an element EXCLUDING the event data and event listeners attached to it
+	$('<div>new content</div>').replaceAll('#example p[id]') - replaces all matches with the new DOM element
+	replaceWith has the opposite syntax
+	$('#example p[id]').replaceAll('<div>new content</div>') - replaces all matches with the new DOM element
+
+	Manipulate attributes:
+	$('#a').attr('class') - returns the elements class
+	$('#a').attr('class', 'init') - sets the elements class
+	$('#a').attr({src: 'images/Europe.png', title: 'Map of Europe'}) - set multiple attributes at the same time
+
+	CSS:
+	$('#example').css('background-color')
+	$('#example').css('background-color', 'green')
+	$('#example').css('background-color', function() { return 'green'; })
+	$('#example').css({backgroundColor: 'green', marginTop: '20px'});
+
+	$('#example').hasClass()
+	$('#example').addClass()
+	$('#example').removeClass()
+	$('#example').toggleClass() - add or remove class
+
+	Positioning:
+	$('#example').width() - get or set element width
+	$('#example').height() - get or set element width
+	$('#example').innerWidth() - get or set element innerWidth
+	$('#example').innerHeight() - get or set element innerHeight
+	$('#example').offset() - get coordinates of element, relative to the document //returns {top: 300.875, left: 8}
+	$('#example').position() - get coordinates of element, relative to the parent element //returns {top: 300.875, left: 8}
+
+HTML5 data attributes
+
+	$('.elem').data() - return an object with all the data attributes as properties and their values
+	$('.elem').removeData() - remove HTML5 data values
+	$('.elem').removeData('url-popover')
+
+Adding DOM elements with jQuery:
+
+jQuery UI:
+$.datepicker - method for date and time manipulation
+
+findEventHandlers plugin:
+https://raw.githubusercontent.com/ruidfigueiredo/findHandlersJS/master/findEventHandlers.js
+The code can be pasted directly into the JavaScript REPL
+
+Animations
+
+$('#elem').show(); - we can pass a string to notify the speed - 'fast', 'slow' etc
+	or we can pass a number value to use as miliseconds
+
+$('#elem').hide();
+$('#elem').toggle() - if the element is visible it becomes hidden and vise verca
+
+$("#theDiv").fadeIn("fast");
+$("#theDiv").fadeOut("slow");
+$("#theDiv").fadeTo("slow", 0.3);
+$("#theDiv").fadeTo("slow", 1.0, onComplete);
+$("#theDiv").fadeTo("fast", 0.3)
+			.fadeTo("fast", 1.0)
+			.fadeTo("fast", 0.3)
+			.fadeTo("fast", 1.0);
+$("#theDiv").slideUp(1000);
+$("#theDiv").slideDown("fast", "linear");
+$("#theDiv").slideToggle("slow", onToggleFinished);
+
+-- Materials
+
+http://benalman.com/news/2010/03/jquery-special-events/
+
+-- Advanced Topics
+
+	Events Extensions
+	Global AJAX handlers
+	CSS Hooks
+	Callback Queue

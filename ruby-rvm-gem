@@ -1,0 +1,112 @@
+========================================================================================================
+Embedded Web Server:
+ruby -rwebrick -e'WEBrick::HTTPServer.new(:Port => 8000, :DocumentRoot => Dir.pwd).start'
+
+-- gem
+
+gem list - list installed gems
+gem spec gem_name - get information about package
+
+By default list and spec work with the locally installed gems. Here's how we can search the remote repository:
+gem list --remote mysql
+
+gem install mysql
+
+get environment settings:
+
+gem environment
+
+gem serve -> http://localhost:8808
+
+gem update - update all gems
+gem update --system - update the gem package manager
+
+gem install --verbose
+
+Additional tools for the interactive Ruby Shell:
+http://irb.tools/
+
+Reading documentation in PRY:
+$ gem install pry-doc
+$ pry
+
+[1] pry(main)> show-doc String#inspect
+
+-- IRB, PRY
+
+require a file upon opening the shell:
+
+$ irb -r ./source.rb
+
+get the load path from which require and load search for scripts:
+puts $LOAD_PATH
+
+Get OpenSSL Ruby binding version:
+ruby -ropenssl -e 'puts OpenSSL::OPENSSL_VERSION'
+
+Object#instance_methods has an option to ommit inherited methods:
+Array.instance_methods(false) # => returns only methods of Array, not those inherited
+from Enumerable
+
+Array#shelljoin, Shellwords - suitable for escaping strings as BASH escapes them.
+String#% - same as Kernel.sprintf
+
+extconf.rb - Ruby gems with native extensions contain these.
+include this script. It generates a Makefile if the gem includes native
+C extensions for Ruby
+
+Ubuntu repository which contains Rubies with custom performance patches (from 1.9 to 2.3)
+https://launchpad.net/~brightbox/+archive/ubuntu/ruby-ng
+
+=======================================================================================================
+Ruby & Rails resources:
+
+Ruby Quiz:
+http://rubyquiz.com/
+
+Ruby Standard Library:
+https://github.com/rubysl
+
+The Bastards Book of Ruby:
+http://ruby.bastardsbook.com/
+
+Ruby Inside:
+http://www.rubyinside.com/nethttp-cheat-sheet-2940.html
+
+Benchmark results:
+http://www.isrubyfastyet.com/
+=======================================================================================================
+
+Debugging
+
+Dropping into IRB or PRY for debugging purposes:
+
+IRB:
+
+require 'rubygems'
+require 'ruby-debug'
+---
+debugger
+
+PRY:
+binding.pry
+
+Ruby profiler included in Rack:
+http://stackoverflow.com/questions/22263834/how-do-you-output-call-tree-profiling-for-kcachegrind-with-ruby-prof-for-a-rails
+
+$@ - call stack of last exception
+$1 - last exception thrown
+
+=======================================================================================================
+
+Bundle
+
+bundle install - parse Gemfile and install dependencies
+bundle show gemname - show installation path of gem
+
+=======================================================================================================
+
+RVM
+
+install a gem for all rubies:
+rvm all do gem install nokogiri

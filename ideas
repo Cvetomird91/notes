@@ -1,0 +1,13 @@
+1. Reverse Emmet plugin (pure HTML to Emmet syntax converter) for VIM written in Python ('Timmy' - working title)
+2. GNU Readline in Mozilla URL bar and in DevTools console
+3. Refactor WordPress to work with PostgreSQL
+4. HTTP Response with encrypted Java Script
+5. Browser extension that decrypts encrypted JS code
+6. Peer-to-peer chat
+7. Server-client chat in Unix-like environment inbetween system users with messages appearing on TTY output
+	The server-side part should provide clients with the ability to write to pts&tty devices without having root privileges
+8. PHP Halo Blog At joomla.com
+9. Create a Ruby gem that has the same functionality as find from findutils
+10. CMS/Blogging platform written in Hack/TypeScript.
+11. Sublime Text/Vim btrfs plugin acting as revision control.
+12. Windowing system module which shares mouses between hosts

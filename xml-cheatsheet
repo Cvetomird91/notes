@@ -1,0 +1,39 @@
+An XML document can have only one root node - there cannot be any siblings at the same level as the root node.
+
+Attribute names are case sensitive.
+
+Tag names are case sensitive.
+
+Using UTF-8 or UTF-16 is advised. It can be specified at the XML declaration on the first line:
+
+<?xml version="1.0"?>
+
+References:
+
+They allow us to include additional text or markup. They start with & and end with ;
+
+- Entity references:
+
+Entity References: An entity reference contains a name between the start and the end delimiters. For example &amp; where amp is name. The name refers to a predefined string of text and/or markup.
+
+- Character References: These contain references, such as &#65;, contains a hash mark (“#”) followed by a number. The number always refers to the Unicode code of a character.
+
+The document prolog starts at the beginning of the XML document. It contains the XML declaration and the document type declaration.
+
+<?xml
+   version="version_number"
+   encoding="encoding_declaration" <!-- UTF-8 is default -->
+   standalone="standalone_status"	<!-- yes or no, identifies wether outer sources will be included -->
+?>
+
+- CDATA
+
+Nesting is not allowed in the CDATA section.
+"]]>" cannot be contained anywhere in the XML.
+
+<element xmlns:name="URL">
+
+xmlns - XML Namespace
+
+Some space characters are significant, other aren't. Spaces between XML attributes aren't significant.
+

@@ -1,0 +1,8 @@
+ftp://ftp.gnu.org/old-gnu/Manuals/gdb/html_chapter/gdb_9.html
+
+print / p - print variable
+step / s - step into function
+up - return to caller statement
+
+print all array values:
+print *array@len (where len is the memory sections which you would like to print)

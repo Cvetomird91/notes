@@ -1,0 +1,29 @@
+Puppet glossary:
+
+Puppet master: the master server that controlls configuration on the nodes
+Puppet Agent Node: a node controlled by a puppet master
+Manifest: a file that ends in .pp and contains a set of instructions to be executed
+Resource: blocks of code that declare elements on the system that need to be changed
+Module: collection of manifests
+Class: similar to classes in OOP and can be used for encapsulation of resources.
+	Classes are containers of different resources.
+Facts: global vars containing information about the system (similar to facts in Ansible)
+Servces: they trigger status changes of services on nodes (similar to handlers in Ansible)
+
+get resource description:
+puppet describe file
+
+get list of available resources:
+puppet describe --list
+
+search for modules in Puppet forge:
+puppet module search rvm
+
+Puppet tutorial:
+http://www.example42.com/tutorials/PuppetTutorial
+
+Puppet tutorial from TheGeekStuff:
+http://www.thegeekstuff.com/2015/07/puppet-configuration-examples/?utm_source=feedburner&utm_medium=feed&utm_campaign=Feed%3A+TheGeekStuff+(The+Geek+Stuff)
+
+Install and manager RVM with Puppet module:
+https://blog.csanchez.org/2014/01/14/installing-rvm-and-multiple-ruby-versions-with-puppet/

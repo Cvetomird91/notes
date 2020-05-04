@@ -1,0 +1,711 @@
+Glossary:
+
+control plane / master - consists of the k8s api server, etcd, controller manager and scheduler.
+	If a node crashes the control plane is responsible to recreate the pods in the node elsewhere
+	with the help of a kubelet running on the worker node. Both the control plane components
+	and the Kubelet emit events to the API server as they perform actions
+node - a node is a VM or physical compiter which serves as a worker machine in a K8S cluster
+kubelet - an agent for managing the node and communicating with the Kubernetes master
+	The kubelet running on a worker node restarts pods when they crash. It's initial job
+	is to register the node it's running on by creating a Node resource on the API server.
+	It constantly monitors running containers and reports their status, events, and resource
+	consumption to the API server.
+	The kubelet runs the container liveness probes and restarts the containers when they fail
+service proxy
+scheduler - schedules the apps - assigns a worker node to each deployable component of your application
+	it decides on which node a pod will be deployed
+controller manager - performs cluster-level functions, such as replicating components, keeping
+	track of worker nodes, handling node failures etc. Controllers all watch the API server for changes
+	to resources (Deployments, Services and so on)
+etcd - distributed store that stores the cluster configuration
+kube-proxy / service proxy - load balancer for routing requests  from a node to the master
+replication controller - they are used to replicate pods and keep them running. A single pod is
+	created when we don't specify the number of pods. The replication controller maintains the
+	specified number of pods. If the pod disappears for any reason, such as in the event of a node
+	disappearing from the cluster or because the pod was evicted from the node, the
+	ReplicationController notices the missing pod and creates a replacement pod.
+	A ReplicationController has three essential parts (also shown in figure 4.3):
+		 A label selector, which determines what pods are in the ReplicationController’s scope
+		 A replica count, which specifies the desired number of pods that should be running
+		 A pod template, which is used when creating new pod replicas
+replica set - they supercede replication controllers. They support more advanced pod
+	selectors
+pod - a group of 1 or more tightly related containers managed as a single unit running in the same
+	worker node and in the same Linux namespace. Each pod is like a separate logical machine with
+	its own IP, hostname, processes, and so on, running a single application. This is the smallest
+	unit with which Kubernetes operates
+	When a pod is created it's IP address is local to the given cluster. To make it accessible
+	from the outside world we need to expose it's according replication controller 
+	as a Service with "kubectl expose"
+	All containers of a pod run on the same node. A pod never spans two nodes.
+	All containers in a pod share the same loopback interface
+service - expose pods to the external world as a single IP and assign new pods to that specific IP
+	when they are created. Instead of connecting to pods directly, clients should connect to the service
+	through its constant IP address. The service makes sure one of the pods receives the connection,
+	regardless of where the pod is currently running (and what its IP address is).
+	Services deal with TCP and UDP packets.
+	A service can be accessed via <service-name>.<namespace>.svc.cluster.local by default
+	A pod isn't directly linked to a service. An endpoints resource stands between them
+ingress - HTTP-based  load balancer. An important pro compared to the LoadBalancer services is that
+	each load balanced service requires it's own load balancer instance and work on the TCP level
+	Ingresses operate on the HTTP level and thus can operate with multiple services
+replication set - will eventually deprecate the replication controller. a ReplicaSet's selector allows 
+	matching pods that lack a certain label or pods that include a certain label key, regardless of
+	its value.
+namespace - provide a way of grouping pods. A pod can belong to a single namespace
+deployments - they are based on replica sets and provide declarative application updates
+stateful set - an analogy of replica sets that supports providing the pod it maganges
+	with the same name, same network identity and persistent storage
+daemon sets - A DaemonSet ensures that all (or some) Nodes run a copy of a Pod. 
+	As nodes are added to the cluster, Pods are added to them. As nodes are removed from the cluster, 
+	those Pods are garbage collected. Deleting a DaemonSet will clean up the Pods it created.
+jobs - pods managed by  jobs are rescheduled until they finish successfully a task they are executing
+	   after that they are removed from the node. Jobs can run multiple pods in parallel or
+	   sequntially. Job resources run immediatelly after they are created in the cluster
+cron jobs - as opposed to normal jobs, cron jobs are scheduled to be run at a certain time
+kube-dns - a system pod running a DNS server. It's part of the kube-systm namespace. All pods are
+	configured by the master to use it by modifying their /etc/resolv.conf file.
+	This default behaviour for DNS can be modifyed by the dnsPolicy property in pod definition
+endpoints - a list of IP addresses and ports exposing a service. The Endpoints object 
+	needs to have the same name as the service and contain the list
+	of target IP addresses and ports for the service.
+volume - A volume is bound to the lifecycle of a pod and will stay in existence only while the
+	pod exists, but depending on the volume type, the volume’s files may remain intact
+	even after the pod and volume disappear, and can later be mounted into a new volume.
+sidecar container - a sidecar container is a container in a pod that has supportive
+	role to the main containers
+persistent volume - a persistent volume is setup by the cluster administrator. It can be
+	requested when needed with a persistent volume claim instead of referencing it directly
+	in a pod description. PersistentVolumes, like cluster Nodes, don’t belong to any namespace,	
+	unlike pods and PersistentVolumeClaims.
+storage class - Instead of the administrator pre-provisioning a bunch of PersistentVolumes, they
+	need to define one or two (or more) StorageClasses and let the system create a new
+	PersistentVolume each time one is requested through a PersistentVolumeClaim. The StorageClass 
+	resource specifies which provisioner should be used for provisioning the PersistentVolume
+deployment - there are two deployment strategies - Recreate (delete all the pods containing
+	the old version first and then recreate the replicas with the new one)
+	and RollingUpdate (delete old version pods and replace them one by one)
+	maxSurge - Determines how many pod instances you allow to exist above the
+	desired replica count configured on the deployment
+	maxUnavailable - Determines how many pod instances can be unavailable relative to the desired
+	replica count during the update
+helm package manager
+pause container - The pause container is the container that holds all the containers of a pod
+	together. Remember how all containers of a pod share the same network and other
+	Linux namespaces? The pause container is an infrastructure container whose sole
+	purpose is to hold all these namespaces. All other user-defined containers of the pod
+	then use the namespaces of the pod infrastructure container. The pause containers are
+	something system-internal to k8s, this is why information about them isn't queried through
+	kubectl
+service account - a way for an application running inside a pod to authenticate itself with
+	the API server. Applications do that by passing the ServiceAccount's
+	token in the request. A default ServiceAccount is automatically created for each namespace.
+	A pod can only use a service account from the same namespace. A service account contains
+	image pull secrets (will be added automatically to all pods using the service account),
+	mountable secrets (pods using the service account. The pod's service account can be configured
+	to only allow the pod to mount Secrets that are listed as mountable Secrets on the
+	Service account. A pod's service account can be set when creating the pod. It can't be changed
+	later. This can be set in the spec.serviceAccountName field in the pod definition
+image pull secrets - they hold the credentials for pulling container images
+role binding - binds a service account to a role
+pod security policy (psp) - a cluster-level (not namespaced) resource, which defines what
+	security-related features users can or can't use in their pods.
+	When someone posts a pod resource to the API server, the PodSecurityPolicy admission
+	control plugin validates the pod definition against the configured PodSecurity-
+	Policies. If the pod conforms to the cluster’s policies, it’s accepted and stored into
+	etcd; otherwise it’s rejected immediately. A pod security policy resource defines things like
+	the following:
+	 Whether a pod can use the host’s IPC, PID, or Network namespaces
+	 Which host ports a pod can bind to
+	 What user IDs a container can run as
+	 Whether a pod with privileged containers can be created
+	 Which kernel capabilities are allowed, which are added by default and which are
+	always dropped
+	 What SELinux labels a container can use
+	 Whether a container can use a writable root filesystem or not
+	 Which filesystem groups the container can run as
+	 Which volume types a pod can use
+network policy - applies to pods that match its label selector and specifies either wihch
+	resources can access the matched pods or which destinatins can be accessed from the matched
+	pod. This is configured through ingress and egress rules, respectively. Ingress rules in a
+	network policy have nothing to do with the Ingress resource for load balancing
+requests and limits - When creating a pod, you can specify the amount of CPU and memory that a con-
+	tainer needs (these are called requests) and a hard limit on what it may consume
+	(known as limits). They’re specified for each container individually, not for the pod as
+	a whole. The pod’s resource requests and limits are the sum of the requests and lim-
+	its of all its containers. In a pod manifest 200m in the cpu section of a requests definition
+	stands for 200 milicores which is 1/5 of a processor's power. Setting resource requests for
+	containers in a pod ensures each container gets the minimum amount of resources it needs.
+	If we don't specify any resource requests but specify resource limits they'll be equal to the
+	limits that we specify. Containers always see the node's memory, not the container's. This
+	applies to the node's CPUs also
+limit request - a k8s object that can be assigned to a pod to specify the resource limits and requests
+	and also the default resource requests for containers that don't specify them explicitly
+resource quota - a k8s object that can be used to limit the total amount of resources available in a
+	namespace. Those could also limit the number of PVCs, number of pods and other API objects
+	users can create in the namespace. Limit ranges apply to single pods. Resource quotas apply to
+	all pods in the namespace
+cAdvisor - a kubelet agent, which performs the basic collection of resource consumption data for
+	both individual containers running on the node and the node as a hole.
+heapster - collects data from all cAdvisors in the cluster and exposes it in a single location.
+	It runs in a pod in some of the nodes and is exposed through a regular K8S service
+horizontal pod autoscaler (HPA) - a k8s object that enables the horizontal controller for horizontal
+	scaling of applications
+pod disruption budget (pdb) - this object specifies a minimum number of pods that need to be always
+	available while the kubectl drain command and the cluster autoscaler perform their duties
+pod toleration - a pod can be scheduled to a node if it tolerates the nodes taints, e.g.
+	the pod has matching taints
+taint - each taint has an effect associated with it. tains allow rejecting deployment of pods to
+	certain nodes by only adding taints to the node without having to modify existing pods.
+	Pods that you want deployed on a tainted node need to opt in to use
+	the node, whereas with node selectors, pods explicitly specify which node(s) they
+	want to be deployed to. Each taint has an effect associated with it:
+	- NoSchedule
+	- PreferNoSchedule
+	- NoExecute
+	taints can only have a key and an effect and don’t require a value.
+init containers - they are special type of container in pods. As the name suggests, they
+	can be used to initialize the pod - this often means writing data to the pod's volumes,
+	which are then mounted into the pod's main containers. They are specified in the
+	spec.initContainers section of a pod definition. A pod may have any number of init containers. 
+	They’re executed sequentially and only after the last one completes are the pod’s main containers 
+	started. After the precondition for which the init container(s) is met it/they are destroyed
+custom resource definition object (CRD) - create a custom object definition based on existing ones
+cluster service class - You can compare ClusterServiceClasses to StorageClasses, which we
+	discussed in chapter 6. StorageClasses allow you to select the type of storage you’d like
+	to use in your pods, while ClusterServiceClasses allow you to select the type of service.
+CRI (container runtime interface) - container runtimes like Docker, LXC and RKT can use it
+	to operate with kubernetes
+
+https://kubernetes.io/docs/tutorials/
+https://kubernetes.io/docs/tasks/
+https://kubernetes.io/docs/concepts/
+http://kubernetesbyexample.com/
+https://kubernetes.io/docs/concepts/cluster-administration/cluster-administration-overview/
+https://learnk8s.io/
+https://github.com/kubernetes/charts - helm charts
+
+Create a K8S cluster with minikube:
+https://asciinema.org/a/162127
+
+Admission control plugins:
+https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/
+
+=======================================================================================================
+
+Kubectl
+
+Print cluster info (e.g. master URL and DNS server URL):
+kubectl cluster-info
+kubectl cluster-info dump - for additional information
+
+Start a proxy server that can route HTTP requests to the master on port 8001:
+kubectl proxy
+The proxy returns a JSON list with the APIs that are specified in K8S object definitions
+
+print node info:
+kubectl get nodes
+kubectl get no
+
+Get info with JSONPath:
+kubectl get nodes -o jsonpath='{.items[*]}'
+
+Get statuses of the master node components:
+kubectl get componentstatuses
+
+get node information:
+kubectl describe node <node-name>
+
+get pod information:
+kubectl describe pod <pod-name>
+
+get replica set information:
+kubectl describe rs
+
+get namespaces:
+kubectl get ns
+
+get replica set:
+kubectl get rs
+
+Print running services:
+kubectl get service
+kubectl get services
+kubectl get svc
+
+Print available endpoints
+kubectl get endpoints <service-name>
+
+Get last deployments:
+kubectl get deployment
+kubectl get deployments
+
+Get pods:
+kubectl get pod
+kubectl get pods
+kubectl get po
+kubectl get pod <podname> --show-labels - show pod labels
+kubectl get po -L pod-template-hash,app - show pod labels under specific column
+kubectl get po -l env => get all pods who have a specific label
+kubectl get po -l '!env' => get all pods who don't have a specific label
+kubectl get po -l env=manual => get all pods who have a specific label value
+kubectl get po -l env=!manual => get all pods who don't have a specific label value
+kubectl get po -l env in (prod,devel) => get all pods who have a specific label value
+kubectl get po -l env notin|(prod,devel) => get all pods who have a specific label value
+kubectl get po --namespace kube-system => get pods in a namespace
+kubectl get po -n kube-system => get pods in a namespace
+kubectl get po --all-namespaces => get all pods in all namespaces
+
+Get resource data in real time:
+kubectl get pods --watch
+
+Get persistence volumes:
+kubectl get pv
+kubectl get persistentvolume
+
+Get persistence volume claims:
+kubectl get pvc
+kubectl get persistentvolumeclaim
+
+Get service account:
+kubectl get sa
+kubectl get serviceaccount
+
+Create a service account:
+kubectl create sa foo
+
+Get pod yaml definition
+kubect get pod <pod-id> -o yaml
+
+Get pod json definition
+kubect get pod <pod-id> -o json
+
+Get storage clasess
+kubectl get sc
+
+Get pods and the node where they are hosted:
+kubectl get pods -o wide
+
+Create a secret from a self-signed certificate:
+kubectl create secret tls tls-secret --cert=tls.cert --key=tls.key
+
+Refresh a k8s object after updating its definition:
+kubectl apply -f kubia-ingress-tls.yaml
+
+Port-forward a pod:
+kubectl port-forward <podname> 8080:80
+
+Get last events:
+kubectl get events
+
+Watch events in real time:
+kubectl get events --watch
+
+Get the current config in YAML format:
+kubectl config view
+
+Get events:
+kubectl get events
+
+Get kubectl version:
+kubectl version
+
+Create a configmap:
+kubectl create configmap fortune-config --from-literal=sleep-interval=25
+
+Create a configmap from a file:
+kubectl create configmap my-config --from-file=config-file.conf
+
+kubectl run <application-name> --image=docker/image --env "key=value" --port=8080 \
+--dry-run=true --overrides=<inline-json> --generator=run/v1
+--generator=run/v1 - Kubernetes creates a ReplicationController instead of a Deployment
+
+Expose a pod to a service through a replication controller:
+kubectl expose replicationcontroller <pod-name> --type=<service-type> --name <service-name>
+kubectl expose rc <pod-name> --type=<service-type> --name <service-name>
+
+Get replecation controllers:
+kubectl get replicationcontroller
+kubectl get rc
+Output:
+NAME    DESIRED   CURRENT   READY   AGE
+kubia   1         1         1       8h  	=> displays the desired and current pod count
+
+Increase the number of pods per ReplicationController:
+kubectl scale rc kubia --replicas=3
+
+Increase job pod instances:
+kubectl scale job multi-completion-job --replicas 3
+This increases the job's parallelism property. Now 3 pods can be run in parallel
+
+Get data for YAML fields of object descriptions:
+kubectl explain pods
+
+Get data for a particular object attribute in YAML object descriptor:
+kubectl explain pods.spec
+
+Create a K8S object from definition:
+kubectl  create -f kubia-manual.yaml
+
+create K8S object in a specific namespace ("default" if not specified)
+kubectl  create -f kubia-manual.yaml -n custom-namespace
+
+Create a namespace:
+kubectl create namespace custom-namespace
+
+When creating a deployment use --record to record the rollout history:
+kubectl create -f kubia-deployment-v1.yaml --record
+
+Print pod logs (before last rotation and of current container):
+kubectl logs <podname>
+
+Print pod logs of specific container:
+kubectl logs <podname> -c <container>
+
+Print container logs of the previous pod that terminated:
+kubectl logs mypod --previous
+
+Forward local port to ports of the containers in a pod:
+kubectl port-forward kubia-manual 8888:8080  => forward 8888 port to 8080 in the pod
+
+Label a pod:
+kubectl label po kubia-manual creation_method=manual
+kubectl label po kubia-manual-v2 env=debug --overwrite => overrides an existing label
+
+Add annotation to pod:
+kubectl annotate pod kubia-manual mycompany.com/someannotation="foo bar"
+
+Delete a pod:
+kubectl delete po <podname> -n <namespace>
+kubectl delete po -l creation_method=manual
+kubectl delete all --all => delete all replication controllers, services and pods
+kubectl delete po mypod --grace-period=5 - set grace period to 5 seconds
+
+Delete a replication controller:
+kubectl delete rc kubia	=> this deletes the belonging pods
+kubectl delete rc kubia --cascade=false => this leaves the belonging pods active without being
+	assigned to a replication controller
+
+Update an object's definition through default editor:
+kubectl edit rc kubia
+
+Update a single field in an object's definition:
+kubectl patch deployment kubia -p '{"spec": {"minReadySeconds": 10}}'
+
+Execute a command within a container in the pod:
+kubectl exec kubia-7nog1 -- curl -s http://10.111.249.153
+
+Execute a command in a pod through a different API server:
+kubectl exec kubia-pod -s command 
+
+List Kubernetes related environment variables:
+kubectl exec <podname> env | grep -i kubernetes
+
+Execute a command in a specific container in a multi-container pod:
+kubectl exec -it curl-with-ambassador -c main bash # the -c option can be ommited to execute
+												   # the command in the first pod
+
+Execute a command against a running pod:
+kubectl get componentstatus
+
+Perform a rolling update:
+kubectl rolling-update <old-rc> <new-rc> --image=<replacing-docker-image>
+A new replication controller will be created with the name new-rc with the same properties as old-rc.
+It will run docker containers in its pods with the specified image
+
+Get the status of the last deployment:
+kubectl rollout status deployment <deployment>
+
+Get rollout history:
+kubectl rollout history deployment <deployment>
+
+Revert to a specific deployment version:
+kubectl rollout undo deployment kubia --to-revision=1
+
+Pause an ongoing deployment:
+kubectl rollout pause deployment kubia
+If a Deployment is paused, the undo command won’t undo it until you resume the Deployment.
+
+Resume a paused ongoing deployment:
+kubectl rollout resume deployment kubia
+
+Change the image for a deployment:
+kubectl set image deployment kubia nodejs=luksa/kubia:v2
+
+Get all cluster roles:
+kubectl get clusterroles
+
+Get all cluster role bindings:
+kubectl get clusterrolebindings
+
+Get all pod security policies:
+kubectl get psp
+
+Create a new user:
+kubectl config set-credentials alice --username=alice --password=password
+
+Get cluster resource metrics gathered by Heapser:
+kubectl top node
+
+Enable autoscaling for a resource based on CPU usage in percentage:
+kubectl autoscale <resource-type> <resource-name> --cpu-percent=30 --min=1 --max=5
+<resource-type> can be Deployments, ReplicaSet, ReplicationController or StatefulSet
+min and max specify the minimum and maximum number of pods
+The --cpu-percentage option sets the CPU pod usage that will trigger the autoscaling of the resource
+
+Cordon a node:
+kubectl cordon <node> - this marks the node as unscheduable but doesn't remove the pods it runs
+
+Drain a node:
+kubectl drain <node> - mark node as unscheduable and evict all pods it runs
+
+Add a taint to a node
+kubectl taint node <node-name> <taint-key>=<taint-value>:<effect>
+For example:
+kubectl taint node node1.k8s node-type=production:NoSchedule
+
+Copy a remote file from a pod to a local directory in the machine from which kubectl is executed:
+kubectl cp foo-pod:/var/log/foo.log foo.log
+
+Copy a local file to a pod:
+kubectl cp localfile foo-pod:/etc/remotefile
+
+Get cluster service classes:
+kubectl get clusterserviceclasses
+
+Add cluster settings for kubectl:
+kubectl config set-cluster \
+	--server=https://k8s.examaple.com:443 # API server URL \
+	--certificate-authority=path/to/the/cafile
+
+Add user for kubectl:
+kubectl config set-credentials foo --username=foo --password=pass
+
+Add token for kubectl settings:
+kubectl config set-credentials foo --token=mysecrettokenXFDJIQ1234
+
+Create a kubectl context by tying a cluster and credentials:
+kubectl config set-context some-context --cluster=my-other-cluster \
+	--user=foo --namespace=bar
+
+Get current context:
+kubectl config current-context
+
+Switch to other context:
+kubectl config use-context my-other-context
+
+Get contexts
+kubectl config get-contexts
+
+Remove context from kubeconfig:
+kubectl config delete-context my-unused-context
+
+Remove cluster from kubeconfig:
+kubectl config delete-cluster my-old-cluster
+
+Pull images preliminary before initializing a K8S master with kubeadm
+kubeadm config images pull
+
+=======================================================================================================
+Pod status
+
+CrashLoopBackOff - after each crash the kubelet is increasing the time period before restarting the
+	container
+Ready
+Init:ImagePullBackOff
+Pending
+
+The "READY" column in the kubectl get pods output shows if the pod is running or not. It may be 0/1
+if the worker node is still downloading the Docker image. In this case the pod should be in Pending
+status
+
+=======================================================================================================
+
+Services
+
+types of services:
+ClusterIP - this type of service is available only from inside the cluster. This makes a service
+headless. A headless services still provides load balancing across pods, but through
+the DNS round-robin mechanism instead of through the service proxy.
+NodePort - all nodes in the cluster open an external port through which the service can be accessed
+LoadBalancer - an external load balancer is created and the pod can be accessed through the load
+balancer's public IP. An extension of the NodePort type
+
+session affinity:
+ClientIP - the TCP request will be routed to the same pod each time originating from the same IP
+None - the TCP request will be routed to a random pod in the service
+
+=======================================================================================================
+
+Deployment YAML
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kubia-manual-v3
+  labels:
+    creation_method: manual
+    env: prod
+spec:
+  activeDeadlineSeconds: 30 # seconds after which  K8S will terminate the pod if not terminated earlier
+  containers:
+  ports:
+    - name: http
+      containerPort: 8080 # using a named port. This port can be referred as http in a service definition
+  - image: luksa/kubia
+    command: ["/bin/command"] # override the ENTRYPOINT command
+    args: ["arg1", "arg2", "arg3"]  # pass arguments to the overriden entry point
+    name: kubia
+    env: # add an environment variable to the container runtime
+    - name: INTERVAL
+      value: 30
+    - name: SECOND_VAR
+      value: "$(INTERVAL)s"
+    ports:
+    - containerPort: 8080
+      protocol: TCP
+  nodeSelector:
+    vbox: "true"
+    livenessProbe:
+      httpGet:
+        path: /
+        port: 8080
+    initialDelaySeconds: 15 # sets the time before the first liveness probe
+
+restart policies:
+
+A multi-container pod with volumes:apiVersion: v1
+kind: Pod
+metadata:
+name: fortune
+spec:
+  containers:
+  - image: luksa/fortune
+    name: html-generator
+    volumeMounts:
+    - name: html
+      mountPath: /var/htdocs
+  - image: nginx:alpine
+    name: web-server
+    volumeMounts:
+    - name: html
+      mountPath: /usr/share/nginx/html
+      readOnly: true
+    ports:
+    - containerPort: 80
+      protocol: TCP
+  volumes:
+  - name: html
+    emptyDir: {}
+
+ReplicaSet operators:
+ In—Label’s value must match one of the specified values.
+ NotIn—Label’s value must not match any of the specified values.
+ Exists—Pod must include a label with the specified key (the value isn’t important).
+ DoesNotExist—Pod must not include a label with the specified key.
+We can specify multiple expressions
+Both matttchLabels and matchExpressions can be specified
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: batch-job
+spec:
+  template:
+    metadata:
+      labels:
+        app: batch-job
+    spec:
+      completions: 5 # number of successful executions
+      parallelism: 2 # number of pods that can run in parallel
+      restartPolicy: OnFailure # Always restart policy cannot be used with jobs
+      containers:
+      - name: main
+        image: luksa/batch-job
+  backoffLimit:6 # failure count before a job gets marked as failed
+
+apiVersion: batch/v1beta1
+kind: CronJob
+spec:
+  schedule: "0,15,30,45 * * * *"
+  startingDeadlineSeconds: 15 # at worst, the pod must start running at 15 sconds past the scheduled time
+  ...						  # if not, the job will be marked as failed
+
+apiVersion: v1
+kind: Service
+spec:
+  sessionAffinity: ClientIP
+
+Specifying mupltiple ports for services:
+apiVersion: v1
+kind: Service
+metadata:
+  name: kubia
+  spec:
+    ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+    - name: https
+      port: 443
+      targetPort: 8443
+    selector:
+      app: kubia
+
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: kubia
+spec:
+  rules:
+  - host: kubia.example.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: kubia-nodeport
+          servicePort: 80
+
+=======================================================================================================
+
+Kubernetes pod environment variables and system directories:
+/var/run/secrets/kubernetes.io/serviceaccount/ - has 3 files - ca.crt, namespace and token
+The token file can be stored as an environment variable and used to authenticate against the
+Kubernetes API server
+curl -H "Authorization: Bearer $TOKEN" https://kubernetes
+
+Make HTTP requests to a specific pod through kubectl proxy:
+curl localhost:8001/api/v1/namespaces/default/pods/kubia-0/proxy/
+
+The IP address of the kube-dns pod is specified as the nameserver in the /etc/resolv.conf file inside
+every container deployed in the cluster.
+
+(default) location of the termination message:
+/dev/termination-log
+This can be seen in the output of "kubectl describe pod"
+
+=======================================================================================================
+
+Etcd
+
+=======================================================================================================
+
+Minikube
+
+List minikube addons:
+minikube addons list
+
+Enable an installed addon:
+minikube addons enable heapster
+
+Open dashboard:
+minikube dashboard
+
+Enable Swagger UI to browse the Kubernetes API:
+minikube start --extra-config=apiserver.Features.Enable-SwaggerUI=true
+
+Open Grafana dashboard in browser:
+minikube service monitoring-grafana -n kube-system
+
+Update kubectl to be suitable with the current version of kubeadm:
+minikube kubectl

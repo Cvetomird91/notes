@@ -1,0 +1,70 @@
+strategy: watch lectures at 1.5/2x speed. Take notes of new material. Mark lectures as complete
+after each new information has been taken down. Revise notes regularly.
+
+The lectures usually don't cover all of the needed information on a topic. Watching and learning
+the new information off the lecture doesn't mean that I know all about the topic. They can be used
+to provide a solid basis about those areas but they don't cover all the data.
+
+Complete all the homeworks.
+
+https://softuni.bg/trainings/1060/linux-system-administration-oct-2014
+
+[ ] Откриване на курсa
+[ ] Linux. История на Linux
+[ ] Storage, RAID, Partitioning
+[ ] Filesystems
+[ ] Linux Security Model
+	[ ] Part I
+	[ ] Part II
+[ ] Boot procedure
+	[ ] Part I
+	[ ] Part II
+	[ ] Part III
+[ ] Processes, Debugging and Shell
+	[ ] Part I
+	[ ] Part II
+[ ] Command Line Shells
+[ ] BASH scripting
+[ ] Sed and AWK
+[ ] Expect, system files and SU(DO)
+[ ] Basic System Services
+[ ] Software Install
+[ ] Networking
+[ ] TCPDump
+[x] Building Kernel
+	[x] Part I - 01:03:31
+	[x] Part II - 01:55:13
+[ ] Patch/Security management
+[ ] SSH and BIND
+[ ] Apache and Nginx
+[ ] MySQL
+[ ] PostgreSQL
+[ ] Emails (SMTP, ESMTP, IMAP, POP3)
+
+https://softuni.bg/trainings/1308/data-structures-february-2016
+
+[ ] Course overview
+[ ] Data Structures, Algorithms and Complexity
+[ ] Linear Data Structures – Lists
+[ ] Linear Data Structures – Stacks and Queues
+[ ] Trees and Tree-Like Structures
+[ ] Tree Traversal Algorithms – BFS and DFS
+[ ] Dictionaries and Hash tables
+[ ] Collection Data Structures and Libraries
+[ ] Advanced Tree Structures
+[ ] Advanced Tree Structures - Part II
+[ ] Data Structure Efficiency
+
+AWK - Essential Training
+
+[x] 01. Introduction
+[x] 02. What Is AWK
+[x] 03. AWK Command Line Basics
+[x] 04. Understanding Records and Fields
+[ ] 05. Understanding Variables and Operators
+[ ] 06. A Quick Introduction to Regular Expressions
+[ ] 07. Using Control Structures
+[ ] 08. Formatting the Output
+[ ] 09. Functions and Arrays
+[ ] 10. Combining AWK with Other Tools
+[ ] 11. Conclusion

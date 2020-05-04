@@ -1,0 +1,312 @@
+JAVA identifiers:
+- may start with a letter, $ or underscore
+- may contain letters, numbers, underscore and $
+- JAVA is case sensitive
+- you cannot use the same names as JAVA reserved words
+- they cannot start with a letter
+
+Default initialization values by type (of static and instance variables)
+Variable type                               -> Default initialization value
+boolean                                     -> false
+byte , short , int , long                   -> 0 (in the type’s bit-length)
+float , double                              -> 0.0 (in the type’s bit-length)
+char                                        -> '\u0000' (NUL)
+All object references (everything else)     -> null
+
+Order of operator precedence
+Operator                            -> Symbols and examples
+Post-unary operator                 -> expression++, expression--
+Pre-unary operator                  -> ++expression, --expression
+Other unary operators               -> +,-,!
+Multiplication/Division/Modulus     -> *,/,%
+Addition/Substraction               -> +,-
+Shift operators                     -> <<, >>, >>>
+Relational operators                -> <, >, <=, >=, instanceof
+Equal to/not equal to               -> ==, !=
+Logical operatos                    -> &, ^, |
+Short-circuit logical operators     -> &&, ||
+Ternary operator                    -> boolean expression ? expression1 : expression2
+Assignment operators                -> = , += , -= , *= , /= , %= , &= , ^= , != , <<= , >>= , >>>=
+
+Numeric Promotion Rules
+1. If two values have different data types, Java will automatically promote one of the values 
+to the larger of the two data types.
+2. If one of the values is integral and the other is floating-point, Java will automatically
+promote the integral value to the floating-point value’s data type.
+3. Smaller data types, namely byte , short , and char , are first promoted to int any time
+they’re used with a Java binary arithmetic operator, even if neither of the operands is
+int.
+4. After all promotion has occurred and the operands have the same data type, the result-
+ing value will have the same data type as its promoted operands.
+
+Java unary operators
+unary operator  -> Description
++               -> Indicates a number is positive, although numbers are assumed to be positive in Java unless accompanied by a negative unary operator
+-               -> Indicates a literal number is negative or negates an expression
+++              -> Increments a value by 1
+--              -> Decrements a value by 1
+!               -> Inverts a Boolean’s logical value
+
+Logical Operators:
+■ AND is only true if both operands are true.
+■ Inclusive OR is only false if both operands are false.
+■ Exclusive OR is only true if the operands are different.
+
+Data types supported by switch statements include the following:
+■ int and Integer
+■ byte and Byte
+■ short and Short
+■ char and Character
+■ int and Integer
+■ String
+■ enum values
+Note that boolean and long , and their associated wrapper classes, are not supported by switch statements.
+
+Binary search rules
+Scenario -> Result
+Target element found in sorted array            -> Index of match
+Target element not found in sorted array        -> Negative value showing one smaller than the
+                                                   negative of index, where a match needs to be
+                                                   inserted to preserve sorted order
+Unsorted array                                  -> A surprise—this result isn’t predictable
+
+Methods in LocalDate , LocalTime , and LocalDateTime
+                       Can call on      Can call on     Can call on
+Method name         -> LocalDate ?  ->  LocalTime   ->  LocalDateTime
+plusYears/minusYears   Yes              No              Yes
+plusMonths / minusMonths Yes            No              Yes
+plusWeeks / minusWeeks Yes              No              Yes
+plusDays / minusDays Yes                No              Yes
+plusHours / minusHours No               Yes             Yes
+plusMinutes / minusMinutes No           Yes             Yes
+plusSeconds / minusSeconds No           Yes             Yes
+plusNanos / minusNanos No               Yes             Yes
+
+ofLocalized methods
+DateTimeFormatter
+f = DateTime
+Formatter._____
+(FormatStyle.SHORT);    Calling f.format (localDate)    Calling f.format (localDateTime)    Calling f.format (localTime)
+ofLocalizedDate         Legal - shows whole object      Legal - shows just date part        Throws runtime exception
+ofLocalizedDateTime     Throws runtime exception        Legal - shows whole object          Throws runtime exception
+ofLocalizedTime         Throws runtime exception        Legal - shows just time part        Legal - shows whole object
+
+Looking at it a different way, the protected rules apply under two scenarios:
+■ A member is used without referring to a variable. This is the case on lines 5 and 6. In
+this case, we are taking advantage of inheritance and protected access is allowed.
+■ A member is used through a variable. This is the case on lines 10, 11, 15, and 16.
+In this case, the rules for the reference type of the variable are what matter. If it is a
+subclass, protected access is allowed. This works for references to the same class or a
+subclass.
+
+Order Java uses to choose the right overloaded method
+Rule                    -> Example of what will be chosen for glide(1,2)
+Exact match by type     -> public String glide(int i, int j) {}
+Larger primitive type   -> public String glide(long i, long j) {}
+Autoboxed type          -> public String glide(Integer i, Integer j) {}
+Varargs                 -> public String glide(int... nums) 
+
+Order of Initialization
+1. If there is a superclass, initialize it first (we’ll cover this rule in the next chapter. For
+now, just say “no superclass” and go on to the next rule.)
+2. Static variable declarations and static initializers in the order they appear in the file.
+3. Instance variable declarations and instance initializers in the order they appear in the file.
+4. The constructor.
+
+Rules for JavaBeans naming conventions
+Rule                                        -> Example
+Properties are private                      -> private int numEggs;
+Getter methods begin with is if the         -> public boolean isHappy() { return happy; }
+property is a boolean .
+Getter methods begin with get if the        -> public int getNumEggs() { return numEggs; }
+property is not a boolean .
+Setter methods begin with set .             -> public void setHappy(boolean happy) { this.happy = happy; }
+The method name must have a prefix          -> public void setNumEggs(int num) { numEggs = num; }
+of set / get / is , followed by the first
+letter of the property in uppercase, fol-
+lowed by the rest of the property name.
+
+Constructor Definition Rules:
+1. The first statement of every constructor is a call to another constructor within the class
+using this() , or a call to a constructor in the direct parent class using super() .
+2. The super() call may not be used after the first statement of the constructor.
+3. If no super() call is declared in a constructor, Java will insert a no-argument super()
+as the first statement of the constructor.
+4. If the parent doesn’t have a no-argument constructor and the child doesn’t define any
+constructors, the compiler will throw an error and try to insert a default no-argument
+constructor into the child class.
+5. If the parent doesn’t have a no-argument constructor, the compiler requires an explicit
+call to a parent constructor in each child constructor.
+5. A constructor cannot be final.
+6. The names of the parameters don't matter when overriding, the types matter. 
+7. First the names of the methods are checked and then the return type. If the return type is
+applicable then the method is overriden.
+
+
+Overriding a method is not without limitations, though. The compiler performs the fol-
+lowing checks when you override a nonprivate method:
+1. The method in the child class must have the same signature as the method in the parent
+class.
+2. The method in the child class must be at least as accessible or more accessible than the
+method in the parent class.
+3. The method in the child class may not throw a checked exception that is new or
+broader than the class of any exception thrown in the parent class method.
+4. If the method returns a value, it must be the same or a subclass of the method in the
+parent class, known as covariant return types.
+5. The names of the parameters don't matter when overriding, the types matter.
+6. First the names of the methods are checked and then 
+
+Hiding Static Methods
+First, the four previous rules for overriding a
+method must be followed when a method is hidden. In addition, a new rule is added for
+hiding a method, namely that the usage of the static keyword must be the same between
+parent and child classes. The following list summarizes the fi ve rules for hiding a method:
+1. The method in the child class must have the same signature as the method in the parent
+class.
+2. The method in the child class must be at least as accessible or more accessible than the
+method in the parent class.
+3. The method in the child class may not throw a checked exception that is new or
+broader than the class of any exception thrown in the parent class method.
+4. If the method returns a value, it must be the same or a subclass of the method in the
+parent class, known as covariant return types.
+5. The method defined in the child class must be marked as static if it is marked as
+static in the parent class (method hiding). Likewise, the method must not be marked
+as static in the child class if it is not marked as static in the parent class (method
+overriding).
+
+The distinction between hiding a static method and overriding an instance method has important implications:
+
+1. The version of the overridden instance method that gets invoked is the one in the subclass.
+2. The version of the hidden static method that gets invoked depends on whether it is invoked from the superclass or the subclass.
+
+Abstract Class Defi nition Rules:
+1. Abstract classes cannot be instantiated directly.
+2. Abstract classes may be defined with any number, including zero, of abstract and non-
+abstract methods.
+3. Abstract classes may not be marked as private or final .
+4. An abstract class that extends another abstract class inherits all of its abstract methods
+as its own abstract methods.
+5. The first concrete class that extends an abstract class must provide an implementation
+for all of the inherited abstract methods.
+
+Abstract Method Definition Rules:
+1. Abstract methods may only be defined in abstract classes.
+2. Abstract methods may not be declared private or final .
+3. Abstract methods must not provide a method body/implementation in the abstract
+class for which is it declared.
+4. Implementing an abstract method in a subclass follows the same rules for overriding a
+method. For example, the name and signature must be the same, and the visibility of
+the method in the subclass must be at least as accessible as the method in the parent
+class.
+
+Defining an Interface
+It may be helpful to think of an interface as a specialized kind of abstract class, since it
+shares many of the same properties and rules as an abstract class. The following is a list
+of rules for creating an interface, many of which you should recognize as adaptions of the
+rules for defi ning abstract classes.
+1. Interfaces cannot be instantiated directly.
+2. An interface is not required to have any methods.
+3. An interface may not be marked as final .
+4. All top-level interfaces are assumed to have public or default access, and they must
+include the abstract modifier in their definition. Therefore, marking an interface as
+private , protected , or final will trigger a compiler error, since this is incompatible
+with these assumptions.
+5. All nondefault methods in an interface are assumed to have the modifiers abstract
+and public in their definition. Therefore, marking a method as private , protected ,
+or final will trigger compiler errors as these are incompatible with the abstract and
+public keywords.
+
+Inheriting an Interface
+There are two inheritance rules you should keep in mind when extending an interface:
+1. An interface that extends another interface, as well as an abstract class that
+implements an interface, inherits all of the abstract methods as its own abstract
+methods.
+2. The first concrete class that implements an interface, or extends an abstract class
+that implements an interface, must provide an implementation for all of the inherited
+abstract methods.
+
+Interface Variables
+Like interface methods, interface variables are assumed to
+be public. Unlike interface methods, though, interface variables are also assumed to be
+static and final .
+Here are two interface variables rules:
+1. Interface variables are assumed to be public , static , and final . Therefore, marking
+a variable as private or protected will trigger a compiler error, as will marking any
+variable as abstract .
+2. The value of an interface variable must be set when it is declared since it is marked as
+final.
+
+Default interface method rules:
+1. A default method may only be declared within an interface and not within a class or
+abstract class.
+2. A default method must be marked with the default keyword. If a method is marked as
+default , it must provide a method body.
+3. A default method is not assumed to be static , final , or abstract , as it may be used
+or overridden by a class that implements the interface.
+
+Static interface method rules:
+1. Like all methods in an interface, a static method is assumed to be public and will not
+compile if marked as private or protected.
+2. To reference the static method, a reference to the name of the interface must be used.
+
+We can summarize this principle with the following two rules:
+1. The type of the object determines which properties exist within the object in memory.
+2. The type of the reference to the object determines which methods and variables are
+accessible to the Java program.
+
+Here are some basic rules to keep in mind when casting variables:
+1. Casting an object from a subclass to a superclass doesn’t require an explicit cast.
+2. Casting an object from a superclass to a subclass requires an explicit cast.
+3. The compiler will not allow casts to unrelated types.
+4. Even when the code compiles without issue, an exception may be thrown at runtime if
+the object being cast is not actually an instance of that class.
+
+Types of exceptions
+Type                -> How to recognize                 -> Okay for program to catch? -> Is program required to handle or declare?
+Runtime exception   -> Subclass of Runtime Exception    -> Yes                        -> No
+Checked exception   -> Subclass of Exception but not of -> Yes                        -> Yes
+                       Runtime exception
+Error               -> Subclass of Error                -> No                         -> No
+
+Runtime Exceptions
+Runtime exceptions extend RuntimeException. They don’t have to be handled or declared.
+They can be thrown by the programmer or by the JVM. Common runtime exceptions
+include the following:
+ArithmeticException
+Thrown by the JVM when code attempts to divide by zero
+ArrayIndexOutOfBoundsException Thrown by the JVM when code uses an illegal
+index to access an array
+ClassCastException Thrown by the JVM when an attempt is made to cast an excep-
+tion to a subclass of which it is not an instance
+IllegalArgumentException Thrown by the programmer to indicate that a method has
+been passed an illegal or inappropriate argument
+NullPointerException Thrown by the JVM when there is a null reference where an
+object is required
+NumberFormatException Thrown by the programmer when an attempt is made to con-
+vert a string to a numeric type but the string doesn’t have an appropriate format
+
+Errors
+Errors extend the Error class. They are thrown by the JVM and should not be handled or
+declared. Errors are rare, but you might see these:
+ExceptionInInitializerError Thrown by the JVM when a static initializer throws
+an exception and doesn’t handle it
+StackOverflowError Thrown by the JVM when a method calls itself too many times
+(this is called infi nite recursion because the method typically calls itself without end)
+NoClassDefFoundError Thrown by the JVM when a class that the code uses is available
+at compile time but not runtime.
+
+Parts of a method declaration
+Element                     ->      Value in nap() example      -> Required?
+Access modifier             ->      public                         No
+Optional specifier          ->      final                          No
+Return type                 ->      void                           Yes
+Method name                 ->      nap                            Yes
+Parameter list              ->      (int minutes)                  Yes, but can be empty parentheses
+optional exception list     ->      throws InterruptedException    No
+Method body                 ->      { /*take a nap*/ }             Yes but can be empty braces
+
+Access modifiers from most restrictive to least restrictive:
+■ private : Only accessible within the same class
+■ default (package private) access: private and other classes in the same package
+■ protected : default access and child classes
+■ public : protected and classes in the other packages

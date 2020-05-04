@@ -1,0 +1,214 @@
+=======================================================================================================
+
+Windows Server
+
+	After Windows Server 2012 RT installation:
+	Unmount ISO
+
+	Enable RDP and other services:
+	Server Manager -> Dashboard -> Server Roles -> add services
+
+	To install IIS:
+	We need to install also .NET 3.5 along with .NET 4.5
+
+	when installing SQL server -> Use stand alone when installing a server for web,
+	other options include cluster installation and SQL Server update.
+	Setup Role -> Default roles -> needed roles are preselected
+
+	The DNS server is set manually to 193.203.198.8 and the secondary one to 8.8.8.8
+
+	NB!!!
+	The SQL Server 2012 Roles Wizard doesn't have a 'Finish' button.
+
+	SQL Server:
+	Reporting Services Configuration -> add current user
+	Distributed Replay Controller -> add current user
+
+	Enable RDP:
+	Server Manager -> Local Server
+	Allow RDP from Firewall:
+	Properties -> Public Profile
+	Inbound Rules -> Allow 'Remote Desktop - Shadow (TCP-in)' and 'Remote Desktop - User (TCP-in)'
+	and 'Remote Desktop - User (UDP-in)'
+	We can add IPs to which RDP login is limited:
+	Inboun Rules -> Remote Desktop - User MOde (TCP-in) -> Scope -> Remote IP address
+
+	Note:
+	Windows Server asks us for reason for restart.
+
+=======================================================================================================
+
+Visual Studio
+
+Visual Assist - paid plugin for Visual Studio with additional features.
+
+=======================================================================================================
+Windows workstations
+
+	We create an xs-software account on each Windows workstation.
+	It usually has 'xs-administrator' as password.
+	The actual Windows Administrator password isn't set or is left for the user to select one.
+	When the xs-software password expiration approaches, we can change it to another one
+	from the administrator account and then switch it back to xs-administrator
+
+	The MS Office 2007 installation files and license can be found on the share server.
+	The PC name usually contains the user's name.
+	After installation we should run Driver Booster 3, found on the usb.
+
+	\\shareserver\Public\original-office-2007
+		Copy SW_CD_Office_2007_W32_English_-2_1_PA_BG_MLF_X16-19609 to desktop
+		The licence archive is password protected. Both are removed after installing the MS Office
+		from the desktop.
+
+	\\shareserver\Public\kaspersky-setup
+		After it's installed disable the policy, so that the user doesn't have access
+		to Kasperski.
+		setup.exe - agent for Windows 7
+		kes10*.exe - agent for Windows 10
+
+		Select from tray, right click and disable policy. This requires the password.
+		You can find the password in password-gorilla.
+		Protocols are prepared after setup is ready.
+
+	Thunderbird/Mail client Setup:
+		IMAP port: 993
+		IMAP/SMTP hostnames:
+		mail.xs-software.com
+		Authentication:
+		Normal Password
+
+	How to perform workstation maintenance:
+		After PC is cleaned download and run Adw Cleaner
+
+	When installing a Windows 8 image:
+		search for the image with the latest updates in Zamunda
+
+	My Computer -> right click -> manage -> Disk Management
+
+	Useful links:
+	http://www.askvg.com/
+
+	Win RAID and Storage driver moding: http://www.win-raid.com/
+
+	Win32 API tutorial:
+	http://zetcode.com/gui/winapi/
+
+=======================================================================================================
+Useful software
+    Driver Booster
+
+	UnxUtils - a collection of ports of common GNU Unix-like utilities to native Win32,
+	with executables only depending on the Microsoft C-runtime msvcrt.dll -
+	https://en.wikipedia.org/wiki/UnxUtils
+
+    http://ninite.com/
+
+	Bleeping computers
+		AdwCleaner
+		JunkWare Removal Tool
+		Kasperski Task
+		Combo Fix
+
+	S.M.A.R.T. GUI for Windows:
+	http://hddguardian.codeplex.com/
+
+	Ultimate Windows Tweaker - useful for changing registry entries:
+	http://www.thewindowsclub.com/ultimate-windows-tweaker-v2-a-tweak-ui-for-windows-7-vista
+
+	A repository for various drivers:
+	http://driverscape.com
+
+	A repository with VGA/Graphic cards BIOS firmware:
+	https://www.techpowerup.com/vgabios/
+
+	Password Safe - Password Gorilla/Password Keeper alternative for Windows
+	UltraSearch - faster file system search, uses the NTFS Master File Table
+	Defraggler - Windows defragmenter alternative
+	Speccy - system specification tool
+	Revo Uninstaller - complete uninstaller, removes orphaned registry files
+	Terra Copy - file copying utility with pause functionality
+	Tweaking Windows Repair File Pro
+	Windows Firewall Control - application firewall
+	Directory Opus - File manager
+	X-NetStat Pro - outbound connection monitoring and firewall
+	AOMEI Partition Assistant - useful for transferring an actual Windows installation to a new HDD or SSD
+	Registry Workshop - Windows registry editor
+	DeltaCopy - rsync for Windows
+	EaseUS - partition manager, data recovery wizard
+	Windows Performance Toolkit (part of Windows Assessment and Deployment Kit)
+	HxD - hex editor
+	WinMerge - diff tool for MS Word documents
+
+=======================================================================================================
+Backup and Restore:
+
+	Norton Ghost (depends on the hardware and drivers, it may break if backup is restored on different
+				hardware)
+	Macrium Reflect Free
+	Acronis (it also fixes the Windows registers and sets the proper drivers, slower than Norton Ghost;
+			preferred when restoring an image to different hardware because it sets up drivers)
+			It can be downloaded as a bootable ISO image.
+	https://www.raymond.cc/blog/how-to-create-full-windows-backup-by-imaging-without-using-norton-ghost/
+
+=======================================================================================================
+
+DOS & PowerShell commands
+
+enable administrative user:
+net user administrator /active:yes
+
+	After this command has been issued, you need to change the administrative user password from
+	the user manager.
+
+assoc - list default programs for file associations
+driverquery - list drivers on a system
+
+	driverquery -v - extended information
+
+fc - file compare - similar to diff in Unix-like systems
+
+tasklist - display running process information - similar to ps in a Unix-like system
+
+taskkill
+
+	taskkill -pid 1234 - stop task by process name
+	taskkill -im example.exe - stop task by .exe name
+
+Stop the Update services:
+
+	net stop wuauserv
+
+route
+
+	Get the current routing table:
+	route print
+
+NB!!!
+
+	Batch processes will be executed only if the user is logged into Windows.
+	Shell scripts continue to be executed after the CMD/PowerShell Window is closed.
+
+-- PowerShell
+
+Get-Alias - list alias commands
+Get-Process - similar to tasklist
+
+=======================================================================================================
+
+Security
+
+=======================================================================================================
+
+MS SQL
+
+.ldf and .mdf - log formats
+
+=======================================================================================================
+
+IIS
+
+=======================================================================================================
+
+Hyper-V
+
+http://www.hyper-v-mart.com/
