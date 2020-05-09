@@ -97,8 +97,8 @@ curl
 	curl -F
 
 	Send mail using curl:
-	curl --connect-timeout 15 -v "smtp://mail.xs-software.com" -u "tzvetomir@remote-admins.com:password123"
-	--mail-from "tzvetomir@remote-admins.com" --mail-rcpt "cvetomirdenchev@gmail.com" -T email.txt --ssl
+	curl --connect-timeout 15 -v "smtp://mail.xs-software.com" -u "tzvetomir@example.com:password123"
+	--mail-from "tzvetomir@example.com" --mail-rcpt "cvetomirdenchev@gmail.com" -T email.txt --ssl
 
 	Send IMAP request via curl:
 	curl --url "imaps://mail.xs-software.com" --user "user@host.com:password123" --ssl
