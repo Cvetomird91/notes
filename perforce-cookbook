@@ -45,3 +45,10 @@ Check which revision you have locally
 Checkout progress state at a specified revision:
 
 p4 sync //depot/project-root/...@123456
+
+=======================================================================================================
+
+p4 diff
+
+shows the Perforce local only changes you haven’t added to a changeset yet
+p4 diff -f -sa ./...
