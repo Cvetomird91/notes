@@ -1,0 +1,59 @@
+Terraform CLI
+
+terraform init - initializes the preresiquites for the tf objects in the current directory. Downloads
+				 related plugins etc
+
+terraform plan - dry run - it parses the tf files and shows what's about to be changed
+
+	terraform plan -target resource_type.resource_logical_name - only plan a specific resource
+	terraform plan -var-file=dmz.tfvars
+
+terraform apply - applies the changes for the given tf files. If it was already run it doesn't spawn
+				  new objects. If those tf files have changed since the last run it applies the
+				  differences to the already created ones
+
+	terraform apply --auto-approve - apply without being prompted
+	terraform apply -var-file=dmz.tfvars
+	terraform apply -var "subnet_prefix=10.0.1.5/24"
+
+terraform show -  shows the current state of the objects declared by the tf files. Can be used
+				  to retrieve AWS SSH public keys
+
+terraform validate - validate the tf files' syntax
+
+terraform destroy - destroy the objects created by terraform
+
+	terraform destroy -target resource_type.resource_logical_name - destroys a specific resource
+	terraform destroy -var-file=dmz.tfvars
+
+terraform state - sync back and forth the current local and remote state
+
+	terraform state pull - synchronize the local state with the remote one
+	terraform state push <tfstate-file> - synchronize the remote state with the local one
+	terraform state list - list all the current active resources
+	terraform state show resource_type.resource_logical_name - show detailed information
+							about the state of a resource
+
+=======================================================================================================
+
+Terraform resources
+
+Sample terraform deployments
+https://github.com/quickbooks2018/Terraform-V-12
+
+=======================================================================================================
+
+Terraform file syntax
+
+output values as terraform apply is run:
+
+output "eip_public_ip" {
+	value = aws_eip.one.public_ip
+}
+
+
+=======================================================================================================
+
+Terraform files
+.terraform - this directory gets created to store needed plugins
+terraform.tfstate	- terraform resource state. Terraform keeps track of the resources here
