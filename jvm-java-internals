@@ -96,3 +96,8 @@ https://javaperformance.wordpress.com/2017/02/05/java-heap-memory-usage-using-jm
 https://www.techrepublic.com/article/examine-class-files-with-the-javap-command/ - javap - The Java Disassembler (3)
 https://gceasy.io/ - GC easy (3)
 https://github.com/jasta/jprocps (1, 2, 3)
+
+https://www.javaspecialists.eu/
+https://medium.com/javarevisited/micro-optimizations-in-java-string-equalsignorecase-ea25dfb03f95
+https://medium.com/javarevisited/micro-optimizations-in-java-string-equals-22be19fd8416
+https://medium.com/javarevisited/micro-optimizations-in-java-good-nice-and-slow-enum-261e6f77bd2e
