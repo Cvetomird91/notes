@@ -212,6 +212,8 @@ vectors are the resizable, dynamic high-level arrays in C++.
 Abstraction leak - an abstraction leaks when the user is expected to understand the underlying
 technology that is being abstracted.
 
+Soft leak - an object is still being referenced from the stack but not used
+
 Higher-order functions:
 
 In mathematics and computer science, a higher-order function (also functional, functional form
