@@ -4,8 +4,44 @@ Compute and Networking
 
 Storage
 
+=======================================================================================================
 Databases
 
+1 RCU - One strongly consistent read per second of 4KB.
+In order to determine the number of RCUs for a number of reads per seconds we need to determine the
+number of complete chunks
+and then multiply the number of chunks with the count of complete reads.
+E.g. to calculate the RCUs of 25 strongly consistent reads per seconds of 15 KB (those are 4 complete
+chunks of 4KB - 4 x 4 = 16KB),
+we need 25 x 4 = 100 RCUs
+
+To calclulate eventually consistent reads we need to divide the final result by 2:
+(25 x 4) / 2 = 50 RCUs
+
+WCU - write capacity unit
+1 WCU = 1 write per second of 1KB (1024 bytes). 
+How to calculate for example for 100 writes per second of 512 bytes:
+512 bytes uses one complete chunk of 1 KB
+(512/1024 = 0.5, rounded up to 1).
+
+Amazon RDS manages for the developer the following things out of the box:
+- database software installation and patching
+- hardware provisioning
+- backups
+You are still responsible for managing the database settings reuired by the application.
+
+Amazon DynamoDB Accelerator (DAX) - write-through caching service for DynamoDB.
+
+Amazon Redshift - managed data warehouse solution
+
+Amazon Neptune - NoSQL graph database for highly connected datasets.
+
+ElastiCache for Memcached doesn't support a high-availability configuration.
+Only ElastiCache Redis could run for in a high-availaiblity configuration.
+
+In DynamoDB scans are less efficient than queries.
+
+=======================================================================================================
 Encryption
 
 Deployment Strategies
