@@ -1,0 +1,84 @@
+KQML - knowledge query and manipulation language
+
+Jason flow:
+
+- agent receives events, which are either
+	- external (from the environment, from perceptual data)
+	- internally generated
+- tries to handle events by looking for plans that match
+- the set of plans that match the event are options/desires
+- chooses one plan from its desires execute: becomes commited to it (an intention)
+- as it executes a plan may generate new events that require handling
+
+Internal actions: https://www.emse.fr/~boissier/enseignement/maop12/doc/jason-api/jason/asSemantics/class-use/DefaultInternalAction.html
+
+Belifes in	AgentSpeak	represent information the agent	has	about its environment.
+Example beliefs:
+open(valve32)
+father(tom, michael)
+father(lily, michael)
+friend(michael, john)
+at_location(michael, gunne)
+on(blockA, blockB)
+
+Plan structure:
+
+triggerCondition :
+	context <-
+		body.
+
+triggerCondition - is	an	event	that	the	plan	can	handle
+context	- defines	the	condiJons	under	which	the	plan	can	be	used
+body - defines	the	acJons	to	be	carried	out	if	the	plan	is	chosen
+
+Events:
+
++!P - new goal acquired ("achieve P")
+-!P - goal dropped
++B - new belief B
+-B - belief B dropped
++?G - test-goal added
+-?G - test-goal removed
+
+Internal actions:
+
+.print(...)
+.stopMAS - stop system running
+.time(H, M, S)
+.wait(X) - pause for X milliseconds
+.random(X)
+.send(rcvr, type, content) - sends a message to another agent
+	valid send types:
+	- askOne
+	- askHow
+	- tell
+	- achieve
+.desire(literal)
+.intend(literal)
+.drop_desires(literal)
+.drop_intentions(literal)
+
+The Knowledge Query and Manipulation Language
+(KQML) is a language that adds intentional context:
+• tell : S informs R that the sentence in the message content
+is true of S;
+• untell: the message content is not in the knowledge base
+of S;
+• achieve: S requests that R try to achieve a state of the
+world where the message content is true;
+• unachieve: S wants to revert the effect of an achieve
+previously sent.
+
+Closed World Assumption: anything that is neither known to be true, nor
+derivable from the known facts or inferences, is assumed to be false. 
+“not” operator means that the negation of the formula is true if the
+interpreter fails to to derive the formula given the fatcs and rules.
+– “~” or strong negation means that the formula is false.
+
+– Example:
+● colour(box1,white), when the agent believes that box1 is white.
+● ~colour(box1,white), when the agent belives that box1 is not white.
+● If both (not p) and (not ~p) are true, the agent has no information about
+whether p is true or not
+
+Class to persist a belief base: https://www.emse.fr/~boissier/enseignement/maop13/doc/jason-api/jason/bb/TextPersistentBB.html - Implementation of BB that stores the agent BB in text files. This implementation is very simple: when the agent starts, load the beliefs in the file; when the agent stops, save the BB in the file. The file name is the agent's name + ".bb".

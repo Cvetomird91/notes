@@ -72,6 +72,13 @@ logical calculations: TRUE, FALSE, and NULL
 • INTERVAL YEAR TO MONTH
 • INTERVAL DAY TO SECOND
 
+• Only the TRUE, FALSE, and NULL values can be assigned to a Boolean variable.
+• Conditional expressions use the logical operators AND and OR, and the unary operator NOT to check the variable
+values.
+• The variables always yield TRUE, FALSE, or NULL.
+• Arithmetic, character, and date expressions can be used to
+return a Boolean value.
+
 %TYPE Attribute
 • Is used to declare a variable according to:
 	– A database column definition
@@ -131,10 +138,8 @@ PL/SQL records: Records are used to treat related but dissimilar data as a logic
 A PL/SQL record can have variables of different types
 
 PL/SQL Records or Collections?
-• Use PL/SQL records when you want to store values of
-different data types but only one occurrence at a time.
-• Use PL/SQL collections when you want to store values of
-the same data type.
+• Use PL/SQL records when you want to store values of different data types but only one occurrence at a time.
+• Use PL/SQL collections when you want to store values of the same data type.
 
 The %ROWTYPE attribute is used to declare a record that can hold an entire row of a table or view.
 
@@ -173,14 +178,12 @@ out-of-line.
 Associative Arrays
 Associative arrays are sets of key-value pairs, where each key is unique and is used to locate
 a corresponding value in the array. The key can be either integer- or character-based. The
-Copyright © 2012, Oracle and/or its affiliates. All rights reserved.
-a corresponding value in the array. The key can be either integer or character based. The
 array value may be of the scalar data type (single value) or the record data type (multiple
 values).
 Because associative arrays are intended for storing temporary data, you cannot use them
 with SQL statements such as INSERT and SELECT INTO.
 Nested Tables
-A nested table holds a set of values. In other wo A nested table holds a set of values. In other words, it is a table within a table. Nested tables it is a table within a table. Nested tables are unbounded; that is, the size of the table can increase dynamically. Nested tables are available in both PL/SQL and the database. Within PL/SQL, nested tables are like onedimensional arrays whose size can increase dynamically.
+A nested table holds a set of values. In other words, it is a table within a table. Nested tables it is a table within a table. Nested tables are unbounded; that is, the size of the table can increase dynamically. Nested tables are available in both PL/SQL and the database. Within PL/SQL, nested tables are like onedimensional arrays whose size can increase dynamically.
 Varrays
 Variable-size arrays, or varrays, are also collections of homogeneous elements that hold a
 fixed number of elements (although you can change the number of elements at run time).
@@ -235,7 +238,7 @@ OTHERS Is an optional exception-handling clause that traps any exceptions
 that have not been explicitly handled
 
 Sample predefined exceptions:
-– NO DATA FOUND NO_DATA_FOUND
+– NO_DATA_FOUND
 – TOO_MANY_ROWS
 – INVALID_CURSOR
 – ZERO_DIVIDE
@@ -243,8 +246,7 @@ Sample predefined exceptions:
 
 Functions for trapping exceptions:
 SQLCODE: Returns the numeric value for the error code
-SQLERRM: Returns the message associated with the error
-number
+SQLERRM: Returns the message associated with the error number
 
 When a subblock handles an exception, it terminates normally. Control resumes in the
 enclosing block immediately after the subblock’s END statement.
@@ -267,15 +269,6 @@ Procedures and Functions
 	– Optional declarative section (without the Optional declarative section (without the DECLARE DECLARE keyword) keyword)
 	– Mandatory executable section
 	– Optional section to handle exceptions
-
-Creating Procedures
-Creating Functions and Debugging Subprograms
-Creating Packages
-Working with Packages
-Using Oracle-Supplied Packages in Application Development ???
-Using Dynamic SQL
-Creating Triggers
-Creating Compound, DDL, and Event Database Triggers
 
 Parameter modes are specified in the formal parameter
 declaration, after the parameter name and before its data
@@ -450,8 +443,7 @@ You can use triggers for:
 • Computing derived data automatically
 • Event logging
 
-•
-Simple DML triggers
+• Simple DML triggers
 	– BEFORE
 	– AFTER
 	– INSTEAD OF
