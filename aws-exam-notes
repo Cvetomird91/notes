@@ -1,7 +1,9 @@
 AWS Cloud API
 
+=======================================================================================================
 Compute and Networking
 
+=======================================================================================================
 Storage
 
 =======================================================================================================
@@ -44,26 +46,80 @@ In DynamoDB scans are less efficient than queries.
 =======================================================================================================
 Encryption
 
+=======================================================================================================
 Deployment Strategies
 
+=======================================================================================================
 Deployment as Code
 
+=======================================================================================================
 Infrastructure as Code
 
+
+=======================================================================================================
 Configuration as Code
 
+=======================================================================================================
 Authentication and Authorization
 
+The AWS SDK relies on access keys, not passwords. The best practice is to use AWS Identity and Access
+Management (IAM) credentials and not the AWS account credentials. Comparing IAM users or IAM roles,
+only IAM users can have long-term security credentials.
+
+We can use identity federation and IAM roles to establish a trust relationship between an
+external Active Directory and AWS.
+
+When you use identity federation to assume a role, The AWS security token service (AWS STS)
+generates the access key ID, secret access key and session token.
+
+The IAM trust policy defines the principals who can request role credentials from the AWS STS.
+The long-term credentials are not limited to a single AWS Region. IAM is a global service, and IAM
+user credentials are valid across different AWS Regions.
+
+IAM policies are global in scope, so you do not need a custom one per AWS Region.
+
+You can add IAM users to IAM groups but not IAM roles. Instead, roles must be assumed for short-term
+sessions.
+
+DynamoDBReadOnlyAccess policy - built-in policy that applies to the resource * wildcard, which means
+that it applies to any and all DynamoDB tables accessible from the account regardless of when those
+tables were created.
+
+=======================================================================================================
 Refactor to Microservices
 
+=======================================================================================================
 Serverless Compute
 
+=======================================================================================================
 Serverless Applications
 
+-- SAM
+AWS SAM (Serverless application model) - it's based on Amazon Cloudformation and is optimized for
+deploying serverless resources.
+Properties for AWS Serverless Application Model:
+- context - context object for a Lambda function
+- handler - function handler for a Lambda function
+- events - the events property allows you to assign a Lambda to an event source in Amazon API Gateway
+- runtime - the language in which your AWS Lambda runs as
+
+-- Cognito
+Amazon Cognito supports device remembering and tracking
+Amazon Cognito supports MFA authentication
+
+-- API Gateway
+Amazon API gateway only supports HTTPS endpoints.
+Without enabling CORS we're not going to be able to use the Amazon API Gateway service. You use a
+stage to deploy your API, and a resource is typed object that is part of your API's domain. Each
+resource may have an associated data model and relationships to other resourses and can respond to
+different methods.
+=======================================================================================================
 Serverless Application Patterns
 
+=======================================================================================================
 Monitoring and Troubleshooting
 
+=======================================================================================================
 Optimization
 
 =======================================================================================================
