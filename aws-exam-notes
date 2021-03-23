@@ -6,6 +6,19 @@ Compute and Networking
 =======================================================================================================
 Storage
 
+Versioning is a means of keeping multiple variants of an object in the same bucket. You can use
+versioning to preserve, retrieve, and restore every version of every object stored in your Amazon
+S3 bucket. With versioning you can easily recover from both unintended user actions and application
+failures. The following are version states of buckets:
+- Versioning suspended
+- Versioning disabled
+- Versioning enabled
+
+The following are a deciding factor when choosing an AWS Region for your bucket:
+- Cost - prices are different between regions
+- Latency
+- Regulatory requirements - different regions may have different legal requirements
+
 =======================================================================================================
 Databases
 
@@ -42,6 +55,16 @@ ElastiCache for Memcached doesn't support a high-availability configuration.
 Only ElastiCache Redis could run for in a high-availaiblity configuration.
 
 In DynamoDB scans are less efficient than queries.
+In DynamoDB you can create local secondary indexes only when you are creating the table.
+Server-side encryption provided by the DynamoDB service is a recommended way to protect data at rest
+stored in DynamoDB.
+Each record in DynamoDB Streams appears only once in a stream.
+400KB - this is the maximum DynamoDB item size limit.
+QueryTable is the DynamoDB operation used to find items based on primary key.
+UpdateTable is the DynamoDB operation used to modify the provisioned throughput settings, global
+secondary indexes, or DynamoDB Streams settings for a given table.
+Scan is the DynamoDB operation used to read every item in a table.
+The lifetime of data in a DynamoDB stream is 24 hours.
 
 =======================================================================================================
 Encryption
@@ -91,8 +114,27 @@ Refactor to Microservices
 =======================================================================================================
 Serverless Compute
 
+The default timeout value for an AWS Lambda function is 3 seconds.
+The default limit for concurrent executions with Lambda is set to 1000. This is a soft limit that
+can be raised. To do this, you must open a case through the AWS support center page and send a Server
+Limit increase request.
+The maximum execution time for a Lambda function is 300 seconds (5 minutes).
+
+There are two types of policies with Lambda:
+- function policy - defines which AWS resources are allowed to invoke your function
+- execution policy - defines which AWS resources your function can access.
+
+Ruby is not supported by AWS lambda functions.
+
+We can send event payloads to an Amazon SQS queue or Amazon SNS topic if the lambda function fails
+by enabling the dead-letter queue configuration option for the lambda.
+
+The maximum amount of memory you can assign to an AWS Lambda function is 3008MB.
+
 =======================================================================================================
 Serverless Applications
+
+Serverless applications contain both static and dynamic data
 
 -- SAM
 AWS SAM (Serverless application model) - it's based on Amazon Cloudformation and is optimized for
@@ -113,8 +155,11 @@ Without enabling CORS we're not going to be able to use the Amazon API Gateway s
 stage to deploy your API, and a resource is typed object that is part of your API's domain. Each
 resource may have an associated data model and relationships to other resourses and can respond to
 different methods.
+
 =======================================================================================================
 Serverless Application Patterns
+
+You can add a maximum of 20 nodes to an Amazon ElastiCache Redis cluster.
 
 =======================================================================================================
 Monitoring and Troubleshooting
