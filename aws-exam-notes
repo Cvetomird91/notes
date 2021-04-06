@@ -3,9 +3,21 @@ AWS Cloud API
 =======================================================================================================
 Compute and Networking
 
+Regions - a set of datacenters
+Availability zone - each region has a set of availability zones (from 2 to 6, the usual is 3)
+
+ap-southeast-2 - Syndney region
+Sydney region availability zones:
+ap-southeast-2a
+ap-southeast-2b
+ap-southeast-2c
+
+Availability zones are separate from each other, so that they are isolated from disasters.
+
 =======================================================================================================
 Storage
 
+-- Amazon S3
 Versioning is a means of keeping multiple variants of an object in the same bucket. You can use
 versioning to preserve, retrieve, and restore every version of every object stored in your Amazon
 S3 bucket. With versioning you can easily recover from both unintended user actions and application
@@ -18,6 +30,32 @@ The following are a deciding factor when choosing an AWS Region for your bucket:
 - Cost - prices are different between regions
 - Latency
 - Regulatory requirements - different regions may have different legal requirements
+
+Pre-signed URLs allow you to grant time-limited permission to download objects from an Amazon S3
+bucket.
+
+If data must be encrypted before being sent to Amazon S3, client-side encryption must be used.
+
+Amazon S3 supports server access logging for buckets that tracks access time and who accessed the
+bucket.
+
+Amazon S3 bucket policies can specify a request IP range, an AWS account and a prefix for objects
+that can be accessed.
+
+-- Amazon Elastic Block Store (EBS)
+
+Amazon snapshot EBS data is loaded lazily.
+Data stored on Amazon EBS is automatically replicated within an Availability Zone.
+
+-- Amazon Elastic File System (EFS)
+Amazon EFS supports one to thousands of Amazon EC2 instances conneting to a file system concurrently.
+
+The Max I/O performance mode of EFS is optimized for applications where tens, hundreds, or
+thousands of EC2 instances are accessing the file system.
+
+-- Amazon Glacier
+Glacier can be used as a standalone service and as an Amazon S3 storage class.
+
 
 =======================================================================================================
 Databases
@@ -34,7 +72,7 @@ To calclulate eventually consistent reads we need to divide the final result by 
 (25 x 4) / 2 = 50 RCUs
 
 WCU - write capacity unit
-1 WCU = 1 write per second of 1KB (1024 bytes). 
+1 WCU = 1 write per second of 1KB (1024 bytes).
 How to calculate for example for 100 writes per second of 512 bytes:
 512 bytes uses one complete chunk of 1 KB
 (512/1024 = 0.5, rounded up to 1).
@@ -45,14 +83,19 @@ Amazon RDS manages for the developer the following things out of the box:
 - backups
 You are still responsible for managing the database settings reuired by the application.
 
-Amazon DynamoDB Accelerator (DAX) - write-through caching service for DynamoDB.
 
 Amazon Redshift - managed data warehouse solution
+	S3DistCp - Redshift feature that allows it to copy data from S3 to the Redshift cluster
 
 Amazon Neptune - NoSQL graph database for highly connected datasets.
 
 ElastiCache for Memcached doesn't support a high-availability configuration.
 Only ElastiCache Redis could run for in a high-availaiblity configuration.
+
+An existing Amazon RDS instance is deleted if the environment is deleted. There is no auto-retention
+of the database instance. You must create a snapshot to retain the data and to restore the database.
+
+-- Amazon DynamoDB
 
 In DynamoDB scans are less efficient than queries.
 In DynamoDB you can create local secondary indexes only when you are creating the table.
@@ -66,14 +109,92 @@ secondary indexes, or DynamoDB Streams settings for a given table.
 Scan is the DynamoDB operation used to read every item in a table.
 The lifetime of data in a DynamoDB stream is 24 hours.
 
+These are the following three operations used to read data in DynamoDB:
+- GetItem
+- Scan
+- Query
+
+Amazon DynamoDB Accelerator (DAX) - write-through and read-through caching service for DynamoDB.
+
 =======================================================================================================
 Encryption
+
+KMI - key management infrastructure
+KMI has the following two components:
+- management layer - responsible for allowing authorized users to access the stored keys
+- storage layer - responsible for storing encryption keys
+AWS KMS - key management service
+AWS KMS uses AES-256 as its encryption algorithm.
+AWS KMS provides a centralized key management dashboard.
+AWS KMS does not currently support asymetric key encryption.
+AWS KMS provides the simplest solution with little development time to implement encryption on an
+Amazon EBS volume.
+Some of the services AWS KMS can integrate with are the following:
+- Amazon EBS
+- Amazon Redshift
+- Amazon S3
+AWS CloudHSM is a cloud-based hardware security module (HSM) that enables you to easily
+AWS CloudHSM supports both symetric and asymetric key encryption.
+generate and use your own encryption keys on the AWS Cloud.
+The following are methods for AWS to provide KMI:
+- you controll the encryption method and KMI
+- AWS controls the encryption method and the entire KMI
+- you control the encryption method and key management, and AWS provides the storage component of
+the KMI
+
+Custom key stores - this feature of Amazon KMS allows you to use a cluster of AWS CloudHSM
+instances for the storage of your encryption keys.
+
+SSE-S3 - S3 feature that allows each file deployed to S3 to be encrypted by AWS. This feature is
+useful when the developer doesn't want to get involved and encryption and key storing. It automatically
+encrypts the files and rotates and stores keys.
+
+The following components are required in an encryption system:
+- a cryptographic algorithm
+- data to encrypt
+- a method to encrypt data
 
 =======================================================================================================
 Deployment Strategies
 
+Amazon Elastic Beanstalk deploys application code and the architecture to support an environment for
+the application to run.
+Elastic Beanstalk runs at no additional charge. You incur charges only for services deployed.
+Elastic Beanstalk creates a service role to access AWS services and an instance role to access
+instances.
+The following accounts are billed for user-accessed AWS resources allocated by AWS Elastic Beanstalk:
+- the account running the services
+- the cross-account able to access the shared services
+- the cross-account with the Amazon Simple Storage Service bucket holding a downloaded copy of
+the code artifact
+
+AWS services for CI/CD:
+AWS CodeCommit - hosted git
+AWS CodeBuild
+AWS CodeDeploy
+AWS CodePipeline
+
+Amazon ECS task placement policies determine how tasks are placed within a cluster.
+The spread policy makes sure tasks are distributed as much within a single cluster.
+
 =======================================================================================================
 Deployment as Code
+
+In an immutable update, a new Auto Scaling group is created and registered with the load balancer.
+Once health checks pass, the existing Auto Scaling group is terminated.
+
+-- AWS CodeDeploy
+
+If an AWS CodeDeploy configuration contains a file which already exists on the server,
+the deployment will fail by default.
+The CodeDeploy agent sends progress reports to the CodeDeploy service. The service does not attempt
+to query instances directly, and the Amazon EC2 API does not interact with instances at the
+operating system level.
+
+-- AWS CodePipeline
+
+The minimum number of stages required by a pipeline in AWS CodePipeline is 2.
+In the Invoke pipeline action we can execute Lambda functions.
 
 =======================================================================================================
 Infrastructure as Code
@@ -81,6 +202,32 @@ Infrastructure as Code
 
 =======================================================================================================
 Configuration as Code
+
+-- AWS OpsWorks
+AWS OpsWorks is a configuration management service that provides managed instances of Chef and Puppet.
+
+AWS OpsWorks Stacks is an application and server management service. With OpsWorks Stacks, you can
+model your application as a stack containing different layers, such as load balancing,
+database, and application server.
+In AWS OpsWorks Stacks a custom cookbook repository location is configured for a stack. When
+instances in the stack are first launched, they will download cookbooks from this location and run
+them as part of lifecycle events.
+
+AWS OpsWorks Stacks instance types:
+- 24/7
+- On demand
+- Load-based
+- Time-based - start and stop on specific time
+
+AWS OpsWorks doesn't have a concept of cookbook caching.
+OpsWorks lifecycle events don't allow you to specify cookbook versions.
+After modifying cookbooks you must first run the Update Custom Cookbooks command.
+
+A single OpsWorks task definition can describe up to 10 containers to launch at a time.
+Task definitions should group containers by similar purpose, lifecycle, or resource requirements.
+
+OpsWorks stacks instances are registered when they come online and deregistered when they are
+moved to a different state.
 
 =======================================================================================================
 Authentication and Authorization
@@ -108,8 +255,78 @@ DynamoDBReadOnlyAccess policy - built-in policy that applies to the resource * w
 that it applies to any and all DynamoDB tables accessible from the account regardless of when those
 tables were created.
 
+AWS Security Token Service (AWS STS) supports a number of different tokens:
+- AssumeRole - short lived; 60 minutes by default, can be extended to 720 minutes
+- GetSessionToken
+- GetFederationToken
+
+AWS AD Connector - AD Connector is a directory gateway with which you can redirect directory requests
+to your on-premises Microsoft Active Directory without caching any information in the cloud.
+For example, you can integrate your RADIUS-based MFA infrastructure that you already have on-premise.
+It gives you the ability to configure changes to Active Directory on your existing Acitve
+Directory console.
+
+Using AWS as an identity provider (IdP) to access non-AWS resources allows you to use AWS
+CloudTrail to audit who is using the service.
+
+To use AWS Single Sign-On (AWS SSO), you must set up AWS Organizations Service and enable
+all the features.
+AWS SSO uses MS AD (either AWS Managed Microsoft Acitve Directory or Active Directory
+Connector [AD Connector] but not Simple Active Directory).
+AWS SSO does not support Amazon Cognito.
+AWS SSO does not use SAML.
+
+-- Cognito
+Amazon Cognito supports device remembering and tracking
+Amazon Cognito supports MFA authentication
+Amazon Cognito supports Google SSO and MS AD and custom identity providers.You need SAML 2.0 based
+identity provider to integrate with Amazon Cognito.
+
 =======================================================================================================
 Refactor to Microservices
+
+-- Amazon SQS
+Amazon SNS supports the same attributes and parameters as Amazon SQS.
+To send a message larger than 256KB, you use Amazon SQS to save the file in Amazon S3 and then
+send a link to the file on Amazon SQS. In this way you can send files larger than 256KB as S3 links
+through SQS.
+Amazon SQS queues do not support subscriptions.
+Amazon SQS supports dead-letter queues, which other queues (source queues) can target for messages
+that can't be processed (consumed) successfully. Dead-letter queues are useful for debugging your
+application or messaging system because they let you isolate problematic messages to determine
+why their processing doesn't succeed.
+
+A queue without consumers deletes all the messages in it after the retention period has passed.
+
+-- Amazon SNS
+
+-- Amazon Step Functions
+
+Amazon Step functions states:
+- Pass
+- Task
+- Choice
+- Wait
+- Succeed
+- Fail
+- Parallel
+- Map
+
+-- Amazon Kinesis
+
+Some of the Kinesis options
+- Amazon Kinesis agent - a stand-alone Java agent The agent continuously monitors a set of files
+and sends new data to your Kinesis Data Firehose delivery stream.
+- Amazon Kinesis Producer Library (KPL) -
+	https://docs.aws.amazon.com/streams/latest/dev/developing-producers-with-kpl.html
+- Amazon Kinesis Data Streams API
+
+In Kinesis there is no limit in the number of consumers as long as they stay within the capacity
+of the stream, which is based on the number of shards. For a single shard, the capacity is 2MB of
+read or five transactions per second.
+
+Amazon Kinesis Data Streams is a service for ingesting large amounts of data in real time and
+for performing real-time analytics on the data.
 
 =======================================================================================================
 Serverless Compute
@@ -145,9 +362,6 @@ Properties for AWS Serverless Application Model:
 - events - the events property allows you to assign a Lambda to an event source in Amazon API Gateway
 - runtime - the language in which your AWS Lambda runs as
 
--- Cognito
-Amazon Cognito supports device remembering and tracking
-Amazon Cognito supports MFA authentication
 
 -- API Gateway
 Amazon API gateway only supports HTTPS endpoints.
@@ -164,8 +378,62 @@ You can add a maximum of 20 nodes to an Amazon ElastiCache Redis cluster.
 =======================================================================================================
 Monitoring and Troubleshooting
 
+The following are considered management events by AWS CloudTrail:
+- modifying an Amazon S3 bucket policy
+- creating an Amazon RDS instance
+
+AWS CloudTrail events contain the following information:
+- what request is being made
+- when the request was made
+- which resource was acted on
+- who made the request
+
+CloudTrail stores event history for 90 days back. If you would like to store this information
+permanently, you can create a CloudTrail trail, which stores the logs in Amazon S3.
+
+In Amazon CloudWatch data points with a period of 300 seconds are stored for 63 days.
+Logging to Amazon CloudWatch from a EC2 instance requires installing the CloudWatch Logs agent.
+
+CloudWatch alarms support triggering actions in Amazon EC2, EC2 Auto Scaling, and Amazon SNS. We can
+trigger AWS Lambda functions from an alarm, but only by first sending the alarm notification to an
+Amazon SNS topic.
+
+The following EC2 metrics are available in CloudWatch:
+- cpu utilization
+- disk I/O
+- network traffic - in/out
+RAM cannot be tracked by CloudWatch because memory is allocated in a single block to an instance
+and is managed by the guest OS, the underlying EC2 instance host doesn't have visibility
+into consumption.
+CloudWatch metrics support dashboards
+The LookupEvents API action can be used to query event data.
+
+With Systems Manager, you can group resources, like Amazon EC2 instances, Amazon EKS clusters,
+Amazon S3 buckets, or Amazon RDS instances, by application, view operational data for monitoring and
+troubleshooting, implement pre-approved change work flows, and audit operational changes
+for your groups of resources.
+
 =======================================================================================================
 Optimization
+
+Multi availability zone is used for fault tolerance.
+In case of slow reads from AWS RDS we can create a read replica and routing calls to it.
+
+In AWS autoscaling group the instance user data is the space where you can place optional
+scripts that can run after bootstrapping the application. This is used to perform.
+
+By launching instances in multiple Availability Zones in the same region, you help protect your
+applications from a single point of failure.
+
+Provisioned IOPS volumes in the Amazon EBS are designed to deliver the expected performance only
+when they are attached to an Amazon EBS optimized instance.
+
+In AWS Cloudfront, some headers such as Date or User-Agent, significantly reduce the cache hit ration
+(the proportion of requests that are served from a CloudFront edge cache).
+
+In AWS S3, a multipart upload is supported and we can use it to upload big objects to S3.
+
+One of the recommended best practices for AWS Lambda is to avoid using recursive code.
 
 =======================================================================================================
 
