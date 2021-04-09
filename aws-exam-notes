@@ -12,7 +12,99 @@ ap-southeast-2a
 ap-southeast-2b
 ap-southeast-2c
 
-Availability zones are separate from each other, so that they are isolated from disasters.
+Availability zones are a discrete data center with redundant power, networking and connectivity.
+They are separate from each other, so that they're isolated from disasters.
+
+IAM federation - big enterprises intergrate their own repository of users with IAM
+
+Basic good practices for IAM roles:
+- One IAM User per physical role
+- One IAM Role per Application
+- IAM credentials should never be shared
+- Never write IAM credentials in code
+- Never use ROOT IAM credentials in an application
+
+SSH troubleshooting:
+1) There's a connection timeout
+This is a security group issue. Any timeout (not just for SSH) is related to security groups or a
+firewall. Ensure your security group looks like this and correctly assigned to your EC2 instance.
+
+Security groups can be reused and assigned to multiple EC2 instances.
+They're locked down to a region/VPC combination.
+
+A security group misconfiguration is usually responsible for time-outs.
+A "connection refused" error is usually caused by an application error - the security group
+in this case is allowing traffic properly.
+
+All inbound traffic is blocked by default.
+All outbound traffic is allowed by default.
+
+We can reference security groups within other security groups.
+
+Types of IPs in EC2:
+- public IP
+- private IP
+- elastic IP
+
+When you stop and then start an EC2 instance, it can change its public IP.
+If you need to have a fixed public IP for your instance, you need an Elastic IP.
+You can attach 1 elastic IP at a time.
+
+You can have at most 5 elastic ips. This can be increased after reaching out to AWS support.
+
+Overusing elastic IPs is bad architecture. It's best to use random public IPs and remap a DNS record
+to then.
+
+We can mask the failure of an instance by switching the elastic ip to another instance but
+overusing that pattern is bad practice.
+
+EC2 instance launch types:
+- on demand instances: short workload, predictable pricing - billing per second, after the
+	first minute. Highest cost but no upfront payment, no long term commitment. Recommended
+	for short-term and un-interrupted workloads, where you can't predict how the application will
+	behave
+- reserved (minimum 1 year) - suitable for a workload we'll be sure we'll use for a minimal amount of
+time - can have up to 75% discount compared to On-demand. You need to pay upfront for what you use
+	with long term commitment. Reservation period can be from 1 to 3 years. You reserve a specific
+	instance type. A server for database is a proper example for this type of instance
+	- reserved instances - long workloads
+	- convertible reserved instance - long workloads with flexible instances. We can change the
+		EC2 instance type here. Up to 54% discount.
+	- scheduled reserved instances: example - every Thursday between 3 and 6 pm. They can get
+	launched periodically within a time period we specify.
+- spot instances - short workload, cheap, losing the instance isn't fatal (less reliable)
+	Can get a discount of up to 90% compared to on-demand.
+	instances you can use any time if the max price you can pay from them is less than the
+	current spot time.
+	Useful if your workload is resilient to failure like:
+	- batch jobs
+	- data analysis
+	- image processing
+	Not recommended for critical purposes
+- dedicated instances - no other customers will share the physical hardware
+- dedicated hosts - book an entire physical server, control instance placement. Allocated for
+your account for a 3 year period reservation
+
+You do not pay for an instance if the instance is stopped.
+
+ENI (Elastic Network interface):
+- can have primary private IPv4, one or more secondary IPv4
+- can have one elastic IP (IPv4) per private IPv4
+- can have one public IPv4
+- can have one or more security groups
+- can have a MAC address
+- we can create ENIs independently and move them inbetween EC2 instaces for failover (in the same
+availability zone)
+- ENIs are bound to a specific availability zone
+
+AMIs are built for a specific AWS region!
+
+AMIs have the following characteristics:
+- RAM
+- CPU
+- I/O (disk performance)
+- network
+- gpu
 
 =======================================================================================================
 Storage
@@ -439,3 +531,6 @@ One of the recommended best practices for AWS Lambda is to avoid using recursive
 
 Resources:
 https://github.com/mostafac0des/certified-aws-developer-associate-notes
+https://aws.amazon.com/blogs/aws/new-elastic-network-interfaces-in-the-virtual-private-cloud/
+https://instances.vantage.sh/
+https://aws.amazon.com/ec2/instance-types/
