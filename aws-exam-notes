@@ -107,6 +107,53 @@ AMIs have the following characteristics:
 - gpu
 
 =======================================================================================================
+ELB - Elastic Load balancer
+
+ELB seamlessly handles failures of downstream instances.
+It does regular health checks on your EC2 instances.
+It provides SSL termination for your instances.
+It enforces stickiness with cookies.
+High availability across zones.
+It separates public from private traffic.
+
+There are 4 types of load balancers:
+- classic load balancer (v1) - http, https, tcp
+- application load balancer (v2 - new generation) - http, https, websocket, http/2
+- network load balancer - tcp, tls, udp
+- gateway load balancer (not on the exam)
+
+ELBs can be internal or external.
+
+Load balancer 503 - load balancer is at max capacity or no target is registered
+
+ALB supports routing based on different target groups.
+ALBs can stand in front of lambda functions
+
+NLBs are used when you want extreme performance and you want to use a protocol different than HTTP(S)
+It can also be useful when you want a static IP assigned.
+
+Load balancer stickiness - the same client is always redirected to the same actual instance behind
+the load balancer. This feature is available for CLB and ALB.
+The "cookie" used for stickiness has an expiration date you control.
+Stickiness may bring imbalance to load balancing overloading some of the downstream instances.
+Stickiness for ALB is configured at the target group level.
+For CLBs stickiness is set at the load balancer level.
+
+With cross-zone load balancing each load balance instance distributes evenly the calls across all
+registered instances in all AZs.
+Otherwise, it'll distribute them only to the instances in its own availability zone.
+This is disabled by default in CLB. No additional charges for it if enabled.
+For ALB this is the default behaviour and cannot be disabled.
+For NLB this is disabled by default. You'll pay additional charges if enabled.
+
+Load balancers use an X.509 certificate
+ACM - AWS certificate manager - this is where we manage SSL certificates
+
+SNI - ability to have multiple SSL certificates on the same host. This is achieved by the
+client specifying which hostname of a target server it wants to reach.
+SNI works with Cloudfront, ALB and NLB. Does not work with CLB.
+
+=======================================================================================================
 Storage
 
 -- Amazon S3
