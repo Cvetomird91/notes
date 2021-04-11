@@ -153,6 +153,37 @@ SNI - ability to have multiple SSL certificates on the same host. This is achiev
 client specifying which hostname of a target server it wants to reach.
 SNI works with Cloudfront, ALB and NLB. Does not work with CLB.
 
+Connection draining (aka Deregistration delay for target groups in ALBs and NLBs) - this is the
+time to complete "in-flight requests" while the instance is de-registering or unhealthy.
+The ELB stops sending new requests to the instance being drained.
+The ELB won't start new connections to an instance being drained and it'll give it 300 seconds by
+default to complete the requests
+It can be between 1 and 3600 seconds.
+Can be disabled by setting it to 1 second.
+
+Auto Scaling Group parameters:
+- minimum size
+- actual size / desired capacity
+- maximum size - how many instances can be added at scale out
+scale out - add instances
+scale in - remove instances
+Auto Scaling Alarms - they determine when to trigger a scale in / out. It is possible to scale
+an ASG based on CloudWatch alarms. CloudWatch metrics are computed overall for all ASG instances.
+We can also use metrics directly from the EC2 instances.
+We can also use custom metrics sent to CloudWatch from our EC2 instances.
+ASGs use Launch configurations or Launch Templates (newer)
+To Update an ASG, you must provide a new launch configuration / launch template.
+IAM roles attached to an ASG will get assigned to EC2 instances
+ASG are free. You pay for the underlying resources being launched.
+
+ASG scaling policies:
+- target tracking scaling
+- simple / step scaling policy
+- scheduled actions
+
+ASG Cooldowns - the cooldown period ensures that your ASG doesn't scale in or out additional instances
+before the previous scaling takes effect
+
 =======================================================================================================
 Storage
 
@@ -181,16 +212,68 @@ bucket.
 Amazon S3 bucket policies can specify a request IP range, an AWS account and a prefix for objects
 that can be accessed.
 
+Instance store = ephemeral storage - it gets destroyed when the instance is destroyed.
+It is physically attached to the EC2 instance, while EBS is a network drive.
+It has better performance and good for cache / scratch data.
+It's not an option if you want to persist data inbetween instance terminations
+it survives reboots but not instance terminations
+It cannot increase in size, as opposed to EBS
+There's a risk of data loss in instance store if the physical hard disk fails.
+
 -- Amazon Elastic Block Store (EBS)
 
 Amazon snapshot EBS data is loaded lazily.
 Data stored on Amazon EBS is automatically replicated within an Availability Zone.
+EBS volumes are scoped within a specific availability zone. You cannot attach an EBS volume from
+us-east-1a to us-east-1b
+
+EBS volume types:
+- GP2 (SSD) - recommended for most workloads, system boot volumes and virtual desktops,
+	low-latency interactive apps, development and test environments
+	Size is between 1GiB to 16TiB
+	A small gp2 volume can burst IOPS to 3000
+	Max IOPS is 16k
+- IO1 (SSD) - critical business applications that require more than 16000 IOPS per volume
+	Suitable for large database workloads (Oracle SQL, MS SQL etc)
+	4GiB - 16TiB
+	Max IOPS are 32000
+- ST1 (HDD) - good for big data, data warehouses, log processing
+	good for streaming workloads that require fast throughput at a low price
+	Cannot be a boot volume
+	500 GiB - 16 TiB
+	Max IOPS is 500
+- SC1 (HDD) - the cheapest option. Good for less frequently accessed data
+	500GiB - 16TiB
+	Max IOPS is 250
+	Max throughput is 250 MiB/s
+EBS volume types are characterized by Size and Throughput (I/O Ops per second)
+Only GP2 and IO1 can be used as boot volumes
 
 -- Amazon Elastic File System (EFS)
+
+A managed NFS that could be mounted on many EC2 instances at the same time
+across many different availability zones (EBS is availability zone dependent).
+It's pay per use and is 3x more expencive than gp2 ebs volumes.
+
+To use EFS you need security groups.
+It works with Linux-based AMIs only.
+
+You can use KMS keys to encrypt the file system.
+It scales automatically. Users don't plan the capacity.
+
 Amazon EFS supports one to thousands of Amazon EC2 instances conneting to a file system concurrently.
 
 The Max I/O performance mode of EFS is optimized for applications where tens, hundreds, or
 thousands of EC2 instances are accessing the file system.
+
+Performance modes:
+- general purpose
+- max I/O - good for big data
+
+Therea are different storage tiers in EFS - lifecycle management. We can move files
+between EFS volumes after a number of days:
+- standard
+- infrequent access (EFS-IA): cost to retrieve files, lower price to store
 
 -- Amazon Glacier
 Glacier can be used as a standalone service and as an Amazon S3 storage class.
