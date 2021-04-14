@@ -223,9 +223,14 @@ There's a risk of data loss in instance store if the physical hard disk fails.
 -- Amazon Elastic Block Store (EBS)
 
 Amazon snapshot EBS data is loaded lazily.
-Data stored on Amazon EBS is automatically replicated within an Availability Zone.
 EBS volumes are scoped within a specific availability zone. You cannot attach an EBS volume from
 us-east-1a to us-east-1b
+An EBS volume can be accessed by a single EC2 instance, as opposed to EFS volumes.
+To use an EBS volume in another availability zone we need to create a snapshot of it
+and restore it in another AZ.
+
+EBS backups use IO and you shouldn't run them while your application is handling a lot
+of traffic.
 
 EBS volume types:
 - GP2 (SSD) - recommended for most workloads, system boot volumes and virtual desktops,
@@ -282,6 +287,8 @@ Glacier can be used as a standalone service and as an Amazon S3 storage class.
 =======================================================================================================
 Databases
 
+-- AWS RDS
+
 1 RCU - One strongly consistent read per second of 4KB.
 In order to determine the number of RCUs for a number of reads per seconds we need to determine the
 number of complete chunks
@@ -305,17 +312,134 @@ Amazon RDS manages for the developer the following things out of the box:
 - backups
 You are still responsible for managing the database settings reuired by the application.
 
+An existing Amazon RDS instance is deleted if the environment is deleted. There is no auto-retention
+of the database instance. You must create a snapshot to retain the data and to restore the database.
+
+You cannot SSH into the EC2 instances hosting AWS RDS instances. This is a managed service
+RDS EC2 instance storage is backed by EBS (gp2 or io1)
+
+RDS backups are enabled by default. There are daily full backups in a maintenance window.
+
+Transaction logs are backed-up by RDS every 5 minutes
+
+RDS DB snapshots differ from backups with being triggered by the user.
+
+We can create up to 5 read replicas in the same or other AZ or other region.
+Async replication is performed when we enable read replicas.
+This means that the reads are "eventually consistent".
+
+Each replica can be promoted to a stand-alone DB instance.
+
+Applications need to update their connection string to leverage read replicas.
+
+In AWS There's a network cost when data goes from one AZ to another.
+To reduce the network cost you can have a read replica in the same AZ (if the usecase allows it).
+It'll be free in such case.
+
+A disaster recovery instance is a database "copy" that receives sync replication from the
+main database. When the main database goes down the replcia starts to handle
+read and write queries. The DNS record gets automatically redirected to it.
+
+Read replicas can be used in such a way as well for disaster recovery.
+
+AWS RDS supports IAM authentication - an IAM user could be created as a database user (it
+works for MySQL and PostgreSQL).
+
+AWS RDS supports encryption with AWS KMS - AES-256 encryption.
+It needs to be defined at launch time.
+
+If the master is not encrypted, the read replicas cannot be encrypted.
+
+it also supports in-flight encryption using SSL.
+
+To enforce SSL:
+in postgresql: rds.force_ssl=1 in the AWS RDS console (Parameter groups)
+in mysql:
+GRANT USAGE ON *.* TO 'mysqluser'@'%' REQUIRE SSL;
+
+Snapshots of un-encrypted RDS databases are un-encrypted.
+Snapshots of encrypted RDS databases are encrypted.
+
+To encrypt an un-encrypted RDS database:
+1. create a snapshot of the un-encrypted database
+2. copy the snapshot and enable encryption for the snapshot
+3. restore the database from the encrypted snapshot
+4. migrate applications to the new database, and delete the old one
+
+RDS databases are usually deployed within a private subnet.
+RDS leverages security groups to expose the database to the internet.
+
+Transparent Data Encryption (TDE) - available only for MS SQL and Oracle SQL.
+This feature encrypts data at rest - db files both on the hard drive and backup.
+
+-- AWS Aurora
+
+AWS Aurora is compatible with both PostgreSQL and MySQL clients.
+AWS claim 5x times improvement over MySQL performance and 3x over PostgreSQL.
+
+The Aurora size can be between 10GB and come up to 64GB.
+
+Aurora can have up to 15 replicas.
+Aurora is HA native.
+Aurora costs 20% more than other RDS engines.
+
+Aurora stores copies of your data as read replicas as twice as the AZs in which
+they're placed.
+E.g. 6 copies of your data across 3 AZ.
+4 copies out of 6 are needed for writing.
+3 copies out of 6 are needed for reads.
+Aurora does some peer to peer self-healing.
+Storage is striped across 100s of volumes.
+One Aurora instance makes writes (master).
+If the master is down, a new one is promoted in less than 30 seconds.
+Aurora supports cross-region replication.
+Aurora provides a "writer endpoint" - a DNS record always pointing to the master.
+Aurora provides a "reader endpoint" - a DNS record pointing to all read replicas.
+Aurora shared storage volumes are auto expanding from 10G to 64TB.
+
+Aurora backtrack - a feature which allows you to restore the database to any point in time.
+
+Aurora serverless - automated database instantiation and auto-scaling based on actual usage
+
+Aurora global database - 1 primary region and up to 5 secondary read-only regions.
+
+up to 16 read replicas per secondary region.
+
+-- AWS ElastiCache
+
+ElastiCache for Memcached doesn't support a high-availability configuration.
+Only ElastiCache Redis could run for in a high-availaiblity configuration.
+ElastiCache Redis supports data durability using AOF persistence (append only file).
+
+ElastiCache Memcached - multi-node for partitioning of data (sharding)
+It's non-persistent (no AOF).
+
+ElastiCache Redis supports backup and restore with AOF, opposed to ElastiCache memcached.
+Memcached has multi-threaded architecture.
+
+Caching strategies:
+- Lazy loading / Cache aside / Lazy population - update cache on retrieval if an item is missing there
+- Write-through cache - update the cache after the database is updated
+
+Both are usually combined.
+
+Cache churn - a data is present in cache that will never be accessed
+
+Evicting cache:
+- explicitly delete the item
+- item is evicted because there's not enough space in cache (LRU)
+- the TTL of the item expires
+
+If too many evictions happen due to memory, you should scale up or out
+
+Setting a TTL is good practice, except when you're using write-through
+
+-- Other
 
 Amazon Redshift - managed data warehouse solution
 	S3DistCp - Redshift feature that allows it to copy data from S3 to the Redshift cluster
 
 Amazon Neptune - NoSQL graph database for highly connected datasets.
-
-ElastiCache for Memcached doesn't support a high-availability configuration.
-Only ElastiCache Redis could run for in a high-availaiblity configuration.
-
-An existing Amazon RDS instance is deleted if the environment is deleted. There is no auto-retention
-of the database instance. You must create a snapshot to retain the data and to restore the database.
 
 -- Amazon DynamoDB
 
@@ -337,6 +461,39 @@ These are the following three operations used to read data in DynamoDB:
 - Query
 
 Amazon DynamoDB Accelerator (DAX) - write-through and read-through caching service for DynamoDB.
+=======================================================================================================
+Route 53 and DNS
+
+Alias - hostname mapped to an AWS resource
+
+Route 53 supports load balancing through DNS - client load balancing
+Route 53 supports health checks.
+
+Route 53 routing policies:
+- simple - use when you need to redirect to a single resource. You can't attach health checks to
+	simple routing policies. If multiple values are returned a random one is chosen by the client
+- failover
+- geolocation
+- latency
+- weighted
+- multi-value
+
+You pay $0.50 per month per hosted zone
+
+Route 53 is a global service, it's not region and AZ dependant.
+
+Route 53 TTL - the time for which the browser will cache the DNS response
+High TTL - 24 hours - less traffic on DNS but more possible outdated records
+Low TTL - 60 seconds - more traffic on DNS but record data on the client side will be more
+up to date
+TTL is mandatory for each TTL record
+
+CNAME records vs aliases:
+A CNAME points a hostname to any other hostname
+They work only for non-root domains (something.mydomain.com, not mydomain.com)
+Alias records point a hostname to an AWS Resource (app.mydomain.com => lb1-1234.us-east2.elb.amazonaws.com)
+Aliases work for both root and subdomains.
+Aliases are free of charge and include a health check.
 
 =======================================================================================================
 Encryption
@@ -664,3 +821,5 @@ https://github.com/mostafac0des/certified-aws-developer-associate-notes
 https://aws.amazon.com/blogs/aws/new-elastic-network-interfaces-in-the-virtual-private-cloud/
 https://instances.vantage.sh/
 https://aws.amazon.com/ec2/instance-types/
+https://aws.amazon.com/caching/best-practices/
+https://aws.amazon.com/builders-library/caching-challenges-and-strategies/
