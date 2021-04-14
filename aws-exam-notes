@@ -472,11 +472,18 @@ Route 53 supports health checks.
 Route 53 routing policies:
 - simple - use when you need to redirect to a single resource. You can't attach health checks to
 	simple routing policies. If multiple values are returned a random one is chosen by the client
-- failover
-- geolocation
-- latency
-- weighted
-- multi-value
+- failover - this one is based on health checks. We have primary and secondar failover records.
+	If the health check for the AWS service behind the primary check starts to fail the DNS records
+	starts pointing to the secondary one.
+- geolocation - routing based on user location. E.g. traffic from the UK should go to this specific IP
+	We should also define a "default" policy in case there's no match for a location
+- latency - redirect to the server that has the least latency at the moment close to us
+- weighted - controls the percentage of each endpoint that is going to be reached. This is helpful
+	to route a % of traffic to a new applicatoin versoin. Supports health checks. Helpful to
+	split traffic between regions
+- multi-value - route traffic to multiple resources. Want to associate a route 53 health
+	check with records. Up to 8 healthy records are returned for each Multi Value query. Multi
+	value is not a substitute for having an ELB.
 
 You pay $0.50 per month per hosted zone
 
@@ -494,6 +501,10 @@ They work only for non-root domains (something.mydomain.com, not mydomain.com)
 Alias records point a hostname to an AWS Resource (app.mydomain.com => lb1-1234.us-east2.elb.amazonaws.com)
 Aliases work for both root and subdomains.
 Aliases are free of charge and include a health check.
+
+Default Route 53 health checks are 3 in route 53 before a status changes.
+Default health check interval is 30 seconds. The other option is 10s - it costs more.
+Health checks cost more when they're not non-aws endpoints.
 
 =======================================================================================================
 Encryption
