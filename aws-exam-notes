@@ -106,6 +106,40 @@ AMIs have the following characteristics:
 - network
 - gpu
 
+-- Networking & VPC
+
+VPC - private network to deploy your resources (regional resource)
+Subnets - they allow you to partition your network inside your VPC (Availability Zone resourse). They
+are defined at the availability zone level.
+A public subnet is a subnet that is accessible from the internet.
+A private subnet is a subnet that is not accessible from the internet.
+To define access to the internet and between subnets, we use RouteTables.
+Internet gateway - helps our VPC instances connect to the internet
+Public subnets have a route to the internet gateway. This is what makes a subnet a public subnet.
+NAT gateways (AWS-managed) and NAT instances (self-managed) allow your instances in your Private
+Subnets to access the internet while remaining private.
+
+NACL (Network ACL) - firewall that controlls traffic from and to subnet
+It can have allow and deny rules. Those rules are attached at the subnet level. Those rules only
+include IP addresses.
+The default NACL allows everything and everything out
+
+Security groups - a firewall that controlls traffic to and form an ENI / an EC2 instance. It can only
+have allow rules
+Rules include IP addresses, ports and other security groups
+
+https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Security.html#VPC_Security_Comparison
+
+VPC flow logs - captures info about traffic going into your interfaces:
+- vpc flow logs
+- subnet flow logs
+- ENI flow logs
+- all AWS managed interfaces - ELB, RDS, ElastiCache etc
+Helps to monitor and troubleshoot connectivity issues:
+- subnets to internet
+- subnets to subnets
+- internet to subnets
+
 =======================================================================================================
 ELB - Elastic Load balancer
 
@@ -834,3 +868,6 @@ https://instances.vantage.sh/
 https://aws.amazon.com/ec2/instance-types/
 https://aws.amazon.com/caching/best-practices/
 https://aws.amazon.com/builders-library/caching-challenges-and-strategies/
+
+QWikLabs:
+https://amazon.qwiklabs.com/catalog?keywords=introduction%20to&ransack=true&per_page=50
