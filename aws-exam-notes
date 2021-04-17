@@ -1,10 +1,73 @@
-AWS Cloud API
+AWS Cloud API and CLI
+
+The AWS CLI creates the following two folders after configuration
+
+~/.aws/config
+~/.aws/credentials
+
+CLI command to deserialize authorization message:
+aws sts decode-authorization-message --encoded-message <message-string>
+
+To use MFA with AWS CLI, you must create a temporary session.
+To do so, you must run the STS GetSessionToken API call:
+$ aws sts get-session-token --serial-number arn-of-the-mfa-device --token-code \
+code-from-token --duration-seconds 3600
+
+Offical SDKs for AWS are present in the following languages:
+- Java
+- .NET
+- Nodejs
+- PHP
+- Python (named boto3 / botocore)
+- Go
+- Ruby
+- C++
+
+We're using the Python SDK when we use the AWS CLI.
+
+us-east-1 - default region when configuring AWS CLI
+
+API Rate limits - how many times you can call an AWS API in a row.
+for example:
+DescribeInstances API for EC2 has a limit of 100 calls per second
+GetObject on S3 has a limit of 5500 GET per second per prefix
+
+In case we hit the API rate limits:
+- for intermittent errors - implement Exponential Backoff
+- for consistent errors - request an API throttling limit increase
+
+Service Quotas (Service Limits) - we can increase them on demand if we hit the limit
+Service Quotas API - we can use it to request it programatically
+
+ThrottlingException - happens intermittently, use exponential backoff - it retries calls with a
+longer waiting interval. Thus, you're slowing down the load on your system.
+
+The CLI will look for credentials in this order:
+1. Command line options - --region, --output and --profile
+2. Environment variables - AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY and AWS_SESSION_TOKEN
+3. CLI credentials file - ~/.aws/credentials or C:\Users\user\.aws\credentials
+4. CLI configuration file - ~/.aws/config or C:\Usersuser\.aws\config
+5. Container credentials - for ECS tasks
+6. Instance profile credentials - for EC2 instance profiles
+
+The Java AWS SDK will look for credentials in this order:
+1. Environment variables - AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
+2. java system properties - aws.accessKeyId and aws.secretKey
+3. default creds profile file - ~/.aws/credentials
+4. Container credentials - for ECS tasks
+5. Instance profile credentials - for EC2 instance profiles
+
+When you call the AWS HTTP API, you need to sign the request.
+If you're making direct request to the AWS APIs you need to sign them
+yourself using Signature v4 (SigV4)
 
 =======================================================================================================
 Compute and Networking
 
 Regions - a set of datacenters
 Availability zone - each region has a set of availability zones (from 2 to 6, the usual is 3)
+
+ARN - Amazon Resource name
 
 ap-southeast-2 - Syndney region
 Sydney region availability zones:
@@ -23,6 +86,8 @@ Basic good practices for IAM roles:
 - IAM credentials should never be shared
 - Never write IAM credentials in code
 - Never use ROOT IAM credentials in an application
+
+Putting your security credentials on an AWS machine is bad practice.
 
 SSH troubleshooting:
 1) There's a connection timeout
@@ -57,6 +122,12 @@ to then.
 
 We can mask the failure of an instance by switching the elastic ip to another instance but
 overusing that pattern is bad practice.
+
+EC2 instance metadata allows instances to "learn" about each other without additional IAM roles.
+The URL for EC2 metadata is:
+http://169.254.169.254/latest/meta-data
+This URL will work only from an EC2 instance.
+Using it you can retrieve the IAM role name from the metadata, but you CANNOT retrieve the IAM policy.
 
 EC2 instance launch types:
 - on demand instances: short workload, predictable pricing - billing per second, after the
@@ -106,6 +177,9 @@ AMIs have the following characteristics:
 - network
 - gpu
 
+IAM Roles can be attached to EC2 instances.
+IAM Roles can come with a policy authorizing exactly what the EC2 instance should be able to do
+
 -- Networking & VPC
 
 VPC - private network to deploy your resources (regional resource)
@@ -139,6 +213,31 @@ Helps to monitor and troubleshoot connectivity issues:
 - subnets to internet
 - subnets to subnets
 - internet to subnets
+
+VPC Peering - connect two VPC, privately using AWS' network. This makes them behave as if they were
+in the same network. For this to work we must not have overlapping CIDR (IP address range)
+VPC peering is not transitive - it needs to be established for each VPC that need to communicate
+with one another. E.g.
+if VPC A is connected to both VPC B and VPC C, then VPC B and VPC C cannot communicate with one
+another.
+
+Endpoints allow you to connect to AWS Services using a private network instead of the public www
+network. This gives you enhanced security and lower latency to access AWS resources.
+
+VPC endpoint gateway - allows access to external resources from the private network
+VPC endpoint interface - the rest of the service (only used within your VPC)
+We can create a VPC endpoint interface (ENI) and from it we can have private access to a public
+service
+
+VPC endpoint is the usual way referred on the exam when we need to connect a private AWS service
+to the external world.
+
+There are two ways to connect an on-premise private network to a VPC:
+- site to site VPN
+- Direct Connect - physical connection. It's private, doesn't go over the public internet and is
+fast. It takes atleast a month to establish
+
+Both Direct Connect and Site to Site VPN cannot access VPC endpoints
 
 =======================================================================================================
 ELB - Elastic Load balancer
@@ -221,7 +320,10 @@ before the previous scaling takes effect
 =======================================================================================================
 Storage
 
--- Amazon S3
+-- Amazon AWS S3
+
+Advertised as "infinitely scaling" storage.
+
 Versioning is a means of keeping multiple variants of an object in the same bucket. You can use
 versioning to preserve, retrieve, and restore every version of every object stored in your Amazon
 S3 bucket. With versioning you can easily recover from both unintended user actions and application
@@ -229,6 +331,57 @@ failures. The following are version states of buckets:
 - Versioning suspended
 - Versioning disabled
 - Versioning enabled
+
+Any file that is not versioned prior to enabling versioning will have version "null".
+Versioning is enabled at the bucket level.
+Suspending versioning in your bucket doesn't delete the previous versions.
+
+There are 4 ways to encrypt objects in Amazon S3:
+- SSE-S3 - encrypts S3 objects using keys handled & managed by AWS - encryption using keys handled
+	and managed by Amazon S3. The object is encrypted server side. AES-256 is the type of encryption
+	To use it you must set a header
+	"x-amz-server-side-encryption":"AES256"
+
+- SSE-KMS - leverage AWS Key Management Service to manage encryption keys. This gives us user control
+	and audit trail. Those are the advantages over SSE-S3. The object is encrypted server side. To
+	use it we must set a header:
+	"x-amz-server-size-encryption":"aws:kms"
+
+- SSE-C - when you want to manage your own encryption keys. In this case Amazon does not store the
+	key you provide. HTTPS must be used to use this method. You'll need the same key to decrypt the
+	files manually.
+
+- Client-side encryption - keys and encryption are performed by the user. Some libraries like
+	S3 encryption client can help with this. Client should encrypt and decrypt the data
+	themselves.
+
+Amazon S3 can use both HTTP or HTTPS.
+
+Each S3 bucket must have a globally unique name. S3 is a global service but buckets are
+defined at the region level.
+
+Naming convention:
+- no uppercase
+- no underscore
+- 3-63 characters long
+
+S3 objects (files) have a key - the key is the full path to the file:
+s3://my-bucket/my_file.txt
+
+The key is composed of:
+uri + bucket name + prefix + object name
+
+There's no concept of directories in s3, but the UI can trick you to think there are.
+There are just long names with keys that contain "/".
+
+An object value is the content of the file.
+
+Max object size is 5000GB (5TB).
+
+If you upload more than 5GB, you need a multi-part upload.
+
+Each object has metadata - list of key / value pairs.
+It also has tags (they're something separate).
 
 The following are a deciding factor when choosing an AWS Region for your bucket:
 - Cost - prices are different between regions
@@ -246,14 +399,46 @@ bucket.
 Amazon S3 bucket policies can specify a request IP range, an AWS account and a prefix for objects
 that can be accessed.
 
-Instance store = ephemeral storage - it gets destroyed when the instance is destroyed.
-It is physically attached to the EC2 instance, while EBS is a network drive.
-It has better performance and good for cache / scratch data.
-It's not an option if you want to persist data inbetween instance terminations
-it survives reboots but not instance terminations
-It cannot increase in size, as opposed to EBS
-There's a risk of data loss in instance store if the physical hard disk fails.
+S3 Security types:
+- user-based - based on IAM policies
+- resource-based
+	- bucket policies - bucket-level rules (JSON based)
+	- Object ACL - finer grain at the object level
+	- bucket ACL - less common
 
+An IAM principal can access an S3 object if the user IAM permissions allow it OR
+the resource policy ALLOWS it.
+
+S3 supports VPC endpoints for instances in VPC without www internet.
+S3 Access logs can be stored in other S3 buckets.
+S3 API calls ban be logged in AWS CloudTrail.
+
+S3 supports MFA delete to prevent accidental deletion of objects.
+Only the bucket owner (root account) can enable/disable MFA-Delete
+This can be enabled only using CLI or AWS API calls.
+
+S3 consistency model:
+- read after write consistency for PUTS of new objects - as soon as a new object is
+written, we can retrieve it (PUT 200 => GET 200)
+- this is true unless we've queried the bucket before uploading the file:
+(GET 404 => PUT 200 => GET 404) - eventually consistent
+- eventual consistency for DELETES and PUTS of existing objects:
+if we read an object after updating, we might get the older version
+ex: (PUT 200 => PUT 200 => GET 200 (might be older version))
+if we delete an object we might still be able to retrieve it for a short period
+ex: (DELETE 200 => GET 200)
+
+There's no way to request "strong consistency" in Amazon S3!
+
+-- S3 Cors - Cross-Origin Resource Sharing
+
+Access-Control-Allow-Origin
+
+An origin is a scheme (protocol), host (domain) and port:
+e.g. https://www.example.com
+
+If a client does a cross-origin request on our S3 bucket, we need to enable the
+correct CORS headers
 -- Amazon Elastic Block Store (EBS)
 
 Amazon snapshot EBS data is loaded lazily.
@@ -287,6 +472,15 @@ EBS volume types:
 	Max throughput is 250 MiB/s
 EBS volume types are characterized by Size and Throughput (I/O Ops per second)
 Only GP2 and IO1 can be used as boot volumes
+
+Instance store = ephemeral storage - it gets destroyed when the instance is destroyed.
+It is physically attached to the EC2 instance, while EBS is a network drive.
+It has better performance and good for cache / scratch data.
+It's not an option if you want to persist data inbetween instance terminations
+it survives reboots but not instance terminations
+It cannot increase in size, as opposed to EBS
+There's a risk of data loss in instance store if the physical hard disk fails.
+
 
 -- Amazon Elastic File System (EFS)
 
@@ -871,3 +1065,7 @@ https://aws.amazon.com/builders-library/caching-challenges-and-strategies/
 
 QWikLabs:
 https://amazon.qwiklabs.com/catalog?keywords=introduction%20to&ransack=true&per_page=50
+
+AWS Policy generator:
+https://awspolicygen.s3.amazonaws.com/policygen.html
+https://docs.aws.amazon.com/AmazonS3/latest/userguide/example-bucket-policies.html
