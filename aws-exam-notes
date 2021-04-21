@@ -262,6 +262,8 @@ Load balancer 503 - load balancer is at max capacity or no target is registered
 ALB supports routing based on different target groups.
 ALBs can stand in front of lambda functions
 
+Dynamic port forwarding - useful in ECS setups
+
 NLBs are used when you want extreme performance and you want to use a protocol different than HTTP(S)
 It can also be useful when you want a static IP assigned.
 
@@ -360,6 +362,8 @@ Amazon S3 can use both HTTP or HTTPS.
 Each S3 bucket must have a globally unique name. S3 is a global service but buckets are
 defined at the region level.
 
+S3 bucket websites don't support HTTPS.
+
 Naming convention:
 - no uppercase
 - no underscore
@@ -390,6 +394,14 @@ The following are a deciding factor when choosing an AWS Region for your bucket:
 
 Pre-signed URLs allow you to grant time-limited permission to download objects from an Amazon S3
 bucket.
+They can be generated with the CLI or SDK.
+A user given a pre-signed URL will temporarily have the permissions of the IAM role that
+generated the URL.
+
+aws s3 presign s3://next-level-bucket/coffee.jpg --region eu-central-1
+
+In case of issues with encrypted files:
+aws configure set default.s3.signature_version s3v4
 
 If data must be encrypted before being sent to Amazon S3, client-side encryption must be used.
 
@@ -406,6 +418,27 @@ S3 Security types:
 	- Object ACL - finer grain at the object level
 	- bucket ACL - less common
 
+S3 storage types:
+- Standard - General Purpose
+	High durability of objects across multiple AZ
+	Use cases: big data analytics, mobile & gaming apps, content distribution
+- Standard-infrequent access (IA) - suitable for data that is less frequently accessed, but
+	requires rapid access when needed
+	It has a lower cost than S3 Standard
+- One Zone-infrequent access - same as IA but stored in multiple AZs
+	99.5% availability
+	Supports SSL for data at transit and encryption at rest
+	Low cost compared to IA (by 20%)
+	Use cases: secondary backup or storing data you can recreate
+- Intelligent Tiering
+	small monthly monitoring and auto-tiering fee
+	Automatically moves objects between access tiers based on changing access patterns
+- Glacier - low cost object storage meant for archiving and backups
+	Each item in Glacier is called an archive. Max archive size is 40TB
+	Arcyives are stored in vaults, not buckets
+- Glacier Deep archives
+- Reduced Redundancy Storage
+
 An IAM principal can access an S3 object if the user IAM permissions allow it OR
 the resource policy ALLOWS it.
 
@@ -413,9 +446,30 @@ S3 supports VPC endpoints for instances in VPC without www internet.
 S3 Access logs can be stored in other S3 buckets.
 S3 API calls ban be logged in AWS CloudTrail.
 
+Amazon S3 access logs: https://docs.aws.amazon.com/AmazonS3/latest/userguide/LogFormat.html
+Setting the monitored bucket to be where you store your access logs is bad practice.
+
+S3 supports replication:
+- CRR - cross-region replication
+- SRR - same region replication
+To enable it we must enable versioning in source and destionation buckets.
+The buckets can be in different accounts.
+Copying is asynchronous.
+Proper IAM permissions must be granted.
+It's not retroactive - only the files added after enabling it will be replicated.
+Any delete operation is not replicated.
+You cannot "chain" replication. If bucket 1 has replication in bucket 2 and bucket 2
+has replication in bucket 3, then objects created in bucket 1 aren't replicated in 3.
+
 S3 supports MFA delete to prevent accidental deletion of objects.
 Only the bucket owner (root account) can enable/disable MFA-Delete
 This can be enabled only using CLI or AWS API calls.
+
+aws s3api put-bucket-versioning --bucket mfa-delete-lab --versioning-configuration Status=Enabled,MFADelete=Enabled \
+--mfa "mfa-device-arn mfa-device-code" --profile mfa-delete-lab
+
+aws s3api put-bucket-versioning --bucket mfa-delete-lab --versioning-configuration Status=Enabled,MFADelete=Disabled \
+--mfa "mfa-device-arn mfa-device-code" --profile mfa-delete-lab
 
 S3 consistency model:
 - read after write consistency for PUTS of new objects - as soon as a new object is
@@ -430,7 +484,7 @@ ex: (DELETE 200 => GET 200)
 
 There's no way to request "strong consistency" in Amazon S3!
 
--- S3 Cors - Cross-Origin Resource Sharing
+S3 Cors - Cross-Origin Resource Sharing
 
 Access-Control-Allow-Origin
 
@@ -439,6 +493,33 @@ e.g. https://www.example.com
 
 If a client does a cross-origin request on our S3 bucket, we need to enable the
 correct CORS headers
+
+Lifecycle rules
+
+transition actions - it defines when objects are transitioned to another storage
+class
+expiration actions - delete an object after some time
+
+Lifecycle rules can be applied for a certain prefix - s3://mybucket/mp3/*
+
+The prefix of a file is the part of the name between the bucket name and filename
+
+S3 Select & Glacier Select - perform simple SQL-like queries against files in a bucket
+
+We can use Amazon SQS and Amazon SNS to send messages on events like
+S3:ObjectCreated, S3:Objectremoved, S3:ObjectRestore, S3:Replication etc.
+
+You need to enable versioning to notify on every successful write.
+
+S3 Athena supports ODBC and JDBC
+In S3 Athena you get charged per query and amount of data scanned.
+S3 Athena is based on Presto (https://prestodb.io/)
+
+For the exam, anytime you need to analyze data directly on S3, usually Athena is the solution.
+
+S3 Object Lock / Glacier Vault Lock
+WORM model - Write Once, Read Many - block object deletion for a specific amount of time
+
 -- Amazon Elastic Block Store (EBS)
 
 Amazon snapshot EBS data is loaded lazily.
@@ -511,6 +592,86 @@ between EFS volumes after a number of days:
 -- Amazon Glacier
 Glacier can be used as a standalone service and as an Amazon S3 storage class.
 
+=======================================================================================================
+
+Amazon CloudFront
+
+Caches content at edge locations (216 point of presence globally - edge locations).
+It also adds DDoS protection, integration with AWS Shield and AWS WAF
+
+https://aws.amazon.com/cloudfront/features/
+
+CloudFront Origin Access Identity
+CloudFront can be used as an ingress to S3 (upload files from anywhere in the world).
+Any http backend can be used with CloudFront.
+
+ALB or EC2 when used as origins require their security groups to allow CloudFront.
+
+Geo Restriction - whitelist or blacklist users only from a specific region. It's using a
+third party GeoIP database for this purpose.
+
+In CloudFront we can cache based on multiple things:
+- Headers
+- Session Cookies
+- Query String parameters
+
+The cache lives at each CloudFront Edge Location.
+
+TTL can be from 0 seconds to 1 year. It can be set by the origin using the Cache Control header
+or Expires header
+
+You can invalidate part of the cache using the CreateInvalidation API
+
+Viewer protocol policy - enables SSL between your client and your edge location. We can
+redirect HTTP to HTTPS or enable HTTPS only.
+
+Origin protocol policy - the HTTP(S) policy for the target. It can be HTTPS only or match
+the viewer's protocol policy.
+
+S3 bucket websites don't support HTTPS.
+
+To distribute private content with CloudFront we can use a Signed URL / Signed Cookie. We can
+attach a policy with:
+- Includes URL expiration
+- Includes IP ranges to access the data from
+- Trusted signers (which AWS accounts can create signed URLs)
+
+A signed URL gives access to individual files. The difference with S3 pre-signed URLs is that
+CloudFront signed URLs give access to a path no matter the origin.
+S3 pre-signed URLs issue a request as the person who pre-signed the URL.
+
+Two types of signers:
+- trusted key group
+- aws account that contains a CloudFront key pair (not recommended because only root
+accounts can be used)
+
+Origin groups - increase high-availability and do failover. This is a group of EC2 instances.
+If the primary origin fails, the second one is used.
+
+Field level encryption
+
+=======================================================================================================
+Docker in AWS (ECR, ECS)
+
+Task Definition - metadata in JSON which defines how ECS runs a docker container
+
+Task Role - optional IAM role that allows a container to talk to AWS services. Often, on the exam,
+if a container is not allowed to do something it lacks a proper Task Role
+
+ECS Services define how much tasks shall we run and how should they run.
+They can be linked to ELBs if needed.
+
+We can only add a load-balancer at service creation.
+Only ALB load balancer supports dynamic port mapping
+
+Access to ECR is controlled through IAM policies
+
+There are two ways to authenticate against ECR
+- AWS CLI v1 login command:
+	$(aws ecr get-login --no-include-mail --region eu-west-1)
+- AWS CLI v2 login command:
+	aws ecr get-login-password --region eu-west-1 | docker login --username AWS -- password-stdin | \
+	123.dkr.ecr.eu-west-1.amazonaws.com
 
 =======================================================================================================
 Databases
@@ -1053,6 +1214,17 @@ In AWS S3, a multipart upload is supported and we can use it to upload big objec
 
 One of the recommended best practices for AWS Lambda is to avoid using recursive code.
 
+If you use SSE-KMS in S3 you may be impacted by the KMS limits.
+
+S3 multipart upload is recommended for files >100MB.
+It must be used for files >5GB.
+
+S3 Transfer acceleration - increase transfer speed by transferring file to an AWS edge location
+which will forward the data to the S3 bucket in the target region.
+It's compatible with multipart upload
+
+S3 byte-range fetches - parallelize GETs by requesting specific byte ranges
+
 =======================================================================================================
 
 Resources:
@@ -1069,3 +1241,4 @@ https://amazon.qwiklabs.com/catalog?keywords=introduction%20to&ransack=true&per_
 AWS Policy generator:
 https://awspolicygen.s3.amazonaws.com/policygen.html
 https://docs.aws.amazon.com/AmazonS3/latest/userguide/example-bucket-policies.html
+https://aws.amazon.com/cloudfront/features/
