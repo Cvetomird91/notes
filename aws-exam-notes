@@ -529,6 +529,9 @@ An EBS volume can be accessed by a single EC2 instance, as opposed to EFS volume
 To use an EBS volume in another availability zone we need to create a snapshot of it
 and restore it in another AZ.
 
+Depending on the volume and instance types, you can use Multi-Attach to mount a volume to
+multiple instances at the same time.
+
 EBS backups use IO and you shouldn't run them while your application is handling a lot
 of traffic.
 
@@ -653,16 +656,26 @@ Field level encryption
 =======================================================================================================
 Docker in AWS (ECR, ECS)
 
-Task Definition - metadata in JSON which defines how ECS runs a docker container
+Task Definition - metadata in JSON which defines how ECS runs a docker container or a set of docker
+containers. Similar to K8S pods. Max number of containers defiend in a task definition could be 10.
 
 Task Role - optional IAM role that allows a container to talk to AWS services. Often, on the exam,
-if a container is not allowed to do something it lacks a proper Task Role
+if a container is not allowed to do something it lacks a proper Task Role. It is defined in the
+task definition.
+
+ecsInstanceRole - this role gets attached to each ECS Task
+ecsServiceRole - this role gets attached to each ECS Service and allows it to register and
+deregister instances as ELB targets
 
 ECS Services define how much tasks shall we run and how should they run.
 They can be linked to ELBs if needed.
 
-We can only add a load-balancer at service creation.
-Only ALB load balancer supports dynamic port mapping
+EC2 Instance profile - used by the ECS agent to make API calls to the ECS service and send container
+logs to CloudWatch and also pull images from ECR.
+
+We can only add a load-balancer to an ECS service at service creation. We cannot add it by editing
+a service.
+Only ALB load balancer supports dynamic port mapping for ECS services.
 
 Access to ECR is controlled through IAM policies
 
@@ -672,6 +685,46 @@ There are two ways to authenticate against ECR
 - AWS CLI v2 login command:
 	aws ecr get-login-password --region eu-west-1 | docker login --username AWS -- password-stdin | \
 	123.dkr.ecr.eu-west-1.amazonaws.com
+
+When a task of type EC2 is launched, ECS must determine where to place it, with the constraints
+of CPU, memory and available port. To define this we need to define a task placement strategy
+and task placement constraints. This doesn't work on Fargate yet.
+
+ECS Task placement strategies:
+- binpack - place task based on the least available amount of CPU or memory. This minimizes
+	the number of EC2 instances in use
+- random - places the task randomly
+- spread - place the tasks evenly based on the specified criteria
+Task placement strategies can be mixed together
+
+ECS Task placement constraints:
+- distinctInstance: place each task on a different EC2 instance
+- memberOf: places task on instances that satisfy an expression
+
+Cluster Query Language
+
+ECS - Service auto scaling:
+- target tracking
+- step scaling
+- scheduled scaling
+
+Cluster capacity provider - determines the infrastructure that the task runs on. It scales
+the EC2 cluster we run ECS on.
+
+bind mounts - sharing data between containers in a task. Can be used to share ephemeral storage
+between application container and sidecar. The sidecar can be used to send metrics/logs to other
+destinations (separation of concerns).
+
+/etc/ecs/ecs.config - EC2 confing file for the ECS agent
+
+ECS security groups work at the EC2 instance level.
+
+ECS does provide integration with AWS CloudWatch Logs.
+You need to setup logging at the task definition level.
+Each container will have a different log stream.
+
+ECS_ENABLE_TASK_IAM_ROLE - a variable defined in /etc/ecs/ecs.config that can be used for adding
+additional IAM roles to an EC2 ECS instance
 
 =======================================================================================================
 Databases
@@ -1242,3 +1295,6 @@ AWS Policy generator:
 https://awspolicygen.s3.amazonaws.com/policygen.html
 https://docs.aws.amazon.com/AmazonS3/latest/userguide/example-bucket-policies.html
 https://aws.amazon.com/cloudfront/features/
+
+AWS ECS hands-on lab:
+https://ecsworkshop.com/introduction/
