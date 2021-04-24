@@ -814,6 +814,9 @@ RDS leverages security groups to expose the database to the internet.
 Transparent Data Encryption (TDE) - available only for MS SQL and Oracle SQL.
 This feature encrypts data at rest - db files both on the hard drive and backup.
 
+If you create a database through AWS Beanstalk and delete your beanstalk
+application your database will be deleted, as well.
+
 -- AWS Aurora
 
 AWS Aurora is compatible with both PostgreSQL and MySQL clients.
@@ -918,6 +921,8 @@ Route 53 routing policies:
 	If the health check for the AWS service behind the primary check starts to fail the DNS records
 	starts pointing to the secondary one.
 - geolocation - routing based on user location. E.g. traffic from the UK should go to this specific IP
+- geoproximity - route traffic to your resources based on the geographic location of users and
+	resources. You need traffic flow policies to use this.
 	We should also define a "default" policy in case there's no match for a location
 - latency - redirect to the server that has the least latency at the moment close to us
 - weighted - controls the percentage of each endpoint that is going to be reached. This is helpful
@@ -947,6 +952,8 @@ Aliases are free of charge and include a health check.
 Default Route 53 health checks are 3 in route 53 before a status changes.
 Default health check interval is 30 seconds. The other option is 10s - it costs more.
 Health checks cost more when they're not non-aws endpoints.
+
+Route 53 traffic flow
 
 =======================================================================================================
 Encryption
@@ -987,11 +994,11 @@ The following components are required in an encryption system:
 - a method to encrypt data
 
 =======================================================================================================
-Deployment Strategies
+Deployment Strategies and CI/CD
 
 Amazon Elastic Beanstalk deploys application code and the architecture to support an environment for
 the application to run.
-Elastic Beanstalk runs at no additional charge. You incur charges only for services deployed.
+Elastic Beanstalk runs at no additional charge. You incur charges only for the underlying resources.
 Elastic Beanstalk creates a service role to access AWS services and an instance role to access
 instances.
 The following accounts are billed for user-accessed AWS resources allocated by AWS Elastic Beanstalk:
@@ -1000,14 +1007,23 @@ The following accounts are billed for user-accessed AWS resources allocated by A
 - the cross-account with the Amazon Simple Storage Service bucket holding a downloaded copy of
 the code artifact
 
+Elastic beanstalk has 3 components:
+- Application
+- Application version: each deployment gets a version - we can rollback to previous versions
+- Environment name (test, dev, beta, stage etc) - we can deploy an app version to each stage
+
+If you create a database through AWS Beanstalk and delete your beanstalk
+application your database will be deleted, as well.
+
+Elastic Beanstalk deployment modes:
+- Single instance - great for development
+- High availability with Load Balancer - good for prod
+
 AWS services for CI/CD:
 AWS CodeCommit - hosted git
 AWS CodeBuild
 AWS CodeDeploy
 AWS CodePipeline
-
-Amazon ECS task placement policies determine how tasks are placed within a cluster.
-The spread policy makes sure tasks are distributed as much within a single cluster.
 
 =======================================================================================================
 Deployment as Code
