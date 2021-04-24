@@ -1017,7 +1017,26 @@ application your database will be deleted, as well.
 
 Elastic Beanstalk deployment modes:
 - Single instance - great for development
-- High availability with Load Balancer - good for prod
+- High availability with Load Balancer - good for prod. All the EC2 instances are in a
+separate security group and different AZs
+
+Elastic Beanstalk deployment options for update:
+- All at once (deploy all in one go) - fastest, but instances aren't available to serve traffic
+for a bit (downtime). Fastest deployment. Good for dev because of quick itterations. No
+additonal cost.
+- Rolling - update a few instances at a time and proceed to the next ones once the first is
+healthy
+- Rolling with additional batches - like rolling, but spins up new instances to move the batch
+(so that the old application is still available). There are a few more EC2 instances during
+deployment
+- Immutable - spins up new instances in a new ASG, deploys the new version there and then
+swaps the instances when the new version is healthy
+
+Blue / Green deployments - not a "direct feature" of Elastic Beanstalk. We create a separate
+environment and deploy the new version there. We can switch to it entirely using Route 53.
+
+Canary deployments can be achieved with traffic splitting.
+New application version is deployed to a temporary ASG with the same capacity.
 
 AWS services for CI/CD:
 AWS CodeCommit - hosted git
@@ -1028,8 +1047,8 @@ AWS CodePipeline
 =======================================================================================================
 Deployment as Code
 
-In an immutable update, a new Auto Scaling group is created and registered with the load balancer.
-Once health checks pass, the existing Auto Scaling group is terminated.
+In an immutable update in AWS Elastic Beanstalk, a new Auto Scaling group is created and registered
+with the load balancer. Once health checks pass, the existing Auto Scaling group is terminated.
 
 -- AWS CodeDeploy
 
