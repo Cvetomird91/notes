@@ -996,6 +996,39 @@ The following components are required in an encryption system:
 =======================================================================================================
 Deployment Strategies and CI/CD
 
+Elastic Beanstalk is based on cloud formation.
+
+RDS databases aren't preserved or replicated when cloing an EB environment. A new RDS instances
+with the same configuration is created.
+
+After creating an Elastic Beanstalk environment, you cannot change the ELB type but only change its
+configuration.
+To migrate you need:
+1. Create a new environment with the same configuration and different LB type (cloning won't do
+in this use case).
+2. Deploy your application into the new environment.
+3. Swap DNS records
+
+RDS can be used with Elastic Beanstalk which is useful for dev / beta environment. However, this is
+not recommended for prod, as the RDS instance lifecycle is tied to Elastic Beanstalk.
+The best option for prod would be creating the RDS instance separately and referencing it from
+your Elastic Beanstalk prod environment.
+Steps to decouple our RDS from Elastic Beanstalk:
+0. Create a snapshot of the RDS DB.
+00. Go to the RDS console and protect the RDS database from deletion
+1. Create a new Elastic Beanstalk environment without RDS, point your app to existing RDS.
+2. Swap DNS records.
+3. Terminate old environment
+4. Delete CloudFormation stack (in DELETE_FAILED state)
+
+We can run our application in Docker. For this we need to either:
+- provide a Dockerfile or
+- provide Dockerrun.aws.json(v1 or v2)- describe where *already built* docker image is. You can define here
+the image, ports, volumes, logging etc. V2 supports multi container mode, while v1 only single.
+Elastic Beanstalk doesn't use ECS in single docker mode, it just runs docker in EC2. For multi it
+leverages ECS.
+It can be run in single or multi container mode
+
 Amazon Elastic Beanstalk deploys application code and the architecture to support an environment for
 the application to run.
 Elastic Beanstalk runs at no additional charge. You incur charges only for the underlying resources.
@@ -1038,11 +1071,65 @@ environment and deploy the new version there. We can switch to it entirely using
 Canary deployments can be achieved with traffic splitting.
 New application version is deployed to a temporary ASG with the same capacity.
 
+Beanstalk can store at most 1000 application versions. When they reach 1000 a cleanup is needed
+for your next deployments. We can use lifecycle policies for automatic clean up. They can be:
+- based on time (old versions are removed)
+- based on space (when you have too many versions)
+
+.ebextensions/ - config files that can be added at the root of the zip in YAML or JSON
+The file must end in .config
+
+An SSL can:
+- be loaded from the eb console and load balancer configuration.
+- Can be added from the code: .ebextensions/securelistener-alb.config
+- can be provisioned through ACM (AWS Certificate manager) or CLI
+We must configure the sec group in Beanstalk to allow port 443.
+
+Beanstalk worker environments are good for batch background tasks. We can define
+period tasks in them with cron.yaml
+
+We can use the Packer software (create your own AMIs) or Platform.yaml files (base on AWS AMIs)
+to define custom AMIs to be used in
+Beanstalk custom platforms
+
 AWS services for CI/CD:
 AWS CodeCommit - hosted git
 AWS CodeBuild
 AWS CodeDeploy
 AWS CodePipeline
+
+https://docs.aws.amazon.com/codepipeline/latest/userguide/tutorials.html
+
+A main difference between CodePipeline and CodeDeploy is that CodePipeline deploys to Beanstalk
+and CodeDeploy deploys to an EC2 fleet.
+
+Code -> Build -> Test -> Deploy -> Provision
+CodeCommit -> CodeBuild (to Build and Test) -> AWS Elastic Beanstalk /
+											   AWS CodeDeploy / User managed EC2 Fleet (Deploy and
+											   Provision)
+
+CodeCommit repositories are automatically encrypted at rest using KMS. IAM user roles and policies
+are used for authenticaiton and authorization.
+It uses SSH or HTTPS for encryption in transit.
+We can also use Amazon STS to grant temporary access to external users.
+
+You can trigger notifications in CodeCommit using:
+- AWS SNS - deletion of branches, pushes on master, notify external build system
+- AWS Lambda - for code analysis
+- AWS CloudWatch Event Rules - trigger for PR updates (created, updated, deleted, commented)
+
+CodePipeline stages can have multiple action groups.
+
+buildspec.yml - defines how CodeBuild compiles a project
+AWS S3 cache bucket (optional) - can be used in CodeBuild for faster builds
+
+SSM Parameter store - can be used in buildspec.yml to add secrets to the build
+
+By default, any code build containers are launched outside of your VPC and this is why they
+cannot access resources in your VPC. We can add access to it by specifying the following:
+- VPCID
+- Subnet IDs
+- Security group IDs
 
 =======================================================================================================
 Deployment as Code
