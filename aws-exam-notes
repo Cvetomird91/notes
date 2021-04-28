@@ -1101,7 +1101,8 @@ AWS CodePipeline
 https://docs.aws.amazon.com/codepipeline/latest/userguide/tutorials.html
 
 A main difference between CodePipeline and CodeDeploy is that CodePipeline deploys to Beanstalk
-and CodeDeploy deploys to an EC2 fleet.
+and CodeDeploy deploys to an EC2 fleet or on-premise machines that run the CodeDeploy
+agent
 
 Code -> Build -> Test -> Deploy -> Provision
 CodeCommit -> CodeBuild (to Build and Test) -> AWS Elastic Beanstalk /
@@ -1131,6 +1132,18 @@ cannot access resources in your VPC. We can add access to it by specifying the f
 - Subnet IDs
 - Security group IDs
 
+appspec.yml - config file used by the CodeDeploy to be sent to the machines running the CodeDeploy
+agent
+CodeDeploy managed machines are grouped (dev / test / prod for example)
+CodeDeploy supports AWS Lambda deployments.
+It can use Blue / Green deployments when running on EC2 instances (not on-prem).
+CodeDeploy only deploys your application. It doesn't provision the instances.
+
+CodeDeploy deployment configurations:
+CodeDeployDefault.AllAtOnce
+CodeDeployDefault.OneAtATime
+CodeDeployDefault.HalfAtATime
+
 =======================================================================================================
 Deployment as Code
 
@@ -1153,6 +1166,26 @@ In the Invoke pipeline action we can execute Lambda functions.
 =======================================================================================================
 Infrastructure as Code
 
+-- AWS CloudFormation
+
+We cannot create a dynamic amount of resources. Everything in CloudFormation has to be declared
+and you cannot perform dynamic code generation.
+
+Is every AWS Service supported?
+Almost. Only a select few niches are not there yet
+You can work around that using AWS Lambda Custom Resources
+
+Check the "Parameters Settings" slide to see how CloudFormation parameters can be controlled
+
+pseudo parameters
+
+CloudFormatiom mappings - syntax construct that allows you to use hash map-like values
+
+CloudFormation outputs - syntax construct that allows us to export our definitions and reference
+them elsewhere
+You can delete a referenced stack until all the references are removed.
+
+CloudFormation conditions
 
 =======================================================================================================
 Configuration as Code
