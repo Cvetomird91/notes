@@ -1187,6 +1187,15 @@ You can delete a referenced stack until all the references are removed.
 
 CloudFormation conditions
 
+Must know Intrisic Functions:
+- Ref
+- Fn::GetAtt
+- Fn::FindInMap
+- Fn::ImportValue
+- Fn::Join
+- Fn::Sub
+- Conditionals - If, Not, Equals...
+
 =======================================================================================================
 Configuration as Code
 
