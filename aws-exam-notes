@@ -905,6 +905,8 @@ These are the following three operations used to read data in DynamoDB:
 - Scan
 - Query
 
+Server-side encryption at rest is enabled on all DynamoDB table data and cannot be disabled.
+
 Amazon DynamoDB Accelerator (DAX) - write-through and read-through caching service for DynamoDB.
 =======================================================================================================
 Route 53 and DNS
@@ -1196,6 +1198,11 @@ Must know Intrisic Functions:
 - Fn::Sub
 - Conditionals - If, Not, Equals...
 
+Stack set - create, update or delete stacks across multiple accounts and regions with a
+single operation
+Administrator accounts can create stack sets.
+When you update a stack set, all associated stack sets across regions get updated.
+
 =======================================================================================================
 Configuration as Code
 
@@ -1374,6 +1381,8 @@ You can add a maximum of 20 nodes to an Amazon ElastiCache Redis cluster.
 =======================================================================================================
 Monitoring and Troubleshooting
 
+-- AWS CloudTrail
+
 The following are considered management events by AWS CloudTrail:
 - modifying an Amazon S3 bucket policy
 - creating an Amazon RDS instance
@@ -1387,6 +1396,10 @@ AWS CloudTrail events contain the following information:
 CloudTrail stores event history for 90 days back. If you would like to store this information
 permanently, you can create a CloudTrail trail, which stores the logs in Amazon S3.
 
+-- AWS CloudWatch
+
+You can have up to 10 dimensions in a metric.
+
 In Amazon CloudWatch data points with a period of 300 seconds are stored for 63 days.
 Logging to Amazon CloudWatch from a EC2 instance requires installing the CloudWatch Logs agent.
 
@@ -1394,15 +1407,36 @@ CloudWatch alarms support triggering actions in Amazon EC2, EC2 Auto Scaling, an
 trigger AWS Lambda functions from an alarm, but only by first sending the alarm notification to an
 Amazon SNS topic.
 
+AWS CloudWatch EC2 detailed monitoring:
+EC2 instance metrics have metrics "every 5 minutes" by default. With detailed monitoring you get
+metrics every 1 minute for an additional cost.
+
 The following EC2 metrics are available in CloudWatch:
 - cpu utilization
 - disk I/O
 - network traffic - in/out
 RAM cannot be tracked by CloudWatch because memory is allocated in a single block to an instance
 and is managed by the guest OS, the underlying EC2 instance host doesn't have visibility
-into consumption.
+into consumption. It can be sent as a custom metric.
+
+Higher metric resolutions cost more money. The highest resolution is 1 second
+StorageResolution API parameter
+
 CloudWatch metrics support dashboards
 The LookupEvents API action can be used to query event data.
+
+CloudWatch alarm states:
+- OK
+- INSUFFICIENT DATA
+- ALARM
+
+We can stream cloudwatch logs to Elastic Search
+
+By default no metrics are comming from EC2 instances. We need to install a CloudWatch
+Logs agent for this purpose. We can set it up on-premise too.
+
+CloudWatch Logs agent is the legacy agent. The Unified agent is the up-to-date one
+and it can stream both logs and metrics. We can use SSM parameter store with the Unified one.
 
 With Systems Manager, you can group resources, like Amazon EC2 instances, Amazon EKS clusters,
 Amazon S3 buckets, or Amazon RDS instances, by application, view operational data for monitoring and
