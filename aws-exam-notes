@@ -1301,6 +1301,18 @@ A message is persisted in SQS until a consumer deletes it (DeleteMessage API).
 
 A consumer can receive up to 10 messages at a time.
 
+After a message is polled by the consumer, it becomes invisible to other consumers.
+This is when the visibility timeout begins. It's 30 seconds. During those 30 seconds the
+message has to be processed. During that period of another consumer makes an attempt to retrieve the
+message it'll not be returned.
+After the visibility timeout passes and the message has not been deleted, it's put back into the
+queue and another consumer can do a ReceiveMessage API call.
+
+A consumer can make a ChangeMessageVisibility API call if it needs more than 30 seconds to
+process the message.
+
+If visibility timeout is too low we may get duplicates.
+
 We can set up an ASG to scale a target group instance cound depending on an SQS queue length
 (e.g. if those 10 queues at a time aren't sufficient) using a CloudWatch Alarm.
 
@@ -1318,20 +1330,111 @@ that can't be processed (consumed) successfully. Dead-letter queues are useful f
 application or messaging system because they let you isolate problematic messages to determine
 why their processing doesn't succeed.
 
+If a message doesn't get processed and goes back to the queue a specific number of times without
+being processed it gets moved to a dead-letter queue. We can set this by changing the
+MaximumReceives threshold.
+
+The default amount of times a message goes back for reprocessing is 10. The limit is from 1
+to 1000. You need to setup a separate queue and specify it as dead-letter queue.
+
 A queue without consumers deletes all the messages in it after the retention period has passed.
+
+SQS queue access policies:
+- cross account access
+- publish S3 Event notifications to SQS queue
+
+We can delay a message (consumers don't see it immediately) up to 15 minutes. Default is
+0 seconds. We can set a default at queue level. The producer can override the default
+when sending the message with the DelaySeconds parameter.
+
+Long polling - a consumer can optionally wait for messages to arrive if there are none in the queue.
+This is useful when we want to make less SQS requests.
+Long polling can take from 1 to 20 seconds.
+We can set it at the queue level or specify it with ReceiveMessageWaitTimeSeconds parameter.
+
+SQS extended client - we can use this Java library to handle messages larger than 256kb.
+The larger message actually ends up in S3 and the SQS message contains only metadata
+about the S3 object.
+
+popular API calls on the exam:
+CreateQueue(MessageRetentionPeriod), DeleteQueue
+PurgeQueue - delete all messages in the queue
+SendMessage(DelaySeconds), ReceiveMessage, DeleteMessage
+MaxNumberOfMessages( default 1, max 10 for ReceiveMessage API)
+Batch APIs for SendMessage, DeleteMessage, ChangeMessageVisibility helps decrease your
+costs
+
+FIFO is useful when we want the consumer to receive the messages in the exact
+same order.
+When we create a FIFO queue it's name needs to end in ".fifo"
+
+de-duplication methods for FIFO queues:
+- explicitly provide a message deduplication ID
+- Content - based: make a SHA-256 hash of the message body
+
+We can specify the MessageGroupID in FIFO queues to group messages together and
+all of them will have only 1 consumer.
 
 -- Amazon SNS
 
 Amazon SNS supports the same attributes and parameters as Amazon SQS.
+The "event producer" only sends message to one SNS topic.
+You may have as many event receivers as you wish.
+
+Subscribers can be:
+- SQS
+- HTTP/HTTPS
+- email/email as JSON
+- Lambda
+- SMS
+- Mobile notifications
+- Amazon Kinesis Data Firehose
+
+Many different services can send data to SNS for notifications:
+- CloudWatch alarms
+- ASG
+- Amazon S3
+- CloudFormation
+
+SNS + SQS Fan out pattern:
+Push once in SNS, receive in all SQS queues that are subscribers. This is a fully decoupled
+model with no data loss. SQS here allows for data persistence, delayed processing and
+retries of work.
+
+If you want to send the same SNS notification to multiple SQS queues use fan-out pattern.
+
+SNS also supports FIFO - FIFO topic. It can only have SQS queues as subscribers. To create
+a FIFO topic its name needs to end in ".fifo"
+
+Message filtering - JSON policy to filter messages sent to SNS topics.
 
 -- Amazon Kinesis
 
-Some of the Kinesis options
+Amazon Kinesis Data Streams - capture, process and store big data streams. Data in
+Data streams is made up of multiple shards. Billing is per shard provisioned, you can have as
+many as you want.
+Producers - they send data to Kinesis data streams
+Data retention is set to 1 day by default. It can be extended up to 365 days.
+Amazon Kinesis Data Streams is not a durable data store. It's purpose is just to stream
+data
+Once data is inserted in Kinesis, it can't be deleted (immutability)
+Data that shares the same partition goes to the same shard (ordering)
+
+Amazon Kinesis Data Firehose - load data streams into AWS data stores
+Amazon Kinesis Data Analytics - analyze data streams with SQL or Apache Flink
+Amazon Kinesis Video Streams - capture, store and process video streams
+
+Some of the Kinesis producer options
 - Amazon Kinesis agent - a stand-alone Java agent The agent continuously monitors a set of files
 and sends new data to your Kinesis Data Firehose delivery stream.
 - Amazon Kinesis Producer Library (KPL) -
 	https://docs.aws.amazon.com/streams/latest/dev/developing-producers-with-kpl.html
 - Amazon Kinesis Data Streams API
+
+Kinesis consumer options:
+- AWS SDK
+- Kinesis client library
+- Lambda, Kinesis Data Firehose, Kinesis Data Analytics
 
 In Kinesis there is no limit in the number of consumers as long as they stay within the capacity
 of the stream, which is based on the number of shards. For a single shard, the capacity is 2MB of
