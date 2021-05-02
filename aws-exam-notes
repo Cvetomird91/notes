@@ -734,23 +734,6 @@ Databases
 
 -- AWS RDS
 
-1 RCU - One strongly consistent read per second of 4KB.
-In order to determine the number of RCUs for a number of reads per seconds we need to determine the
-number of complete chunks
-and then multiply the number of chunks with the count of complete reads.
-E.g. to calculate the RCUs of 25 strongly consistent reads per seconds of 15 KB (those are 4 complete
-chunks of 4KB - 4 x 4 = 16KB),
-we need 25 x 4 = 100 RCUs
-
-To calclulate eventually consistent reads we need to divide the final result by 2:
-(25 x 4) / 2 = 50 RCUs
-
-WCU - write capacity unit
-1 WCU = 1 write per second of 1KB (1024 bytes).
-How to calculate for example for 100 writes per second of 512 bytes:
-512 bytes uses one complete chunk of 1 KB
-(512/1024 = 0.5, rounded up to 1).
-
 Amazon RDS manages for the developer the following things out of the box:
 - database software installation and patching
 - hardware provisioning
@@ -919,6 +902,39 @@ Example: user_id for a users table
 - partition key + sort key - the combination must be unique. Data is grouped by partition key
 Sort key = range key
 Example: users_games table - user_id for partition key and game_id for sort key
+
+Only partition keys can be not null.
+
+Throughput can be exceeded temporarily using "burst credit". If burst credit are empty, you'll get
+a "ProvisionedThroughputExceededException". In such case we can use an exponentional backup strategy
+A reason may be "hot keys" - a key is looked up too many times.
+
+WCU - write capacity unit
+1 WCU = 1 write per second of 1KB (1024 bytes).
+How to calculate the writes of 6 objects of 4.5KB each per second:
+we need 6 * 5 = 30 WCU (4.5 gets rounded to the upper KB)
+How to calculate the writes of 120 objects of 2KB each per minute:
+we need 120 / 60 * 2 = 4 WCU
+
+There are two types of reads:
+- strongly consistent read - if we read just after a write, we'll get the correct data
+- eventually consistent read - if we read just after a write, it's possible we'll get unexpected
+response because of replication. This is due to a read may happen on a cluster node where
+the data hasn't arrived yet.
+
+1 RCU - One strongly consistent read or two eventually consistent reads per second
+for an item of 4KB.
+In order to determine the number of RCUs for a number of reads per seconds we need to determine the
+number of complete chunks
+and then multiply the number of chunks with the count of complete reads.
+10 strongly consistent reads per seconds of 4KB:
+we need 10 * 4KB / 4KB = 10 RCU
+
+16 eventually consistent reads per seconds of 12KB each:
+(16 / 2) * ( 12 / 4) = 24 RCU
+
+10 strongly consistent reads per seconds of 6KB each:
+10 * 8 KB /4 = 20 RCU
 
 =======================================================================================================
 Route 53 and DNS
