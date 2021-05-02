@@ -261,6 +261,9 @@ Load balancer 503 - load balancer is at max capacity or no target is registered
 
 ALB supports routing based on different target groups.
 ALBs can stand in front of lambda functions
+ALB supports multi-header values. They're useful when working with lambdas.
+They're syntax contains of multiple GET parameters with the same key. They're
+converted as an array in the lambda context.
 
 Dynamic port forwarding - useful in ECS setups
 
@@ -908,6 +911,15 @@ These are the following three operations used to read data in DynamoDB:
 Server-side encryption at rest is enabled on all DynamoDB table data and cannot be disabled.
 
 Amazon DynamoDB Accelerator (DAX) - write-through and read-through caching service for DynamoDB.
+
+Primary keys:
+- partition key only (HASH) - must be unique for each item. it needs to be "diverse" enough so
+data will be distributed
+Example: user_id for a users table
+- partition key + sort key - the combination must be unique. Data is grouped by partition key
+Sort key = range key
+Example: users_games table - user_id for partition key and game_id for sort key
+
 =======================================================================================================
 Route 53 and DNS
 
@@ -1368,12 +1380,19 @@ FIFO is useful when we want the consumer to receive the messages in the exact
 same order.
 When we create a FIFO queue it's name needs to end in ".fifo"
 
+you can have as many consumers as GroupID for your FIFO queues
+
 de-duplication methods for FIFO queues:
 - explicitly provide a message deduplication ID
 - Content - based: make a SHA-256 hash of the message body
 
 We can specify the MessageGroupID in FIFO queues to group messages together and
 all of them will have only 1 consumer.
+
+The producer should provide message deduplication ID values for each message in the following scenarios:
+- Messages sent with identical message bodies that Amazon SQS must treat as unique.
+- Messages sent with identical content but different message attributes that Amazon SQS must treat as unique.
+- Messages sent with different content (for example, retry counts included in the message body) that Amazon SQS must treat as duplicates.
 
 -- Amazon SNS
 
@@ -1413,6 +1432,9 @@ Message filtering - JSON policy to filter messages sent to SNS topics.
 Amazon Kinesis Data Streams - capture, process and store big data streams. Data in
 Data streams is made up of multiple shards. Billing is per shard provisioned, you can have as
 many as you want.
+
+Meant for real-time big data, analytics and ETL
+
 Producers - they send data to Kinesis data streams
 Data retention is set to 1 day by default. It can be extended up to 365 days.
 Amazon Kinesis Data Streams is not a durable data store. It's purpose is just to stream
@@ -1420,9 +1442,30 @@ data
 Once data is inserted in Kinesis, it can't be deleted (immutability)
 Data that shares the same partition goes to the same shard (ordering)
 
-Amazon Kinesis Data Firehose - load data streams into AWS data stores
-Amazon Kinesis Data Analytics - analyze data streams with SQL or Apache Flink
-Amazon Kinesis Video Streams - capture, store and process video streams
+Amazon Kinesis Data Streams is a service for ingesting large amounts of data in real time and
+for performing real-time analytics on the data.
+
+A data record consists of:
+- sequence number (unique per partition-key within shard)
+- partition key (must specify while put records into stream)
+- data blob (up to 1MB)
+PutRecord API
+
+Service limits:
+https://docs.aws.amazon.com/streams/latest/dev/service-sizes-and-limits.html
+
+"hot partition" - highly used partition
+
+provisionedThroughputExceeded
+Solution:
+- use highly distributed partition key
+- retries with exponential backoff
+- increase shards (scaling)
+
+Consumer patterns:
+- Shared (Classic) Fan-out consumer (GetRecords) - pull model. Good for low number
+of consumers - max. 5 GetRecords API calls/second
+- Enhanced Fan-out consumer (SubscribeToShard)
 
 Some of the Kinesis producer options
 - Amazon Kinesis agent - a stand-alone Java agent The agent continuously monitors a set of files
@@ -1433,18 +1476,52 @@ and sends new data to your Kinesis Data Firehose delivery stream.
 
 Kinesis consumer options:
 - AWS SDK
-- Kinesis client library
+- Kinesis client library - each shard can be read by only one KCL instance, e.g.
+	4 shards = max. 4 KCL instances
+	6 shards = max. 6 KCL instances
 - Lambda, Kinesis Data Firehose, Kinesis Data Analytics
 
 In Kinesis there is no limit in the number of consumers as long as they stay within the capacity
 of the stream, which is based on the number of shards. For a single shard, the capacity is 2MB of
 read or five transactions per second.
 
-Amazon Kinesis Data Streams is a service for ingesting large amounts of data in real time and
-for performing real-time analytics on the data.
+Shard splitting - used to divide a "hot shard". This is a pattern we can use when a shard usage gets
+increased. There's no "auto scalling", we need to do this manually as developers. We can't split into
+more than 2 shards in a single operation
+
+Merging shards - opposite operation of shard splitting. Decreases capacity and saves cost. Can be used
+to group 2 shards with low traffic
+
+Amazon Kinesis Data Firehose - load data streams into AWS data stores. It can use a lambda function
+to transform the data. CloudWatch, AWS IoT and Kinesis data streams can be used as sources.
+Possible destinations are:
+- Amazon S3
+- Amazon Redshift (Copy through s3)
+- Amazon Elastic Search
+- 3rd party providers - Splunk, New Relic, DataDog, mongodb
+- custom HTTP endpoint
+
+you only pay for the data coming through firehose
+It supports automatic scaling
+It's near real time (buffer time is atleast 60s)
+
+Data can be stored from 1 to 365 days.
+
+Amazon Kinesis Data Analytics - analyze data streams with SQL or Apache Flink. After we process the
+data it can go to a data sink. It can be a new Kinesis Data Stream or go to Kinesis Data Firehose
+Use cases:
+- time-series analytics
+- real-time dashboards
+- real-time metrics
+
+Amazon Kinesis Video Streams - capture, store and process video streams (not on the exam)
 
 =======================================================================================================
 Serverless Compute
+
+-- AWS Lambda
+
+In AWS Lambda you pay per request and compute time.
 
 The default timeout value for an AWS Lambda function is 3 seconds.
 The default limit for concurrent executions with Lambda is set to 1000. This is a soft limit that
@@ -1456,12 +1533,108 @@ There are two types of policies with Lambda:
 - function policy - defines which AWS resources are allowed to invoke your function
 - execution policy - defines which AWS resources your function can access.
 
-Ruby is not supported by AWS lambda functions.
-
 We can send event payloads to an Amazon SQS queue or Amazon SNS topic if the lambda function fails
 by enabling the dead-letter queue configuration option for the lambda.
 
 The maximum amount of memory you can assign to an AWS Lambda function is 3008MB.
+We can scale from 128MB to 3008 with a 64MB increment.
+The more ram you add the more vCPU u get.
+At 1792MB the funciton has the equivalent of one full vCPU.
+After 1792MB you have more than 1 vCPU and need to use multi-threading to get the
+benefit from this.
+
+The default timeout for a lambda is 3 seconds. The maximum is 900 seconds (15 minutes).
+We can have up to 4KB of environment variables.
+
+Execution context - temp runtime environment that initializes external dependencies
+
+It is best practice to initialize a db connection outside of the handler and before it.
+Anything that takes time to initialize should be put out the function handler.
+
+You can use the /tmp directory to write and persist files in lambda functions.
+Max size is 512mb. This can be used transiently inbetween multiple invocations.
+If you need persistent storage instead, use S3.
+
+We can also run Lambda functions in containers. The docker container must implement the
+Lambda Runtime API.
+
+Lambda Runtime Interface Emulator - can be used locally to test docker images prepared for
+AWS Lambda
+
+Main lambda integrations mentioned on the exam:
+- S3
+- DynamoDb
+- Kinesis
+- API Gateway
+- CloudFront
+- CloudWatch Events / EventBridge
+- SNS
+- SQS
+- Cognito
+
+Lambdas can run as Serverless cron jobs. We can create a CloudWatch Event / EventBridge rule
+that will be triggered at a certain time and spawn an AWS Lambda.
+
+Invocations
+- Synchronous: CLI, SDK, API Gateway, Application Load balancer - direct invocation
+for which you wait the result
+Any error must be handled client-side
+- Asynchronous invocations - events are placed in an event queue. Lambda attempts to retry
+the invocations on error. We need to make sure our lambda code is idempotent in case of retries
+(the result is the same in case of retry). In case of retry we may see duplicate cloud watch logs.
+We can define a dead-letter queue in SNS or SQS for failed processing.
+- Event Source mapping - applies for Kinesis, SQS and SQS FIFO queue and DynamoDB streams. In this
+case records need to be polled from the source. Lambda needs to ask some of these services. The
+lambda function gets invoked synchronously and iterates the streams.
+
+Lambda@Edge - another synchronous usage of Lambda. It uses S3 and cloudfront.
+A Lambda function is deployed not in a region but at an edge location.
+We can use Lambda@Edge to process CloudFront requests and responses.
+
+Async invocations:
+- SNS
+- SQS
+- CloudWatch Events / EventBridge
+(not on the exam)
+- CodeCommit, CodePipeline, SES, CloudFormation, CloudWatch logs, Config, IoT, IoT Events
+
+Lambda destination - define receiver for an asynchronous invocation. We can send to
+- SQS
+- SNS
+- Lambda
+- EventBridge bus
+Destinations are newer than Lambda DLQs and more recommended. They allow more targets.
+
+When you use an event source mapping to invoke your function, Lambda uses the execution role
+to read event data
+
+By default, lambda functions are lanuched in another VPC. Therefore, by default it
+cannot access resources in your VPC. You can allow access to a specific VPC and subnet but
+after you do so, it won't by default have access to the internet.
+Deploying a lambda function to a public subnet does not give it access to the Internet.
+To solve this, you need to deploy it to a private subnet with NAT Gateway / Instnace.
+You can also use VPC endpoints to privately access AWS services without a NAT.
+
+Lambda supports up to 1000 concurrent exectuions. This limit amounts for all the lambda
+functions in your account.
+Each invocation over the concurrency limit will
+cause a throttle.
+ThrottleError  - 429 - returned in case of synchronous execution
+It'll retry automatically and then go to DLQ.
+
+Cold start - when you create a new instance code is loaded and code outside the handler needs
+to run. This happens at the first request to your instance and this request may take longer.
+To solve this we can use provisioned concurrency - it allocates lambda instances before
+they're invocked.
+
+you can reference dependencies - up to 50mb can be zipped and uploaded to lambda.
+For more - you need s3.
+
+You cannot add dependencies when adding inline lambda code in CloudFormation
+You can also use S3 and CloudFormation for bigger lambda functions that include dependencies
+
+Lambda layers - allow the usage of third-party languages and to externalize dependencies to
+reuse them
 
 -- Amazon Step Functions
 
