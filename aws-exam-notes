@@ -78,6 +78,9 @@ ap-southeast-2c
 Availability zones are a discrete data center with redundant power, networking and connectivity.
 They are separate from each other, so that they're isolated from disasters.
 
+AWS doesn't define the concept of disaster recovery zones. If a service is down, AWS designs and
+builds Availability Zones to be fault tolerant.
+
 IAM federation - big enterprises intergrate their own repository of users with IAM
 
 Basic good practices for IAM roles:
@@ -325,7 +328,7 @@ before the previous scaling takes effect
 =======================================================================================================
 Storage
 
--- Amazon AWS S3
+-- Amazon S3
 
 Advertised as "infinitely scaling" storage.
 
@@ -474,6 +477,8 @@ aws s3api put-bucket-versioning --bucket mfa-delete-lab --versioning-configurati
 aws s3api put-bucket-versioning --bucket mfa-delete-lab --versioning-configuration Status=Enabled,MFADelete=Disabled \
 --mfa "mfa-device-arn mfa-device-code" --profile mfa-delete-lab
 
+The s3 cli supports also pagination with --page-size
+
 S3 consistency model:
 - read after write consistency for PUTS of new objects - as soon as a new object is
 written, we can retrieve it (PUT 200 => GET 200)
@@ -522,6 +527,9 @@ For the exam, anytime you need to analyze data directly on S3, usually Athena is
 
 S3 Object Lock / Glacier Vault Lock
 WORM model - Write Once, Read Many - block object deletion for a specific amount of time
+
+S3 can be used for session state cache but it's not meant for small objects
+because there are latency costs.
 
 -- Amazon Elastic Block Store (EBS)
 
@@ -594,6 +602,8 @@ Therea are different storage tiers in EFS - lifecycle management. We can move fi
 between EFS volumes after a number of days:
 - standard
 - infrequent access (EFS-IA): cost to retrieve files, lower price to store
+
+EFS is also used for session cache.
 
 -- Amazon Glacier
 Glacier can be used as a standalone service and as an Amazon S3 storage class.
@@ -874,6 +884,10 @@ Amazon Neptune - NoSQL graph database for highly connected datasets.
 
 -- Amazon DynamoDB
 
+Amazon DynamoDB stores data in partitions. A partition is an allocation of storage for a table, 
+backed by solid state drives (SSDs) and automatically replicated across multiple Availability
+Zones within an AWS Region.
+
 In DynamoDB scans are less efficient than queries.
 In DynamoDB you can create local secondary indexes only when you are creating the table.
 Server-side encryption provided by the DynamoDB service is a recommended way to protect data at rest
@@ -884,7 +898,7 @@ QueryTable is the DynamoDB operation used to find items based on primary key.
 UpdateTable is the DynamoDB operation used to modify the provisioned throughput settings, global
 secondary indexes, or DynamoDB Streams settings for a given table.
 Scan is the DynamoDB operation used to read every item in a table.
-The lifetime of data in a DynamoDB stream is 24 hours.
+The lifetime of data in a DynamoDB stream is 24 hours. This cannot be changed.
 
 These are the following three operations used to read data in DynamoDB:
 - GetItem
@@ -898,7 +912,7 @@ Amazon DynamoDB Accelerator (DAX) - write-through and read-through caching servi
 Primary keys:
 - partition key only (HASH) - must be unique for each item. it needs to be "diverse" enough so
 data will be distributed
-Example: user_id for a users table
+Example: user_id for a users table (hash key + range)
 - partition key + sort key - the combination must be unique. Data is grouped by partition key
 Sort key = range key
 Example: users_games table - user_id for partition key and game_id for sort key
@@ -935,6 +949,66 @@ we need 10 * 4KB / 4KB = 10 RCU
 
 10 strongly consistent reads per seconds of 6KB each:
 10 * 8 KB /4 = 20 RCU
+
+DynamoDB APIs:
+Difference between PutItem and UpdateItem - PutItem does a full replace while UpdateItem updates
+only specified fields
+With UpdateItem we can use atomic counters for numeric values and increase them
+
+local secondary index - alternative sort key for a table, local to the hash key. We can have up to
+5 of them in a table. It's local be cause it's local to the partition key, e.g. 
+
+global secondary index
+GSIs can throttle your main table
+
+DynamoDB is an optimistic locking / concurrency database.
+
+You can have up to 10 nodes in the DAX cluster.
+DynamoDB DAX is MultiAZ (3 nodes minimum are required for production).
+
+DynamoDB DAX stores the whole objects. If we hesitate between using ElastiCache and DynamoDB DAX
+we can use ElastiCache for caching individual fields and DynamoDB DAX for caching whole objects.
+
+DynamoDB streams - equivalent to SQL triggers. It's a changelog of events in a table.
+We need to enable streams to use cross-region replication.
+After we enable streams records changed prior to enabling them don't get send to a stream.
+
+We can set up a TTL on dynamodb records. The record needs to have a Number type field with a
+Unix epoch value which specifies when the record will expire.
+
+DynamoDB CLI parameters:
+--projection-expression - retrieve a subset of attributes from a table
+--filter-expression - filter results
+
+DynamoDB transactions use twice the amount of WCUs and RCUs. E.g.
+If we have a 5KB item size and we want to perform 3 transactional writes per second
+[5KB / 1KB per WCU] * 2(cost of transactional) * 3 writes = 30WCU
+If we have a 5KB item size and we want to perform 5 transactional writes per second
+[5KB / 4KB per RCU] * 2 (cost of transactional) * 5 writes
+= 2 (high ceiling of 5KB to 8KB) * 2 * 5
+= 20 RCU
+
+DynamoDB can also be used to store the session state. It's scaling outomatically, opposted to
+ElastiCache. Usually, questions on the exam referring to auto-scaling cache solution refer to
+DynamoDB
+
+Write sharding - in case of a small amount of partitions we can add a suffix to the partition key
+so that there are more partitions. This is also called the voting pattern.
+
+Concurrent write - race condition for writing to a table. We can mitigate it in the following ways:
+- Conditional writes - specify a condition in your source code that checks if the field is
+eligible for update
+- Atomic writes
+- Batch writes - many items at a time
+
+There are two options to truncate a dynamodb table:
+- scan and delete each entry => expensive
+- drop the table and recreate => fast and cheap
+
+Amazon DMS (Database migration sevice) - can be used to migrate from OracleSQL, MongoDB, MySQL, S3 to
+DynamoDB
+
+Our clients can connect to dynamodb directly using identity providers (Google, SAML, OpenID, Cognito)
 
 =======================================================================================================
 Route 53 and DNS
