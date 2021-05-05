@@ -60,6 +60,30 @@ The Java AWS SDK will look for credentials in this order:
 When you call the AWS HTTP API, you need to sign the request.
 If you're making direct request to the AWS APIs you need to sign them
 yourself using Signature v4 (SigV4)
+=======================================================================================================
+IAM and access control
+
+Dynamic policy - a policy with a variable
+
+Inline vs Managed policies vs Customer Managed
+Inline - strict one to one relation between principal and policy. If you delete the IAM principle
+the policy will be deleted.
+When we create an inline policy the max size of permissions assigned in total is 2048 bytes.
+Managed policies are maintained by AWS - good for power users and administrators. Updated in case of
+new services and new APIs
+Customer Managed policy - re-usable, under version control
+
+IAM:PassRole - granting a user permissions to pass a role to an AWS service. A trust policy
+for the role that allows the service to assume the role
+
+In AD all the objects are organized into a tree. A group of trees is a forest.
+
+AWS Directory services:
+- AWS Managed Microsoft AD - it allows you to establish a "trust" connection with an on-prem AD setup
+- AD Connector - Directory Gateway (proxy) to an on-prem AD. Actual users are managed on-prem
+- Simple AD - AD-compatible managed directory on AWS (not based on MS AD). It cannot be joined with
+on-premise MS AD.
+
 
 =======================================================================================================
 Compute and Networking
@@ -114,6 +138,8 @@ Types of IPs in EC2:
 - private IP
 - elastic IP
 
+when you start and stop an EC2 instance it gets moved to a new physical host
+
 When you stop and then start an EC2 instance, it can change its public IP.
 If you need to have a fixed public IP for your instance, you need an Elastic IP.
 You can attach 1 elastic IP at a time.
@@ -161,6 +187,9 @@ your account for a 3 year period reservation
 
 You do not pay for an instance if the instance is stopped.
 
+The amount of network throughput that can be handled is a property of the instance type.
+If we want to icrease this for an EC2 instance, we need to stop it and change the instance type.
+
 ENI (Elastic Network interface):
 - can have primary private IPv4, one or more secondary IPv4
 - can have one elastic IP (IPv4) per private IPv4
@@ -170,6 +199,9 @@ ENI (Elastic Network interface):
 - we can create ENIs independently and move them inbetween EC2 instaces for failover (in the same
 availability zone)
 - ENIs are bound to a specific availability zone
+
+Adding additional ENIs to an instance doesn't increase the network throughput that can
+be handled by it.
 
 AMIs are built for a specific AWS region!
 
@@ -365,6 +397,11 @@ There are 4 ways to encrypt objects in Amazon S3:
 
 Amazon S3 can use both HTTP or HTTPS.
 
+Amazon S3 policies can restrict access based on the following:
+- IP address range
+- AWS account
+- objects with a specific prefix
+
 Each S3 bucket must have a globally unique name. S3 is a global service but buckets are
 defined at the region level.
 
@@ -447,6 +484,12 @@ S3 storage types:
 
 An IAM principal can access an S3 object if the user IAM permissions allow it OR
 the resource policy ALLOWS it.
+
+S3 bucket policies are attached to buckets.
+When evaluating if an IAM Principal can perform an operation X on a bucket,
+the union of its assigned IAM Policies and S3 Bucket Policies will be evaluated.
+The permissions from the S3 bucket policy have higher priority when they're
+explicit DENY policies.
 
 S3 supports VPC endpoints for instances in VPC without www internet.
 S3 Access logs can be stored in other S3 buckets.
@@ -576,6 +619,8 @@ it survives reboots but not instance terminations
 It cannot increase in size, as opposed to EBS
 There's a risk of data loss in instance store if the physical hard disk fails.
 
+The VolumeQueueLength metric provides the number of read and write operation
+requests waiting to be completed in a specified period of time.
 
 -- Amazon Elastic File System (EFS)
 
@@ -1228,6 +1273,9 @@ CodePipeline stages can have multiple action groups.
 buildspec.yml - defines how CodeBuild compiles a project
 AWS S3 cache bucket (optional) - can be used in CodeBuild for faster builds
 
+If we need to use a large file that changes rarely in CodeBuild we can create
+a custom build container that includes it and use it any time we need to change the files
+
 SSM Parameter store - can be used in buildspec.yml to add secrets to the build
 
 By default, any code build containers are launched outside of your VPC and this is why they
@@ -1261,6 +1309,9 @@ the deployment will fail by default.
 The CodeDeploy agent sends progress reports to the CodeDeploy service. The service does not attempt
 to query instances directly, and the Amazon EC2 API does not interact with instances at the
 operating system level.
+
+If an AWS CodeDeploy deployment fails the changes are left as-is, unless they're reverted
+explicitly.
 
 -- AWS CodePipeline
 
@@ -1323,6 +1374,11 @@ AWS OpsWorks Stacks instance types:
 - On demand
 - Load-based
 - Time-based - start and stop on specific time
+
+OpsWorks stacks support the following:
+- RDS
+- EBS
+- Elastic IPs
 
 AWS OpsWorks doesn't have a concept of cookbook caching.
 OpsWorks lifecycle events don't allow you to specify cookbook versions.
@@ -1535,6 +1591,9 @@ Data that shares the same partition goes to the same shard (ordering)
 Amazon Kinesis Data Streams is a service for ingesting large amounts of data in real time and
 for performing real-time analytics on the data.
 
+Messages written to Kinesis Data Streams are deleted after the message retention period
+passes. The maximum message retention period is 7 days.
+
 A data record consists of:
 - sequence number (unique per partition-key within shard)
 - partition key (must specify while put records into stream)
@@ -1726,6 +1785,13 @@ You can also use S3 and CloudFormation for bigger lambda functions that include 
 Lambda layers - allow the usage of third-party languages and to externalize dependencies to
 reuse them
 
+We've discovered that the documented limit of 50 MB seems to be true when uploading a Lambda
+function's package directly.  when using the S3 method to upload a Lambda function's code, we can upload
+up to 250 MB. The limit in that case is the 250 MB uncompressed code/dependency size limit.
+
+We can create an AWS lambda function with the following command:
+aws lambda create-function
+
 -- Amazon Step Functions
 
 Amazon Step functions states:
@@ -1737,6 +1803,24 @@ Amazon Step functions states:
 - Fail
 - Parallel
 - Map
+
+All the error handling in step function flows should happen outside the lambda functions used in the
+flow - in the step functions themselves.
+
+-- AppSync - managed service that uses GraphQL.
+It has integrations with DynamoDB, Aurora, ElasticSearch and public HTTP endpoints.
+Lambda can be used for custom processing to make GraphQL resolvers
+It supports also Websockets and MQTT on websocket
+It provides local data access & data synchronization for mobile apps. It's about to replace
+Cognito sync.
+
+There are 4 ways you can authorize applications to communicate with GraphQL:
+- API_KEY
+- AWS_IAM
+- OPENID_CONNECT
+- AMAZON_COGNITO_USER_POOLS
+
+For custom domains and HTTPS we can integrate AppSync with cloudfront
 
 =======================================================================================================
 Serverless Applications
@@ -1752,13 +1836,30 @@ Properties for AWS Serverless Application Model:
 - events - the events property allows you to assign a Lambda to an event source in Amazon API Gateway
 - runtime - the language in which your AWS Lambda runs as
 
+CLI:
+sam packge is shorthand for aws cloudformation package
+
+Sam templates always need to contain:
+- Transform
+- Resource
 
 -- API Gateway
 Amazon API gateway only supports HTTPS endpoints.
-Without enabling CORS we're not going to be able to use the Amazon API Gateway service. You use a
-stage to deploy your API, and a resource is typed object that is part of your API's domain. Each
-resource may have an associated data model and relationships to other resourses and can respond to
-different methods.
+Without enabling CORS we're not going to be able to call the Amazon API Gateway service from another
+domain. You use a stage to deploy your API, and a resource is typed object that is part of your API's
+domain. Each resource may have an associated data model and relationships to other resourses and can
+respond to different methods.
+
+Integration types:
+- mock - useful for testing
+- HTTP / AWS Lambda - useful for mapping directly to an SQS queue
+- AWS_PROXY (Lambda Proxy)
+- HTTP_PROXY - proxy to ALB or EC2
+
+If we want to use API keys for usage plans we need to associate them with a specific stage for this
+to work.
+
+AWS_IAM authentication is using SigV4
 
 =======================================================================================================
 Serverless Application Patterns
@@ -1973,3 +2074,5 @@ https://aws.amazon.com/cloudfront/features/
 
 AWS ECS hands-on lab:
 https://ecsworkshop.com/introduction/
+
+https://github.com/lukpep/aws-sam-workshop
