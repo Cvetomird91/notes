@@ -82,7 +82,7 @@ AWS Directory services:
 - AWS Managed Microsoft AD - it allows you to establish a "trust" connection with an on-prem AD setup
 - AD Connector - Directory Gateway (proxy) to an on-prem AD. Actual users are managed on-prem
 - Simple AD - AD-compatible managed directory on AWS (not based on MS AD). It cannot be joined with
-on-premise MS AD.
+on-premise MS AD
 
 
 =======================================================================================================
@@ -579,7 +579,7 @@ because there are latency costs.
 Amazon snapshot EBS data is loaded lazily.
 EBS volumes are scoped within a specific availability zone. You cannot attach an EBS volume from
 us-east-1a to us-east-1b
-An EBS volume can be accessed by a single EC2 instance, as opposed to EFS volumes.
+An EBS volume can be accessed only by a single EC2 instance, as opposed to EFS volumes.
 To use an EBS volume in another availability zone we need to create a snapshot of it
 and restore it in another AZ.
 
@@ -622,6 +622,10 @@ There's a risk of data loss in instance store if the physical hard disk fails.
 The VolumeQueueLength metric provides the number of read and write operation
 requests waiting to be completed in a specified period of time.
 
+Encryption operations occur on the servers that host EC2 instances, 
+ensuring the security of both data-at-rest and data-in-transit between an 
+instance and its attached EBS storage.
+
 -- Amazon Elastic File System (EFS)
 
 A managed NFS that could be mounted on many EC2 instances at the same time
@@ -655,7 +659,7 @@ Glacier can be used as a standalone service and as an Amazon S3 storage class.
 
 =======================================================================================================
 
-Amazon CloudFront
+-- Amazon CloudFront
 
 Caches content at edge locations (216 point of presence globally - edge locations).
 It also adds DDoS protection, integration with AWS Shield and AWS WAF
@@ -973,7 +977,7 @@ WCU - write capacity unit
 How to calculate the writes of 6 objects of 4.5KB each per second:
 we need 6 * 5 = 30 WCU (4.5 gets rounded to the upper KB)
 How to calculate the writes of 120 objects of 2KB each per minute:
-we need 120 / 60 * 2 = 4 WCU
+we need 120 objects / 60 seconds * 2kb = 4 WCU
 
 There are two types of reads:
 - strongly consistent read - if we read just after a write, we'll get the correct data
@@ -1105,7 +1109,42 @@ Health checks cost more when they're not non-aws endpoints.
 Route 53 traffic flow
 
 =======================================================================================================
-Encryption
+-- Encryption
+
+The following components are required in an encryption system:
+- a cryptographic algorithm
+- data to encrypt
+- a method to encrypt data
+
+data key - a key used to encrypt and decrypt data at rest. Those keys need to be stored somewhere.
+Usually this is KMS in the AWS cloud.
+CMK - customer master key
+
+There are two types of CMKs according to encryption:
+- Symmetric (AES-256 keys - single part key)
+- Asymmetric (RSA & ECC key pairs - two part key) - used to encrypt/decrypt or sign/verify
+operations
+
+Types of CMKs:
+- AWS Managed Service default CMK: free - we cannot delete them
+- User Keys created in KMS: 1$ / month (no free tier)
+- User keys imported (must be 256-bit symmetric key): 1$ / month
+
+The value of KMS is that the CMK can never be retrieved by the user, and the CMK can be rotated for
+extra security
+
+if data > 4KB, use envelope encryption. The main API that helps for this is GenerateDataKey
+
+Encrypted DEK - the encrypted data encryption key we retrieve for envelope encryption. This one
+is retrieved with the GenerateDataKeyWithoutPlainText API call. We can encrypt it with a CMK
+that we specify.
+
+When you exceed a request quota, you get a ThrottlingException
+
+When using S3 with SSE-KMS we can decrease the calls to KMS with 99%.
+We can use an "S3 bucket key" for this to work. We can store the key in the same s3 bucket
+
+We can audit key usage using CloudTrail.
 
 KMI - key management infrastructure
 KMI has the following two components:
@@ -1114,14 +1153,22 @@ KMI has the following two components:
 AWS KMS - key management service
 AWS KMS uses AES-256 as its encryption algorithm.
 AWS KMS provides a centralized key management dashboard.
-AWS KMS does not currently support asymetric key encryption.
 AWS KMS provides the simplest solution with little development time to implement encryption on an
 Amazon EBS volume.
 Some of the services AWS KMS can integrate with are the following:
-- Amazon EBS
+- Amazon EBS (any snapshot of an encrypted volume needs to be encrypted with the same key).
 - Amazon Redshift
 - Amazon S3
-AWS CloudHSM is a cloud-based hardware security module (HSM) that enables you to easily
+
+KMS keys are region-bound.
+e.g. if you're moving an EBS volume across regions you need to encrypt it with a new key.
+
+KMS key policies - similar to s3 bucket policies. You cannot control access without them
+(main difference).
+
+Keys starting with "aws/*" in the AWS console are AWS-managed.
+
+AWS CloudHSM is a cloud-based hardware security module (HSM)
 AWS CloudHSM supports both symetric and asymetric key encryption.
 generate and use your own encryption keys on the AWS Cloud.
 The following are methods for AWS to provide KMI:
@@ -1137,10 +1184,15 @@ SSE-S3 - S3 feature that allows each file deployed to S3 to be encrypted by AWS.
 useful when the developer doesn't want to get involved and encryption and key storing. It automatically
 encrypts the files and rotates and stores keys.
 
-The following components are required in an encryption system:
-- a cryptographic algorithm
-- data to encrypt
-- a method to encrypt data
+On the exam, each time we see secret storing, rotation of secrets, integration with RDS the Amazon
+Secrets Manager is highly likely to be referred. Secrets manager is more expensive than SSM
+Parameter store but supports secret rotation using lambda functions as callbacks. It has
+integration with Document DB, Redshift and RDS. KMS encryption is mandatory for the secrets
+manager.
+
+You can encrypt your CloudWatch logs with KMS keys.
+
+Amazon ACM - AWS Certificate manager - it can generate and rotate SSL certificates for free
 
 =======================================================================================================
 Deployment Strategies and CI/CD
@@ -1272,6 +1324,10 @@ CodePipeline stages can have multiple action groups.
 
 buildspec.yml - defines how CodeBuild compiles a project
 AWS S3 cache bucket (optional) - can be used in CodeBuild for faster builds
+
+CodeBuild runs outside of a VPC by default. We can specify a VPC configuration for
+CodeBuild.
+We can use SSM Parameter store with CodeBuild
 
 If we need to use a large file that changes rarely in CodeBuild we can create
 a custom build container that includes it and use it any time we need to change the files
@@ -2055,6 +2111,8 @@ It's compatible with multipart upload
 S3 byte-range fetches - parallelize GETs by requesting specific byte ranges
 
 =======================================================================================================
+Requirements:
+https://aws.amazon.com/certification/certified-developer-associate/
 
 Resources:
 https://github.com/mostafac0des/certified-aws-developer-associate-notes
