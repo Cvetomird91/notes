@@ -957,6 +957,12 @@ Setting a TTL is good practice, except when you're using write-through
 Amazon Redshift - managed data warehouse solution
 	S3DistCp - Redshift feature that allows it to copy data from S3 to the Redshift cluster
 
+The leader node in Amazon Redshift is used to run SQL queries.
+The leader node acts as the SQL endpoint and receives queries from client applications,
+parses the queries, and develops query execution plans.
+The compute nodes execute the query execution plan. The leader node executes the actual
+query.
+
 Amazon Neptune - NoSQL graph database for highly connected datasets.
 
 -- Amazon DynamoDB
@@ -1436,6 +1442,9 @@ them elsewhere
 You can delete a referenced stack until all the references are removed.
 
 CloudFormation conditions
+
+--retain-resources - CLI argument to retain resources you don't want to delete when using the
+"aws cloudformation delete-stack" command
 
 Must know Intrisic Functions:
 - Ref
