@@ -23,6 +23,11 @@ Offical SDKs for AWS are present in the following languages:
 - Ruby
 - C++
 
+Most AWS API services are regional in scope. The service is running
+and replicating your data across multiple Availability zones within an AWS
+region. You choose a regional API endpoint either from your default configuration
+or by explicitly setting a location for your API client.
+
 We're using the Python SDK when we use the AWS CLI.
 
 us-east-1 - default region when configuring AWS CLI
@@ -157,6 +162,8 @@ The URL for EC2 metadata is:
 http://169.254.169.254/latest/meta-data
 This URL will work only from an EC2 instance.
 Using it you can retrieve the IAM role name from the metadata, but you CANNOT retrieve the IAM policy.
+
+http://169.254.169.254/latest/meta-data/spot/termination-time
 
 EC2 instance launch types:
 - on demand instances: short workload, predictable pricing - billing per second, after the
@@ -372,9 +379,13 @@ failures. The following are version states of buckets:
 - Versioning disabled
 - Versioning enabled
 
+Data in S3 is automatically replicated within a region.
+
 Any file that is not versioned prior to enabling versioning will have version "null".
 Versioning is enabled at the bucket level.
 Suspending versioning in your bucket doesn't delete the previous versions.
+
+S3 costs may vary between regions.
 
 There are 4 ways to encrypt objects in Amazon S3:
 - SSE-S3 - encrypts S3 objects using keys handled & managed by AWS - encryption using keys handled
@@ -770,6 +781,10 @@ ECS - Service auto scaling:
 - step scaling
 - scheduled scaling
 
+The main difference in target tracking scaling and step scaling is that in target
+tracking scaling we have a single threshold. In step scaling we have
+multiple thresholds.
+
 Cluster capacity provider - determines the infrastructure that the task runs on. It scales
 the EC2 cluster we run ECS on.
 
@@ -798,6 +813,8 @@ Amazon RDS manages for the developer the following things out of the box:
 - hardware provisioning
 - backups
 You are still responsible for managing the database settings reuired by the application.
+
+Enabling the Multi-AZ setup of AWS RDS enables a setup to have synchronous 
 
 An existing Amazon RDS instance is deleted if the environment is deleted. There is no auto-retention
 of the database instance. You must create a snapshot to retain the data and to restore the database.
@@ -937,6 +954,8 @@ Amazon DynamoDB stores data in partitions. A partition is an allocation of stora
 backed by solid state drives (SSDs) and automatically replicated across multiple Availability
 Zones within an AWS Region.
 
+Storing normalized data in a single table is the optimal way to use DynamoDB.
+
 In DynamoDB scans are less efficient than queries.
 In DynamoDB you can create local secondary indexes only when you are creating the table.
 Server-side encryption provided by the DynamoDB service is a recommended way to protect data at rest
@@ -948,6 +967,8 @@ UpdateTable is the DynamoDB operation used to modify the provisioned throughput 
 secondary indexes, or DynamoDB Streams settings for a given table.
 Scan is the DynamoDB operation used to read every item in a table.
 The lifetime of data in a DynamoDB stream is 24 hours. This cannot be changed.
+
+Global tables allow DynamoDB tables to have the same table in multiple regions.
 
 These are the following three operations used to read data in DynamoDB:
 - GetItem
@@ -1055,7 +1076,8 @@ There are two options to truncate a dynamodb table:
 - drop the table and recreate => fast and cheap
 
 Amazon DMS (Database migration sevice) - can be used to migrate from OracleSQL, MongoDB, MySQL, S3 to
-DynamoDB
+DynamoDB and Aurora
+AWS Schema Conversion tool
 
 Our clients can connect to dynamodb directly using identity providers (Google, SAML, OpenID, Cognito)
 
@@ -1222,6 +1244,9 @@ Steps to decouple our RDS from Elastic Beanstalk:
 3. Terminate old environment
 4. Delete CloudFormation stack (in DELETE_FAILED state)
 
+Elastic Beanstalk automatically deletes you Amazon RDS instance when your environment is deleted
+and does not automatically retain the data.
+
 We can run our application in Docker. For this we need to either:
 - provide a Dockerfile or
 - provide Dockerrun.aws.json(v1 or v2)- describe where *already built* docker image is. You can define here
@@ -1322,6 +1347,9 @@ You can trigger notifications in CodeCommit using:
 
 CodePipeline stages can have multiple action groups.
 
+When a CodePipeline revision manual approval task gets rejected the revision
+is treated as failed.
+
 buildspec.yml - defines how CodeBuild compiles a project
 AWS S3 cache bucket (optional) - can be used in CodeBuild for faster builds
 
@@ -1412,6 +1440,12 @@ single operation
 Administrator accounts can create stack sets.
 When you update a stack set, all associated stack sets across regions get updated.
 
+UPDATE_COMPLETE_CLEANUP_IN_PROGRESS - this status means CloudFormation has successfully updated and
+removing old resources.
+
+AWS::CloudFormation::Interface - this metadata option does not apply to stacks using the AWS CLI
+or AWS SDK. In it parameters can be organized into groups and labels could be changed.
+
 =======================================================================================================
 Configuration as Code
 
@@ -1456,10 +1490,16 @@ only IAM users can have long-term security credentials.
 We can use identity federation and IAM roles to establish a trust relationship between an
 external Active Directory and AWS.
 
+MFa minimizes the impact of lost or compromised credentials.
+
+You cannot connect to multiple AD domains with AD connector, only a single one.
+
 When you use identity federation to assume a role, The AWS security token service (AWS STS)
 generates the access key ID, secret access key and session token.
 
 The IAM trust policy defines the principals who can request role credentials from the AWS STS.
+Access policies define what API actions can be performed with the credentials from the role.
+
 The long-term credentials are not limited to a single AWS Region. IAM is a global service, and IAM
 user credentials are valid across different AWS Regions.
 
@@ -1734,6 +1774,9 @@ can be raised. To do this, you must open a case through the AWS support center p
 Limit increase request.
 The maximum execution time for a Lambda function is 300 seconds (5 minutes).
 
+AWS Lambda  bills based on memory, the amount of compute time spent on a function in 100ms
+increments, and the number of times that you execute or trigger a function.
+
 There are two types of policies with Lambda:
 - function policy - defines which AWS resources are allowed to invoke your function
 - execution policy - defines which AWS resources your function can access.
@@ -1862,6 +1905,8 @@ Amazon Step functions states:
 
 All the error handling in step function flows should happen outside the lambda functions used in the
 flow - in the step functions themselves.
+
+In Parallel states, the state completes after all the state machines inside it have completed.
 
 -- AppSync - managed service that uses GraphQL.
 It has integrations with DynamoDB, Aurora, ElasticSearch and public HTTP endpoints.
