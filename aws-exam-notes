@@ -65,6 +65,14 @@ The Java AWS SDK will look for credentials in this order:
 When you call the AWS HTTP API, you need to sign the request.
 If you're making direct request to the AWS APIs you need to sign them
 yourself using Signature v4 (SigV4)
+
+The AWS Cost and Usage report contains the most comprehensive set of AWS cost and usage data
+available, including additional metadata about AWS services, pricing and reservations (for example,
+Amazon Elastic Compute Cloud (EC2) Reserved instances).
+
+You can configure this report to present the data hourly or daily. It is the source of truth for the
+billing pipeline.
+
 =======================================================================================================
 IAM and access control
 
@@ -384,6 +392,9 @@ Data in S3 is automatically replicated within a region.
 Any file that is not versioned prior to enabling versioning will have version "null".
 Versioning is enabled at the bucket level.
 Suspending versioning in your bucket doesn't delete the previous versions.
+
+We can use cost allocation S3 bucket tags and S3 analytics to review the storage classes
+and access patterns usage to help reduce costs.
 
 S3 costs may vary between regions.
 
@@ -1450,11 +1461,20 @@ or AWS SDK. In it parameters can be organized into groups and labels could be ch
 Configuration as Code
 
 -- AWS OpsWorks
+
+AWS OpsWorks Stacks does not include a central Chef Server.
+For OpsWocks stacks a custom cookbook repository location is configured for a stack. When instances
+in the stack are first launched, they will download cookbooks from this location and run them as part
+of lifecycle events.
+
 AWS OpsWorks is a configuration management service that provides managed instances of Chef and Puppet.
 
 AWS OpsWorks Stacks is an application and server management service. With OpsWorks Stacks, you can
 model your application as a stack containing different layers, such as load balancing,
 database, and application server.
+
+Amazon EC2 is not a valid storage location for regular recipe code updates.
+
 In AWS OpsWorks Stacks a custom cookbook repository location is configured for a stack. When
 instances in the stack are first launched, they will download cookbooks from this location and run
 them as part of lifecycle events.
@@ -1479,6 +1499,15 @@ Task definitions should group containers by similar purpose, lifecycle, or resou
 
 OpsWorks stacks instances are registered when they come online and deregistered when they are
 moved to a different state.
+
+-- AWS Config
+
+The following steps are a part of setting up AWS Config:
+- specifying the resource types that you want AWS Config to record
+- Granting AWS Config the permissions it needs to access the Amazon S3 bucket and the Amazon
+Simple Notification Service (SNS) topic
+- setting up an Amazon S3 bucket to receive a configuration snapshot on request
+and configuration history
 
 =======================================================================================================
 Authentication and Authorization
@@ -1584,6 +1613,13 @@ that can't be processed (consumed) successfully. Dead-letter queues are useful f
 application or messaging system because they let you isolate problematic messages to determine
 why their processing doesn't succeed.
 
+Messages get moved to the dead-letter queue if they have met the Maximum Receives parameter
+(the number of times that a message can be received before being sent to a dead-letter
+queue) and have not been deleted.
+
+If a queue has no consumers and the maximum retention period passes, the messages in it don't
+get moved to the dead-letter queue. They get deleted.
+
 If a message doesn't get processed and goes back to the queue a specific number of times without
 being processed it gets moved to a dead-letter queue. We can set this by changing the
 MaximumReceives threshold.
@@ -1635,6 +1671,13 @@ The producer should provide message deduplication ID values for each message in 
 - Messages sent with identical message bodies that Amazon SQS must treat as unique.
 - Messages sent with identical content but different message attributes that Amazon SQS must treat as unique.
 - Messages sent with different content (for example, retry counts included in the message body) that Amazon SQS must treat as duplicates.
+
+ReceiveMessageWaitTimeSeconds - length of time, in seconds, for which a ReceiveMessage action waits for a
+message to arive.
+DelaySeconds - the length of time, in seconds, for which to delay a specific message.
+VisibilityTimeout - the duration, in seconds, that the received messages are hidden from
+subsequent retrieve requests after being retrieved by a ReceiveMessage request
+MessageRetentionPeriod - the period for which SQS retains a message
 
 -- Amazon SNS
 
