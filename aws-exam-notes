@@ -28,6 +28,11 @@ and replicating your data across multiple Availability zones within an AWS
 region. You choose a regional API endpoint either from your default configuration
 or by explicitly setting a location for your API client.
 
+There are three types of AWS access keys:
+- Console access
+- Programmatic access (for AWS API calls)
+- Temporary access
+
 We're using the Python SDK when we use the AWS CLI.
 
 us-east-1 - default region when configuring AWS CLI
@@ -72,6 +77,14 @@ Amazon Elastic Compute Cloud (EC2) Reserved instances).
 
 You can configure this report to present the data hourly or daily. It is the source of truth for the
 billing pipeline.
+
+Here are part of the checks AWS Trusted Advisor performs for us:
+- unassociated Elastic IP addresses
+- Amazon EBS provisioned IOPS (SSD) volume attachment configuration
+- Amazon CloudFront header forwarding and cache hit ratio
+
+In EC2 you can use tags to control permissions. Using IAM policies you can use the tag to gain precise
+control over access to resources, ownership, and accurate cost allocation.
 
 =======================================================================================================
 IAM and access control
@@ -737,6 +750,10 @@ If the primary origin fails, the second one is used.
 
 Field level encryption
 
+Some headers, such as Date or User-Agent, significantly reduce the cache hit ration (the proportion
+of requests that are served from a CloudFront edge cache). This increases the load on your origin
+and reduces performance because CloudFront must forward more requests to your origin.
+
 =======================================================================================================
 Docker in AWS (ECR, ECS)
 
@@ -1249,6 +1266,9 @@ in this use case).
 2. Deploy your application into the new environment.
 3. Swap DNS records
 
+Elastic beanstalk creates a service role to access AWS services and instance role to access
+instances.
+
 RDS can be used with Elastic Beanstalk which is useful for dev / beta environment. However, this is
 not recommended for prod, as the RDS instance lifecycle is tied to Elastic Beanstalk.
 The best option for prod would be creating the RDS instance separately and referencing it from
@@ -1385,18 +1405,6 @@ cannot access resources in your VPC. We can add access to it by specifying the f
 - Subnet IDs
 - Security group IDs
 
-appspec.yml - config file used by the CodeDeploy to be sent to the machines running the CodeDeploy
-agent
-CodeDeploy managed machines are grouped (dev / test / prod for example)
-CodeDeploy supports AWS Lambda deployments.
-It can use Blue / Green deployments when running on EC2 instances (not on-prem).
-CodeDeploy only deploys your application. It doesn't provision the instances.
-
-CodeDeploy deployment configurations:
-CodeDeployDefault.AllAtOnce
-CodeDeployDefault.OneAtATime
-CodeDeployDefault.HalfAtATime
-
 =======================================================================================================
 Deployment as Code
 
@@ -1413,6 +1421,21 @@ operating system level.
 
 If an AWS CodeDeploy deployment fails the changes are left as-is, unless they're reverted
 explicitly.
+
+appspec.yml - config file used by the CodeDeploy to be sent to the machines running the CodeDeploy
+agent
+CodeDeploy managed machines are grouped (dev / test / prod for example)
+CodeDeploy supports AWS Lambda deployments.
+It can use Blue / Green deployments when running on EC2 instances (not on-prem).
+CodeDeploy only deploys your application. It doesn't provision the instances.
+
+CodeDeploy deployment configurations:
+CodeDeployDefault.AllAtOnce
+CodeDeployDefault.OneAtATime
+CodeDeployDefault.HalfAtATime
+
+If we upgrade the script executed during an ApplicationStop lifecycle event it'll be executed
+at the next deployment after it is updated.
 
 -- AWS CodePipeline
 
@@ -1729,6 +1752,13 @@ many as you want.
 
 Meant for real-time big data, analytics and ETL
 
+Each Kinesis data stream shard supports a read throughput of 2MB per seconds.
+This is how we can calculate the number of shards per throughput and consumers:
+Supose the throughput into the stream is 10MB and we have three separate applications
+consuming them.
+You have three applications, so you need to read at least 30MB per second of read
+throughput to read this data three times, which will require atleast 15 shards.
+
 Producers - they send data to Kinesis data streams
 Data retention is set to 1 day by default. It can be extended up to 365 days.
 Amazon Kinesis Data Streams is not a durable data store. It's purpose is just to stream
@@ -1741,6 +1771,11 @@ for performing real-time analytics on the data.
 
 Messages written to Kinesis Data Streams are deleted after the message retention period
 passes. The maximum message retention period is 7 days.
+
+There's no limit for the number of consumers in Kinesis data stream, as long as
+they stay within the capacity of the stream, which is based on the number of shards.
+
+For a single shard, the capacity is 2MB of read or five transactions per second.
 
 A data record consists of:
 - sequence number (unique per partition-key within shard)
