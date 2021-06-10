@@ -302,6 +302,10 @@ fast. It takes atleast a month to establish
 
 Both Direct Connect and Site to Site VPN cannot access VPC endpoints
 
+Even though each instance in an Amazon VPC has a unique private IP address, you could assign the same
+private IP address ranges to multiple VPCs. Therefore, two EC2 instances in different VPCs could have
+the same IP addresses.
+
 =======================================================================================================
 ELB - Elastic Load balancer
 
@@ -1813,6 +1817,8 @@ Kinesis consumer options:
 	6 shards = max. 6 KCL instances
 - Lambda, Kinesis Data Firehose, Kinesis Data Analytics
 
+Each Kinesis shard supports a write throughput of 1MB per second.
+
 In Kinesis there is no limit in the number of consumers as long as they stay within the capacity
 of the stream, which is based on the number of shards. For a single shard, the capacity is 2MB of
 read or five transactions per second.
@@ -1860,6 +1866,13 @@ The default limit for concurrent executions with Lambda is set to 1000. This is 
 can be raised. To do this, you must open a case through the AWS support center page and send a Server
 Limit increase request.
 The maximum execution time for a Lambda function is 300 seconds (5 minutes).
+The minimum execution time for a Lambda function is 1 second.
+
+You cannot develop AWS Lambda functions locally.
+
+AWS Lambda natively supports Java, Go, PowerShell, Node. js, C#, Python, and Ruby code, and
+provides a Runtime API which allows you to use any additional programming languages to author your
+functions.
 
 AWS Lambda  bills based on memory, the amount of compute time spent on a function in 100ms
 increments, and the number of times that you execute or trigger a function.
@@ -2009,6 +2022,14 @@ There are 4 ways you can authorize applications to communicate with GraphQL:
 - AMAZON_COGNITO_USER_POOLS
 
 For custom domains and HTTPS we can integrate AppSync with cloudfront
+
+AWS Lambda does not support in-place deployments. This is because after a function version is
+published it cannot be updated.
+
+Function versions cannot be modified after they have been pushed.
+Function versoin numbers cannot be changed.
+Aliases can be used to point to different function versions; however, the alias itself cannot be
+overwriten (it is a point to a function version).
 
 =======================================================================================================
 Serverless Applications
@@ -2266,3 +2287,6 @@ AWS ECS hands-on lab:
 https://ecsworkshop.com/introduction/
 
 https://github.com/lukpep/aws-sam-workshop
+
+Introduction to DevOps in AWS:
+https://docs.aws.amazon.com/whitepapers/latest/introduction-devops-aws/welcome.html
