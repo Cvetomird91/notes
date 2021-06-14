@@ -95,6 +95,13 @@ Elastic Beanstalk has created
 - terminating your load balancer before you delete the Amazon EC2 instances that are registered with
 it
 
+You can access your recommendations for Amazon EC2 Reserved instance purchases programatically
+using the AWS Cost Explorer API. RI purchase recommendations are calculated based on your past use
+and indicate opportunities for potential cost savings.
+You can adjust the RI parameters and the time back over which your recommendations are
+recommended.
+You can access the AWS EC2 RI instances through the RI purchase console.
+
 =======================================================================================================
 IAM and access control
 
@@ -119,14 +126,16 @@ You cannot access the EC2 instances running an AWS Managed Microsoft AD setup, b
 managed service.
 - AD Connector - Directory Gateway (proxy) to an on-prem AD. Actual users are managed on-prem
 - Simple AD - AD-compatible managed directory on AWS (not based on MS AD). It cannot be joined with
-on-premise MS AD
-
+on-premise MS AD. It can be used to authenticate users against Amazon WorkDocs, Amazon Workspaces
+and Amazon WorkMail
 
 =======================================================================================================
 Compute and Networking
 
 Regions - a set of datacenters
 Availability zone - each region has a set of availability zones (from 2 to 6, the usual is 3)
+
+Amazon EC2 instances can be resized but need to be stopped first.
 
 ARN - Amazon Resource name
 
@@ -1279,6 +1288,15 @@ You can encrypt your CloudWatch logs with KMS keys.
 
 Amazon ACM - AWS Certificate manager - it can generate and rotate SSL certificates for free
 
+The AWS Encryption SDK is a client-side library designed to streamline data security operations so
+that customers can follow encryption best practices. It supports the management of data keys,
+encryption and decryption activities and the storage of encryped data.
+
+AWS Encryption SDK:
+- generates, encrypts and decrypts data keys
+- uses the data keys to encrypt and decrypt your raw data
+- stores the encrypted data keys with the corresponding encrypted data in a single object
+
 =======================================================================================================
 Elastic Beanstalk
 
@@ -1294,8 +1312,15 @@ Elastic beanstalk can use the following resources to create a web server environ
 - Amazon Elastic compute cloud
 We cannot use AWS Lambda in beanstalk.
 
+All accounts involved are billed for user-accessed AWS resources allocated by AWS Elastic
+Beanstalk.
+
 In an immutable update in AWS Elastic Beanstalk, a new Auto Scaling group is created and registered
-with the load balancer. Once health checks pass, the existing Auto Scaling group is terminated.
+with the load balancer. Once health checks pass, the already
+existing Auto Scaling group is terminated.
+
+Immutable deployments are useful when 100% of both old and new setups need to be existing
+at the same time.
 
 After creating an Elastic Beanstalk environment, you cannot change the ELB type but only change its
 configuration.
@@ -1420,6 +1445,15 @@ are used for authenticaiton and authorization.
 It uses SSH or HTTPS for encryption in transit.
 We can also use Amazon STS to grant temporary access to external users.
 
+You can connect to AWS CodeCommit without git credentials using AWS CodeCommit credential
+helper. You can use it to convert an IAM access key and secret access key to valid Git
+credentials for SSH and HTTPS authentication.
+
+We can use AWS SNS with AWS CodeCommit to generate notifications on the following events:
+- PR creation
+- PR comment
+- commit comment
+
 You can trigger notifications in CodeCommit using:
 - AWS SNS - deletion of branches, pushes on master, notify external build system
 - AWS Lambda - for code analysis
@@ -1450,6 +1484,8 @@ cannot access resources in your VPC. We can add access to it by specifying the f
 - VPCID
 - Subnet IDs
 - Security group IDs
+
+The minimum number of stages required by a pipeline in AWS CodePipeline is 2.
 
 -- AWS CodeDeploy
 
@@ -1532,6 +1568,11 @@ removing old resources.
 
 AWS::CloudFormation::Interface - this metadata option does not apply to stacks using the AWS CLI
 or AWS SDK. In it parameters can be organized into groups and labels could be changed.
+
+AWS::CloudFormation::CustomResource - Custom resources provide a way for you to write custom
+provisioning logic in CloudFormation template and have CloudFormation run it during a stack operation,
+such as when you create, update or delete a stack.
+A service token in a custom resource represents an AWS SNS or AWS Lambda ARN that receives the request
 
 =======================================================================================================
 Configuration as Code
@@ -2149,6 +2190,11 @@ AWS CloudTrail events contain the following information:
 CloudTrail stores event history for 90 days back. If you would like to store this information
 permanently, you can create a CloudTrail trail, which stores the logs in Amazon S3.
 
+Here's how you can configure notifications for each time the AWS root user logs in:
+- Configure streaming of AWS CloudTrail logs to Amazon CloudWatch; configure a metric filter and
+metric for console sign-in events; create an alarm for this metric; and configure an Amazon SNS
+action for the alarm
+
 -- AWS CloudWatch
 
 You can have up to 10 dimensions in a metric.
@@ -2184,6 +2230,11 @@ CloudWatch alarm states:
 - OK
 - INSUFFICIENT DATA
 - ALARM
+
+An Amazon CloudWatch alarm enters INSUFFICIENT_DATA state when:
+- there's not enough data available for the metric to determine the alarm state
+- the metric is not available
+- the alarm was just created
 
 We can stream cloudwatch logs to Elastic Search
 
