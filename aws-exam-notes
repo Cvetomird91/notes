@@ -86,6 +86,15 @@ Here are part of the checks AWS Trusted Advisor performs for us:
 In EC2 you can use tags to control permissions. Using IAM policies you can use the tag to gain precise
 control over access to resources, ownership, and accurate cost allocation.
 
+Trusted Advisor
+
+Some cost-saving best practices:
+- terminating your AWS Elastic Beanstalk environment before you terminate resources that
+Elastic Beanstalk has created
+- releasing Elastic IP addresses that are attracted to an instance that you terminated
+- terminating your load balancer before you delete the Amazon EC2 instances that are registered with
+it
+
 =======================================================================================================
 IAM and access control
 
@@ -106,6 +115,8 @@ In AD all the objects are organized into a tree. A group of trees is a forest.
 
 AWS Directory services:
 - AWS Managed Microsoft AD - it allows you to establish a "trust" connection with an on-prem AD setup
+You cannot access the EC2 instances running an AWS Managed Microsoft AD setup, because it is a
+managed service.
 - AD Connector - Directory Gateway (proxy) to an on-prem AD. Actual users are managed on-prem
 - Simple AD - AD-compatible managed directory on AWS (not based on MS AD). It cannot be joined with
 on-premise MS AD
@@ -613,6 +624,13 @@ WORM model - Write Once, Read Many - block object deletion for a specific amount
 S3 can be used for session state cache but it's not meant for small objects
 because there are latency costs.
 
+Here are some reasons to enable cross-origin replication on an Amazon S3 bucket:
+- minimize latency when your customers are in two geographic regions
+- your compliance requirements dictate that you store data at an even further
+distance than Availability Zones, which are tens of miles away.
+- you have compute clusters in two different AWS Regions that analyze the
+same set of objects
+
 -- Amazon Elastic Block Store (EBS)
 
 Amazon snapshot EBS data is loaded lazily.
@@ -763,6 +781,10 @@ Docker in AWS (ECR, ECS)
 
 Task Definition - metadata in JSON which defines how ECS runs a docker container or a set of docker
 containers. Similar to K8S pods. Max number of containers defiend in a task definition could be 10.
+
+Amazon ECS service discovery automatically assigns Amazon Route 53 DNS entries for tasks managed by
+a service. A private namespace is created for each Amazon ECS cluster. As tasks are launched or
+terminated, the namespace is updated to include entries for each task.
 
 Task Role - optional IAM role that allows a container to talk to AWS services. Often, on the exam,
 if a container is not allowed to do something it lacks a proper Task Role. It is defined in the
@@ -1228,7 +1250,10 @@ KMS key policies - similar to s3 bucket policies. You cannot control access with
 
 Keys starting with "aws/*" in the AWS console are AWS-managed.
 
-AWS CloudHSM is a cloud-based hardware security module (HSM)
+AWS CloudHSM is a cloud-based hardware security module (HSM).
+It is a physical applicance.
+it must be deployed into an Amazon VPC.
+It is a regional service.
 AWS CloudHSM supports both symetric and asymetric key encryption.
 generate and use your own encryption keys on the AWS Cloud.
 The following are methods for AWS to provide KMI:
@@ -1255,12 +1280,22 @@ You can encrypt your CloudWatch logs with KMS keys.
 Amazon ACM - AWS Certificate manager - it can generate and rotate SSL certificates for free
 
 =======================================================================================================
-Deployment Strategies and CI/CD
+Elastic Beanstalk
 
 Elastic Beanstalk is based on cloud formation.
 
 RDS databases aren't preserved or replicated when cloing an EB environment. A new RDS instances
 with the same configuration is created.
+
+Elastic beanstalk can use the following resources to create a web server environment:
+- auto scaling group
+- amazon cognito user pool
+- AWS serverless application model (AWS SAM)
+- Amazon Elastic compute cloud
+We cannot use AWS Lambda in beanstalk.
+
+In an immutable update in AWS Elastic Beanstalk, a new Auto Scaling group is created and registered
+with the load balancer. Once health checks pass, the existing Auto Scaling group is terminated.
 
 After creating an Elastic Beanstalk environment, you cannot change the ELB type but only change its
 configuration.
@@ -1288,7 +1323,7 @@ Steps to decouple our RDS from Elastic Beanstalk:
 Elastic Beanstalk automatically deletes you Amazon RDS instance when your environment is deleted
 and does not automatically retain the data.
 
-We can run our application in Docker. For this we need to either:
+We can run our application in Docker with Elastic Beanstalk. For this we need to either:
 - provide a Dockerfile or
 - provide Dockerrun.aws.json(v1 or v2)- describe where *already built* docker image is. You can define here
 the image, ports, volumes, logging etc. V2 supports multi container mode, while v1 only single.
@@ -1359,6 +1394,10 @@ We can use the Packer software (create your own AMIs) or Platform.yaml files (ba
 to define custom AMIs to be used in
 Beanstalk custom platforms
 
+
+=======================================================================================================
+Deployment as Code
+
 AWS services for CI/CD:
 AWS CodeCommit - hosted git
 AWS CodeBuild
@@ -1394,6 +1433,9 @@ is treated as failed.
 buildspec.yml - defines how CodeBuild compiles a project
 AWS S3 cache bucket (optional) - can be used in CodeBuild for faster builds
 
+We can output artifact files from AWS CodeBuild to AWS CodePipeline by specifying
+the output files in the buildspec.yml config file.
+
 CodeBuild runs outside of a VPC by default. We can specify a VPC configuration for
 CodeBuild.
 We can use SSM Parameter store with CodeBuild
@@ -1408,12 +1450,6 @@ cannot access resources in your VPC. We can add access to it by specifying the f
 - VPCID
 - Subnet IDs
 - Security group IDs
-
-=======================================================================================================
-Deployment as Code
-
-In an immutable update in AWS Elastic Beanstalk, a new Auto Scaling group is created and registered
-with the load balancer. Once health checks pass, the existing Auto Scaling group is terminated.
 
 -- AWS CodeDeploy
 
@@ -1445,6 +1481,10 @@ at the next deployment after it is updated.
 
 The minimum number of stages required by a pipeline in AWS CodePipeline is 2.
 In the Invoke pipeline action we can execute Lambda functions.
+
+When you configure a deploy event in CodePipeline to deploy to OpsWorks Stacks, you must select the
+stack, the application to deploy, and the layers into which to deploy the application.
+You cannot modify OpsWorks cookbooks and run lists in OpsWorks with CodePipeline.
 
 =======================================================================================================
 Infrastructure as Code
@@ -1600,9 +1640,25 @@ AWS SSO does not use SAML.
 
 -- Cognito
 Amazon Cognito supports device remembering and tracking
-Amazon Cognito supports MFA authentication
+Amazon Cognito supports MFA authentication.
+Amaozn Cognito supports also SMS-based MFA authentication.
 Amazon Cognito supports Google SSO and MS AD and custom identity providers.You need SAML 2.0 based
 identity provider to integrate with Amazon Cognito.
+
+SAML - security assertion markup language
+
+The following are valid Cognito identity providers (idP) for Amazon Cognito:
+- Google
+- MS AD
+- your own identity store
+
+you can view the cognito API calls in Amazon CloudTrail.
+AWS can act as an idP for non-AWS services.
+Using AWS as an idP allows you to use AWS CloudTrail to audit who is using the service.
+
+Amazon CloudWatch logs are generated if you are using Amazon Cognito to control access to AWS
+resources.
+
 
 =======================================================================================================
 Integration
@@ -2096,6 +2152,8 @@ permanently, you can create a CloudTrail trail, which stores the logs in Amazon 
 -- AWS CloudWatch
 
 You can have up to 10 dimensions in a metric.
+
+CloudWatch does not aggregate data across regions.
 
 In Amazon CloudWatch data points with a period of 300 seconds are stored for 63 days.
 Logging to Amazon CloudWatch from a EC2 instance requires installing the CloudWatch Logs agent.
