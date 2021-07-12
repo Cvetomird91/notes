@@ -86,7 +86,7 @@ Here are part of the checks AWS Trusted Advisor performs for us:
 In EC2 you can use tags to control permissions. Using IAM policies you can use the tag to gain precise
 control over access to resources, ownership, and accurate cost allocation.
 
-Trusted Advisor
+-- Trusted Advisor / -- AWS Trusted Advisor / -- Amazon Trusted Advisor
 
 Some cost-saving best practices:
 - terminating your AWS Elastic Beanstalk environment before you terminate resources that
@@ -578,6 +578,9 @@ Setting the monitored bucket to be where you store your access logs is bad pract
 
 S3 supports replication:
 - CRR - cross-region replication
+To enable it we need the source and destination buckets to have versioning enabled. It
+also needs an AWS Identity and Access Management (IAM) role in the account that
+grands Amazon S3 permission to replicate objects on your behalf
 - SRR - same region replication
 To enable it we must enable versioning in source and destionation buckets.
 The buckets can be in different accounts.
@@ -659,7 +662,7 @@ distance than Availability Zones, which are tens of miles away.
 - you have compute clusters in two different AWS Regions that analyze the
 same set of objects
 
--- Amazon Elastic Block Store (EBS)
+-- Amazon Elastic Block Store (EBS) / -- EBS / -- AWS EBS / -- Amazon EBS
 
 Amazon snapshot EBS data is loaded lazily.
 EBS volumes are scoped within a specific availability zone. You cannot attach an EBS volume from
@@ -1013,10 +1016,11 @@ ElastiCache for Memcached doesn't support a high-availability configuration.
 Only ElastiCache Redis could run for in a high-availaiblity configuration.
 ElastiCache Redis supports data durability using AOF persistence (append only file).
 
-ElastiCache Memcached - multi-node for partitioning of data (sharding)
-It's non-persistent (no AOF).
+ElastiCache Memcached - supports multi-node setup for partitioning of data (sharding)
+It's non-persistent (no AOF - Append Only File).
 
-ElastiCache Redis supports backup and restore with AOF, opposed to ElastiCache memcached.
+ElastiCache Redis supports backup, high-availability
+and restore with AOF, opposed to ElastiCache memcached.
 Memcached has multi-threaded architecture.
 
 Caching strategies:
@@ -1049,7 +1053,10 @@ query.
 
 Amazon Neptune - NoSQL graph database for highly connected datasets.
 
--- Amazon DynamoDB
+-- Amazon DynamoDB / -- DynamoDB / -- AWS DynamoDB
+
+The difference between the relation databases and the dynamodb architecture is that
+it keeps related data together.
 
 Amazon DynamoDB stores data in partitions. A partition is an allocation of storage for a table, 
 backed by solid state drives (SSDs) and automatically replicated across multiple Availability
@@ -1577,11 +1584,23 @@ as determined in the configuration of the stage.
 
 AWS CodePipeline actions:
 - Source - we can use CodeCommit, S3, ECR and CodeStarSourceConnection as sources
-- Approval
-- Build
-- Deploy
-- Test
-- Invoke - we can invoke AWS Lambda functions with this action
+- Approval - If the action is approved, the pipeline execution resumes. 
+	If the action is rejected—or if no one approves or rejects the action within seven days of the 
+	pipeline reaching the action and stopping—the result is the same as an action failing,
+	and the pipeline execution does not continue.
+	The approval action integrates with an SNS approval topic. From then on, SNS can send the
+	approval request to an HTTP/HTTPS endpoint, an AWS Lambda function, SQS queues,
+	email or SMS recipients
+- Build - integrates with CodeBuild, CloudBees CI/CD, Jenkins, TeamCity
+- Deploy - integrates with S3, AWS AppConfig, AWS CloudFormation,
+	AWS CloudFormation StackSets, Amazon ECS, Elastic Beanstalk, AWS OpsWorks,
+	AWS Service Catalog, Amazon Alexa, CodeDeploy deploy actions,
+	XebiaLabs deploy actions
+- Test - integrates with CodeBuild, AWS Device Farm, BlazeMeter, Ghost Inspector,
+	Micro Focus StormRunner Load test, Nouvola, Runscope
+- Invoke - we can invoke AWS Lambda functions with this action. It also
+	integrates with Snyk and Step Functions
+https://docs.aws.amazon.com/codepipeline/latest/userguide/actions.html
 
 When multiple resources are configured for the same pipeline, the pipeline
 will be triggered when any source is updated.
@@ -1604,7 +1623,15 @@ in builds is to create a custom build container and include them there.
 =======================================================================================================
 Infrastructure as Code
 
--- AWS CloudFormation
+-- AWS CloudFormation / -- CloudFormation
+
+The benefits of using AWS CloudFormation over AWS CLI / AWS SDK are the following:
+- Reduced IAM permissions requirements
+- Versionable infrastructure
+- Repeatable Infrastructure
+- Reduction of human error
+
+Only the Resources section of a CloudFormation template is required.
 
 We cannot create a dynamic amount of resources. Everything in CloudFormation has to be declared
 and you cannot perform dynamic code generation.
@@ -1676,14 +1703,14 @@ The UPDATE_IN_PROGRESS state could be followed by the following three states:
 =======================================================================================================
 Configuration as Code
 
--- AWS OpsWorks
+-- AWS OpsWorks / -- OpsWorks / -- Amazon OpsWorks
+
+AWS OpsWorks is a configuration management service that provides managed instances of Chef and Puppet.
 
 AWS OpsWorks Stacks does not include a central Chef Server.
 For OpsWocks stacks a custom cookbook repository location is configured for a stack. When instances
 in the stack are first launched, they will download cookbooks from this location and run them as part
 of lifecycle events.
-
-AWS OpsWorks is a configuration management service that provides managed instances of Chef and Puppet.
 
 AWS OpsWorks Stacks is an application and server management service. With OpsWorks Stacks, you can
 model your application as a stack containing different layers, such as load balancing,
@@ -1706,6 +1733,12 @@ https://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-autoscali
 Both time-based and load-based instances are supported for Linux stacks, while
 only time-based instances are supported for Windows stacks.
 
+We can configure the following OpsWorks limits:
+- maximum layers per stack
+- maximum instances per layer
+- maximum apps per stack
+- maximum apps per account, per region
+
 OpsWorks stacks support the following:
 - RDS
 - EBS
@@ -1720,6 +1753,9 @@ Task definitions should group containers by similar purpose, lifecycle, or resou
 
 OpsWorks stacks instances are registered when they come online and deregistered when they are
 moved to a different state.
+
+Instances in a single AWS OpsWorks Stacks layer should have the same functionality and purpose
+because all instances in a layer run the same recipes.
 
 -- AWS Config
 
@@ -1758,6 +1794,9 @@ IAM policies are global in scope, so you do not need a custom one per AWS Region
 You can add IAM users to IAM groups but not IAM roles. Instead, roles must be assumed for short-term
 sessions.
 
+The purpose of an idP is to answer the question "Who are you?". Based on
+this answer policies are assigned.
+
 DynamoDBReadOnlyAccess policy - built-in policy that applies to the resource * wildcard, which means
 that it applies to any and all DynamoDB tables accessible from the account regardless of when those
 tables were created.
@@ -1787,8 +1826,9 @@ AWS SSO does not use SAML.
 -- Amazon STS / -- AWS STS / -- STS
 
 These are the Amazon STS actions:
-- AssumeRole
-- AssumeRoleWithSAML
+- AssumeRole - 
+- AssumeRoleWithSAML - this action provides access key ID, secret access key and
+	a security tokens
 - AssumeRoleWithWebIdentity
 - DecodeAuthorizationMessage
 - GetAccessKeyInfo
@@ -2030,6 +2070,7 @@ and sends new data to your Kinesis Data Firehose delivery stream.
 - Amazon Kinesis Producer Library (KPL) -
 	https://docs.aws.amazon.com/streams/latest/dev/developing-producers-with-kpl.html
 - Amazon Kinesis Data Streams API
+- open source tools built with Amazon Kinesis Data Streams API
 
 Kinesis consumer options:
 - AWS SDK
@@ -2082,9 +2123,17 @@ Using a serverless approach means not having to manage servers and not incuring 
 there is no user traffic. This is achieved while still offering instant scale to meet high demand, such
 as a flash sale on an ecommerce site or a social media mention that drives a sudden wave of traffic.
 
--- AWS Lambda
+-- AWS Lambda / -- Lambda / -- Amazon Lambda
 
 In AWS Lambda you pay per request and compute time.
+
+Services that Lambda reads events from
+- Amazon DynamoDB
+- Amazon Kinesis
+- Amazon MQ
+- Amazon Managed Streaming for Apache Kafka
+- self-managed Apache Kafka
+- Amazon Simple Queue Service
 
 The default timeout value for an AWS Lambda function is 3 seconds.
 The default limit for concurrent executions with Lambda is set to 1000. This is a soft limit that
@@ -2096,7 +2145,10 @@ The minimum execution time for a Lambda function is 1 second.
 The AWS Lambda concurrent executions limit is 1000.
 To raise this number one needs to contact the AWS support.
 
-You cannot develop AWS Lambda functions locally.
+You can use AWS SAM CLI to test and develop Lambda functions locally.
+
+Developing lambda functions locally:
+https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-using-debugging.html
 
 AWS Lambda natively supports Java, Go, PowerShell, Node. js, C#, Python, and Ruby code, and
 provides a Runtime API which allows you to use any additional programming languages to author your
@@ -2336,6 +2388,11 @@ action for the alarm
 You can have up to 10 dimensions in a metric.
 
 CloudWatch does not aggregate data across regions.
+
+The following are available CloudWatch alarm actions:
+- EC2 Auto Scaling actions
+- AWS Lambda functions
+- Amazon SNS topics
 
 We can stream our custom logs from our applications to CloudWatch by using the cloudwatch
 agent. It doesn't take any additional configurations besides installing, configuring and
