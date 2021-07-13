@@ -78,15 +78,13 @@ Amazon Elastic Compute Cloud (EC2) Reserved instances).
 You can configure this report to present the data hourly or daily. It is the source of truth for the
 billing pipeline.
 
-Here are part of the checks AWS Trusted Advisor performs for us:
-- unassociated Elastic IP addresses
-- Amazon EBS provisioned IOPS (SSD) volume attachment configuration
-- Amazon CloudFront header forwarding and cache hit ratio
-
 In EC2 you can use tags to control permissions. Using IAM policies you can use the tag to gain precise
 control over access to resources, ownership, and accurate cost allocation.
 
 -- Trusted Advisor / -- AWS Trusted Advisor / -- Amazon Trusted Advisor
+
+Trusted Advisor is an online tool that provides you with real-time guidance to help you provision your
+resources by following AWS best practices.
 
 Some cost-saving best practices:
 - terminating your AWS Elastic Beanstalk environment before you terminate resources that
@@ -94,6 +92,11 @@ Elastic Beanstalk has created
 - releasing Elastic IP addresses that are attracted to an instance that you terminated
 - terminating your load balancer before you delete the Amazon EC2 instances that are registered with
 it
+
+Here are part of the checks AWS Trusted Advisor performs for us:
+- unassociated Elastic IP addresses
+- Amazon EBS provisioned IOPS (SSD) volume attachment configuration
+- Amazon CloudFront header forwarding and cache hit ratio
 
 -- AWS Cost Explorer
 
@@ -149,6 +152,8 @@ Regions - a set of datacenters
 Availability zone - each region has a set of availability zones (from 2 to 6, the usual is 3)
 
 Amazon EC2 instances can be resized but need to be stopped first.
+
+When we create a new EC2 instance, a availability zone is the most specific place where you can place it.
 
 ARN - Amazon Resource name
 
@@ -426,6 +431,8 @@ before the previous scaling takes effect
 
 =======================================================================================================
 Storage
+
+When you need to move massive amounts of data from on-prem to AWS you can use AWS Snowball.
 
 -- Amazon S3 / -- AWS S3 / -- S3
 
@@ -1062,6 +1069,10 @@ Amazon DynamoDB stores data in partitions. A partition is an allocation of stora
 backed by solid state drives (SSDs) and automatically replicated across multiple Availability
 Zones within an AWS Region.
 
+In DynamoDB an inefficient design for a table would involve chosing a partition key when there
+are only a few values for that partition key. E.g. chosing a status code where there are only a
+few possible status codes.
+
 Storing normalized data in a single table is the optimal way to use DynamoDB.
 
 In DynamoDB scans are less efficient than queries.
@@ -1262,6 +1273,8 @@ AWS KMS integrates with:
 - Amazon WorkMail
 - WorkSpaces
 
+AWS CloudHSM supports asymmetric encryption capabilities.
+
 data key - a key used to encrypt and decrypt data at rest. Those keys need to be stored somewhere.
 Usually this is KMS in the AWS cloud.
 CMK - customer master key
@@ -1313,6 +1326,9 @@ KMS key policies - similar to s3 bucket policies. You cannot control access with
 (main difference).
 
 Keys starting with "aws/*" in the AWS console are AWS-managed.
+
+Custom key stores - this AWS KMS feature allows you to use CloudHSM clusters for storing
+encryption keys.
 
 AWS CloudHSM is a cloud-based hardware security module (HSM).
 It is a physical applicance.
@@ -1482,6 +1498,8 @@ Elastic Beanstalk can use Amazon S3 buckets to store the EC2 logs and applicatio
 We can view the current environemnt's health using the following command:
 eb health
 
+Elastic Beanstalk can automatically deploy AWS Auto scaling groups, ELB and Amazon EC2 instances.
+
 =======================================================================================================
 Deployment as Code
 
@@ -1557,6 +1575,9 @@ CodeDeploy supports AWS Lambda deployments.
 It can use Blue / Green deployments when running on EC2 instances (not on-prem).
 CodeDeploy only deploys your application. It doesn't provision the instances.
 
+If you specify a hook script in the ApplicationStop lifecycle event of an AWS CodeDeploy appspec.yml
+it will not run on the first deployment to an instance.
+
 CodeDeploy deployment configurations:
 CodeDeployDefault.AllAtOnce
 CodeDeployDefault.OneAtATime
@@ -1631,6 +1652,13 @@ The benefits of using AWS CloudFormation over AWS CLI / AWS SDK are the followin
 - Repeatable Infrastructure
 - Reduction of human error
 
+AWS CloudFormation supports templates of 51200 bytes in size when passing the template body as
+part of the CreateStack request. If we need to pass a larger template we can upload it to Amazon S3 and
+reference its location in the CreateStack request.
+
+If you have a template that contains more than the limit of 200 resources, we can work around
+this limit if needed by creating nested stacks.
+
 Only the Resources section of a CloudFormation template is required.
 
 We cannot create a dynamic amount of resources. Everything in CloudFormation has to be declared
@@ -1700,12 +1728,42 @@ The UPDATE_IN_PROGRESS state could be followed by the following three states:
 - UPDATE_COMPLETE
 - UPDATE_COMPLETE_CLEANUP_IN_PROGRESS
 
+By default, the AWS CloudFormation stack will perform the operations with the permissions of the user
+performing the operation.
+
+Update behaviors of stack resources:
+https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-update-behaviors.html
+Update with No Interruption
+	AWS CloudFormation updates the resource without disrupting operation of that resource and without 
+	changing the resource's physical ID. For example, if you update certain properties on an
+	AWS::CloudTrail::Trail resource, AWS CloudFormation updates the trail without disruption.
+
+Updates with Some Interruption
+	AWS CloudFormation updates the resource with some interruption. For example, if you update certain
+	properties on an AWS::EC2::Instance resource, the instance might have some interruption while
+	AWS CloudFormation and Amazon EC2 reconfigure the instance.
+
+Replacement
+	AWS CloudFormation recreates the resource during an update, which also generates a new physical ID.
+	AWS CloudFormation usually creates the replacement resource first, changes references from other
+	dependent resources to point to the replacement resource, and then deletes the old resource.
+	For example, if you update the AvailabilityZone property of an AWS::EC2::Instance resource type,
+	AWS CloudFormation creates a new resource and replaces the current EC2 Instance
+	resource with the new one.
+
 =======================================================================================================
 Configuration as Code
 
 -- AWS OpsWorks / -- OpsWorks / -- Amazon OpsWorks
 
 AWS OpsWorks is a configuration management service that provides managed instances of Chef and Puppet.
+
+An AWS OpsWorks stacks configure lifecycle event runs when a single instance comes online
+or goes offline.
+
+AWS OpsWorks Stacks lets you manage applications and servers on AWS and on-premises.
+With OpsWorks Stacks, you can model your application as a stack containing different layers,
+such as load balancing, database, and application server.
 
 AWS OpsWorks Stacks does not include a central Chef Server.
 For OpsWocks stacks a custom cookbook repository location is configured for a stack. When instances
@@ -2316,7 +2374,10 @@ Serverless Applications
 
 Serverless applications contain both static and dynamic data
 
--- SAM
+-- SAM / -- AWS SAM / -- Amazon SAM
+
+https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-resources-and-properties.html
+
 AWS SAM (Serverless application model) - it's based on Amazon Cloudformation and is optimized for
 deploying serverless resources.
 Properties for AWS Serverless Application Model:
@@ -2332,7 +2393,20 @@ Sam templates always need to contain:
 - Transform
 - Resource
 
--- API Gateway
+The event property in SAM is used to connect an AWS Lambda function to the Amazon API gateway
+We can generate a lambda function with the following command:
+sam local generate-event
+
+After you deploy an AWS SAM template to AWS CloudFormation you cannot view the
+original template. After the template is submitted and the AWS::Serverless transform
+is executed, an AWS CloudFormation-supported template is generated.
+
+-- API Gateway / -- AWS API Gateway / -- Amazon API Gateway
+
+API Gateway supports the following HTTP methods:
+GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD
+It doesn't support trace
+
 Amazon API gateway only supports HTTPS endpoints.
 Without enabling CORS we're not going to be able to call the Amazon API Gateway service from another
 domain. You use a stage to deploy your API, and a resource is typed object that is part of your API's
@@ -2358,7 +2432,7 @@ You can add a maximum of 20 nodes to an Amazon ElastiCache Redis cluster.
 =======================================================================================================
 Monitoring and Troubleshooting
 
--- AWS CloudTrail
+-- AWS CloudTrail / -- CloudTrail
 
 The following are considered management events by AWS CloudTrail:
 - modifying an Amazon S3 bucket policy
@@ -2382,6 +2456,10 @@ Here's how you can configure notifications for each time the AWS root user logs 
 - Configure streaming of AWS CloudTrail logs to Amazon CloudWatch; configure a metric filter and
 metric for console sign-in events; create an alarm for this metric; and configure an Amazon SNS
 action for the alarm
+
+The following are provided in an AWS CloudTrail event:
+- the response of the request
+- the AWS IAM user or role making the request
 
 -- AWS CloudWatch / -- CloudWatch / -- Amazon CloudWatch
 
