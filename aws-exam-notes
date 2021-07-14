@@ -78,15 +78,13 @@ Amazon Elastic Compute Cloud (EC2) Reserved instances).
 You can configure this report to present the data hourly or daily. It is the source of truth for the
 billing pipeline.
 
-Here are part of the checks AWS Trusted Advisor performs for us:
-- unassociated Elastic IP addresses
-- Amazon EBS provisioned IOPS (SSD) volume attachment configuration
-- Amazon CloudFront header forwarding and cache hit ratio
-
 In EC2 you can use tags to control permissions. Using IAM policies you can use the tag to gain precise
 control over access to resources, ownership, and accurate cost allocation.
 
-Trusted Advisor
+-- Trusted Advisor / -- AWS Trusted Advisor / -- Amazon Trusted Advisor
+
+Trusted Advisor is an online tool that provides you with real-time guidance to help you provision your
+resources by following AWS best practices.
 
 Some cost-saving best practices:
 - terminating your AWS Elastic Beanstalk environment before you terminate resources that
@@ -95,12 +93,28 @@ Elastic Beanstalk has created
 - terminating your load balancer before you delete the Amazon EC2 instances that are registered with
 it
 
+Here are part of the checks AWS Trusted Advisor performs for us:
+- unassociated Elastic IP addresses
+- Amazon EBS provisioned IOPS (SSD) volume attachment configuration
+- Amazon CloudFront header forwarding and cache hit ratio
+
+-- AWS Cost Explorer
+
+AWS Cost explorer reflects the cost and usage of Amazon Elastic Compute Cloud (Amazon EC2) instances
+over the most recent 13 monthsand forecasts potential spending for the next 3 months. By using cost
+explorer, you can examine patterns on how much you spend on AWS resources over time, identify
+areas that need further inquiry, and view trends that help you understand your costs.
+In addition, you can specify time ranges for the data and view time data by day or by month.
+
 You can access your recommendations for Amazon EC2 Reserved instance purchases programatically
 using the AWS Cost Explorer API. RI purchase recommendations are calculated based on your past use
 and indicate opportunities for potential cost savings.
-You can adjust the RI parameters and the time back over which your recommendations are
-recommended.
+To tailor your recommendations, you can adjust the RI parameters (for example, return only 
+recommendations for partial upfront convertible RIs with a one-year term) and the historical time
+period of use over which your recommendations are calculated (for example, last 60 days).
 You can access the AWS EC2 RI instances through the RI purchase console.
+After you have identified the optimal mix of RIs to address your business needs, you can access them
+from the Amazon EC2 RI purchase console or use the AWS SDK to act on your insights and purchase RIs.
 
 =======================================================================================================
 IAM and access control
@@ -129,6 +143,8 @@ managed service.
 on-premise MS AD. It can be used to authenticate users against Amazon WorkDocs, Amazon Workspaces
 and Amazon WorkMail
 
+AWS access keys are typically used to sign API calls.
+
 =======================================================================================================
 Compute and Networking
 
@@ -136,6 +152,8 @@ Regions - a set of datacenters
 Availability zone - each region has a set of availability zones (from 2 to 6, the usual is 3)
 
 Amazon EC2 instances can be resized but need to be stopped first.
+
+When we create a new EC2 instance, a availability zone is the most specific place where you can place it.
 
 ARN - Amazon Resource name
 
@@ -263,7 +281,7 @@ AMIs have the following characteristics:
 IAM Roles can be attached to EC2 instances.
 IAM Roles can come with a policy authorizing exactly what the EC2 instance should be able to do
 
--- Networking & VPC
+-- AWS VPC / -- Amazon VPC / Networking & VPC
 
 VPC - private network to deploy your resources (regional resource)
 Subnets - they allow you to partition your network inside your VPC (Availability Zone resourse). They
@@ -325,6 +343,8 @@ Both Direct Connect and Site to Site VPN cannot access VPC endpoints
 Even though each instance in an Amazon VPC has a unique private IP address, you could assign the same
 private IP address ranges to multiple VPCs. Therefore, two EC2 instances in different VPCs could have
 the same IP addresses.
+
+All EC2 instances connecting through a private subnet share the public IP address of the NAT.
 
 =======================================================================================================
 ELB - Elastic Load balancer
@@ -412,7 +432,9 @@ before the previous scaling takes effect
 =======================================================================================================
 Storage
 
--- Amazon S3
+When you need to move massive amounts of data from on-prem to AWS you can use AWS Snowball.
+
+-- Amazon S3 / -- AWS S3 / -- S3
 
 Advertised as "infinitely scaling" storage.
 
@@ -423,6 +445,10 @@ failures. The following are version states of buckets:
 - Versioning suspended
 - Versioning disabled
 - Versioning enabled
+
+S3 bucket names are globally unique and cannot be changed after a bucket is created.
+Thus, when you change the Name field of a AWS::S3::Bucket resource, a replacement bucket is
+created when changing this property.
 
 Data in S3 is automatically replicated within a region.
 
@@ -559,6 +585,9 @@ Setting the monitored bucket to be where you store your access logs is bad pract
 
 S3 supports replication:
 - CRR - cross-region replication
+To enable it we need the source and destination buckets to have versioning enabled. It
+also needs an AWS Identity and Access Management (IAM) role in the account that
+grands Amazon S3 permission to replicate objects on your behalf
 - SRR - same region replication
 To enable it we must enable versioning in source and destionation buckets.
 The buckets can be in different accounts.
@@ -640,7 +669,7 @@ distance than Availability Zones, which are tens of miles away.
 - you have compute clusters in two different AWS Regions that analyze the
 same set of objects
 
--- Amazon Elastic Block Store (EBS)
+-- Amazon Elastic Block Store (EBS) / -- EBS / -- AWS EBS / -- Amazon EBS
 
 Amazon snapshot EBS data is loaded lazily.
 EBS volumes are scoped within a specific availability zone. You cannot attach an EBS volume from
@@ -686,7 +715,10 @@ It cannot increase in size, as opposed to EBS
 There's a risk of data loss in instance store if the physical hard disk fails.
 
 The VolumeQueueLength metric provides the number of read and write operation
-requests waiting to be completed in a specified period of time.
+requests waiting to be completed in a specified period of time. In other
+words, it monitors the number of requests sent for processing. The
+queue depth is the number of pending I/O requests from your application to
+your volume.
 
 Encryption operations occur on the servers that host EC2 instances, 
 ensuring the security of both data-at-rest and data-in-transit between an 
@@ -706,12 +738,15 @@ It scales automatically. Users don't plan the capacity.
 
 Amazon EFS supports one to thousands of Amazon EC2 instances conneting to a file system concurrently.
 
-The Max I/O performance mode of EFS is optimized for applications where tens, hundreds, or
-thousands of EC2 instances are accessing the file system.
-
 Performance modes:
-- general purpose
+- general purpose - appropriate for most use cases and selected by default
 - max I/O - good for big data
+The Max I/O performance mode of EFS is optimized for applications where tens, hundreds, or
+thousands of EC2 instances are accessing the file system. It scales to higher levels of
+aggregate throughput and operations per second with a trade-off of slightly higher latencies
+for file operations.
+
+Setting up RAID 0 with EFS shares can increse overall I/O.
 
 Therea are different storage tiers in EFS - lifecycle management. We can move files
 between EFS volumes after a number of days:
@@ -942,6 +977,13 @@ This feature encrypts data at rest - db files both on the hard drive and backup.
 If you create a database through AWS Beanstalk and delete your beanstalk
 application your database will be deleted, as well.
 
+If you would like to delete an AWS::RDS::DBInstance resource using
+CloudFormation and the underlying Amazon Relational Database Service
+(Amazon RDS) database instance, the recommended delition policy would be
+Snapshot in order to ensure no data is lost.
+
+https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-deletionpolicy.html
+
 -- AWS Aurora
 
 AWS Aurora is compatible with both PostgreSQL and MySQL clients.
@@ -981,10 +1023,11 @@ ElastiCache for Memcached doesn't support a high-availability configuration.
 Only ElastiCache Redis could run for in a high-availaiblity configuration.
 ElastiCache Redis supports data durability using AOF persistence (append only file).
 
-ElastiCache Memcached - multi-node for partitioning of data (sharding)
-It's non-persistent (no AOF).
+ElastiCache Memcached - supports multi-node setup for partitioning of data (sharding)
+It's non-persistent (no AOF - Append Only File).
 
-ElastiCache Redis supports backup and restore with AOF, opposed to ElastiCache memcached.
+ElastiCache Redis supports backup, high-availability
+and restore with AOF, opposed to ElastiCache memcached.
 Memcached has multi-threaded architecture.
 
 Caching strategies:
@@ -1017,11 +1060,18 @@ query.
 
 Amazon Neptune - NoSQL graph database for highly connected datasets.
 
--- Amazon DynamoDB
+-- Amazon DynamoDB / -- DynamoDB / -- AWS DynamoDB
+
+The difference between the relation databases and the dynamodb architecture is that
+it keeps related data together.
 
 Amazon DynamoDB stores data in partitions. A partition is an allocation of storage for a table, 
 backed by solid state drives (SSDs) and automatically replicated across multiple Availability
 Zones within an AWS Region.
+
+In DynamoDB an inefficient design for a table would involve chosing a partition key when there
+are only a few values for that partition key. E.g. chosing a status code where there are only a
+few possible status codes.
 
 Storing normalized data in a single table is the optimal way to use DynamoDB.
 
@@ -1090,6 +1140,7 @@ we need 10 * 4KB / 4KB = 10 RCU
 10 * 8 KB /4 = 20 RCU
 
 DynamoDB APIs:
+PutItem - can be used to add a new item to an Amazon DynamoDB table
 Difference between PutItem and UpdateItem - PutItem does a full replace while UpdateItem updates
 only specified fields
 With UpdateItem we can use atomic counters for numeric values and increase them
@@ -1207,6 +1258,23 @@ The following components are required in an encryption system:
 - data to encrypt
 - a method to encrypt data
 
+AWS KMS integrates with:
+- AWS CloudTrail
+- Amazon DynamoDB
+- Amazon EBS
+- Amazon EMR
+- AWS Nitro Enclaves
+- Amazon Redshift
+- Amazon RDS
+- AWS Secrets Manager
+- Amazon SES (Simple Email Service)
+- Amazon S3
+- Amazon Systems Manager parameter store
+- Amazon WorkMail
+- WorkSpaces
+
+AWS CloudHSM supports asymmetric encryption capabilities.
+
 data key - a key used to encrypt and decrypt data at rest. Those keys need to be stored somewhere.
 Usually this is KMS in the AWS cloud.
 CMK - customer master key
@@ -1259,6 +1327,9 @@ KMS key policies - similar to s3 bucket policies. You cannot control access with
 
 Keys starting with "aws/*" in the AWS console are AWS-managed.
 
+Custom key stores - this AWS KMS feature allows you to use CloudHSM clusters for storing
+encryption keys.
+
 AWS CloudHSM is a cloud-based hardware security module (HSM).
 It is a physical applicance.
 it must be deployed into an Amazon VPC.
@@ -1298,12 +1369,15 @@ AWS Encryption SDK:
 - stores the encrypted data keys with the corresponding encrypted data in a single object
 
 =======================================================================================================
-Elastic Beanstalk
+-- Elastic Beanstalk / -- AWS Elastic Beanstalk / -- Amazon Elastic Beanstalk
 
 Elastic Beanstalk is based on cloud formation.
 
-RDS databases aren't preserved or replicated when cloing an EB environment. A new RDS instances
+RDS databases aren't preserved or replicated when cloning an EB environment. A new RDS instances
 with the same configuration is created.
+
+Elastic Beanstalk cannot perform automatic changes to AWS Identity and Access managemt (IAM)
+policies.
 
 Elastic beanstalk can use the following resources to create a web server environment:
 - auto scaling group
@@ -1419,6 +1493,12 @@ We can use the Packer software (create your own AMIs) or Platform.yaml files (ba
 to define custom AMIs to be used in
 Beanstalk custom platforms
 
+Elastic Beanstalk can use Amazon S3 buckets to store the EC2 logs and application files.
+
+We can view the current environemnt's health using the following command:
+eb health
+
+Elastic Beanstalk can automatically deploy AWS Auto scaling groups, ELB and Amazon EC2 instances.
 
 =======================================================================================================
 Deployment as Code
@@ -1464,16 +1544,6 @@ CodePipeline stages can have multiple action groups.
 When a CodePipeline revision manual approval task gets rejected the revision
 is treated as failed.
 
-buildspec.yml - defines how CodeBuild compiles a project
-AWS S3 cache bucket (optional) - can be used in CodeBuild for faster builds
-
-We can output artifact files from AWS CodeBuild to AWS CodePipeline by specifying
-the output files in the buildspec.yml config file.
-
-CodeBuild runs outside of a VPC by default. We can specify a VPC configuration for
-CodeBuild.
-We can use SSM Parameter store with CodeBuild
-
 If we need to use a large file that changes rarely in CodeBuild we can create
 a custom build container that includes it and use it any time we need to change the files
 
@@ -1505,6 +1575,9 @@ CodeDeploy supports AWS Lambda deployments.
 It can use Blue / Green deployments when running on EC2 instances (not on-prem).
 CodeDeploy only deploys your application. It doesn't provision the instances.
 
+If you specify a hook script in the ApplicationStop lifecycle event of an AWS CodeDeploy appspec.yml
+it will not run on the first deployment to an instance.
+
 CodeDeploy deployment configurations:
 CodeDeployDefault.AllAtOnce
 CodeDeployDefault.OneAtATime
@@ -1513,7 +1586,10 @@ CodeDeployDefault.HalfAtATime
 If we upgrade the script executed during an ApplicationStop lifecycle event it'll be executed
 at the next deployment after it is updated.
 
--- AWS CodePipeline
+-- AWS CodePipeline / -- Amazon CodePipeline / -- CodePipeline
+
+CodePipeline concepts (to print):
+https://docs.aws.amazon.com/codepipeline/latest/userguide/concepts.html
 
 The minimum number of stages required by a pipeline in AWS CodePipeline is 2.
 In the Invoke pipeline action we can execute Lambda functions.
@@ -1522,10 +1598,68 @@ When you configure a deploy event in CodePipeline to deploy to OpsWorks Stacks, 
 stack, the application to deploy, and the layers into which to deploy the application.
 You cannot modify OpsWorks cookbooks and run lists in OpsWorks with CodePipeline.
 
+an action is part of the sequence in a stage of a pipeline.
+It is a task performed on the artifact in that stage.
+Pipeline actions occur in a specified order, in sequence or in parallel,
+as determined in the configuration of the stage.
+
+AWS CodePipeline actions:
+- Source - we can use CodeCommit, S3, ECR and CodeStarSourceConnection as sources
+- Approval - If the action is approved, the pipeline execution resumes. 
+	If the action is rejected—or if no one approves or rejects the action within seven days of the 
+	pipeline reaching the action and stopping—the result is the same as an action failing,
+	and the pipeline execution does not continue.
+	The approval action integrates with an SNS approval topic. From then on, SNS can send the
+	approval request to an HTTP/HTTPS endpoint, an AWS Lambda function, SQS queues,
+	email or SMS recipients
+- Build - integrates with CodeBuild, CloudBees CI/CD, Jenkins, TeamCity
+- Deploy - integrates with S3, AWS AppConfig, AWS CloudFormation,
+	AWS CloudFormation StackSets, Amazon ECS, Elastic Beanstalk, AWS OpsWorks,
+	AWS Service Catalog, Amazon Alexa, CodeDeploy deploy actions,
+	XebiaLabs deploy actions
+- Test - integrates with CodeBuild, AWS Device Farm, BlazeMeter, Ghost Inspector,
+	Micro Focus StormRunner Load test, Nouvola, Runscope
+- Invoke - we can invoke AWS Lambda functions with this action. It also
+	integrates with Snyk and Step Functions
+https://docs.aws.amazon.com/codepipeline/latest/userguide/actions.html
+
+When multiple resources are configured for the same pipeline, the pipeline
+will be triggered when any source is updated.
+
+-- AWS CodeBuild
+
+buildspec.yml - defines how CodeBuild compiles a project
+AWS S3 cache bucket (optional) - can be used in CodeBuild for faster builds
+
+We can output artifact files from AWS CodeBuild to AWS CodePipeline by specifying
+the output files in the buildspec.yml config file.
+
+CodeBuild runs outside of a VPC by default. We can specify a VPC configuration for
+CodeBuild.
+We can use SSM Parameter store with CodeBuild
+
+In case we need to work with large binary files that change rarely the best way to work with them
+in builds is to create a custom build container and include them there.
+
 =======================================================================================================
 Infrastructure as Code
 
--- AWS CloudFormation
+-- AWS CloudFormation / -- CloudFormation
+
+The benefits of using AWS CloudFormation over AWS CLI / AWS SDK are the following:
+- Reduced IAM permissions requirements
+- Versionable infrastructure
+- Repeatable Infrastructure
+- Reduction of human error
+
+AWS CloudFormation supports templates of 51200 bytes in size when passing the template body as
+part of the CreateStack request. If we need to pass a larger template we can upload it to Amazon S3 and
+reference its location in the CreateStack request.
+
+If you have a template that contains more than the limit of 200 resources, we can work around
+this limit if needed by creating nested stacks.
+
+Only the Resources section of a CloudFormation template is required.
 
 We cannot create a dynamic amount of resources. Everything in CloudFormation has to be declared
 and you cannot perform dynamic code generation.
@@ -1546,12 +1680,27 @@ You can delete a referenced stack until all the references are removed.
 
 CloudFormation conditions
 
+CloudFormation OS helper scripts:
+- cfn-init - reads template metadata from the AWS::CloudFormation::Init key and acts accordingly to:
+	- Fetch and parse metadata from CloudFormation
+	- Install packages
+	- Write files to disk
+	- Enable/disable and start/stop services
+- cfn-signal -  signals CloudFormation to indicate whether
+Amazon EC2 instances have been successfully created or updated
+- cfn-get-metadata - fetch a metadata block from CloudFormation and print it to standard out
+- cfn-hup - a daemon script that detects changes in resource metadata and runs
+user-specified actions when a change is detected. This allows you to make
+configuration updates on your running Amazon EC2 instances through the UpdateStack API action.
+
 --retain-resources - CLI argument to retain resources you don't want to delete when using the
 "aws cloudformation delete-stack" command
 
 Must know Intrisic Functions:
-- Ref
-- Fn::GetAtt
+- Ref - get the value of a parameter in an AWS CloudFormation template
+- Fn::GetAtt - get the attributes of a resource in a template
+- Fn::Split - used to split a string into multiple substrings based on a
+common delimiter
 - Fn::FindInMap
 - Fn::ImportValue
 - Fn::Join
@@ -1574,17 +1723,52 @@ provisioning logic in CloudFormation template and have CloudFormation run it dur
 such as when you create, update or delete a stack.
 A service token in a custom resource represents an AWS SNS or AWS Lambda ARN that receives the request
 
+The UPDATE_IN_PROGRESS state could be followed by the following three states:
+- UPDATE_FAILED
+- UPDATE_COMPLETE
+- UPDATE_COMPLETE_CLEANUP_IN_PROGRESS
+
+By default, the AWS CloudFormation stack will perform the operations with the permissions of the user
+performing the operation.
+
+Update behaviors of stack resources:
+https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-update-behaviors.html
+Update with No Interruption
+	AWS CloudFormation updates the resource without disrupting operation of that resource and without 
+	changing the resource's physical ID. For example, if you update certain properties on an
+	AWS::CloudTrail::Trail resource, AWS CloudFormation updates the trail without disruption.
+
+Updates with Some Interruption
+	AWS CloudFormation updates the resource with some interruption. For example, if you update certain
+	properties on an AWS::EC2::Instance resource, the instance might have some interruption while
+	AWS CloudFormation and Amazon EC2 reconfigure the instance.
+
+Replacement
+	AWS CloudFormation recreates the resource during an update, which also generates a new physical ID.
+	AWS CloudFormation usually creates the replacement resource first, changes references from other
+	dependent resources to point to the replacement resource, and then deletes the old resource.
+	For example, if you update the AvailabilityZone property of an AWS::EC2::Instance resource type,
+	AWS CloudFormation creates a new resource and replaces the current EC2 Instance
+	resource with the new one.
+
 =======================================================================================================
 Configuration as Code
 
--- AWS OpsWorks
+-- AWS OpsWorks / -- OpsWorks / -- Amazon OpsWorks
+
+AWS OpsWorks is a configuration management service that provides managed instances of Chef and Puppet.
+
+An AWS OpsWorks stacks configure lifecycle event runs when a single instance comes online
+or goes offline.
+
+AWS OpsWorks Stacks lets you manage applications and servers on AWS and on-premises.
+With OpsWorks Stacks, you can model your application as a stack containing different layers,
+such as load balancing, database, and application server.
 
 AWS OpsWorks Stacks does not include a central Chef Server.
 For OpsWocks stacks a custom cookbook repository location is configured for a stack. When instances
 in the stack are first launched, they will download cookbooks from this location and run them as part
 of lifecycle events.
-
-AWS OpsWorks is a configuration management service that provides managed instances of Chef and Puppet.
 
 AWS OpsWorks Stacks is an application and server management service. With OpsWorks Stacks, you can
 model your application as a stack containing different layers, such as load balancing,
@@ -1597,10 +1781,21 @@ instances in the stack are first launched, they will download cookbooks from thi
 them as part of lifecycle events.
 
 AWS OpsWorks Stacks instance types:
-- 24/7
+- 24/7 - you need to start them and stop them manually; time-based and load-based
+instances get started automatically
 - On demand
-- Load-based
+- Load-based - start additional instances when traffic is high and
+stop instances when traffic is low
 - Time-based - start and stop on specific time
+https://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-autoscaling.html
+Both time-based and load-based instances are supported for Linux stacks, while
+only time-based instances are supported for Windows stacks.
+
+We can configure the following OpsWorks limits:
+- maximum layers per stack
+- maximum instances per layer
+- maximum apps per stack
+- maximum apps per account, per region
 
 OpsWorks stacks support the following:
 - RDS
@@ -1616,6 +1811,9 @@ Task definitions should group containers by similar purpose, lifecycle, or resou
 
 OpsWorks stacks instances are registered when they come online and deregistered when they are
 moved to a different state.
+
+Instances in a single AWS OpsWorks Stacks layer should have the same functionality and purpose
+because all instances in a layer run the same recipes.
 
 -- AWS Config
 
@@ -1654,6 +1852,9 @@ IAM policies are global in scope, so you do not need a custom one per AWS Region
 You can add IAM users to IAM groups but not IAM roles. Instead, roles must be assumed for short-term
 sessions.
 
+The purpose of an idP is to answer the question "Who are you?". Based on
+this answer policies are assigned.
+
 DynamoDBReadOnlyAccess policy - built-in policy that applies to the resource * wildcard, which means
 that it applies to any and all DynamoDB tables accessible from the account regardless of when those
 tables were created.
@@ -1662,6 +1863,7 @@ AWS Security Token Service (AWS STS) supports a number of different tokens:
 - AssumeRole - short lived; 60 minutes by default, can be extended to 720 minutes
 - GetSessionToken
 - GetFederationToken
+https://docs.aws.amazon.com/STS/latest/APIReference/API_GetSessionToken.html
 
 AWS AD Connector - AD Connector is a directory gateway with which you can redirect directory requests
 to your on-premises Microsoft Active Directory without caching any information in the cloud.
@@ -1679,7 +1881,23 @@ Connector [AD Connector] but not Simple Active Directory).
 AWS SSO does not support Amazon Cognito.
 AWS SSO does not use SAML.
 
+-- Amazon STS / -- AWS STS / -- STS
+
+These are the Amazon STS actions:
+- AssumeRole - 
+- AssumeRoleWithSAML - this action provides access key ID, secret access key and
+	a security tokens
+- AssumeRoleWithWebIdentity
+- DecodeAuthorizationMessage
+- GetAccessKeyInfo
+- GetCallerIdentity
+- GetFederationToken
+- GetSessionToken
+
+https://docs.aws.amazon.com/STS/latest/APIReference/API_Operations.html
+
 -- Cognito
+
 Amazon Cognito supports device remembering and tracking
 Amazon Cognito supports MFA authentication.
 Amaozn Cognito supports also SMS-based MFA authentication.
@@ -1700,6 +1918,10 @@ Using AWS as an idP allows you to use AWS CloudTrail to audit who is using the s
 Amazon CloudWatch logs are generated if you are using Amazon Cognito to control access to AWS
 resources.
 
+OpenID token types:
+- Refresh token - allows you to require a new access token when the previous one expires
+- Access token - controls which APIs can be executed
+- ID token - establishes identity
 
 =======================================================================================================
 Integration
@@ -1718,7 +1940,7 @@ A message is persisted in SQS until a consumer deletes it (DeleteMessage API).
 A consumer can receive up to 10 messages at a time.
 
 After a message is polled by the consumer, it becomes invisible to other consumers.
-This is when the visibility timeout begins. It's 30 seconds. During those 30 seconds the
+This is when the visibility timeout begins. It's 30 seconds by default. During those 30 seconds the
 message has to be processed. During that period of another consumer makes an attempt to retrieve the
 message it'll not be returned.
 After the visibility timeout passes and the message has not been deleted, it's put back into the
@@ -1906,6 +2128,7 @@ and sends new data to your Kinesis Data Firehose delivery stream.
 - Amazon Kinesis Producer Library (KPL) -
 	https://docs.aws.amazon.com/streams/latest/dev/developing-producers-with-kpl.html
 - Amazon Kinesis Data Streams API
+- open source tools built with Amazon Kinesis Data Streams API
 
 Kinesis consumer options:
 - AWS SDK
@@ -1954,9 +2177,21 @@ Amazon Kinesis Video Streams - capture, store and process video streams (not on 
 =======================================================================================================
 Serverless Compute
 
--- AWS Lambda
+Using a serverless approach means not having to manage servers and not incuring compute costs when
+there is no user traffic. This is achieved while still offering instant scale to meet high demand, such
+as a flash sale on an ecommerce site or a social media mention that drives a sudden wave of traffic.
+
+-- AWS Lambda / -- Lambda / -- Amazon Lambda
 
 In AWS Lambda you pay per request and compute time.
+
+Services that Lambda reads events from
+- Amazon DynamoDB
+- Amazon Kinesis
+- Amazon MQ
+- Amazon Managed Streaming for Apache Kafka
+- self-managed Apache Kafka
+- Amazon Simple Queue Service
 
 The default timeout value for an AWS Lambda function is 3 seconds.
 The default limit for concurrent executions with Lambda is set to 1000. This is a soft limit that
@@ -1965,7 +2200,13 @@ Limit increase request.
 The maximum execution time for a Lambda function is 300 seconds (5 minutes).
 The minimum execution time for a Lambda function is 1 second.
 
-You cannot develop AWS Lambda functions locally.
+The AWS Lambda concurrent executions limit is 1000.
+To raise this number one needs to contact the AWS support.
+
+You can use AWS SAM CLI to test and develop Lambda functions locally.
+
+Developing lambda functions locally:
+https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-using-debugging.html
 
 AWS Lambda natively supports Java, Go, PowerShell, Node. js, C#, Python, and Ruby code, and
 provides a Runtime API which allows you to use any additional programming languages to author your
@@ -2133,7 +2374,10 @@ Serverless Applications
 
 Serverless applications contain both static and dynamic data
 
--- SAM
+-- SAM / -- AWS SAM / -- Amazon SAM
+
+https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-resources-and-properties.html
+
 AWS SAM (Serverless application model) - it's based on Amazon Cloudformation and is optimized for
 deploying serverless resources.
 Properties for AWS Serverless Application Model:
@@ -2149,7 +2393,20 @@ Sam templates always need to contain:
 - Transform
 - Resource
 
--- API Gateway
+The event property in SAM is used to connect an AWS Lambda function to the Amazon API gateway
+We can generate a lambda function with the following command:
+sam local generate-event
+
+After you deploy an AWS SAM template to AWS CloudFormation you cannot view the
+original template. After the template is submitted and the AWS::Serverless transform
+is executed, an AWS CloudFormation-supported template is generated.
+
+-- API Gateway / -- AWS API Gateway / -- Amazon API Gateway
+
+API Gateway supports the following HTTP methods:
+GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD
+It doesn't support trace
+
 Amazon API gateway only supports HTTPS endpoints.
 Without enabling CORS we're not going to be able to call the Amazon API Gateway service from another
 domain. You use a stage to deploy your API, and a resource is typed object that is part of your API's
@@ -2175,11 +2432,16 @@ You can add a maximum of 20 nodes to an Amazon ElastiCache Redis cluster.
 =======================================================================================================
 Monitoring and Troubleshooting
 
--- AWS CloudTrail
+-- AWS CloudTrail / -- CloudTrail
 
 The following are considered management events by AWS CloudTrail:
 - modifying an Amazon S3 bucket policy
 - creating an Amazon RDS instance
+
+We can access AWS CloudTrail logs using:
+- AWS CloudTrail API
+- AWS CLI
+- AWS Management Console
 
 AWS CloudTrail events contain the following information:
 - what request is being made
@@ -2195,11 +2457,24 @@ Here's how you can configure notifications for each time the AWS root user logs 
 metric for console sign-in events; create an alarm for this metric; and configure an Amazon SNS
 action for the alarm
 
--- AWS CloudWatch
+The following are provided in an AWS CloudTrail event:
+- the response of the request
+- the AWS IAM user or role making the request
+
+-- AWS CloudWatch / -- CloudWatch / -- Amazon CloudWatch
 
 You can have up to 10 dimensions in a metric.
 
 CloudWatch does not aggregate data across regions.
+
+The following are available CloudWatch alarm actions:
+- EC2 Auto Scaling actions
+- AWS Lambda functions
+- Amazon SNS topics
+
+We can stream our custom logs from our applications to CloudWatch by using the cloudwatch
+agent. It doesn't take any additional configurations besides installing, configuring and
+starting the AWS CloudWatch agent.
 
 In Amazon CloudWatch data points with a period of 300 seconds are stored for 63 days.
 Logging to Amazon CloudWatch from a EC2 instance requires installing the CloudWatch Logs agent.
@@ -2258,10 +2533,12 @@ Schema Registry - EventBus feature - generates code that can parse event data
 
 Soon the CloudWatch Events name will be replaced with EventBridge
 
--- Amazon X-Ray
+-- Amazon X-Ray / -- X-ray / -- AWS XRay / -- Amazon XRay
 
 System for microservice tracing
 Uses IAM for authorization and KMS for encryption at rest
+
+X-Ray tracks only a statistically meaningful number of requests to a system
 
 How to use X-Ray
 - Your code must leverage the AWS SDK. It'll then capture HTTP, DB, SQS, AWS service calls
@@ -2353,6 +2630,8 @@ applications from a single point of failure.
 
 Provisioned IOPS volumes in the Amazon EBS are designed to deliver the expected performance only
 when they are attached to an Amazon EBS optimized instance.
+For maximum consistency, a Provisioned IOPS volume must maintain an average queue depth
+(rounded to the nearest whole number) of one for every 1,000 Provisioned IOPS in a minute
 
 In AWS Cloudfront, some headers such as Date or User-Agent, significantly reduce the cache hit ration
 (the proportion of requests that are served from a CloudFront edge cache).
@@ -2399,3 +2678,12 @@ https://github.com/lukpep/aws-sam-workshop
 
 Introduction to DevOps in AWS:
 https://docs.aws.amazon.com/whitepapers/latest/introduction-devops-aws/welcome.html
+
+Notes:
+https://github.com/itsmostafa/certified-aws-developer-associate-notes
+https://github.com/KarlCF/aws-developer-associate-notes
+https://github.com/shrinivas93/AWS-Certified-Developer-Associate-Notes
+https://github.com/maludecks/aws-developer-associate-notes
+https://gist.github.com/dboyd13/cff5169f25b4f35e1816edd85943dec5
+https://github.com/minhntm/aws-developer-associate-certificate
+https://github.com/antoniolofiego/CloudCertNotes/blob/master/AWSCertifiedDeveloperAssociate.md
