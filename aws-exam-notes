@@ -1092,7 +1092,8 @@ Server-side encryption provided by the DynamoDB service is a recommended way to 
 stored in DynamoDB.
 Each record in DynamoDB Streams appears only once in a stream.
 400KB - this is the maximum DynamoDB item size limit.
-QueryTable is the DynamoDB operation used to find items based on primary key.
+QueryTable is the DynamoDB operation used to find items based on primary key. It
+also returns metadata beside the document.
 UpdateTable is the DynamoDB operation used to modify the provisioned throughput settings, global
 secondary indexes, or DynamoDB Streams settings for a given table.
 Scan is the DynamoDB operation used to read every item in a table.
@@ -1386,6 +1387,7 @@ Elastic Beanstalk is based on cloud formation.
 
 RDS databases aren't preserved or replicated when cloning an EB environment. A new RDS instances
 with the same configuration is created.
+https://aws.amazon.com/premiumsupport/knowledge-center/decouple-rds-from-beanstalk/
 
 Elastic beanstalk can use the following to create a web server environment:
 - Auto Scaling Group
@@ -1407,11 +1409,14 @@ All accounts involved are billed for user-accessed AWS resources allocated by AW
 Beanstalk.
 
 In an immutable update in AWS Elastic Beanstalk, a new Auto Scaling group is created and registered
-with the load balancer. Once health checks pass, the already
-existing Auto Scaling group is terminated.
+with the load balancer. Once health checks pass, the already existing Auto Scaling group is terminated.
+
+Immutable updates are helpful when 100% uptime is required for both successful and failed
+deployments.
 
 Immutable deployments are useful when 100% of both old and new setups need to be existing
 at the same time.
+They are the fastest deployments for the lowest price.
 
 After creating an Elastic Beanstalk environment, you cannot change the ELB type but only change its
 configuration.
@@ -1790,6 +1795,11 @@ Replacement
 	For example, if you update the AvailabilityZone property of an AWS::EC2::Instance resource type,
 	AWS CloudFormation creates a new resource and replaces the current EC2 Instance
 	resource with the new one.
+	The following occur during a replacing update:
+	- A new resource is created
+	- The original resource is deleted during the cleanup phase
+	- the resource becomes unavailable
+	- The resource physical ID changes
 
 =======================================================================================================
 Configuration as Code
@@ -1901,7 +1911,7 @@ tables were created.
 
 AWS Security Token Service (AWS STS) supports a number of different tokens:
 - AssumeRole - short lived; 60 minutes by default, can be extended to 720 minutes
-- GetSessionToken
+- GetSessionToken - this is the call being used with MFA auth
 - GetFederationToken
 https://docs.aws.amazon.com/STS/latest/APIReference/API_GetSessionToken.html
 
@@ -2665,6 +2675,9 @@ Optimization
 
 Multi availability zone is used for fault tolerance.
 In case of slow reads from AWS RDS we can create a read replica and routing calls to it.
+
+Just stopping an EC2 instance might not be the best practice for cost optimization. You may be
+charged for storage. Terminating it would prevent from being charged for storage.
 
 In AWS autoscaling group the instance user data is the space where you can place optional
 scripts that can run after bootstrapping the application. This is used to perform.
