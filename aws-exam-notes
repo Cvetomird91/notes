@@ -588,6 +588,13 @@ S3 supports replication:
 To enable it we need the source and destination buckets to have versioning enabled. It
 also needs an AWS Identity and Access Management (IAM) role in the account that
 grands Amazon S3 permission to replicate objects on your behalf
+
+	Here are some reasons to enable cross-region replication:
+	- minimize latency when your customers are in two geographical zones
+	- your compliance requirements dictate that you store data at an even further distance
+	than Availability Zones, which are tens of miles apart
+	- you have compute clusters in two different AWS regions that analyze the same set of objects
+
 - SRR - same region replication
 To enable it we must enable versioning in source and destionation buckets.
 The buckets can be in different accounts.
@@ -861,6 +868,8 @@ When a task of type EC2 is launched, ECS must determine where to place it, with 
 of CPU, memory and available port. To define this we need to define a task placement strategy
 and task placement constraints. This doesn't work on Fargate yet.
 
+A single task definition could contain up to 10 containers.
+
 ECS Task placement strategies:
 - binpack - place task based on the least available amount of CPU or memory. This minimizes
 	the number of EC2 instances in use
@@ -904,13 +913,15 @@ additional IAM roles to an EC2 ECS instance
 =======================================================================================================
 Databases
 
--- AWS RDS
+-- AWS RDS / -- RDS / -- Amazon RDS
 
 Amazon RDS manages for the developer the following things out of the box:
 - database software installation and patching
 - hardware provisioning
 - backups
 You are still responsible for managing the database settings reuired by the application.
+
+AWS RDS supports security groups.
 
 Enabling the Multi-AZ setup of AWS RDS enables a setup to have synchronous 
 
@@ -1251,7 +1262,7 @@ Health checks cost more when they're not non-aws endpoints.
 Route 53 traffic flow
 
 =======================================================================================================
--- Encryption
+-- Encryption / -- AWS KMS / -- KMS / -- CloudHSM / -- AWS CloudHSM
 
 The following components are required in an encryption system:
 - a cryptographic algorithm
@@ -1375,6 +1386,12 @@ Elastic Beanstalk is based on cloud formation.
 
 RDS databases aren't preserved or replicated when cloning an EB environment. A new RDS instances
 with the same configuration is created.
+
+Elastic beanstalk can use the following to create a web server environment:
+- Auto Scaling Group
+- Amazon Cognito User Pool
+- AWS SAM Local
+- EC2
 
 Elastic Beanstalk cannot perform automatic changes to AWS Identity and Access managemt (IAM)
 policies.
@@ -1641,6 +1658,21 @@ We can use SSM Parameter store with CodeBuild
 In case we need to work with large binary files that change rarely the best way to work with them
 in builds is to create a custom build container and include them there.
 
+-- AWS CodeCommit / -- CodeCommit
+
+We can send notifications to SNS in CodeCommit on the following events:
+- Comments on commits
+- Comments on pull requests
+- PR created
+- PR Updated
+- PR merged
+- PR status changed
+- Branch created
+- Branch deleted
+- Branch updated
+
+You can connect to an AWS CodeCommit repository without git credentials using the credentials helper
+
 =======================================================================================================
 Infrastructure as Code
 
@@ -1651,6 +1683,14 @@ The benefits of using AWS CloudFormation over AWS CLI / AWS SDK are the followin
 - Versionable infrastructure
 - Repeatable Infrastructure
 - Reduction of human error
+
+The reason for a cloudformation stack to reach the CreationPolicy's timeout value may be the following:
+- the user data script fails before reaching the cfn-signal step
+- the user data script does not include a call to cfn-signal
+- the instance cannot connect to the AWS CloudFormation endpoint when calling cfn-signal
+
+We can use CloudTrail to track which AWS resource a CloudFormation stack updated. We need to search
+CloudTrail for events where the ClientRequestToken corresponds to the token for this stack action.
 
 AWS CloudFormation supports templates of 51200 bytes in size when passing the template body as
 part of the CreateStack request. If we need to pass a larger template we can upload it to Amazon S3 and
@@ -2329,7 +2369,7 @@ up to 250 MB. The limit in that case is the 250 MB uncompressed code/dependency 
 We can create an AWS lambda function with the following command:
 aws lambda create-function
 
--- Amazon Step Functions
+-- Amazon Step Functions / -- Step Functions
 
 Amazon Step functions states:
 - Pass
@@ -2346,7 +2386,11 @@ flow - in the step functions themselves.
 
 In Parallel states, the state completes after all the state machines inside it have completed.
 
+The Activity feature of step functions allows us to ask for approval when a certain
+step is reached.
+
 -- AppSync - managed service that uses GraphQL.
+
 It has integrations with DynamoDB, Aurora, ElasticSearch and public HTTP endpoints.
 Lambda can be used for custom processing to make GraphQL resolvers
 It supports also Websockets and MQTT on websocket
