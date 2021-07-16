@@ -676,6 +676,11 @@ distance than Availability Zones, which are tens of miles away.
 - you have compute clusters in two different AWS Regions that analyze the
 same set of objects
 
+When you need to grant a user outside your AWS account access to an object in S3
+the best way to grant access is to have him create a user ID using a third-party
+identity provider (idP) and based on that idP assign a policy that permits
+access.
+
 -- Amazon Elastic Block Store (EBS) / -- EBS / -- AWS EBS / -- Amazon EBS
 
 Amazon snapshot EBS data is loaded lazily.
@@ -1100,6 +1105,10 @@ The lifetime of data in a DynamoDB stream is 24 hours. This cannot be changed.
 
 Global tables allow DynamoDB tables to have the same table in multiple regions.
 
+There are two types of read operations:
+- strongly consistent read
+- eventually consistent read
+
 These are the following three operations used to read data in DynamoDB:
 - GetItem
 - Scan
@@ -1352,6 +1361,11 @@ The following are methods for AWS to provide KMI:
 - AWS controls the encryption method and the entire KMI
 - you control the encryption method and key management, and AWS provides the storage component of
 the KMI
+
+AWS recommends deploying multiple CloudHSM instances across availability zones to achieve
+the highest availability and durability of keys in your CloudHSM appliance.
+Regions are geographically distinct areas of operation, and synchronization of key material
+would become time consuming and costly.
 
 Custom key stores - this feature of Amazon KMS allows you to use a cluster of AWS CloudHSM
 instances for the storage of your encryption keys.
