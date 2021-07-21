@@ -137,7 +137,8 @@ In AD all the objects are organized into a tree. A group of trees is a forest.
 AWS Directory services:
 - AWS Managed Microsoft AD - it allows you to establish a "trust" connection with an on-prem AD setup
 You cannot access the EC2 instances running an AWS Managed Microsoft AD setup, because it is a
-managed service.
+managed service. It supports monitoring, daily snapshots and ability to sync with on-premises
+Active Directory
 - AD Connector - Directory Gateway (proxy) to an on-prem AD. Actual users are managed on-prem
 - Simple AD - AD-compatible managed directory on AWS (not based on MS AD). It cannot be joined with
 on-premise MS AD. It can be used to authenticate users against Amazon WorkDocs, Amazon Workspaces
@@ -255,6 +256,14 @@ You do not pay for an instance if the instance is stopped.
 
 The amount of network throughput that can be handled is a property of the instance type.
 If we want to icrease this for an EC2 instance, we need to stop it and change the instance type.
+
+To ensure your application is prepared for spot instance interruption:
+- use termination notices to monitor the status - you can monitor the status with them at 5-second
+	intervals and then use the next 2 minutes to complete any needed processing before the
+	instance is terminated
+- split up the work using Amazon SQS to monitor and track the completion status - this can help
+	resume work at a later point
+- use the Gold Image of the AMI so that instances are ready to go as soon as a spot request is fulfilled
 
 ENI (Elastic Network interface):
 - can have primary private IPv4, one or more secondary IPv4
@@ -1593,7 +1602,7 @@ cannot access resources in your VPC. We can add access to it by specifying the f
 
 The minimum number of stages required by a pipeline in AWS CodePipeline is 2.
 
--- AWS CodeDeploy
+-- AWS CodeDeploy / -- CodeDeploy
 
 If an AWS CodeDeploy configuration contains a file which already exists on the server,
 the deployment will fail by default.
@@ -1621,6 +1630,8 @@ CodeDeployDefault.HalfAtATime
 
 If we upgrade the script executed during an ApplicationStop lifecycle event it'll be executed
 at the next deployment after it is updated.
+
+We can configure how much revisions can CodeDeploy save
 
 -- AWS CodePipeline / -- Amazon CodePipeline / -- CodePipeline
 
@@ -1718,6 +1729,12 @@ reference its location in the CreateStack request.
 If you have a template that contains more than the limit of 200 resources, we can work around
 this limit if needed by creating nested stacks.
 
+You can access a property of a resource created in a nested stack by defining it as stack
+output. Then, in the parent stack use Fn::GetAtt and pass in two parameters, the child stack
+logical ID and Outputs.NestedStackOutputName.
+If we export the resource in the child stack and then in the parent import the exported value
+this won't work. It'll create a circular reference.
+
 Only the Resources section of a CloudFormation template is required.
 
 We cannot create a dynamic amount of resources. Everything in CloudFormation has to be declared
@@ -1814,6 +1831,9 @@ Replacement
 	- The original resource is deleted during the cleanup phase
 	- the resource becomes unavailable
 	- The resource physical ID changes
+
+Before a stack that exports an output can be deleted any stacks importing the exported value must
+remove the import.
 
 =======================================================================================================
 Configuration as Code
@@ -1945,6 +1965,8 @@ Connector [AD Connector] but not Simple Active Directory).
 AWS SSO does not support Amazon Cognito.
 AWS SSO does not use SAML.
 
+
+
 -- Amazon STS / -- AWS STS / -- STS
 
 These are the Amazon STS actions:
@@ -1959,6 +1981,8 @@ These are the Amazon STS actions:
 - GetSessionToken
 
 https://docs.aws.amazon.com/STS/latest/APIReference/API_Operations.html
+
+to use SAML idP with Amazon STS you need a SAML 2.0 based provider, 1.0 will not work.
 
 -- Cognito
 
@@ -2145,6 +2169,10 @@ Supose the throughput into the stream is 10MB and we have three separate applica
 consuming them.
 You have three applications, so you need to read at least 30MB per second of read
 throughput to read this data three times, which will require atleast 15 shards.
+
+Each Kinesis data stream shard supports a write throughput of 1MB per second.
+E.g. if you expect about 5MB of message you'll have to provision at least 5 shards.
+It would be also a good idea to provision 6 shards for some margin for fluctuation.
 
 Producers - they send data to Kinesis data streams
 Data retention is set to 1 day by default. It can be extended up to 365 days.
@@ -2412,6 +2440,9 @@ In Parallel states, the state completes after all the state machines inside it h
 
 The Activity feature of step functions allows us to ask for approval when a certain
 step is reached.
+
+Task state can be an activity or an AWS Lambda function.
+The same activity can be used in multiple state machines.
 
 -- AppSync - managed service that uses GraphQL.
 
