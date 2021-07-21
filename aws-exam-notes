@@ -117,7 +117,7 @@ After you have identified the optimal mix of RIs to address your business needs,
 from the Amazon EC2 RI purchase console or use the AWS SDK to act on your insights and purchase RIs.
 
 =======================================================================================================
-IAM and access control
+-- IAM and access control
 
 Dynamic policy - a policy with a variable
 
@@ -147,10 +147,13 @@ and Amazon WorkMail
 AWS access keys are typically used to sign API calls.
 
 =======================================================================================================
-Compute and Networking
+-- Compute and Networking / -- EC2 / -- VPC
 
 Regions - a set of datacenters
 Availability zone - each region has a set of availability zones (from 2 to 6, the usual is 3)
+
+Public IP addresses of EC2 instances change on each restart. Elastic IPs can be used, so that the same
+IP is assigned on reach reboot.
 
 Amazon EC2 instances can be resized but need to be stopped first.
 
@@ -251,6 +254,13 @@ time - can have up to 75% discount compared to On-demand. You need to pay upfron
 - dedicated instances - no other customers will share the physical hardware
 - dedicated hosts - book an entire physical server, control instance placement. Allocated for
 your account for a 3 year period reservation
+
+EC2 payment options:
+- Pay-as-you-go
+- All Upfront
+- On-Demand instance pricing
+- Partial Upfront
+- No upfront
 
 You do not pay for an instance if the instance is stopped.
 
@@ -570,6 +580,10 @@ S3 storage types:
 - Intelligent Tiering
 	small monthly monitoring and auto-tiering fee
 	Automatically moves objects between access tiers based on changing access patterns
+	Designed for customers who want to optimize storage costs automatically when data
+	access patterns change, without performance impact or operational overhead.
+	It delivers automatic cost savings by moving data between two tiers - frequent
+	access and infrequent access - when access patterns change
 - Glacier - low cost object storage meant for archiving and backups
 	Each item in Glacier is called an archive. Max archive size is 40TB
 	Arcyives are stored in vaults, not buckets
@@ -713,6 +727,7 @@ EBS volume types:
 	Max IOPS is 16k
 - IO1 (SSD) - critical business applications that require more than 16000 IOPS per volume
 	Suitable for large database workloads (Oracle SQL, MS SQL etc)
+	Designed for transactional, IOPS-intensive database workloads, boot volumes
 	4GiB - 16TiB
 	Max IOPS are 32000
 - ST1 (HDD) - good for big data, data warehouses, log processing
@@ -1178,7 +1193,9 @@ With UpdateItem we can use atomic counters for numeric values and increase them
 local secondary index - alternative sort key for a table, local to the hash key. We can have up to
 5 of them in a table. It's local be cause it's local to the partition key, e.g. 
 
-global secondary index
+global secondary index - enables you to use a different partition key or primary key in
+addition to a different sort key
+
 GSIs can throttle your main table
 
 DynamoDB is an optimistic locking / concurrency database.
@@ -1407,6 +1424,7 @@ AWS Encryption SDK:
 -- Elastic Beanstalk / -- AWS Elastic Beanstalk / -- Amazon Elastic Beanstalk
 
 Elastic Beanstalk is based on cloud formation.
+The Elastic beanstalk worker environment is useful to create long-running SQS-based logics
 
 RDS databases aren't preserved or replicated when cloning an EB environment. A new RDS instances
 with the same configuration is created.
@@ -1610,6 +1628,11 @@ The CodeDeploy agent sends progress reports to the CodeDeploy service. The servi
 to query instances directly, and the Amazon EC2 API does not interact with instances at the
 operating system level.
 
+If two deployment groups reference the same Auto Scaling Group, a failure of the first
+group's deployment can block the second until the deployment times out. Since the
+instance that failed deployment has been terminated from the Auto Scaling Group,
+the AWS CodeDeploy agent is unable to provide results to the service.
+
 If an AWS CodeDeploy deployment fails the changes are left as-is, unless they're reverted
 explicitly.
 
@@ -1623,15 +1646,31 @@ CodeDeploy only deploys your application. It doesn't provision the instances.
 If you specify a hook script in the ApplicationStop lifecycle event of an AWS CodeDeploy appspec.yml
 it will not run on the first deployment to an instance.
 
-CodeDeploy deployment configurations:
+https://docs.aws.amazon.com/codedeploy/latest/userguide/deployment-configurations.html
+CodeDeploy deployment configurations for EC2/on-premise compute platforms:
 CodeDeployDefault.AllAtOnce
 CodeDeployDefault.OneAtATime
 CodeDeployDefault.HalfAtATime
 
+CodeDeploy deployment configurations for ECS compute platforms:
+- Canary
+- Linear
+- AllAtOnce
+
+CodeDeploy deployment configurations for EC2 blue/green deployments:
+- Canary
+- Linear
+- AllAtOnce
+
+CodeDeploy deployment configurations for AWS Lambda deployments:
+- Canary
+- Linear
+- AllAtOnce
+
 If we upgrade the script executed during an ApplicationStop lifecycle event it'll be executed
 at the next deployment after it is updated.
 
-We can configure how much revisions can CodeDeploy save
+We can configure how much revisions can CodeDeploy save back
 
 -- AWS CodePipeline / -- Amazon CodePipeline / -- CodePipeline
 
@@ -1718,6 +1757,9 @@ The reason for a cloudformation stack to reach the CreationPolicy's timeout valu
 - the user data script fails before reaching the cfn-signal step
 - the user data script does not include a call to cfn-signal
 - the instance cannot connect to the AWS CloudFormation endpoint when calling cfn-signal
+
+The CreationPolicy allows us to specify a required number of signals to mark a resource as
+CREATE_COMPLETE.
 
 We can use CloudTrail to track which AWS resource a CloudFormation stack updated. We need to search
 CloudTrail for events where the ClientRequestToken corresponds to the token for this stack action.
@@ -1946,7 +1988,10 @@ tables were created.
 AWS Security Token Service (AWS STS) supports a number of different tokens:
 - AssumeRole - short lived; 60 minutes by default, can be extended to 720 minutes
 - GetSessionToken - this is the call being used with MFA auth
-- GetFederationToken
+- GetFederationToken - returns a set of temporary security credentials (consisting of an access key
+ID, a secret access key and a security token) for a federated user. You call the GetFederationToken
+action using the long-term security credentials of an IAM user. This is appropriate in contexts
+where those creds can be safely stored, usually in a server-side app.
 https://docs.aws.amazon.com/STS/latest/APIReference/API_GetSessionToken.html
 
 AWS AD Connector - AD Connector is a directory gateway with which you can redirect directory requests
@@ -1992,6 +2037,9 @@ Amaozn Cognito supports also SMS-based MFA authentication.
 Amazon Cognito supports Google SSO and MS AD and custom identity providers.You need SAML 2.0 based
 identity provider to integrate with Amazon Cognito.
 
+Cognito Identity pools could be used to provide single sign on capabilities for
+your application.
+
 SAML - security assertion markup language
 
 The following are valid Cognito identity providers (idP) for Amazon Cognito:
@@ -2014,8 +2062,13 @@ OpenID token types:
 =======================================================================================================
 Integration
 
--- Amazon SQS
+-- Amazon SQS / -- SQS
+
 Amazon SNS supports the same attributes and parameters as Amazon SQS.
+
+The number of in-flight messages is the number of messages that have been received by a consumer and
+not yet deleted. These messages are invisible until the visibility timeout interval passes. During
+this interval, they are in flight.
 
 One of the widest usages of SQS is for decoupling applications.
 
@@ -2433,6 +2486,8 @@ Amazon Step functions states:
 - Parallel
 - Map
 
+Pipeline actions can be ordered to be completed in stage and in parallel.
+
 All the error handling in step function flows should happen outside the lambda functions used in the
 flow - in the step functions themselves.
 
@@ -2714,6 +2769,17 @@ With Systems Manager, you can group resources, like Amazon EC2 instances, Amazon
 Amazon S3 buckets, or Amazon RDS instances, by application, view operational data for monitoring and
 troubleshooting, implement pre-approved change work flows, and audit operational changes
 for your groups of resources.
+
+-- AWS IoT Core service
+
+When you build a solution with IoT Core that sends statuses to IoT devices and want to handle the times
+when those devices don't have internet connectivity, you might want to post status updates to the
+Device Shadow service.
+
+The AWS IoT Device Shadow service adds shadows to AWS IoT thing objects. Shadows can make a device's
+state available to apps and other services whether the device is connected to AWS IoT or not. AWS IoT
+thing objects can have multiple named shadows so that your IoT solution has more options for connecting
+your devices to other apps and services.
 
 =======================================================================================================
 Optimization
