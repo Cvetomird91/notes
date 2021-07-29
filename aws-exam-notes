@@ -120,6 +120,7 @@ from the Amazon EC2 RI purchase console or use the AWS SDK to act on your insigh
 -- IAM and access control
 
 Dynamic policy - a policy with a variable
+https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_terms-and-concepts.html
 
 Inline vs Managed policies vs Customer Managed
 Inline - strict one to one relation between principal and policy. If you delete the IAM principle
@@ -128,6 +129,11 @@ When we create an inline policy the max size of permissions assigned in total is
 Managed policies are maintained by AWS - good for power users and administrators. Updated in case of
 new services and new APIs
 Customer Managed policy - re-usable, under version control
+
+Trust policy
+A JSON policy document in which you define the principals that you trust to assume the role.
+A role trust policy is a required resource-based policy that is attached to a role in IAM.
+The principals that you can specify in the trust policy include users, roles, accounts, and services.
 
 IAM:PassRole - granting a user permissions to pass a role to an AWS service. A trust policy
 for the role that allows the service to assume the role
@@ -148,6 +154,25 @@ AWS access keys are typically used to sign API calls.
 
 =======================================================================================================
 -- Compute and Networking / -- EC2 / -- VPC
+
+Amazon Elastic Compute Cloud (EC2) is an example of an architecture that includes a data plane and a
+control plane. The data plane consists of physical servers where customers’ Amazon EC2 instances run.
+The control plane consists of a number of services that interact with the data plane, performing
+functions such as these:
+
+- Telling each server about the EC2 instances that it needs to run.
+- Keeping running EC2 instances up to date with Amazon Virtual Private Cloud (VPC) configuration.
+- Receiving metering data, logs, and metrics emitted by the servers.
+- Deploying new software to the servers.
+
+Although the actual names and responsibilities can vary across similar architectures,
+these systems have two things in common:
+
+- The data plane and the control plane need to stay in sync with each other. The data plane needs to
+receive configuration updates from the control plane, and the control plane needs to receive operational
+state from the data plane.
+- The size of the data plane fleet exceeds the size of the control plane fleet, frequently by a factor
+of 100 or more.
 
 Regions - a set of datacenters
 Availability zone - each region has a set of availability zones (from 2 to 6, the usual is 3)
@@ -1156,6 +1181,9 @@ Only partition keys can be not null.
 Throughput can be exceeded temporarily using "burst credit". If burst credit are empty, you'll get
 a "ProvisionedThroughputExceededException". In such case we can use an exponentional backup strategy
 A reason may be "hot keys" - a key is looked up too many times.
+We can increase the WCUs and RCUs for a dynamodb table to prevent this exception.
+
+The default WCUs and RCUs for a DynamoDB table are set to 5 by default upon 
 
 WCU - write capacity unit
 1 WCU = 1 write per second of 1KB (1024 bytes).
@@ -1712,7 +1740,7 @@ https://docs.aws.amazon.com/codepipeline/latest/userguide/actions.html
 When multiple resources are configured for the same pipeline, the pipeline
 will be triggered when any source is updated.
 
--- AWS CodeBuild
+-- AWS CodeBuild / -- CodeBuild
 
 buildspec.yml - defines how CodeBuild compiles a project
 AWS S3 cache bucket (optional) - can be used in CodeBuild for faster builds
@@ -1726,6 +1754,10 @@ We can use SSM Parameter store with CodeBuild
 
 In case we need to work with large binary files that change rarely the best way to work with them
 in builds is to create a custom build container and include them there.
+
+Environment variables in CodeBuild projects are not encrypted and are visible using the CodeBuild
+API. Thus, if you need to pass sensitive information to build containers, use Systems
+Manager Parameter Store.
 
 -- AWS CodeCommit / -- CodeCommit
 
@@ -1741,6 +1773,10 @@ We can send notifications to SNS in CodeCommit on the following events:
 - Branch updated
 
 You can connect to an AWS CodeCommit repository without git credentials using the credentials helper
+
+Storing large binary objects in a git repository can incur massive storage requirements.
+Any time a binary object is modified in a repository, a new copy is saved. Comparing this to
+storing the binary file in an S3 bucket, the CodeCommit approach is more expensive.
 
 =======================================================================================================
 Infrastructure as Code
@@ -1824,6 +1860,9 @@ common delimiter
 - Fn::Join
 - Fn::Sub
 - Conditionals - If, Not, Equals...
+
+The return value of the Ref intrisic function for an AWS::ElasticLoadBalancing::LoadBalancer
+resource is the load balancer name, which is not valid in a URL.
 
 Stack set - create, update or delete stacks across multiple accounts and regions with a
 single operation
@@ -1940,6 +1979,13 @@ moved to a different state.
 
 Instances in a single AWS OpsWorks Stacks layer should have the same functionality and purpose
 because all instances in a layer run the same recipes.
+
+When you configure a deploy event in CodePipeline to deploy to OpsWorks Stacks, you must select the
+stack the application to deploy, and the layers into which to deploy the application.
+
+After updating a custom cookbook repository, any currently online instances will not automatically
+receive the updated cookbooks. To upload the modified cookbooks to the instances, you must first
+run the Update Custom Cookbooks command.
 
 -- AWS Config
 
@@ -2338,6 +2384,17 @@ Services that Lambda reads events from
 - self-managed Apache Kafka
 - Amazon Simple Queue Service
 
+We can create a separate environment in Lambda with new versions of the functions using
+aliases. E.g. we can switch between those environments by moving a PROD alias between them.
+
+Lambda automatically retries failed executions for asynchronous invocations. You can also configure 
+Lambda to forward payloads that were not processed to a dead-letter queue, which can be an
+Amazon SQS queue or Amazon SNS topic.
+
+There are two types of policies with Lambda: a function policy and an execution policy, or
+AWS role. A function policy defines which AWS resources are alowed to invoke your function. The
+execution role defines which AWS resources your function can access.
+
 The default timeout value for an AWS Lambda function is 3 seconds.
 The default limit for concurrent executions with Lambda is set to 1000. This is a soft limit that
 can be raised. To do this, you must open a case through the AWS support center page and send a Server
@@ -2445,6 +2502,13 @@ after you do so, it won't by default have access to the internet.
 Deploying a lambda function to a public subnet does not give it access to the Internet.
 To solve this, you need to deploy it to a private subnet with NAT Gateway / Instnace.
 You can also use VPC endpoints to privately access AWS services without a NAT.
+
+In case you have back-end web service EC2 instances that you want to block inbout
+public traffic from you can do the following:
+- launch the instances in a private subnet and rely on a NAT gateway in a public subnet
+to forward outbound internet requests
+- modify the inbound security group rules for the instance to allow only inbound requests
+from your webservers
 
 Lambda supports up to 1000 concurrent exectuions. This limit amounts for all the lambda
 functions in your account.
@@ -2555,6 +2619,13 @@ After you deploy an AWS SAM template to AWS CloudFormation you cannot view the
 original template. After the template is submitted and the AWS::Serverless transform
 is executed, an AWS CloudFormation-supported template is generated.
 
+We can create an Amazon API Gateway with SAM in the following ways:
+1. By defining an AWS::ApiGateway::RestApi resource and any associated AWS::ApiGateway::Method
+resources
+2. One will be created automatically whenever AWS::Serverless::Function resources are declared with
+one or more events.
+3. By defining an AWS::Serverless:Api and providing an inline or external Swagger definition
+
 -- API Gateway / -- AWS API Gateway / -- Amazon API Gateway
 
 API Gateway supports the following HTTP methods:
@@ -2591,6 +2662,8 @@ Monitoring and Troubleshooting
 The following are considered management events by AWS CloudTrail:
 - modifying an Amazon S3 bucket policy
 - creating an Amazon RDS instance
+
+CloudTrail tracks the origin identity of a request and the response sent.
 
 We can access AWS CloudTrail logs using:
 - AWS CloudTrail API
