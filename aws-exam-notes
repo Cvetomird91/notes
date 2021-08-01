@@ -153,7 +153,9 @@ and Amazon WorkMail
 AWS access keys are typically used to sign API calls.
 
 =======================================================================================================
--- Compute and Networking / -- EC2 / -- VPC
+Compute and Networking
+
+-- EC2 
 
 Amazon Elastic Compute Cloud (EC2) is an example of an architecture that includes a data plane and a
 control plane. The data plane consists of physical servers where customers’ Amazon EC2 instances run.
@@ -602,7 +604,7 @@ S3 storage types:
 	Supports SSL for data at transit and encryption at rest
 	Low cost compared to IA (by 20%)
 	Use cases: secondary backup or storing data you can recreate
-- Intelligent Tiering
+- Intelligent Tiering - useful when the access pattern is unknown
 	small monthly monitoring and auto-tiering fee
 	Automatically moves objects between access tiers based on changing access patterns
 	Designed for customers who want to optimize storage costs automatically when data
@@ -631,6 +633,47 @@ S3 API calls ban be logged in AWS CloudTrail.
 Amazon S3 access logs: https://docs.aws.amazon.com/AmazonS3/latest/userguide/LogFormat.html
 Setting the monitored bucket to be where you store your access logs is bad practice.
 
+Amazon S3 server logs can be used to record the following fields
+
+- Bucket Owner
+- Bucket
+- Time
+- Remote IP
+- Requestor
+- Request ID
+- Operation
+- Key
+- Request-URI
+- HTTP Status
+- Error Code
+- Bytes Sent
+- Object Size
+- Total Time
+- Turn-Around Time
+- Referer
+- User-Agent
+- Version Id
+- Host Id
+- Signature Version
+- Cipher Suite
+- Authentication Type
+- Host Header
+- TLS version
+
+For creating a S3 Batch operations job the following need to be specified:
+- Operation
+- Manifest
+- Priority
+- RoleArn
+- Report
+- Tags
+- Description
+
+Amazon S3 access points can be created to provide access to a large number of objects
+in Amazon S3 buckets. Access points ARN has format as below:
+- arn:aws:s3:region:account-id:accesspoint/access-point-name/object/resource - object
+is keyword here
+
 S3 supports replication:
 - CRR - cross-region replication
 To enable it we need the source and destination buckets to have versioning enabled. It
@@ -652,6 +695,11 @@ It's not retroactive - only the files added after enabling it will be replicated
 Any delete operation is not replicated.
 You cannot "chain" replication. If bucket 1 has replication in bucket 2 and bucket 2
 has replication in bucket 3, then objects created in bucket 1 aren't replicated in 3.
+
+For enabling replication for an Amazon S3 bucket, replication configuration is required to be
+added. While creating replication configuration, multiple rules can be added based upon the subset
+of objects to be matched. Filter for these rules can be based upon matching objects tag
+or object key prefixes or any combination of both.
 
 S3 supports MFA delete to prevent accidental deletion of objects.
 Only the bucket owner (root account) can enable/disable MFA-Delete
@@ -711,8 +759,13 @@ S3 Athena is based on Presto (https://prestodb.io/)
 
 For the exam, anytime you need to analyze data directly on S3, usually Athena is the solution.
 
-S3 Object Lock / Glacier Vault Lock
-WORM model - Write Once, Read Many - block object deletion for a specific amount of time
+S3 Object Lock / Glacier Vault Lock - creates a write once-read many (WORM) object type
+You can use WORM protection for scenarios where it is imperative that data is not changed
+or deleted after it has been written.
+Object lock is applied to a specific version of an object. So, there are multiple
+versions of an object, users can overwrite objects that do not have an object lock applied
+to them
+WORM model - Write Once, Read Many - block object change/deletion for a specific amount of time
 
 S3 can be used for session state cache but it's not meant for small objects
 because there are latency costs.
@@ -728,6 +781,15 @@ When you need to grant a user outside your AWS account access to an object in S3
 the best way to grant access is to have him create a user ID using a third-party
 identity provider (idP) and based on that idP assign a policy that permits
 access.
+
+Retrieval option 	| S3 Glacier 	| S3 Glacier Deep Archive |
+____________________|_______________|_________________________|
+Expedited			| 1-5 min		| Not supported           |
+Standard 			| 3-5 hours 	| 12 hours 				  |
+Bulk 				| 5-12 hours 	| 48 hours 				  |
+
+Replication configuration:
+https://docs.aws.amazon.com/AmazonS3/latest/userguide/replication-add-config.html
 
 -- Amazon Elastic Block Store (EBS) / -- EBS / -- AWS EBS / -- Amazon EBS
 
@@ -1181,7 +1243,11 @@ Only partition keys can be not null.
 Throughput can be exceeded temporarily using "burst credit". If burst credit are empty, you'll get
 a "ProvisionedThroughputExceededException". In such case we can use an exponentional backup strategy
 A reason may be "hot keys" - a key is looked up too many times.
-We can increase the WCUs and RCUs for a dynamodb table to prevent this exception.
+We can increase the WCUs and RCUs for a dynamodb table to prevent this exception in some cases.
+It may not be the most optimal solution because in case of more demand we may need to increase them
+again.
+We can also use AWS SDK to query the database from our app because it uses a jitter-based
+backoff algorithm.
 
 The default WCUs and RCUs for a DynamoDB table are set to 5 by default upon 
 
@@ -1275,6 +1341,8 @@ DynamoDB and Aurora
 AWS Schema Conversion tool
 
 Our clients can connect to dynamodb directly using identity providers (Google, SAML, OpenID, Cognito)
+
+BatchGetItem API call allows you to pass multiple Partition Key values in a single request.
 
 =======================================================================================================
 Route 53 and DNS
@@ -1602,56 +1670,22 @@ AWS CodePipeline
 
 https://docs.aws.amazon.com/codepipeline/latest/userguide/tutorials.html
 
-A main difference between CodePipeline and CodeDeploy is that CodePipeline deploys to Beanstalk
-and CodeDeploy deploys to an EC2 fleet or on-premise machines that run the CodeDeploy
-agent
-
 Code -> Build -> Test -> Deploy -> Provision
 CodeCommit -> CodeBuild (to Build and Test) -> AWS Elastic Beanstalk /
 											   AWS CodeDeploy / User managed EC2 Fleet (Deploy and
 											   Provision)
 
-CodeCommit repositories are automatically encrypted at rest using KMS. IAM user roles and policies
-are used for authenticaiton and authorization.
-It uses SSH or HTTPS for encryption in transit.
-We can also use Amazon STS to grant temporary access to external users.
 
-You can connect to AWS CodeCommit without git credentials using AWS CodeCommit credential
-helper. You can use it to convert an IAM access key and secret access key to valid Git
-credentials for SSH and HTTPS authentication.
-
-We can use AWS SNS with AWS CodeCommit to generate notifications on the following events:
-- PR creation
-- PR comment
-- commit comment
-
-You can trigger notifications in CodeCommit using:
-- AWS SNS - deletion of branches, pushes on master, notify external build system
-- AWS Lambda - for code analysis
-- AWS CloudWatch Event Rules - trigger for PR updates (created, updated, deleted, commented)
-
-CodePipeline stages can have multiple action groups.
-
-When a CodePipeline revision manual approval task gets rejected the revision
-is treated as failed.
-
-If we need to use a large file that changes rarely in CodeBuild we can create
-a custom build container that includes it and use it any time we need to change the files
-
-SSM Parameter store - can be used in buildspec.yml to add secrets to the build
-
-By default, any code build containers are launched outside of your VPC and this is why they
-cannot access resources in your VPC. We can add access to it by specifying the following:
-- VPCID
-- Subnet IDs
-- Security group IDs
-
-The minimum number of stages required by a pipeline in AWS CodePipeline is 2.
 
 -- AWS CodeDeploy / -- CodeDeploy
 
+We can configure how much revisions can CodeDeploy save back
+
 If an AWS CodeDeploy configuration contains a file which already exists on the server,
 the deployment will fail by default.
+By default, CodeDeploy will not remove files it does not manage. This is maintained as a list of
+files on the instance.
+
 The CodeDeploy agent sends progress reports to the CodeDeploy service. The service does not attempt
 to query instances directly, and the Amazon EC2 API does not interact with instances at the
 operating system level.
@@ -1695,12 +1729,24 @@ CodeDeploy deployment configurations for AWS Lambda deployments:
 - Linear
 - AllAtOnce
 
+Linear deployments are useful in scenarios in cases where we like to make sure that
+resources are updated on batches after equal intervals. E.g. if we have a number of
+AWS Lambda functions and we want to have two functions updated each three minutes.
+
 If we upgrade the script executed during an ApplicationStop lifecycle event it'll be executed
 at the next deployment after it is updated.
 
-We can configure how much revisions can CodeDeploy save back
-
 -- AWS CodePipeline / -- Amazon CodePipeline / -- CodePipeline
+
+A main difference between CodePipeline and CodeDeploy is that CodePipeline deploys to Beanstalk
+and CodeDeploy deploys to an EC2 fleet or on-premise machines that run the CodeDeploy
+agent
+
+When a CodePipeline revision manual approval task gets rejected the revision
+is treated as failed.
+
+The minimum number of stages required by a pipeline in AWS CodePipeline is 2.
+CodePipeline stages can have multiple action groups.
 
 CodePipeline concepts (to print):
 https://docs.aws.amazon.com/codepipeline/latest/userguide/concepts.html
@@ -1743,7 +1789,18 @@ will be triggered when any source is updated.
 -- AWS CodeBuild / -- CodeBuild
 
 buildspec.yml - defines how CodeBuild compiles a project
+SSM Parameter store - can be used in buildspec.yml to add secrets to the build
+
+If we need to use a large file that changes rarely in CodeBuild we can create
+a custom build container that includes it and use it any time we need to change the files
+
 AWS S3 cache bucket (optional) - can be used in CodeBuild for faster builds
+
+By default, any code build containers are launched outside of your VPC and this is why they
+cannot access resources in your VPC. We can add access to it by specifying the following:
+- VPCID
+- Subnet IDs
+- Security group IDs
 
 We can output artifact files from AWS CodeBuild to AWS CodePipeline by specifying
 the output files in the buildspec.yml config file.
@@ -1772,6 +1829,20 @@ We can send notifications to SNS in CodeCommit on the following events:
 - Branch deleted
 - Branch updated
 
+CodeCommit repositories are automatically encrypted at rest using KMS. IAM user roles and policies
+are used for authenticaiton and authorization.
+It uses SSH or HTTPS for encryption in transit.
+We can also use Amazon STS to grant temporary access to external users.
+
+You can connect to AWS CodeCommit without git credentials using AWS CodeCommit credential
+helper. You can use it to convert an IAM access key and secret access key to valid Git
+credentials for SSH and HTTPS authentication.
+
+You can trigger notifications in CodeCommit using:
+- AWS SNS - deletion of branches, pushes on master, notify external build system
+- AWS Lambda - for code analysis
+- AWS CloudWatch Event Rules - trigger for PR updates (created, updated, deleted, commented)
+
 You can connect to an AWS CodeCommit repository without git credentials using the credentials helper
 
 Storing large binary objects in a git repository can incur massive storage requirements.
@@ -1799,6 +1870,20 @@ CREATE_COMPLETE.
 
 We can use CloudTrail to track which AWS resource a CloudFormation stack updated. We need to search
 CloudTrail for events where the ClientRequestToken corresponds to the token for this stack action.
+
+Migration of database instances between stacks is a common workflow. To migrate an Amazon RDS
+layer, you must remove it from the first layer before you add it to the second.
+Here's the flow to execute such a migration:
+- supply the connection information to the second stack as custom JSON to ensure that the instances
+can connect
+- remove the Amazon RDS layer from the first stack
+- add the Amazon RDS layer to the second stack
+- Remove the connection custom JSON
+
+To prevent any potential errors, you need to declare explicitly that two or more resources
+depend on each other. Otherwise, if we use arbitrary strings AWS CloudFormation might not
+recognize this as dependency between resources and might not guarantee that they'll be deployed
+in the right order.
 
 AWS CloudFormation supports templates of 51200 bytes in size when passing the template body as
 part of the CreateStack request. If we need to pass a larger template we can upload it to Amazon S3 and
@@ -2056,8 +2141,6 @@ Connector [AD Connector] but not Simple Active Directory).
 AWS SSO does not support Amazon Cognito.
 AWS SSO does not use SAML.
 
-
-
 -- Amazon STS / -- AWS STS / -- STS
 
 These are the Amazon STS actions:
@@ -2221,7 +2304,7 @@ VisibilityTimeout - the duration, in seconds, that the received messages are hid
 subsequent retrieve requests after being retrieved by a ReceiveMessage request
 MessageRetentionPeriod - the period for which SQS retains a message
 
--- Amazon SNS
+-- Amazon SNS / -- SNS
 
 Amazon SNS supports the same attributes and parameters as Amazon SQS.
 The "event producer" only sends message to one SNS topic.
@@ -2253,6 +2336,11 @@ SNS also supports FIFO - FIFO topic. It can only have SQS queues as subscribers.
 a FIFO topic its name needs to end in ".fifo"
 
 Message filtering - JSON policy to filter messages sent to SNS topics.
+
+You want to design an application that sends a status email every morning to the system
+administrators. For this purpose you can create an SNS topic, subscribe all the
+administrators to this topic, set up an Amazon CloudWatch event to send a message on a
+daily cron schedule to this topic.
 
 -- Amazon Kinesis
 
@@ -2307,6 +2395,7 @@ Solution:
 - use highly distributed partition key
 - retries with exponential backoff
 - increase shards (scaling)
+- use AWS SDK (it automatically retries failed requests using jitter based backoff algorithm)
 
 Consumer patterns:
 - Shared (Classic) Fan-out consumer (GetRecords) - pull model. Good for low number
@@ -2659,6 +2748,28 @@ Monitoring and Troubleshooting
 
 -- AWS CloudTrail / -- CloudTrail
 
+Provide governance, compliance and audit for your AWS Account
+It's enabled by default
+
+A trail can be applied to all regions (default) or a single Region.
+
+If a resource is deleted in AWS, investigate CloudTrail first!
+
+We have 3 types of events in CloudTrail:
+- management events - operations performed on resources in your AWS account
+	e.g. AttachRolePolicy - emitted when somebody attaches a policy
+	CreateSubnet
+	CreateTrail
+	by default, trails are configured to log management events
+- data events - by default not logged, huge volume of information
+	e.g. GetObject, PutObject, DeleteObject from S3
+- CloudTrail insight events
+	traces unusual behaviour in your account - e.g. inaccurate resource provisioning,
+	hitting service limits, bursts of AWS IAM actions
+
+Events are stored for 90 days in CloudTrail
+To keep them more than this period, store them in S3.
+
 The following are considered management events by AWS CloudTrail:
 - modifying an Amazon S3 bucket policy
 - creating an Amazon RDS instance
@@ -2812,31 +2923,7 @@ There are three options to run X-Ray with ECS:
 - run a separate container in each EC2 instance within the cluster as a Daemon container (EC2)
 - X-Ray daemon running in a separate container within a task ("side-car") (EC2/Fargate)
 
--- Amazon CloudTrail
-
-Provide governance, compliance and audit for your AWS Account
-It's enabled by default
-
-A trail can be applied to all regions (default) or a single Region.
-
-If a resource is deleted in AWS, investigate CloudTrail first!
-
-We have 3 types of events in CloudTrail:
-- management events - operations performed on resources in your AWS account
-	e.g. AttachRolePolicy - emitted when somebody attaches a policy
-	CreateSubnet
-	CreateTrail
-	by default, trails are configured to log management events
-- data events - by default not logged, huge volume of information
-	e.g. GetObject, PutObject, DeleteObject from S3
-- CloudTrail insight events
-	traces unusual behaviour in your account - e.g. inaccurate resource provisioning,
-	hitting service limits, bursts of AWS IAM actions
-
-Events are stored for 90 days in CloudTrail
-To keep them more than this period, store them in S3.
-
--- Other
+-- Amazon Systems Manager
 
 With Systems Manager, you can group resources, like Amazon EC2 instances, Amazon EKS clusters,
 Amazon S3 buckets, or Amazon RDS instances, by application, view operational data for monitoring and
