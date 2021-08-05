@@ -282,6 +282,11 @@ time - can have up to 75% discount compared to On-demand. You need to pay upfron
 - dedicated hosts - book an entire physical server, control instance placement. Allocated for
 your account for a 3 year period reservation
 
+Valid spot instance behaviours on interruption:
+- Stop interrupted spot instances
+- Hibernate interrupted spot instances
+- Terminate interrupted spot instances
+
 EC2 payment options:
 - Pay-as-you-go
 - All Upfront
@@ -1249,7 +1254,22 @@ again.
 We can also use AWS SDK to query the database from our app because it uses a jitter-based
 backoff algorithm.
 
-The default WCUs and RCUs for a DynamoDB table are set to 5 by default upon 
+The default WCUs and RCUs for a DynamoDB table are set to 5 by default upon table creation.
+Before adaptive captivity, DynamoDB allocates read and write throughput evenly across partitions.
+
+https://www.bluematador.com/docs/troubleshooting/aws-dynamo-throttling
+In a DynamoDB table, items are stored across many partitions according to each item’s partition
+key. Each partition has a share of the table’s provisioned RCU (read capacity units) and WCU
+(write capacity units). When a request is made, it is routed to the correct partition for its data,
+and that partition’s capacity is used to determine if the request is allowed, or will
+be throttled (rejected). Some amount of throttling should be expected and handled by your application.
+
+Excessive throttling is caused by:
+
+Hot partitions: throttles are caused by a few partitions in the table 
+that receive more requests than the average partition
+Not enough capacity: throttles are caused by the table itself not
+having enough capacity to service requests on many partitions
 
 WCU - write capacity unit
 1 WCU = 1 write per second of 1KB (1024 bytes).
@@ -1848,6 +1868,8 @@ You can connect to an AWS CodeCommit repository without git credentials using th
 Storing large binary objects in a git repository can incur massive storage requirements.
 Any time a binary object is modified in a repository, a new copy is saved. Comparing this to
 storing the binary file in an S3 bucket, the CodeCommit approach is more expensive.
+
+CodeCommit repositories are by default encrypted at rest.
 
 =======================================================================================================
 Infrastructure as Code
@@ -2473,6 +2495,8 @@ Services that Lambda reads events from
 - self-managed Apache Kafka
 - Amazon Simple Queue Service
 
+The total size of environment variables shouldn't exceed 4KB.
+
 We can create a separate environment in Lambda with new versions of the functions using
 aliases. E.g. we can switch between those environments by moving a PROD alias between them.
 
@@ -2651,6 +2675,12 @@ step is reached.
 
 Task state can be an activity or an AWS Lambda function.
 The same activity can be used in multiple state machines.
+
+Difference between AWS Step function state machines and AWS Step function activities:
+- AWS Step Function state machines are made especially for AWS Lambda Workflows
+- AWS Step function activities are made for flows where the step is represented by
+a worker which could be hosted in ECS, EC2, mobile devices or elsewhere by calling the
+step functions API
 
 -- AppSync - managed service that uses GraphQL.
 
@@ -2993,6 +3023,9 @@ https://aws.amazon.com/builders-library/caching-challenges-and-strategies/
 
 QWikLabs:
 https://amazon.qwiklabs.com/catalog?keywords=introduction%20to&ransack=true&per_page=50
+
+QWikLabs AWS developer associate labs:
+https://www.qwiklabs.com/quests/20
 
 AWS Policy generator:
 https://awspolicygen.s3.amazonaws.com/policygen.html
