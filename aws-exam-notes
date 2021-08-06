@@ -796,6 +796,11 @@ Bulk 				| 5-12 hours 	| 48 hours 				  |
 Replication configuration:
 https://docs.aws.amazon.com/AmazonS3/latest/userguide/replication-add-config.html
 
+S3 Inventory - You can use it to audit and report on the replication and encryption status of your
+objects for business, compliance, and regulatory needs. You can also simplify and speed up business
+workflows and big data jobs using Amazon S3 inventory, which provides a scheduled alternative to
+the Amazon S3 synchronous List API operation.
+
 -- Amazon Elastic Block Store (EBS) / -- EBS / -- AWS EBS / -- Amazon EBS
 
 Amazon snapshot EBS data is loaded lazily.
@@ -1116,6 +1121,15 @@ Snapshot in order to ensure no data is lost.
 
 https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-deletionpolicy.html
 
+Starting today, Amazon RDS for MariaDB, Amazon RDS for MySQL, Amazon RDS for PostgreSQL, Amazon RDS for
+SQL Server and Amazon RDS for Oracle support RDS Storage Auto Scaling. RDS Storage Auto Scaling
+automatically scales storage capacity in response to growing database workloads, with zero downtime.
+
+Previously, you had to manually provision storage capacity based on anticipated application demands.
+Under-provisioning could result in application downtime, and over-provisioning could result in
+underutilized resources and higher costs. With RDS Storage Auto Scaling, you simply set your desired
+maximum storage limit, and Auto Scaling takes care of the rest.
+
 -- AWS Aurora
 
 AWS Aurora is compatible with both PostgreSQL and MySQL clients.
@@ -1196,6 +1210,14 @@ Amazon Neptune - NoSQL graph database for highly connected datasets.
 
 The difference between the relation databases and the dynamodb architecture is that
 it keeps related data together.
+
+Each table in DynamoDB can have up to 20 global secondary indexes
+(default quota) and 5 local secondary indexes.
+
+In general, you should use global secondary indexes rather than local secondary
+indexes. The exception is when you need strong consistency in your query results,
+which a local secondary index can provide but a global secondary index cannot
+(global secondary index queries only support eventual consistency).
 
 Amazon DynamoDB stores data in partitions. A partition is an allocation of storage for a table, 
 backed by solid state drives (SSDs) and automatically replicated across multiple Availability
