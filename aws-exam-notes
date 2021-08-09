@@ -1,4 +1,4 @@
-AWS Cloud API and CLI
+-- AWS Cloud API and CLI
 
 The AWS CLI creates the following two folders after configuration
 
@@ -71,16 +71,6 @@ When you call the AWS HTTP API, you need to sign the request.
 If you're making direct request to the AWS APIs you need to sign them
 yourself using Signature v4 (SigV4)
 
-The AWS Cost and Usage report contains the most comprehensive set of AWS cost and usage data
-available, including additional metadata about AWS services, pricing and reservations (for example,
-Amazon Elastic Compute Cloud (EC2) Reserved instances).
-
-You can configure this report to present the data hourly or daily. It is the source of truth for the
-billing pipeline.
-
-In EC2 you can use tags to control permissions. Using IAM policies you can use the tag to gain precise
-control over access to resources, ownership, and accurate cost allocation.
-
 -- Trusted Advisor / -- AWS Trusted Advisor / -- Amazon Trusted Advisor
 
 Trusted Advisor is an online tool that provides you with real-time guidance to help you provision your
@@ -115,6 +105,18 @@ period of use over which your recommendations are calculated (for example, last 
 You can access the AWS EC2 RI instances through the RI purchase console.
 After you have identified the optimal mix of RIs to address your business needs, you can access them
 from the Amazon EC2 RI purchase console or use the AWS SDK to act on your insights and purchase RIs.
+
+The AWS Cost and Usage report contains the most comprehensive set of AWS cost and usage data
+available, including additional metadata about AWS services, pricing and reservations (for example,
+Amazon Elastic Compute Cloud (EC2) Reserved instances).
+
+You can configure this report to present the data hourly or daily. It is the source of truth for the
+billing pipeline.
+
+Types of reports in cost explorer:
+- Cost and Usage
+- Reservation utilization
+- Savings plans utilization
 
 =======================================================================================================
 -- IAM and access control
@@ -193,6 +195,9 @@ Sydney region availability zones:
 ap-southeast-2a
 ap-southeast-2b
 ap-southeast-2c
+
+In EC2 you can use tags to control permissions. Using IAM policies you can use the tag to gain precise
+control over access to resources, ownership, and accurate cost allocation.
 
 Availability zones are a discrete data center with redundant power, networking and connectivity.
 They are separate from each other, so that they're isolated from disasters.
@@ -398,7 +403,7 @@ the same IP addresses.
 All EC2 instances connecting through a private subnet share the public IP address of the NAT.
 
 =======================================================================================================
-ELB - Elastic Load balancer
+-- ELB - Elastic Load balancer
 
 ELB seamlessly handles failures of downstream instances.
 It does regular health checks on your EC2 instances.
@@ -1442,6 +1447,8 @@ The following components are required in an encryption system:
 - a cryptographic algorithm
 - data to encrypt
 - a method to encrypt data
+
+The maximum data size supported by KMS is 4KB.
 
 AWS KMS integrates with:
 - AWS CloudTrail
