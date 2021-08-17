@@ -65,6 +65,22 @@ The development team has just configured and attached the IAM policy needed to a
 
 You need to activate IAM user access to the Billing and Cost Management console for all the users who need access - By default, IAM users do not have access to the AWS Billing and Cost Management console. You or your account administrator must grant users access. You can do this by activating IAM user access to the Billing and Cost Management console and attaching an IAM policy to your users. Then, you need to activate IAM user access for IAM policies to take effect. You only need to activate IAM user access once.
 
+You manage access in AWS by creating policies and attaching them to IAM identities (users, groups of users, or roles) or AWS resources. A policy is an object in AWS that, when associated with an identity or resource, defines their permissions. Resource-based policies are JSON policy documents that you attach to a resource such as an Amazon S3 bucket. These policies grant the specified principal permission to perform specific actions on that resource and define under what conditions this applies.
+
+Trust policy - Trust policies define which principal entities (accounts, users, roles, and federated users) can assume the role. An IAM role is both an identity and a resource that supports resource-based policies. For this reason, you must attach both a trust policy and an identity-based policy to an IAM role. The IAM service supports only one type of resource-based policy called a role trust policy, which is attached to an IAM role.
+
+AWS Organizations Service Control Policies (SCP) - If you enable all features of AWS organization, then you can apply service control policies (SCPs) to any or all of your accounts. SCPs are JSON policies that specify the maximum permissions for an organization or organizational unit (OU). The SCP limits permissions for entities in member accounts, including each AWS account root user. An explicit deny in any of these policies overrides the allow.
+
+
+Access control list (ACL) - Access control lists (ACLs) are service policies that allow you to control which principals in another account can access a resource. ACLs cannot be used to control access for a principal within the same account. Amazon S3, AWS WAF, and Amazon VPC are examples of services that support ACLs.
+
+Permissions boundary - AWS supports permissions boundaries for IAM entities (users or roles). A permissions boundary is an advanced feature for using a managed policy to set the maximum permissions that an identity-based policy can grant to an IAM entity. An entity's permissions boundary allows it to perform only the actions that are allowed by both its identity-based policies and its permissions boundaries.
+
+https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html#policies_resource-based
+https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html
+
+Access Advisor feature on IAM console- To help identify the unused roles, IAM reports the last-used timestamp that represents when a role was last used to make an AWS request. Your security team can use this information to identify, analyze, and then confidently remove unused roles. This helps improve the security posture of your AWS environments. Additionally, by removing unused roles, you can simplify your monitoring and auditing efforts by focusing only on roles that are in use. This feature can help us identify unused IAM roles and remove them without disrupting any service.
+
 =======================================================================================================
 Compute and Networking
 
@@ -143,6 +159,12 @@ https://media.datacumulus.com/aws-dva-pt/assets/pt1-q27-i1.jpg
 via - https://docs.aws.amazon.com/autoscaling/ec2/userguide/what-is-amazon-ec2-auto-scaling.html
 https://docs.aws.amazon.com/autoscaling/ec2/userguide/auto-scaling-benefits.html
 
+By default, scripts entered as user data are executed with root user privileges - Scripts entered as user data are executed as the root user, hence do not need the sudo command in the script. Any files you create will be owned by root; if you need non-root users to have file access, you should modify the permissions accordingly in the script.
+
+By default, user data runs only during the boot cycle when you first launch an instance - By default, user data scripts and cloud-init directives run only during the boot cycle when you first launch an instance. You can update your configuration to ensure that your user data scripts and cloud-init directives run every time you restart your instance.
+
+https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/user-data.html
+
 -- AWS VPC / -- Amazon VPC / Networking & VPC
 
 =======================================================================================================
@@ -172,6 +194,16 @@ HTTP 403 - HTTP 403 is 'Forbidden' error. You configured an AWS WAF web access c
 https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-monitoring.html
 https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-access-logs.html
 https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-troubleshooting.html
+
+You must ensure that your load balancer can communicate with registered targets on both the listener port and the health check port. Whenever you add a listener to your load balancer or update the health check port for a target group used by the load balancer to route requests, you must verify that the security groups associated with the load balancer allow traffic on the new port in both directions.
+
+Application Load Balancer Configuration for Security Groups and Health Check Routes:
+https://media.datacumulus.com/aws-dva-pt/assets/pt1-q28-i1.jpg
+via - https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-update-security-groups.html
+
+Cross-Zone Load Balancing Overview:
+https://media.datacumulus.com/aws-dva-pt/assets/pt1-q30-i1.jpg
+via - https://docs.aws.amazon.com/elasticloadbalancing/latest/userguide/how-elastic-load-balancing-works.html
 
 =======================================================================================================
 Storage
@@ -237,6 +269,11 @@ via - https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resource-record-
 
 Alias records let you route traffic to selected AWS resources, such as CloudFront distributions and Amazon S3 buckets. They also let you route traffic from one record in a hosted zone to another record. 3rd party websites do not qualify for these as we have no control over those.
 https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resource-record-sets-choosing-alias-non-alias.html
+
+https://media.datacumulus.com/aws-dva-pt/assets/pt1-q38-i1.jpg
+https://media.datacumulus.com/aws-dva-pt/assets/pt1-q38-i2.jpg
+
+https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/routing-policy.html
 
 =======================================================================================================
 -- Encryption / -- AWS KMS / -- KMS / -- CloudHSM / -- AWS CloudHSM
@@ -308,12 +345,31 @@ https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/customize-environment-res
 The rolling deployment policy deploys the new version in batches. Each batch is taken out of service during the deployment phase, reducing your environment's capacity by the number of instances in a batch. The cost remains the same as the number of EC2 instances does not increase. This policy avoids downtime and minimizes reduced availability, at a cost of a longer deployment time.
 
 Overview of Elastic Beanstalk Deployment Policies:
+
 https://media.datacumulus.com/aws-dva-pt/assets/pt1-q15-i1.jpg
+https://media.datacumulus.com/aws-dva-pt/assets/pt1-q61-i1.jpg
+via - https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/using-features.deploy-existing-version.html
+
+https://media.datacumulus.com/aws-dva-pt/assets/pt1-q22-i1.jpg
+
+Deploy using 'Rolling with additional batch' deployment policy - With this method, Elastic Beanstalk launches an extra batch of instances, then performs a rolling deployment. Launching the extra batch takes time, and ensures that the same bandwidth is retained throughout the deployment. This policy also avoids any reduced availability, although at a cost of an even longer deployment time compared to the Rolling method. Finally, this option is suitable if you must maintain the same bandwidth throughout the deployment.
+
+Deploy using 'Immutable' deployment policy - A slower deployment method, that ensures your new application version is always deployed to new instances, instead of updating existing instances. It also has the additional advantage of a quick and safe rollback in case the deployment fails. With this method, Elastic Beanstalk performs an immutable update to deploy your application. In an immutable update, a second Auto Scaling group is launched in your environment and the new version serves traffic alongside the old version until the new instances pass health checks.
+
+Deploy using 'All at once' deployment policy - This is the quickest deployment method. Suitable if you can accept a short loss of service, and if quick deployments are important to you. With this method, Elastic Beanstalk deploys the new application version to each instance. Then, the web proxy or application server might need to restart. As a result, your application might be unavailable to users (or have low availability) for a short time.
+
+Deploy using 'Rolling' deployment policy - With this method, your application is deployed to your environment one batch of instances at a time. Most bandwidth is retained throughout the deployment. Avoids downtime and minimizes reduced availability, at a cost of a longer deployment time. Suitable if you can't accept any period of completely lost service.
+
+
 
 =======================================================================================================
 Deployment as Code
 
 -- AWS CodeDeploy / -- CodeDeploy
+
+https://media.datacumulus.com/aws-dva-pt/assets/pt1-q58-i1.jpg
+ via - https://aws.amazon.com/about-aws/whats-new/2017/01/aws-codedeploy-introduces-blue-green-deployments/
+
 -- AWS CodePipeline / -- Amazon CodePipeline / -- CodePipeline
 -- AWS CodeBuild / -- CodeBuild
 
@@ -420,7 +476,76 @@ You can use the Export Output Values to export the name of the resource output f
 https://media.datacumulus.com/aws-dva-pt/assets/pt1-q20-i1.jpg
 https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/outputs-section-structure.html
 
+!FindInMap [ MapName, TopLevelKey, SecondLevelKey ] - The intrinsic function Fn::FindInMap returns the value corresponding to keys in a two-level map that is declared in the Mappings section. YAML Syntax for the full function name: Fn::FindInMap: [ MapName, TopLevelKey, SecondLevelKey ]
+
+Short form of the above syntax is : !FindInMap [ MapName, TopLevelKey, SecondLevelKey ]
+
+Where,
+
+MapName - Is the logical name of a mapping declared in the Mappings section that contains the keys and values. TopLevelKey - The top-level key name. Its value is a list of key-value pairs. SecondLevelKey - The second-level key name, which is set to one of the keys from the list assigned to TopLevelKey.
+
+Consider the following YAML template:
+
+Mappings:
+  RegionMap:
+    us-east-1:
+      HVM64: "ami-0ff8a91507f77f867"
+      HVMG2: "ami-0a584ac55a7631c0c"
+    us-west-1:
+      HVM64: "ami-0bdb828fd58c52235"
+      HVMG2: "ami-066ee5fd4a9ef77f1"
+    eu-west-1:
+      HVM64: "ami-047bb4163c506cd98"
+      HVMG2: "ami-31c2f645"
+    ap-southeast-1:
+      HVM64: "ami-08569b978cc4dfa10"
+      HVMG2: "ami-0be9df32ae9f92309"
+    ap-northeast-1:
+      HVM64: "ami-06cd52961ce9f0d85"
+      HVMG2: "ami-053cdd503598e4a9d"
+Resources:
+  myEC2Instance:
+    Type: "AWS::EC2::Instance"
+    Properties:
+      ImageId: !FindInMap
+        - RegionMap
+        - !Ref 'AWS::Region'
+        - HVM64
+      InstanceType: m1.small
+The example template contains an AWS::EC2::Instance resource whose ImageId property is set by the FindInMap function.
+
+MapName is set to the map of interest, "RegionMap" in this example. TopLevelKey is set to the region where the stack is created, which is determined by using the "AWS::Region" pseudo parameter. SecondLevelKey is set to the desired architecture, "HVM64" for this example.
+
+FindInMap returns the AMI assigned to FindInMap. For a HVM64 instance in us-east-1, FindInMap would return "ami-0ff8a91507f77f867".
+
+https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-findinmap.html
+
+The AWS::Serverless transform, which is a macro hosted by AWS CloudFormation, takes an entire template written in the AWS Serverless Application Model (AWS SAM) syntax and transforms and expands it into a compliant AWS CloudFormation template. So, presence of "Transform" section indicates, the document is a SAM template.
+
+
+Sample CloudFormation YAML template:
+https://media.datacumulus.com/aws-dva-pt/assets/pt1-q63-i1.jpg
+via - https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html
+
+Parameters in YAML:
+https://media.datacumulus.com/aws-dva-pt/assets/pt1-q63-i2.jpg
+via - https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/parameters-section-structure.html
+
+
 -- SAM / -- AWS SAM / -- Amazon SAM
+
+SAM supports the following resource types:
+
+AWS::Serverless::Api
+AWS::Serverless::Application
+AWS::Serverless::Function
+AWS::Serverless::HttpApi
+AWS::Serverless::LayerVersion
+AWS::Serverless::SimpleTable
+AWS::Serverless::StateMachine
+https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-resources-and-properties.html
+https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/transform-aws-serverless.html
+
 
 =======================================================================================================
 Configuration as Code
@@ -481,6 +606,10 @@ https://docs.aws.amazon.com/elasticloadbalancing/latest/application/listener-aut
 https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools.html
 https://aws.amazon.com/blogs/networking-and-content-delivery/authorizationedge-using-cookies-protect-your-amazon-cloudfront-content-from-being-downloaded-by-unauthenticated-users/
 
+Amazon Inspector - Amazon Inspector is an automated security assessment service that helps improve the security and compliance of applications deployed on AWS. Amazon Inspector automatically assesses applications for exposure, vulnerabilities, and deviations from best practices.
+
+https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor-view-data.html
+
 =======================================================================================================
 Integration
 
@@ -490,7 +619,6 @@ Amazon SQS uses a visibility timeout to prevent other consumers from receiving a
 
 https://media.datacumulus.com/aws-dva-pt/assets/pt1-q5-i1.jpg
  via - https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-visibility-timeout.html
-
 
 For example, you have a message with a visibility timeout of 5 minutes. After 3 minutes, you call ChangeMessageVisibility with a timeout of 10 minutes. You can continue to call ChangeMessageVisibility to extend the visibility timeout to the maximum allowed time. If you try to extend the visibility timeout beyond the maximum, your request is rejected. So, for the given use-case, the application can set the initial visibility timeout to 1 minute and then continue to update the ChangeMessageVisibility value if required.
 
@@ -581,6 +709,16 @@ via - https://aws.amazon.com/step-functions/
 
 -- AppSync - managed service that uses GraphQL.
 -- API Gateway / -- AWS API Gateway / -- Amazon API Gateway
+
+
+A usage plan specifies who can access one or more deployed API stages and methods—and also how much and how fast they can access them. The plan uses API keys to identify API clients and meters access to the associated API stages for each key.
+
+You can configure usage plans and API keys to allow customers to access selected APIs at agreed-upon request rates and quotas that meet their business requirements and budget constraints.
+
+
+Overview of API Gateway Usage Plans and API keys:
+https://media.datacumulus.com/aws-dva-pt/assets/pt1-q18-i1.jpg
+via - https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-api-usage-plans.html
 
 =======================================================================================================
 Serverless Applications
