@@ -223,7 +223,22 @@ Here is the correct way of reusing SSH keys in your AWS Regions:
 
 https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html
 
--- AWS VPC / -- Amazon VPC / Networking & VPC
+
+
+-- AWS VPC / -- Amazon VPC / Networking & VPC / -- VPC
+
+Which conditions should be met for Internet connectivity to be established in EC2?
+
+The network ACLs associated with the subnet must have rules to allow inbound and outbound traffic - The network access control lists (ACLs) that are associated with the subnet must have rules to allow inbound and outbound traffic on port 80 (for HTTP traffic) and port 443 (for HTTPs traffic). This is a necessary condition for Internet Gateway connectivity
+
+The route table in the instance’s subnet should have a route to an Internet Gateway - A route table contains a set of rules, called routes, that are used to determine where network traffic from your subnet or gateway is directed. The route table in the instance’s subnet should have a route defined to the Internet Gateway.
+
+A subnet can only be associated with one route table at a time.
+ A subnet is implicitly associated with the main route table if it is not explicitly associated with a particular route table. So, a subnet is always associated with some route table.
+
+Public subnets have access to the internet via Internet Gateway.
+
+https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Route_Tables.html
 
 -- ASG / -- Auto Scaling Group
 
@@ -315,6 +330,10 @@ https://docs.aws.amazon.com/AmazonS3/latest/dev/Versioning.html
 https://docs.aws.amazon.com/AmazonS3/latest/dev/ShareObjectPreSignedURL.html
 https://docs.aws.amazon.com/AmazonS3/latest/user-guide/add-bucket-policy.html
 
+When your source bucket and target bucket are the same bucket, additional logs are created for the logs that are written to the bucket. The extra logs about logs might make it harder to find the log that you are looking for. This configuration would drastically increase the size of the S3 bucket.
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q57-i1.jpg
+ via - https://aws.amazon.com/premiumsupport/knowledge-center/s3-server-access-logs-same-bucket/
+
 -- Amazon Elastic Block Store (EBS) / -- EBS / -- AWS EBS / -- Amazon EBS
 
 The maximum ratio of provisioned IOPS to requested volume size (in GiB) is 50:1. So, for a 200 GiB volume size, max IOPS possible is 200*50 = 10000 IOPS.
@@ -328,6 +347,18 @@ To create and use an encrypted Amazon Elastic Block Store (EBS) volume, you need
 In this CMK policy, the first statement provides a specified IAM principal the ability to generate a data key and decrypt that data key from the CMK when necessary. These two APIs are necessary to encrypt the EBS volume while it’s attached to an Amazon Elastic Compute Cloud (EC2) instance.
 https://d0.awsstatic.com/whitepapers/aws-kms-best-practices.pdf
 
+The performance of gp2 volumes is tied to volume size, which determines the baseline performance level of the volume and how quickly it accumulates I/O credits; larger volumes have higher baseline performance levels and accumulate I/O credits faster.
+
+General Purpose SSD (gp2) volumes offer cost-effective storage that is ideal for a broad range of workloads. These volumes deliver single-digit millisecond latencies and the ability to burst to 3,000 IOPS for extended periods of time. Between a minimum of 100 IOPS (at 33.33 GiB and below) and a maximum of 16,000 IOPS (at 5,334 GiB and above), baseline performance scales linearly at 3 IOPS per GiB of volume size.
+
+Maximum IOPS vs Volume Size for General Purpose SSD (gp2) volumes:
+https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/images/gp2_iops_1.png
+via - https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-volume-types.html
+
+EBS volumes are AZ locked.
+ https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-volumes.html
+https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSVolumes.html
+
 -- Amazon Elastic File System (EFS)
 -- Amazon Glacier
 
@@ -339,6 +370,7 @@ Docker in AWS (ECR, ECS)
 
 ECS Overview:
 https://docs.aws.amazon.com/AmazonECS/latest/developerguide/images/overview-fargate.png
+https://d1.awsstatic.com/diagrams/product-page-diagrams/product-page-diagram_ECS_1.86ebd8c223ec8b55aa1903c423fbe4e672f3daf7.png
 via - https://docs.aws.amazon.com/AmazonECS/latest/developerguide/Welcome.html
 
 How ECR works:
@@ -353,6 +385,14 @@ https://aws.amazon.com/blogs/containers/how-amazon-ecs-manages-cpu-and-memory-re
 https://aws.amazon.com/premiumsupport/knowledge-center/dynamic-port-mapping-ecs
 https://docs.aws.amazon.com/elasticloadbalancing/latest/application/tutorial-target-ecs-containers.html
 https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/create_deploy_docker_ecs.html
+
+ECS_ENABLE_TASK_IAM_ROLE - This configuration item is used to enable IAM roles for tasks for containers with the bridge and default network modes.
+ECS_ENGINE_AUTH_DATA - This refers to the authentication data within a Docker configuration file, so this is not the correct option.
+ECS_AVAILABLE_LOGGING_DRIVERS - The Amazon ECS container agent running on a container instance must register the logging drivers available on that instance with this variable. This configuration item refers to the logging driver.
+ECS_CLUSTER - This refers to the ECS cluster that the ECS agent should check into. This is passed to the container instance at launch through Amazon EC2 user data.
+https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-agent-config.html
+
+https://aws.amazon.com/blogs/compute/microservice-delivery-with-amazon-ecs-and-application-load-balancers/
 
 =======================================================================================================
 Databases
@@ -408,6 +448,16 @@ When you request a strongly consistent read, DynamoDB returns a response with th
 DynamoDB uses eventually consistent reads by default. Read operations (such as GetItem, Query, and Scan) provide a ConsistentRead parameter. If you set this parameter to true, DynamoDB uses strongly consistent reads during the operation. As per the given use-case, to make sure that only the last updated value of any item is used in the application, you should use strongly consistent reads by setting ConsistentRead = true for GetItem operation.
 https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q9-i1.jpg
 via - https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.ReadConsistency.html
+
+ a ProjectionExpression: A projection expression is a string that identifies the attributes you want. To retrieve a single attribute, specify its name. For multiple attributes, the names must be comma-separated.
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q19-i1.jpg
+ via - https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.ProjectionExpressions.html
+
+A Scan operation in Amazon DynamoDB reads every item in a table or a secondary index. By default, a Scan operation returns all of the data attributes for every item in the table or index. You can also use the ProjectionExpression parameter so that Scan only returns some of the attributes, rather than all of them.
+
+The Query operation in Amazon DynamoDB finds items based on primary key values. You must provide the name of the partition key attribute and a single value for that attribute. The Query returns all items with that partition key value. Optionally, you can provide a sort key attribute and use a comparison operator to refine the search results.
+
+ If you need to further refine the Query results, you can optionally provide a filter expression. A filter expression determines which items within the Query results should be returned to you. All of the other results are discarded. A filter expression is applied after Query finishes, but before the results are returned. Therefore, a Query consumes the same amount of read capacity, regardless of whether a filter expression is present. A Query operation can retrieve a maximum of 1 MB of data. This limit applies before the filter expression is evaluated.
 
 =======================================================================================================
 Route 53 and DNS
@@ -543,6 +593,23 @@ If a script runs successfully, it returns an exit code of 0 (zero). If the CodeD
 
 https://docs.aws.amazon.com/codedeploy/latest/userguide/application-specification-files.html
 
+An EC2/On-Premises deployment hook is executed once per deployment to an instance. You can specify one or more scripts to run in a hook.
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q56-i1.jpg
+ via - https://docs.aws.amazon.com/codedeploy/latest/userguide/reference-appspec-file-structure-hooks.html#reference-appspec-file-structure-hooks-run-order
+
+ValidateService: ValidateService is the last deployment lifecycle event. It is used to verify the deployment was completed successfully.
+AfterInstall - You can use this deployment lifecycle event for tasks such as configuring your application or changing file permissions
+ApplicationStart - You typically use this deployment lifecycle event to restart services that were stopped during ApplicationStop
+AllowTraffic - During this deployment lifecycle event, internet traffic is allowed to access instances after a deployment. This event is reserved for the AWS CodeDeploy agent and cannot be used to run scripts
+
+Due to a spike in traffic, when Lambda functions scale, this causes the portion of requests that are served by new instances to have higher latency than the rest. To enable your function to scale without fluctuations in latency, use provisioned concurrency. By allocating provisioned concurrency before an increase in invocations, you can ensure that all requests are served by initialized instances with very low latency.
+
+You can configure Application Auto Scaling to manage provisioned concurrency on a schedule or based on utilization. Use scheduled scaling to increase provisioned concurrency in anticipation of peak traffic. To increase provisioned concurrency automatically as needed, use the Application Auto Scaling API to register a target and create a scaling policy.
+
+Please see this note for more details on provisioned concurrency:
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q3-i1.jpg
+via - https://docs.aws.amazon.com/lambda/latest/dg/configuration-concurrency.html
+
 -- AWS CodePipeline / -- Amazon CodePipeline / -- CodePipeline
 -- AWS CodeBuild / -- CodeBuild
 
@@ -573,6 +640,12 @@ During rollbacks codedeploy first deploys to the failed instances.
 AWS CodeDeploy rolls back deployments by redeploying a previously deployed revision of an application as a new deployment on the failed instances.
 https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q22-i1.jpg
 via - https://docs.aws.amazon.com/codedeploy/latest/userguide/deployments-rollback-and-redeploy.html
+
+AWS CodeBuild monitors functions on your behalf and reports metrics through Amazon CloudWatch. These metrics include the number of total builds, failed builds, successful builds, and the duration of builds. You can monitor your builds at two levels: Project level, AWS account level. You can export log data from your log groups to an Amazon S3 bucket and use this data in custom processing and analysis, or to load onto other systems.
+
+https://docs.aws.amazon.com/codebuild/latest/userguide/monitoring-metrics.html
+https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/S3Export.html
+https://docs.aws.amazon.com/codebuild/latest/userguide/getting-started-input-bucket-console.html
 
 -- AWS CodeCommit / -- CodeCommit
 
@@ -714,6 +787,15 @@ via - https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/parameters-
 https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference.html
 https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-getatt.html
 
+The intrinsic function Ref returns the value of the specified parameter or resource. When you specify a parameter's logical name, it returns the value of the parameter, when you specify a resource's logical name, it returns a value that you can typically use to refer to that resource such as a physical ID.
+
+https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference.html
+
+
+All of the imports must be removed before you can delete the exporting stack or modify the output value. In this case, you must delete Stack B as well as Stack C, before you delete Stack A.
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q23-i1.jpg
+ via - https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-stack-exports.html
+
 
 -- SAM / -- AWS SAM / -- Amazon SAM
 
@@ -780,7 +862,11 @@ via - https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-u
 
 "Cognito Identity Pools" - You can use Identity pools to grant your users access to other AWS services. With an identity pool, your users can obtain temporary AWS credentials to access AWS services, such as Amazon S3 and DynamoDB. Identity pools support anonymous guest users, as well as the specific identity providers that you can use to authenticate users for identity pools.
 
-"Cognito Sync" - Amazon Cognito Sync is an AWS service and client library that enables cross-device syncing of application-related user data. You can use it to synchronize user profile data across mobile devices and the web without requiring your own backend.
+"Cognito Sync" - Amazon Cognito Sync is an AWS service and client library that enables cross-device syncing of application-related user data. You can use it to synchronize user profile data across mobile devices and the web without requiring your own backend. The client libraries cache data locally so your app can read and write data regardless of device connectivity status. When the device is online, you can synchronize data, and if you set up push sync, notify other devices immediately that an update is available.
+
+https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-sync.html
+
+Cognito User Pools - A Cognito user pool is a user directory in Amazon Cognito. With a user pool, your users can sign in to your web or mobile app through Amazon Cognito, or federate through a third-party identity provider (IdP). Whether your users sign-in directly or through a third party, all members of the user pool have a directory profile that you can access through an SDK.
 
 We can use Cognito Authentication via Cognito User Pools with Application Load Balancer
 
@@ -816,6 +902,18 @@ Please review the following note to understand the differences between Cognito U
 https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q10-i1.jpg
 via - https://docs.aws.amazon.com/cognito/latest/developerguide/what-is-amazon-cognito.html
 
+Amazon Cognito provides authentication, authorization, and user management for your web and mobile apps. Your users can sign in directly with a user name and password, or through a third party such as Facebook, Amazon, Google or Apple.
+
+A user pool is a user directory in Amazon Cognito. With a user pool, your users can sign in to your web or mobile app through Amazon Cognito, or federate through a third-party identity provider (IdP). Whether your users sign-in directly or through a third party, all members of the user pool have a directory profile that you can access through an SDK.
+
+Cognito is fully managed by AWS and works out of the box so it meets the requirements for the given use-case.
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q2-i1.jpg
+ via - https://docs.aws.amazon.com/cognito/latest/developerguide/what-is-amazon-cognito.html
+
+ https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q17-i1.jpg
+ via - https://docs.aws.amazon.com/autoscaling/ec2/userguide/create-asg-from-instance.html
+https://aws.amazon.com/ec2/autoscaling/faqs/
+
 =======================================================================================================
 Integration
 
@@ -839,6 +937,13 @@ https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q59-i1.jpg
 https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-dead-letter-queues.html
 
 ApproximateNumberOfMessagesVisible - This is a CloudWatch Amazon SQS queue metric. The number of messages in a queue might not change proportionally to the size of the Auto Scaling group that processes messages from the queue. Hence, this metric does not work for target tracking.
+
+
+Delay queues let you postpone the delivery of new messages to a queue for several seconds, for example, when your consumer application needs additional time to process messages. If you create a delay queue, any messages that you send to the queue remain invisible to consumers for the duration of the delay period. The default (minimum) delay for a queue is 0 seconds. The maximum is 15 minutes.
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q4-i1.jpg
+ via - https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-delay-queues.html
+
+ SQS FIFO queues are designed to guarantee that messages are processed exactly once, in the exact order that they are sent.
 
 -- Amazon SNS / -- SNS
 -- Amazon Kinesis / -- Kinesis
@@ -958,6 +1063,25 @@ A Lambda alias is like a pointer to a specific Lambda function version. Users ca
 Lambda Aliases allow you to create a "mutable" Lambda version that points to whatever version you want in the backend. This allows you to have a "dev", "test", prod" Lambda alias that can remain stable over time.
 
 https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-override-request-response-parameters.html
+
+In the AWS Lambda resource model, you choose the amount of memory you want for your function which allocates proportional CPU power and other resources. This means you will have access to more compute power when you choose one of the new larger settings. You can set your memory in 64MB increments from 128MB to 3008MB. You access these settings when you create a function or update its configuration. The settings are available using the AWS Management Console, AWS CLI, or SDKs.
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q15-i1.jpg
+ via - https://docs.aws.amazon.com/lambda/latest/dg/configuration-console.html
+
+Concurrency is the number of requests that a Lambda function is serving at any given time. If a Lambda function is invoked again while a request is still being processed, another instance is allocated, which increases the function's concurrency.
+
+Due to a spike in traffic, when Lambda functions scale, this causes the portion of requests that are served by new instances to have higher latency than the rest. To enable your function to scale without fluctuations in latency, use provisioned concurrency. By allocating provisioned concurrency before an increase in invocations, you can ensure that all requests are served by initialized instances with very low latency.
+
+You can configure Application Auto Scaling to manage provisioned concurrency on a schedule or based on utilization. Use scheduled scaling to increase provisioned concurrency in anticipation of peak traffic. To increase provisioned concurrency automatically as needed, use the Application Auto Scaling API to register a target and create a scaling policy.
+
+Please see this note for more details on provisioned concurrency:
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q3-i1.jpg
+via - https://docs.aws.amazon.com/lambda/latest/dg/configuration-concurrency.html
+
+Configure Application Auto Scaling to manage Lambda reserved concurrency on a schedule - To ensure that a function can always reach a certain level of concurrency, you can configure the function with reserved concurrency. When a function has reserved concurrency, no other function can use that concurrency. More importantly, reserved concurrency also limits the maximum concurrency for the function, and applies to the function as a whole, including versions and aliases.
+
+You cannot configure Application Auto Scaling to manage Lambda reserved concurrency on a schedule.
+https://aws.amazon.com/getting-started/projects/build-serverless-web-app-lambda-apigateway-s3-dynamodb-cognito/module-4/
 
 -- Amazon Step Functions / -- Step Functions
 
