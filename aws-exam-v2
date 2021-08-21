@@ -403,6 +403,13 @@ Databases
 RDS MySQL and RDS PostgreSQL work with IAM database authentication.
 https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.html
 
+The following two actions can help to establish a resilience RDS setup:
+- use cross-region read replicas
+- Enable the automated backup feature of Amazon RDS in a multi-AZ deployment that creates backups in a single AWS Region
+
+https://aws.amazon.com/rds/features/
+https://aws.amazon.com/blogs/database/implementing-a-disaster-recovery-strategy-with-amazon-rds/
+
 -- AWS Aurora
 -- AWS ElastiCache
 -- Other
@@ -870,6 +877,10 @@ Virtual MFA devices - A software app that runs on a phone or other device and em
 
 https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_mfa.html
 
+AWS will soon end support for SMS multi-factor authentication (MFA).
+
+https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_mfa_enable_sms.html
+
 -- Amazon STS / -- AWS STS / -- STS
 
 AWS Security Token Service (STS) - AWS Security Token Service (AWS STS) is a web service that enables you to request temporary, limited-privilege credentials for AWS Identity and Access Management (IAM) users or for users that you authenticate (federated users). However, it is not supported by API Gateway.
@@ -904,6 +915,7 @@ via - https://docs.aws.amazon.com/elasticloadbalancing/latest/application/listen
 
 Difference between Cognito User Pools and Cognito Identity Pools:
 https://media.datacumulus.com/aws-dva-pt/assets/pt1-q53-i2.jpg
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q10-i1.jpg
 via - https://docs.aws.amazon.com/cognito/latest/developerguide/what-is-amazon-cognito.html
 
 https://docs.aws.amazon.com/elasticloadbalancing/latest/application/listener-authenticate-users.html
@@ -938,6 +950,14 @@ https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q2-i1.jpg
  https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q17-i1.jpg
  via - https://docs.aws.amazon.com/autoscaling/ec2/userguide/create-asg-from-instance.html
 https://aws.amazon.com/ec2/autoscaling/faqs/
+
+As an alternative to using IAM roles and policies or Lambda authorizers, you can use an Amazon Cognito user pool to control who can access your API in Amazon API Gateway. To use an Amazon Cognito user pool with your API, you must first create an authorizer of the COGNITO_USER_POOLS type and then configure an API method to use that authorizer. After the API is deployed, the client must first sign the user into the user pool, obtain an identity or access token for the user, and then call the API method with one of the tokens, which are typically set to the request's Authorization header. The API call succeeds only if the required token is supplied and the supplied token is valid, otherwise, the client isn't authorized to make the call because the client did not have credentials that could be authorized.
+https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-integrate-with-cognito.html
+
+-- Other
+
+Signature Version 4 is the process to add authentication information to AWS requests sent by HTTP. For security, most requests to AWS must be signed with an access key, which consists of an access key ID and secret access key. These two keys are commonly referred to as your security credentials
+https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html
 
 =======================================================================================================
 Integration
@@ -1119,6 +1139,10 @@ How step functions work:
 https://d1.awsstatic.com/product-marketing/Step%20Functions/sfn_how-it-works.f795601e8338db32506b9abb01e71704f483fc81.png
 via - https://aws.amazon.com/step-functions/
 
+Please see this note for a simple example of a State Machine:
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q8-i1.jpg
+via - https://docs.aws.amazon.com/step-functions/latest/dg/amazon-states-language-state-machine-structure.html
+
 -- AppSync - managed service that uses GraphQL.
 -- API Gateway / -- AWS API Gateway / -- Amazon API Gateway
 
@@ -1141,6 +1165,16 @@ API Gateway supports the following mechanisms for authentication and authorizati
 https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q55-i1.jpg
 via - https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-control-access-to-api.html
 https://docs.aws.amazon.com/STS/latest/APIReference/welcome.html
+
+Mock - This type of integration lets API Gateway return a response without sending the request further to the backend. This is useful for API testing because it can be used to test the integration setup without incurring charges for using the backend and to enable collaborative development of an API.
+It is also used to return CORS-related headers to ensure that the API method permits CORS access. In fact, the API Gateway console integrates the OPTIONS method to support CORS with a mock integration.
+
+AWS_PROXY - This type of integration lets an API method be integrated with the Lambda function invocation action with a flexible, versatile, and streamlined integration setup. This integration relies on direct interactions between the client and the integrated Lambda function.
+
+HTTP_PROXY - The HTTP proxy integration allows a client to access the backend HTTP endpoints with a streamlined integration setup on single API method. You do not set the integration request or the integration response. API Gateway passes the incoming request from the client to the HTTP endpoint and passes the outgoing response from the HTTP endpoint to the client.
+
+HTTP - This type of integration lets an API expose HTTP endpoints in the backend. With the HTTP integration, you must configure both the integration request and integration response. You must set up necessary data mappings from the method request to the integration request, and from the integration response to the method response.
+https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-api-integration-types.html
 
 =======================================================================================================
 Serverless Applications
