@@ -333,6 +333,7 @@ https://docs.aws.amazon.com/AmazonS3/latest/user-guide/add-bucket-policy.html
 When your source bucket and target bucket are the same bucket, additional logs are created for the logs that are written to the bucket. The extra logs about logs might make it harder to find the log that you are looking for. This configuration would drastically increase the size of the S3 bucket.
 https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q57-i1.jpg
  via - https://aws.amazon.com/premiumsupport/knowledge-center/s3-server-access-logs-same-bucket/
+ https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-access-control.html
 
 -- Amazon Elastic Block Store (EBS) / -- EBS / -- AWS EBS / -- Amazon EBS
 
@@ -398,6 +399,10 @@ https://aws.amazon.com/blogs/compute/microservice-delivery-with-amazon-ecs-and-a
 Databases
 
 -- AWS RDS / -- RDS / -- Amazon RDS
+
+RDS MySQL and RDS PostgreSQL work with IAM database authentication.
+https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.html
+
 -- AWS Aurora
 -- AWS ElastiCache
 -- Other
@@ -482,6 +487,8 @@ https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/routing-policy.html
 
 KMS stores the CMK, and receives data from the clients, which it encrypts and sends back. This is how
 KMS encryption works.
+
+The maximum data size supported by KMS is 4KB.
 
 A customer master key (CMK) is a logical representation of a master key. The CMK includes metadata, such as the key ID, creation date, description, and key state. The CMK also contains the key material used to encrypt and decrypt data. You can generate CMKs in KMS, in an AWS CloudHSM cluster, or import them from your key management infrastructure.
 
@@ -796,6 +803,23 @@ All of the imports must be removed before you can delete the exporting stack or 
 https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q23-i1.jpg
  via - https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-stack-exports.html
 
+Parameter types enable CloudFormation to validate inputs earlier in the stack creation process.
+
+CloudFormation currently supports the following parameter types:
+
+String – A literal string
+Number – An integer or float
+List<Number> – An array of integers or floats
+CommaDelimitedList – An array of literal strings that are separated by commas
+AWS::EC2::KeyPair::KeyName – An Amazon EC2 key pair name
+AWS::EC2::SecurityGroup::Id – A security group ID
+AWS::EC2::Subnet::Id – A subnet ID
+AWS::EC2::VPC::Id – A VPC ID
+List<AWS::EC2::VPC::Id> – An array of VPC IDs
+List<AWS::EC2::SecurityGroup::Id> – An array of security group IDs
+List<AWS::EC2::Subnet::Id> – An array of subnet IDs
+
+https://aws.amazon.com/blogs/devops/using-the-new-cloudformation-parameter-types/
 
 -- SAM / -- AWS SAM / -- Amazon SAM
 
@@ -817,6 +841,7 @@ Please review this note for more details:
 https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q5-i1.jpg
 via - https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-template-anatomy.html
 
+https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification.html
 
 =======================================================================================================
 Configuration as Code
@@ -944,6 +969,11 @@ https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q4-i1.jpg
  via - https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-delay-queues.html
 
  SQS FIFO queues are designed to guarantee that messages are processed exactly once, in the exact order that they are sent.
+
+ Quotas:
+ https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/quotas-queues.html
+ https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/quotas-messages.html
+ https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/quotas-policies.html
 
 -- Amazon SNS / -- SNS
 -- Amazon Kinesis / -- Kinesis
