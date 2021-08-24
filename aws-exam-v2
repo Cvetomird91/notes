@@ -300,6 +300,11 @@ https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/x-forwarded-head
 https://aws.amazon.com/premiumsupport/knowledge-center/auto-scaling-terminate-instance
 https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-maintain-instance-levels.html#replace-unhealthy-instance
 
+Sticky sessions:
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q58-i1.jpg
+via - https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-target-groups.html#sticky-sessions
+https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-target-groups.html#slow-start-mode
+
 =======================================================================================================
 Storage
 
@@ -335,6 +340,45 @@ https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q57-i1.jpg
  via - https://aws.amazon.com/premiumsupport/knowledge-center/s3-server-access-logs-same-bucket/
  https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-access-control.html
 
+On Amazon S3, all objects by default are private. Only the object owner has permission to access these objects. However, the object owner can optionally share objects with others by creating a pre-signed URL, using their own security credentials, to grant time-limited permission to download the objects.
+You can also use an IAM instance profile to create a pre-signed URL. When you create a pre-signed URL for your object, you must provide your security credentials, specify a bucket name, an object key, specify the HTTP method (GET to download the object), and expiration date and time. The pre-signed URLs are valid only for the specified duration. So for the given use-case, the object key can be retrieved from the DynamoDB table, and then the application can generate the pre-signed URL using the IAM instance profile.
+
+Please see this note for more details:
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q5-i1.jpg
+via - https://docs.aws.amazon.com/AmazonS3/latest/dev/ShareObjectPreSignedURL.html
+
+https://aws.amazon.com/premiumsupport/knowledge-center/secure-s3-resources/
+
+which of the following would you suggest to automatically make the S3 bucket owner, also the owner of all objects in the bucket, irrespective of the AWS account used for uploading the objects?
+Use S3 Object Ownership to default bucket owner to be the owner of all objects in the bucket
+S3 Object Ownership is an Amazon S3 bucket setting that you can use to control ownership of new objects that are uploaded to your buckets. By default, when other AWS accounts upload objects to your bucket, the objects remain owned by the uploading account. With S3 Object Ownership, any new objects that are written by other accounts with the bucket-owner-full-control canned access control list (ACL) automatically become owned by the bucket owner, who then has full control of the objects.
+S3 Object Ownership has two settings: 1. Object writer – The uploading account will own the object. 2. Bucket owner preferred – The bucket owner will own the object if the object is uploaded with the bucket-owner-full-control canned ACL. Without this setting and canned ACL, the object is uploaded and remains owned by the uploading account.
+
+Amazon S3 access control lists (ACLs) enable you to manage access to buckets and objects. Each bucket and object has an ACL attached to it as a subresource. A bucket ACLs allow you to control access at bucket level.
+
+https://docs.aws.amazon.com/AmazonS3/latest/userguide/about-object-ownership.html
+https://docs.aws.amazon.com/AmazonS3/latest/userguide/cors.html
+
+Amazon S3 Transfer Acceleration enables fast, easy, and secure transfers of files over long distances between your client and your Amazon S3 bucket. However, S3 Transfer Acceleration leverages Amazon CloudFront’s globally distributed AWS Edge Locations. Each time S3 Transfer Acceleration is used to upload an object, AWS checks whether S3 Transfer Acceleration is likely to be faster than a regular Amazon S3 transfer. If it finds that S3 Transfer Acceleration might not be significantly faster, AWS shifts back to normal Amazon S3 transfer mode.
+
+Creating a CORS rule for an S3 bucket:
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q4-i1.jpg
+via - https://docs.aws.amazon.com/AmazonS3/latest/dev/cors.html
+
+Which of the following options can be used to control access to data stored on Amazon S3? 
+Bucket policies, Identity and Access Management (IAM) policies
+Query String Authentication, Access Control Lists (ACLs)
+https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-control-overview.html
+
+Allows full S3 access, but explicitly denies access to the Production bucket if the user has not signed in using MFA within the last thirty minutes - This example shows how you might create a policy that allows an Amazon S3 user to access any bucket, including updating, adding, and deleting objects. However, it explicitly denies access to the Production bucket if the user has not signed in using multi-factor authentication (MFA) within the last thirty minutes. This policy grants the permissions necessary to perform this action in the console or programmatically using the AWS CLI or AWS API.
+This policy never allows programmatic access to the Production bucket using long-term user access keys. This is accomplished using the aws:MultiFactorAuthAge condition key with the NumericGreaterThanIfExists condition operator. This policy condition returns true if MFA is not present or if the age of the MFA is greater than 30 minutes. In those situations, access is denied. To access the Production bucket programmatically, the S3 user must use temporary credentials that were generated in the last 30 minutes using the GetSessionToken API operation.
+https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_examples_s3_full-access-except-production.html
+https://docs.aws.amazon.com/AmazonS3/latest/dev/security-best-practices.html
+https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-access-control.html
+https://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html
+https://docs.aws.amazon.com/AmazonS3/latest/user-guide/add-bucket-policy.html
+https://docs.aws.amazon.com/AmazonS3/latest/userguide/security-best-practices.html
+
 -- Amazon Elastic Block Store (EBS) / -- EBS / -- AWS EBS / -- Amazon EBS
 
 The maximum ratio of provisioned IOPS to requested volume size (in GiB) is 50:1. So, for a 200 GiB volume size, max IOPS possible is 200*50 = 10000 IOPS.
@@ -364,7 +408,12 @@ https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSVolumes.html
 -- Amazon Glacier
 
 =======================================================================================================
--- Amazon CloudFront
+-- Amazon CloudFront / -- CloudFront / -- AWS CloudFront
+
+CloudFront Overview:  
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q16-i1.jpg
+via - https://aws.amazon.com/blogs/networking-and-content-delivery/amazon-s3-amazon-cloudfront-a-match-made-in-the-cloud/
+https://aws.amazon.com/blogs/networking-and-content-delivery/amazon-s3-amazon-cloudfront-a-match-made-in-the-cloud/
 
 =======================================================================================================
 Docker in AWS (ECR, ECS)
@@ -395,6 +444,11 @@ https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-agent-config.htm
 
 https://aws.amazon.com/blogs/compute/microservice-delivery-with-amazon-ecs-and-application-load-balancers/
 
+If you terminate a container instance while it is in the STOPPED state, that container instance isn't automatically removed from the cluster. You will need to deregister your container instance in the STOPPED state by using the Amazon ECS console or AWS Command Line Interface. Once deregistered, the container instance will no longer appear as a resource in your Amazon ECS cluster.
+
+https://aws.amazon.com/premiumsupport/knowledge-center/deregister-ecs-instance/
+https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ECS_instances.html
+
 =======================================================================================================
 Databases
 
@@ -410,8 +464,23 @@ The following two actions can help to establish a resilience RDS setup:
 https://aws.amazon.com/rds/features/
 https://aws.amazon.com/blogs/database/implementing-a-disaster-recovery-strategy-with-amazon-rds/
 
+You can enable automatic backups but as of 2020, the retention period is 0 to 35 days.
+https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_CreateSnapshot.html
+
+
 -- AWS Aurora
 -- AWS ElastiCache
+
+https://docs.aws.amazon.com/AmazonElastiCache/latest/mem-ug/images/ElastiCache-Caching.png
+via - https://docs.aws.amazon.com/AmazonElastiCache/latest/mem-ug/elasticache-use-cases.html
+
+Overview of Amazon ElastiCache features:  
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q3-i1.jpg
+via - https://aws.amazon.com/elasticache/features/
+https://docs.aws.amazon.com/AmazonElastiCache/latest/mem-ug/elasticache-use-cases.html
+
+https://aws.amazon.com/caching/session-management/
+
 -- Other
 -- Amazon DynamoDB / -- DynamoDB / -- AWS DynamoDB
 
@@ -536,9 +605,14 @@ via - https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/ebextensions.html
 https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/ebextensions.html
 https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/ebextensions-optionsettings.html
 
-https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/concepts.html
+Elastic BeanStalk Key Concepts:  
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q59-i1.jpg
+via - https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/concepts.html
+
 https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/images/clearbox-flow-00.png
 https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/Welcome.html
+https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/using-features-managing-env-tiers.html
+
 
 With deployment policies such as 'All at once', AWS Elastic Beanstalk performs an in-place update when you update your application versions and your application can become unavailable to users for a short period of time. You can avoid this downtime by performing a blue/green deployment, where you deploy the new version to a separate environment, and then swap CNAMEs (via Route 53) of the two environments to redirect traffic to the new version instantly. In case of any deployment issues, the rollback process is very quick via swapping the URLs for the two environments.
 
@@ -593,6 +667,8 @@ Deployment as Code
 
 https://media.datacumulus.com/aws-dva-pt/assets/pt1-q58-i1.jpg
  via - https://aws.amazon.com/about-aws/whats-new/2017/01/aws-codedeploy-introduces-blue-green-deployments/
+https://docs.aws.amazon.com/codedeploy/latest/userguide/welcome.html#welcome-deployment-overview-blue-green
+https://docs.aws.amazon.com/codedeploy/latest/userguide/deployments.html
 
 An AppSpec file must be a YAML-formatted file named appspec.yml and it must be placed in the root of the directory structure of an application's source code.
 
@@ -627,7 +703,11 @@ via - https://docs.aws.amazon.com/lambda/latest/dg/configuration-concurrency.htm
 -- AWS CodePipeline / -- Amazon CodePipeline / -- CodePipeline
 -- AWS CodeBuild / -- CodeBuild
 
+https://docs.aws.amazon.com/codebuild/latest/userguide/welcome.html
+https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-compute-types.html
+
 To prevent a build running for too long, we need to enable CodeBuild timeouts.
+CodeBuild scales automatically, the organization does not have to do anything for scaling or for parallel builds
 
 A build represents a set of actions performed by AWS CodeBuild to create output artifacts (for example, a JAR file) based on a set of input artifacts (for example, a collection of Java class files).
 The following rules apply when you run multiple builds:
@@ -995,6 +1075,21 @@ https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q4-i1.jpg
  https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/quotas-messages.html
  https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/quotas-policies.html
 
+To manage large Amazon Simple Queue Service (Amazon SQS) messages, you can use Amazon Simple Storage Service (Amazon S3) and the Amazon SQS Extended Client Library for Java. This is especially useful for storing and consuming messages up to 2 GB. Unless your application requires repeatedly creating queues and leaving them inactive or storing large amounts of data in your queues, consider using Amazon S3 for storing your data.
+https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-s3-messages.html
+
+Amazon SQS leverages the AWS cloud to dynamically scale, based on demand. SQS scales elastically with your application so you don't have to worry about capacity planning and pre-provisioning. For most standard queues (depending on queue traffic and message backlog), there can be a maximum of approximately 120,000 inflight messages (received from a queue by a consumer, but not yet deleted from the queue).
+https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-quotas.html
+
+ https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/FIFO-queues.html
+ https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-quotas.html
+ https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/quotas-queues.html
+ https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/quotas-messages.html
+ https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/quotas-policies.html
+
+https://aws.amazon.com/sqs/
+https://aws.amazon.com/kinesis/data-firehose/
+
 -- Amazon SNS / -- SNS
 -- Amazon Kinesis / -- Kinesis
 
@@ -1003,6 +1098,12 @@ AWS Kinesis Data Streams
 Amazon Kinesis Data Streams (KDS) is a massively scalable and durable real-time data streaming service. KDS can continuously capture gigabytes of data per second from hundreds of thousands of sources such as website clickstreams, database event streams, financial transactions, social media feeds, IT logs, and location-tracking events. The data collected is available in milliseconds to enable real-time analytics use cases such as real-time dashboards, real-time anomaly detection, dynamic pricing, and more.
 
 Amazon Kinesis Data Streams enables real-time processing of streaming big data. It provides ordering of records, as well as the ability to read and/or replay records in the same order to multiple Amazon Kinesis Applications. The Amazon Kinesis Client Library (KCL) delivers all records for a given partition key to the same record processor, making it easier to build multiple applications reading from the same Amazon Kinesis data stream (for example, to perform counting, aggregation, and filtering). Amazon Kinesis Data Streams is recommended when you need the ability for multiple applications to consume the same stream concurrently. For example, you have one application that updates a real-time dashboard and another application that archives data to Amazon Redshift. You want both applications to consume data from the same stream concurrently and independently.
+
+For example, you have a billing application and an audit application that runs a few hours behind the billing application. By default, records of a stream are accessible for up to 24 hours from the time they are added to the stream. You can raise this limit to up to 7 days by enabling extended data retention or up to 365 days by enabling long-term data retention. For the given use-case, Amazon Kinesis Data Streams can be configured to store data for up to 7 days and you can run the audit application up to 7 days behind the billing application.
+
+KDS provides the ability to consume records in the same order a few hours later
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q6-i1.jpg
+via - https://aws.amazon.com/kinesis/data-streams/faqs/
 
 KDS provides the ability for multiple applications to consume the same stream concurrently
 https://media.datacumulus.com/aws-dva-pt/assets/pt1-q9-i1.jpg
@@ -1017,7 +1118,7 @@ Amazon Kinesis Data Streams is useful for rapidly moving data off data producers
 Kinesis Data stream overview:
 https://d1.awsstatic.com/Products/product-name/diagrams/product-page-diagram_Amazon-Kinesis-Data-Streams.074de94302fd60948e1ad070e425eeda73d350e7.png
 
-AWS Kinesis Data Firehose - Amazon Kinesis Data Firehose is the easiest way to load streaming data into data stores and analytics tools. It can capture, transform, and load streaming data into Amazon S3, Amazon Redshift, Amazon Elasticsearch Service, and Splunk, enabling near real-time analytics with existing business intelligence tools and dashboards you’re already using today. It is a fully managed service that automatically scales to match the throughput of your data and requires no ongoing administration. It can also batch, compress, and encrypt the data before loading it, minimizing the amount of storage used at the destination and increasing security. As Kinesis Data Firehose is used to load streaming data into data stores, therefore this option is incorrect.
+AWS Kinesis Data Firehose - Amazon Kinesis Data Firehose is the easiest way to load streaming data into data stores and analytics tools. It can capture, transform, and load streaming data into Amazon S3, Amazon Redshift, Amazon Elasticsearch Service, and Splunk, enabling near real-time analytics with existing business intelligence tools and dashboards you’re already using today. It is a fully managed service that automatically scales to match the throughput of your data and requires no ongoing administration. It can also batch, compress, and encrypt the data before loading it, minimizing the amount of storage used at the destination and increasing security.
 
 Firehose overview:
 https://d1.awsstatic.com/Products/product-name/diagrams/product-page-diagram_Amazon-Kinesis-Data-Firehose.9340b812ab86518341c47b24316995b3792bf6e1.png
@@ -1042,9 +1143,9 @@ Data Flow for Redshift:
 https://docs.aws.amazon.com/firehose/latest/dev/images/fh-flow-rs.png
 via - https://docs.aws.amazon.com/firehose/latest/dev/what-is-this-service.html
 
-AWS Kinesis Data Analytics - Amazon Kinesis Data Analytics is the easiest way to analyze streaming data in real-time. You can quickly build SQL queries and sophisticated Java applications using built-in templates and operators for common processing functions to organize, transform, aggregate, and analyze data at any scale. Kinesis Data Analytics enables you to easily and quickly build queries and sophisticated streaming applications in three simple steps: setup your streaming data sources, write your queries or streaming applications and set up your destination for processed data. As Kinesis Data Analytics is used to build SQL queries and sophisticated Java applications, therefore this option is incorrect.
+AWS Kinesis Data Analytics - Amazon Kinesis Data Analytics is the easiest way to analyze streaming data in real-time. You can quickly build SQL queries and sophisticated Java applications using built-in templates and operators for common processing functions to organize, transform, aggregate, and analyze data at any scale. Kinesis Data Analytics enables you to easily and quickly build queries and sophisticated streaming applications in three simple steps: setup your streaming data sources, write your queries or streaming applications and set up your destination for processed data.
 
-Amazon SQS - Amazon Simple Queue Service (SQS) is a fully managed message queuing service that enables you to decouple and scale microservices, distributed systems, and serverless applications. SQS offers two types of message queues. Standard queues offer maximum throughput, best-effort ordering, and at-least-once delivery. SQS FIFO queues are designed to guarantee that messages are processed exactly once, in the exact order that they are sent. For SQS, you cannot have the same message being consumed by multiple consumers at the same time, therefore this option is incorrect.
+Amazon SQS - Amazon Simple Queue Service (SQS) is a fully managed message queuing service that enables you to decouple and scale microservices, distributed systems, and serverless applications. SQS offers two types of message queues. Standard queues offer maximum throughput, best-effort ordering, and at-least-once delivery. SQS FIFO queues are designed to guarantee that messages are processed exactly once, in the exact order that they are sent.
 
 Exam alert:
 
@@ -1059,6 +1160,9 @@ When a ProvisionedThroughputExceeded exception is thrown we can do the following
 The capacity limits of an Amazon Kinesis data stream are defined by the number of shards within the data stream. The limits can be exceeded by either data throughput or the number of PUT records. While the capacity limits are exceeded, the put data call will be rejected with a ProvisionedThroughputExceeded exception.
 
 https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q6-i1.jpg
+
+-- CloudFront / -- AWS CloudFront
+
 
 =======================================================================================================
 Serverless Compute
@@ -1133,6 +1237,15 @@ Configure Application Auto Scaling to manage Lambda reserved concurrency on a sc
 You cannot configure Application Auto Scaling to manage Lambda reserved concurrency on a schedule.
 https://aws.amazon.com/getting-started/projects/build-serverless-web-app-lambda-apigateway-s3-dynamodb-cognito/module-4/
 
+Lambdas with scheduled events:
+https://docs.aws.amazon.com/lambda/latest/dg/with-scheduled-events.html
+
+A Lambda alias is like a pointer to a specific Lambda function version. You can create one or more aliases for your AWS Lambda function. Users can access the function version using the alias ARN. An alias can only point to a function version, not to another alias. You can update an alias to point to a new version of the function. Event sources such as Amazon S3 invoke your Lambda function. These event sources maintain a mapping that identifies the function to invoke when events occur. If you specify a Lambda function alias in the mapping configuration, you don't need to update the mapping when the function version changes. This is the right choice for the current requirement.
+
+https://docs.aws.amazon.com/lambda/latest/dg/configuration-aliases.html
+https://docs.aws.amazon.com/lambda/latest/dg/configuration-tags.html
+https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html
+
 -- Amazon Step Functions / -- Step Functions
 
 How step functions work:
@@ -1202,6 +1315,17 @@ Think resource-specific history, audit, and compliance; think Config.
 
 AWS CloudTrail can be used to track who and when retrieved a var from SSM parameter store.
 
+Organization trail:
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q32-i1.jpg
+via - https://docs.aws.amazon.com/awscloudtrail/latest/userguide/how-cloudtrail-works.html
+Member accounts will be able to see the organization trail, but cannot modify or delete it. By default, member accounts will not have access to the log files for the organization trail in the Amazon S3 bucket.
+AWS CloudTrail supports Amazon S3 Data Events, apart from bucket Events. You can record all API actions on S3 Objects and receive detailed information such as the AWS account of the caller, IAM user role of the caller, time of the API call, IP address of the API, and other details. All events are delivered to an S3 bucket and CloudWatch Events, allowing you to take programmatic actions on the events.
+Organization trails must be created in the master account, and when specified as applying to an organization, are automatically applied to all member accounts in the organization. Member accounts will be able to see the organization trail, but cannot modify or delete it. By default, member accounts will not have access to the log files for the organization trail in the Amazon S3 bucket.
+
+https://aws.amazon.com/about-aws/whats-new/2016/11/aws-cloudtrail-supports-s3-data-events/
+
+By default, CloudTrail event log files are encrypted using Amazon S3 server-side encryption (SSE).
+
 -- AWS CloudWatch / -- CloudWatch / -- Amazon CloudWatch
 -- AWS CloudWatch metrics and Amazon EventBridge
 -- Amazon X-Ray / -- X-ray / -- AWS XRay / -- Amazon XRay
@@ -1229,5 +1353,7 @@ https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-par
 -- AWS SSM Parameter Store / -- SSM / -- Parameter store / -- SSM Parameter store
 
 AWS Systems Manager Parameter Store provides secure, hierarchical storage for configuration data management and secrets management. You can store data such as passwords, database strings, and license codes as parameter values.
+
+AWS Systems Manager Parameter Store provides secure, hierarchical storage for configuration data management and secrets management. You can store data such as passwords, database strings, and license codes as parameter values. For the given use-case, as the DevOps team does not want to re-deploy the application every time there are configuration changes, so they can use the SSM Parameter Store to store the configuration externally.
 
 -- AWS IoT Core service
