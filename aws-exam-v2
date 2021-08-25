@@ -1,5 +1,5 @@
 =======================================================================================================
--- AWS Cloud API and CLI
+-- AWS Cloud API and CLI / -- CLI / -- AWS CLI / -- AWS API / -- API
 
 Cli options:
 https://media.datacumulus.com/aws-dva-pt/assets/pt1-q62-i1.jpg
@@ -9,6 +9,14 @@ https://media.datacumulus.com/aws-dva-pt/assets/pt1-q62-i1.jpg
 
 https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_RunInstances.html
 https://docs.aws.amazon.com/cli/latest/reference/ec2/terminate-instances.html
+
+aws ec2 monitor-instances --instance-ids i-1234567890abcdef0 - This enables detailed monitoring for a running instance.
+aws ec2 run-instances --image-id ami-09092360 --monitoring Enabled=true - This syntax is used to enable detailed monitoring when launching an instance from AWS CLI.
+https://docs.aws.amazon.com/cli/latest/reference/ec2/run-instances.html
+
+EC2 detailed monitoring:
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q19-i1.jpg
+via - https://docs.aws.amazon.com/cli/latest/reference/ec2/monitor-instances.html
  
 -- Trusted Advisor / -- AWS Trusted Advisor / -- Amazon Trusted Advisor
 -- AWS Cost Explorer
@@ -26,6 +34,9 @@ AWS requires approximately 5 weeks of usage data to generate budget forecasts - 
 
 =======================================================================================================
 -- IAM and access control
+
+IAM Access Analyzer - AWS IAM Access Analyzer helps you identify the resources in your organization and accounts, such as Amazon S3 buckets or IAM roles, that are shared with an external entity. This lets you identify unintended access to your resources and data, which is a security risk.
+You can set the scope for the analyzer to an organization or an AWS account. This is your zone of trust. The analyzer scans all of the supported resources within your zone of trust. When Access Analyzer finds a policy that allows access to a resource from outside of your zone of trust, it generates an active finding.
 
 The following policy types only limit permissions but cannot grant permissions:
 AWS Organizations Service Control Policy (SCP) – Use an AWS Organizations Service Control Policy (SCP) to define the maximum permissions for account members of an organization or organizational unit (OU). SCPs limit permissions that identity-based policies or resource-based policies grant to entities (users or roles) within the account, but do not grant permissions.
@@ -222,8 +233,8 @@ Here is the correct way of reusing SSH keys in your AWS Regions:
 3. Import the public SSH key into the new Region.
 
 https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html
-
-
+https://docs.aws.amazon.com/cli/latest/reference/ec2/run-instances.html
+https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-instance-monitoring.html
 
 -- AWS VPC / -- Amazon VPC / Networking & VPC / -- VPC
 
@@ -310,10 +321,6 @@ Storage
 
 -- Amazon S3 / -- AWS S3 / -- S3
 
-IAM Access Analyzer - AWS IAM Access Analyzer helps you identify the resources in your organization and accounts, such as Amazon S3 buckets or IAM roles, that are shared with an external entity. This lets you identify unintended access to your resources and data, which is a security risk.
-
-You can set the scope for the analyzer to an organization or an AWS account. This is your zone of trust. The analyzer scans all of the supported resources within your zone of trust. When Access Analyzer finds a policy that allows access to a resource from outside of your zone of trust, it generates an active finding.
-
 S3 Analytics - By using Amazon S3 analytics Storage Class Analysis you can analyze storage access patterns to help you decide when to transition the right data to the right storage class.
 
 https://aws.amazon.com/blogs/security/writing-iam-policies-grant-access-to-user-specific-folders-in-an-amazon-s3-bucket/
@@ -379,6 +386,19 @@ https://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html
 https://docs.aws.amazon.com/AmazonS3/latest/user-guide/add-bucket-policy.html
 https://docs.aws.amazon.com/AmazonS3/latest/userguide/security-best-practices.html
 
+S3 lifecycle actions are not replicated with S3 replication - With S3 Replication (CRR and SRR), you can establish replication rules to make copies of your objects into another storage class, in the same or a different region. Lifecycle actions are not replicated, and if you want the same lifecycle configuration applied to both source and destination buckets, enable the same lifecycle configuration on both.
+Amazon S3 Replication (CRR and SRR) is configured at the S3 bucket level, a shared prefix level, or an object level using S3 object tags. You add a replication configuration on your source bucket by specifying a destination bucket in the same or different AWS region for replication.
+https://docs.amazonaws.cn/en_us/AmazonS3/latest/userguide/replication.html
+
+To configure your bucket to allow cross-origin requests, you create a CORS configuration. The CORS configuration is a document with rules that identify the origins that you will allow to access your bucket, the operations (HTTP methods) that will support each origin, and other operation-specific information. You can add up to 100 rules to the configuration. You can add the CORS configuration as the cors subresource to the bucket.
+If you are configuring CORS in the S3 console, you must use JSON to create a CORS configuration. The new S3 console only supports JSON CORS configurations.
+
+S3 Access Analyzer - Access Analyzer for S3 is a feature that monitors your access policies, ensuring that the policies provide only the intended access to your S3 resources. Access Analyzer for S3 evaluates your bucket access policies and enables you to discover and swiftly remediate buckets with potentially unintended access.
+
+S3 Access Points - Amazon S3 Access Points simplifies managing data access at scale for applications using shared data sets on S3. With S3 Access Points, you can now easily create hundreds of access points per bucket, representing a new way of provisioning access to shared data sets. Access Points provide a customized path into a bucket, with a unique hostname and access policy that enforces the specific permissions and network controls for any request made through the access point.
+https://docs.aws.amazon.com/AmazonS3/latest/userguide/ManageCorsUsing.html
+https://aws.amazon.com/s3/faqs/
+
 -- Amazon Elastic Block Store (EBS) / -- EBS / -- AWS EBS / -- Amazon EBS
 
 The maximum ratio of provisioned IOPS to requested volume size (in GiB) is 50:1. So, for a 200 GiB volume size, max IOPS possible is 200*50 = 10000 IOPS.
@@ -403,6 +423,14 @@ via - https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-volume-types.html
 EBS volumes are AZ locked.
  https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-volumes.html
 https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSVolumes.html
+
+EBS volumes support both in-flight encryption and encryption at rest using KMS
+You can encrypt both the boot and data volumes of an EC2 instance. When you create an encrypted EBS volume and attach it to a supported instance type, the following types of data are encrypted:
+- Data at rest inside the volume
+- All data moving between the volume and the instance
+- All snapshots created from the volume
+- All volumes created from those snapshots
+https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSEncryption.html
 
 -- Amazon Elastic File System (EFS)
 -- Amazon Glacier
@@ -469,7 +497,7 @@ https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_CreateSnapshot.html
 
 
 -- AWS Aurora
--- AWS ElastiCache
+-- AWS ElastiCache / -- ElastiCache
 
 https://docs.aws.amazon.com/AmazonElastiCache/latest/mem-ug/images/ElastiCache-Caching.png
 via - https://docs.aws.amazon.com/AmazonElastiCache/latest/mem-ug/elasticache-use-cases.html
@@ -480,6 +508,18 @@ via - https://aws.amazon.com/elasticache/features/
 https://docs.aws.amazon.com/AmazonElastiCache/latest/mem-ug/elasticache-use-cases.html
 
 https://aws.amazon.com/caching/session-management/
+
+One can leverage ElastiCache for Redis with cluster mode enabled to enhance reliability and availability with little change to your existing workload. Cluster mode comes with the primary benefit of horizontal scaling of your Redis cluster, with almost zero impact on the performance of the cluster.
+
+When building production workloads, you should consider using a configuration with replication, unless you can easily recreate your data. Enabling Cluster-Mode provides a number of additional benefits in scaling your cluster. In short, it allows you to scale in or out the number of shards (horizontal scaling) versus scaling up or down the node type (vertical scaling). This means that Cluster-Mode can scale to very large amounts of storage (potentially 100s of terabytes) across up to 90 shards, whereas a single node can only store as much data in memory as the instance type has capacity for.
+
+Redis Cluster config:  
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q14-i1.jpg
+via - https://aws.amazon.com/blogs/database/work-with-cluster-mode-on-amazon-elasticache-for-redis/
+
+Redis offers snapshots facility, replication, and supports transactions, which Memcached cannot
+https://aws.amazon.com/blogs/database/work-with-cluster-mode-on-amazon-elasticache-for-redis/
+https://aws.amazon.com/elasticache/redis-vs-memcached/
 
 -- Other
 -- Amazon DynamoDB / -- DynamoDB / -- AWS DynamoDB
@@ -539,6 +579,16 @@ A Scan operation in Amazon DynamoDB reads every item in a table or a secondary i
 The Query operation in Amazon DynamoDB finds items based on primary key values. You must provide the name of the partition key attribute and a single value for that attribute. The Query returns all items with that partition key value. Optionally, you can provide a sort key attribute and use a comparison operator to refine the search results.
 
  If you need to further refine the Query results, you can optionally provide a filter expression. A filter expression determines which items within the Query results should be returned to you. All of the other results are discarded. A filter expression is applied after Query finishes, but before the results are returned. Therefore, a Query consumes the same amount of read capacity, regardless of whether a filter expression is present. A Query operation can retrieve a maximum of 1 MB of data. This limit applies before the filter expression is evaluated.
+
+ It's not always possible to distribute read and write activity evenly. When data access is imbalanced, a "hot" partition can receive a higher volume of read and write traffic compared to other partitions. To better accommodate uneven access patterns, DynamoDB adaptive capacity enables your application to continue reading and writing to hot partitions without being throttled, provided that traffic does not exceed your table’s total provisioned capacity or the partition maximum capacity.
+
+ProvisionedThroughputExceededException explained:  
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q41-i1.jpg
+via - https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/ProvisionedThroughput.html
+
+Hot partition explained:  
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q41-i2.jpg
+via - https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-partition-key-design.html
 
 =======================================================================================================
 Route 53 and DNS
@@ -1090,6 +1140,25 @@ https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-q
 https://aws.amazon.com/sqs/
 https://aws.amazon.com/kinesis/data-firehose/
 
+Good practise to minimize SQS costs:
+Amazon SQS provides short polling and long polling to receive messages from a queue. By default, queues use short polling. With short polling, Amazon SQS sends the response right away, even if the query found no messages. With long polling, Amazon SQS sends a response after it collects at least one available message, up to the maximum number of messages specified in the request. Amazon SQS sends an empty response only if the polling wait time expires.
+
+Long polling makes it inexpensive to retrieve messages from your Amazon SQS queue as soon as the messages are available. Long polling helps reduce the cost of using Amazon SQS by eliminating the number of empty responses (when there are no messages available for a ReceiveMessage request) and false empty responses (when messages are available but aren't included in a response). When the wait time for the ReceiveMessage API action is greater than 0, long polling is in effect. The maximum long polling wait time is 20 seconds.
+
+Exam Alert:
+
+Please review the differences between Short Polling vs Long Polling:
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q1-i1.jpg
+via - https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-short-and-long-polling.html
+
+Consuming messages using long polling:
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q1-i2.jpg
+via - https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-short-and-long-polling.html
+
+Visibility timeout is a period during which Amazon SQS prevents other consumers from receiving and processing a given message. The default visibility timeout for a message is 30 seconds. The minimum is 0 seconds. 
+
+You can use message timers to set an initial invisibility period for a message added to a queue. So, if you send a message with a 60-second timer, the message isn't visible to consumers for its first 60 seconds in the queue. The default (minimum) delay for a message is 0 seconds. The maximum is 15 minutes. 
+
 -- Amazon SNS / -- SNS
 -- Amazon Kinesis / -- Kinesis
 
@@ -1244,7 +1313,19 @@ A Lambda alias is like a pointer to a specific Lambda function version. You can 
 
 https://docs.aws.amazon.com/lambda/latest/dg/configuration-aliases.html
 https://docs.aws.amazon.com/lambda/latest/dg/configuration-tags.html
+
+The Lambda runtime makes environment variables available to your code and sets additional environment variables that contain information about the function and invocation request. The total size of all environment variables doesn't exceed 4 KB. There is no limit defined on the number of variables that can be used.
 https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html
+
+ AWS best practices for Lambda suggest taking advantage of execution context reuse to improve the performance of your functions. Initialize SDK clients and database connections outside of the function handler, and cache static assets locally in the /tmp directory. Subsequent invocations processed by the same instance of your function can reuse these resources. This saves execution time and cost. To avoid potential data leaks across invocations, don’t use the execution context to store user data, events, or other information with security implications.
+
+When you invoke a Lambda function, two types of error can occur. Invocation errors occur when the invocation request is rejected before your function receives it. Function errors occur when your function's code or runtime returns an error. Depending on the type of error, the type of invocation, and the client or service that invokes the function, the retry behavior, and the strategy for managing errors varies.
+Lambda function failures are commonly caused by:
+Permissions issues Code issues Network issues Throttling Invoke API 500 and 502 errors
+You can insert logging statements into your code to help you validate that your code is working as expected. Lambda automatically integrates with CloudWatch Logs and pushes all logs from your code to a CloudWatch Logs group associated with a Lambda function, which is named /aws/lambda/<function name>.
+Please see this note for more details:
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q9-i1.jpg
+via - https://docs.aws.amazon.com/lambda/latest/dg/monitoring-cloudwatchlogs.html
 
 -- Amazon Step Functions / -- Step Functions
 
@@ -1256,8 +1337,25 @@ Please see this note for a simple example of a State Machine:
 https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q8-i1.jpg
 via - https://docs.aws.amazon.com/step-functions/latest/dg/amazon-states-language-state-machine-structure.html
 
+Standard Workflows on AWS Step Functions are more suitable for long-running, durable, and auditable workflows where repeating workflow steps is expensive (e.g., restarting a long-running media transcode) or harmful (e.g., charging a credit card twice). Example workloads include training and deploying machine learning models, report generation, billing, credit card processing, and ordering and fulfillment processes. Step functions also support any human approval steps.
+
+You should use Express Workflows for workloads with high event rates and short durations. Express Workflows support event rates of more than 100,000 per second.
+
+https://aws.amazon.com/step-functions/features/
+https://aws.amazon.com/blogs/compute/implementing-serverless-manual-approval-steps-in-aws-step-functions-and-amazon-api-gateway/
+
 -- AppSync - managed service that uses GraphQL.
 -- API Gateway / -- AWS API Gateway / -- Amazon API Gateway
+
+https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-overview-developer-experience.html
+
+API Gateway REST APIs: A collection of HTTP resources and methods that are integrated with backend HTTP endpoints, Lambda functions, or other AWS services. You can deploy this collection in one or more stages. Typically, API resources are organized in a resource tree according to the application logic. Each API resource can expose one or more API methods that have unique HTTP verbs supported by API Gateway.
+API Gateway HTTP API: A collection of routes and methods that are integrated with backend HTTP endpoints or Lambda functions. You can deploy this collection in one or more stages. Each route can expose one or more API methods that have unique HTTP verbs supported by API Gateway.
+AWS Lambda, AWS Identity and Access Management (IAM) and Amazon Cognito services are all available as HTTP APIs. AWS Web Application Firewall (AWS WAF) however, is only available in REST APIs.
+
+Choosing between HTTP API or REST API:  
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt6-q26-i1.jpg
+via - https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-vs-rest.html
 
 A usage plan specifies who can access one or more deployed API stages and methods—and also how much and how fast they can access them. The plan uses API keys to identify API clients and meters access to the associated API stages for each key.
 
@@ -1288,6 +1386,22 @@ HTTP_PROXY - The HTTP proxy integration allows a client to access the backend HT
 
 HTTP - This type of integration lets an API expose HTTP endpoints in the backend. With the HTTP integration, you must configure both the integration request and integration response. You must set up necessary data mappings from the method request to the integration request, and from the integration response to the method response.
 https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-api-integration-types.html
+
+After creating your API, you must deploy it to make it callable by your users. To deploy an API, you create an API deployment and associate it with a stage. A stage is a logical reference to a lifecycle state of your API (for example, dev, prod, beta, v2). API stages are identified by the API ID and stage name. They're included in the URL that you use to invoke the API. Each stage is a named reference to a deployment of the API and is made available for client applications to call.
+
+Stages enable robust version control of your API. In our current use-case, after the updates pass the test, you can promote the test stage to the prod stage. The promotion can be done by redeploying the API to the prod stage or updating a stage variable value from the stage name of test to that of prod.
+ it is not possible to deploy an API without choosing a stage.
+
+For each stage, you can optimize API performance by adjusting the default account-level request throttling limits and enabling API caching. And these settings can be changed/updated at any time.
+https://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-deploy-api.html
+
+You can enable API caching in Amazon API Gateway to cache your endpoint's responses. With caching, you can reduce the number of calls made to your endpoint and also improve the latency of requests to your API. When you enable caching for a stage, API Gateway caches responses from your endpoint for a specified time-to-live (TTL) period, in seconds. API Gateway then responds to the request by looking up the endpoint response from the cache instead of making a request to your endpoint. The default TTL value for API caching is 300 seconds. The maximum TTL value is 3600 seconds. TTL=0 means caching is disabled.
+
+https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-caching.html
+
+ A mapping template is a script expressed in Velocity Template Language (VTL) and applied to the payload using JSONPath expressions. Mapping templates help format/structure the data in a way that it is easily readable, unlike a server response that might always be easy to ready. Mapping Templates do not help in latency issues of the APIs.
+
+
 
 =======================================================================================================
 Serverless Applications
@@ -1327,8 +1441,18 @@ https://aws.amazon.com/about-aws/whats-new/2016/11/aws-cloudtrail-supports-s3-da
 By default, CloudTrail event log files are encrypted using Amazon S3 server-side encryption (SSE).
 
 -- AWS CloudWatch / -- CloudWatch / -- Amazon CloudWatch
+
+https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-cloudwatch-new.html
+
+You can publish your own metrics to CloudWatch using the AWS CLI or an API. Metrics produced by AWS services are standard resolution by default. When you publish a custom metric, you can define it as either standard resolution or high resolution. When you publish a high-resolution metric, CloudWatch stores it with a resolution of 1 second, and you can read and retrieve it with a period of 1 second, 5 seconds, 10 seconds, 30 seconds, or any multiple of 60 seconds.
+
+High-resolution metrics can give you more immediate insight into your application's sub-minute activity. But, every PutMetricData call for a custom metric is charged, so calling PutMetricData more often on a high-resolution metric can lead to higher charges.
+https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/publishingMetrics.html
+
 -- AWS CloudWatch metrics and Amazon EventBridge
 -- Amazon X-Ray / -- X-ray / -- AWS XRay / -- Amazon XRay
+
+You can use AWS X-Ray to visualize the components of your application, identify performance bottlenecks, and troubleshoot requests that resulted in an error. Your Lambda functions send trace data to X-Ray, and X-Ray processes the data to generate a service map and searchable trace summaries. This is a useful tool for troubleshooting. But, for the current use-case, we already know the bottleneck that needs to be fixed and that is the context reuse.
 
 X-Ray overview:
 https://docs.aws.amazon.com/xray/latest/devguide/images/architecture-dataflow.png
@@ -1338,6 +1462,11 @@ EC2 X-Ray Daemon - The AWS X-Ray daemon is a software application that listens f
 The X-Ray daemon uses the AWS SDK to upload trace data to X-Ray, and it needs AWS credentials with permission to do that. On Amazon EC2, the daemon uses the instance's instance profile role automatically. Eliminates API permission issues (in case the role doesn't have IAM permissions to write data to the X-Ray service)
 
 You can use X-Ray to collect data across AWS Accounts. The X-Ray agent can assume a role to publish data into an account different from the one in which it is running. This enables you to publish data from various components of your application into a central account.
+
+By customizing sampling rules, you can control the amount of data that you record, and modify sampling behavior on the fly without modifying or redeploying your code. Sampling rules tell the X-Ray SDK how many requests to record for a set of criteria. By default, the X-Ray SDK records the first request each second, and five percent of any additional requests.
+
+https://docs.aws.amazon.com/xray/latest/devguide/xray-console-sampling.html
+https://docs.aws.amazon.com/xray/latest/devguide/xray-console-deeplinks.html
 
 =======================================================================================================
 Optimization
