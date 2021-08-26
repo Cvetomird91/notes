@@ -97,10 +97,15 @@ https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html
 
 Access Advisor feature on IAM console- To help identify the unused roles, IAM reports the last-used timestamp that represents when a role was last used to make an AWS request. Your security team can use this information to identify, analyze, and then confidently remove unused roles. This helps improve the security posture of your AWS environments. Additionally, by removing unused roles, you can simplify your monitoring and auditing efforts by focusing only on roles that are in use. This feature can help us identify unused IAM roles and remove them without disrupting any service.
 
-how to enable cross-account resource access:
+how to enable cross-account resource access (for example, with an S3 bucket in one account and EC2 instance in another):
 Create an IAM role with S3 access in Account B and set Account A as a trusted entity. Create another role (instance profile) in Account A and attach it to the EC2 instances in Account A and add an inline policy to this role to assume the role from Account B
 
 https://docs.aws.amazon.com/xray/latest/devguide/security_iam_troubleshoot.html
+
+IAM roles have been incorporated so that your applications can securely make API requests from your instances, without requiring you to manage the security credentials that the applications use. Instead of creating and distributing your AWS credentials, you can delegate permission to make API requests using IAM roles.
+Amazon EC2 uses an instance profile as a container for an IAM role. When you create an IAM role using the IAM console, the console creates an instance profile automatically and gives it the same name as the role to which it corresponds.
+This is the most secure option as the role assigned to EC2 can be used to access S3 without storing any credentials onto the EC2 instance.
+https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-roles-for-amazon-ec2.html
 
 =======================================================================================================
 Compute and Networking
@@ -108,6 +113,10 @@ Compute and Networking
 -- EC2
 
 Burstable performance instances, which are T3, T3a, and T2 instances, are designed to provide a baseline level of CPU performance with the ability to burst to a higher level when required by your workload. Burstable performance instances are the only instance types that use credits for CPU usage.
+
+Amazon EC2 uses an instance profile as a container for an IAM role. When you create an IAM role using the IAM console, the console creates an instance profile automatically and gives it the same name as the role to which it corresponds.
+
+When you first configure the CLI you may run "aws configure", afterward you should not need to if you want to obtain credentials to authenticate to other AWS services. An IAM role will receive temporary credentials for you so you can focus on using the CLI to get access to other AWS services if you have the permissions.
 
 0 seconds - AWS states that, if your AWS account is less than 12 months old, you can use a t2.micro instance for free within certain usage limits.
 Reference:
@@ -236,6 +245,13 @@ https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html
 https://docs.aws.amazon.com/cli/latest/reference/ec2/run-instances.html
 https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-instance-monitoring.html
 
+Policy Evaluation explained:
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q43-i1.jpg
+via - https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic.html
+
+https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/using-features.managing.html
+https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/using-features.environments.html
+
 -- AWS VPC / -- Amazon VPC / Networking & VPC / -- VPC
 
 Which conditions should be met for Internet connectivity to be established in EC2?
@@ -260,8 +276,20 @@ https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q21-i1.jpg
 via - https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-scale-based-on-demand.html
 https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-scale-based-on-demand.html
 
+You configure the size of your Auto Scaling group by setting the minimum, maximum, and desired capacity. The minimum and maximum capacity are required to create an Auto Scaling group, while the desired capacity is optional. If you do not define your desired capacity upfront, it defaults to your minimum capacity.
+
+Since a minimum capacity of 1 was defined, an instance was launched in only one AZ. This AZ went down, taking the application with it. If the minimum capacity is set to 2. As per Auto Scale AZ configuration, it would have launched 2 instances- one in each AZ, making the architecture disaster-proof and hence highly available.
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q65-i1.jpg
+via - https://docs.aws.amazon.com/autoscaling/ec2/userguide/auto-scaling-benefits.html
+
+With target tracking scaling policies, you select a scaling metric and set a target value. You can use predefined customized metrics.
+
+https://docs.aws.amazon.com/autoscaling/ec2/userguide/asg-capacity-limits.html
+https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-maintain-instance-levels.html
+https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-scaling-target-tracking.html
+
 =======================================================================================================
--- ELB - Elastic Load balancer
+-- ELB - Elastic Load balancer / -- Elastic Load Balancer
 
 ALB access logs - Elastic Load Balancing provides access logs that capture detailed information about requests sent to your load balancer. Each log contains information such as the time the request was received, the client's IP address, latencies, request paths, and server responses. You can use these access logs to analyze traffic patterns and troubleshoot issues. Access logging is an optional feature of Elastic Load Balancing that is disabled by default.
 https://media.datacumulus.com/aws-dva-pt/assets/pt1-q29-i1.jpg
@@ -316,6 +344,22 @@ https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q58-i1.jpg
 via - https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-target-groups.html#sticky-sessions
 https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-target-groups.html#slow-start-mode
 
+A Classic Load Balancer with HTTP or HTTPS listeners might route more traffic to higher-capacity instance types. This distribution aims to prevent lower-capacity instance types from having too many outstanding requests. It’s a best practice to use similar instance types and configurations to reduce the likelihood of capacity gaps and traffic imbalances.
+A traffic imbalance might also occur if you have instances of similar capacities running on different Amazon Machine Images (AMIs). In this scenario, the imbalance of the traffic in favor of higher-capacity instance types is desirable.
+
+https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-target-groups.html#sticky-sessions
+https://aws.amazon.com/premiumsupport/knowledge-center/elb-fix-unequal-traffic-routing/
+https://docs.aws.amazon.com/elasticloadbalancing/latest/userguide/how-elastic-load-balancing-works.html#availability-zones
+
+A Network Load Balancer functions at the fourth layer of the Open Systems Interconnection (OSI) model. It can handle millions of requests per second. After the load balancer receives a connection request, it selects a target from the target group for the default rule. It attempts to open a TCP connection to the selected target on the port specified in the listener configuration. Incoming connections remain unmodified, so application software need not support X-Forwarded-For.
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt4-q50-i1.jpg
+via - https://docs.aws.amazon.com/elasticloadbalancing/latest/network/introduction.html
+
+An Application Load Balancer functions at the application layer, the seventh layer of the Open Systems Interconnection (OSI) model. After the load balancer receives a request, it evaluates the listener rules in priority order to determine which rule to apply and then selects a target from the target group for the rule action.
+One of many benefits of the Application Load Balancer is its support for path-based routing. You can configure rules for your listener that forward requests based on the URL in the request. This enables you to structure your application as smaller services, and route requests to the correct service based on the content of the URL. For needs relating to network traffic go with Network Load Balancer.
+
+ It is a basic load balancer that distributes traffic. If your account was created before 2013-12-04, your account supports EC2-Classic instances and you will benefit in using this type of load balancer. The classic load balancer can be used regardless of when your account was created and whether you use EC2-Classic or whether your instances are in a VPC but just remember its the basic load balancer AWS offers and not advanced as the others.
+
 =======================================================================================================
 Storage
 
@@ -330,6 +374,8 @@ https://docs.aws.amazon.com/AmazonS3/latest/dev/security-best-practices.html
 
 https://media.datacumulus.com/aws-dva-pt/assets/pt1-q8-i1.jpg
  via - https://docs.aws.amazon.com/AmazonS3/latest/dev/serv-side-encryption.html
+
+ https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingKMSEncryption.html
 
 https://docs.aws.amazon.com/streams/latest/dev/what-is-sse.html
 
@@ -385,6 +431,7 @@ https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-access-control.html
 https://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html
 https://docs.aws.amazon.com/AmazonS3/latest/user-guide/add-bucket-policy.html
 https://docs.aws.amazon.com/AmazonS3/latest/userguide/security-best-practices.html
+https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingEncryption.html
 
 S3 lifecycle actions are not replicated with S3 replication - With S3 Replication (CRR and SRR), you can establish replication rules to make copies of your objects into another storage class, in the same or a different region. Lifecycle actions are not replicated, and if you want the same lifecycle configuration applied to both source and destination buckets, enable the same lifecycle configuration on both.
 Amazon S3 Replication (CRR and SRR) is configured at the S3 bucket level, a shared prefix level, or an object level using S3 object tags. You add a replication configuration on your source bucket by specifying a destination bucket in the same or different AWS region for replication.
@@ -398,6 +445,25 @@ S3 Access Analyzer - Access Analyzer for S3 is a feature that monitors your acce
 S3 Access Points - Amazon S3 Access Points simplifies managing data access at scale for applications using shared data sets on S3. With S3 Access Points, you can now easily create hundreds of access points per bucket, representing a new way of provisioning access to shared data sets. Access Points provide a customized path into a bucket, with a unique hostname and access policy that enforces the specific permissions and network controls for any request made through the access point.
 https://docs.aws.amazon.com/AmazonS3/latest/userguide/ManageCorsUsing.html
 https://aws.amazon.com/s3/faqs/
+
+In S3 IAM roles and resource-based policies delegate access across accounts only within a single partition. For example, assume that you have an account in US West (N. California) in the standard aws partition. You also have an account in China (Beijing) in the aws-cn partition. You can't use an Amazon S3 resource-based policy in your account in China (Beijing) to allow access for users in your standard AWS account.
+
+Amazon S3 ACLs allow users to define only the following permissions sets: READ, WRITE, READ_ACP, WRITE_ACP, and FULL_CONTROL. You can use only an AWS account or one of the predefined Amazon S3 groups as a grantee for the Amazon S3 ACL.
+
+If you apply a bucket policy at the bucket level, you can define who can access (Principal element), which objects they can access (Resource element), and how they can access (Action element). Applying a bucket policy at the bucket level allows you to define granular access to different objects inside the bucket by using multiple policies to control access. You can also review the bucket policy to see who can access objects in an S3 bucket.
+https://docs.aws.amazon.com/AmazonS3/latest/dev/example-walkthroughs-managing-access-example3.html
+https://docs.aws.amazon.com/IAM/latest/UserGuide/tutorial_cross-account-with-roles.html
+https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_compare-resource-policies.html
+https://aws.amazon.com/premiumsupport/knowledge-center/cross-account-access-s3/
+
+You can protect data at rest in Amazon S3 by using three different modes of server-side encryption: SSE-S3, SSE-C, or SSE-KMS. SSE-KMS requires that AWS manage the data key but you manage the customer master key (CMK) in AWS KMS. You can choose a customer managed CMK or the AWS managed CMK for Amazon S3 in your account. If you choose to encrypt your data using the standard features, AWS KMS and Amazon S3 perform the following actions:
+1. Amazon S3 requests a plaintext data key and a copy of the key encrypted under the specified CMK.
+2. AWS KMS generates a data key, encrypts it under the CMK, and sends both the plaintext data key and the encrypted data key to Amazon S3.
+3. Amazon S3 encrypts the data using the data key and removes the plaintext key from memory as soon as possible after use.
+4. Amazon S3 stores the encrypted data key as metadata with the encrypted data.
+An IAM user or role needing to perform those actions needs the kms:GenerateDataKey action enabled.
+https://aws.amazon.com/premiumsupport/knowledge-center/s3-access-denied-error-kms/
+https://docs.aws.amazon.com/kms/latest/developerguide/services-s3.html
 
 -- Amazon Elastic Block Store (EBS) / -- EBS / -- AWS EBS / -- Amazon EBS
 
@@ -477,6 +543,13 @@ If you terminate a container instance while it is in the STOPPED state, that con
 https://aws.amazon.com/premiumsupport/knowledge-center/deregister-ecs-instance/
 https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ECS_instances.html
 
+In the ecs.config file you have to configure the parameter ECS_CLUSTER='your_cluster_name' to register the container instance with a cluster named 'your_cluster_name'.
+
+Sample config for ECS Container Agent:
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q35-i1.jpg
+via - https://docs.aws.amazon.com/AmazonECS/latest/developerguide/bootstrap_container_instance.html
+https://docs.aws.amazon.com/AmazonECS/latest/developerguide/launch_container_instance.html
+
 =======================================================================================================
 Databases
 
@@ -520,6 +593,8 @@ via - https://aws.amazon.com/blogs/database/work-with-cluster-mode-on-amazon-ela
 Redis offers snapshots facility, replication, and supports transactions, which Memcached cannot
 https://aws.amazon.com/blogs/database/work-with-cluster-mode-on-amazon-elasticache-for-redis/
 https://aws.amazon.com/elasticache/redis-vs-memcached/
+
+https://aws.amazon.com/caching/database-caching/
 
 -- Other
 -- Amazon DynamoDB / -- DynamoDB / -- AWS DynamoDB
@@ -590,6 +665,11 @@ Hot partition explained:
 https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q41-i2.jpg
 via - https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-partition-key-design.html
 
+The most efficient way to truncate a dynamodb table is by deleting it and then recreating it using
+the delete-table CLI operation (DeleteTable API operation).
+Scanning and deleting each item is a too expensive operation.
+https://docs.aws.amazon.com/cli/latest/reference/dynamodb/delete-table.html
+
 =======================================================================================================
 Route 53 and DNS
 -- AWS Route 53 / -- Route 53
@@ -645,6 +725,25 @@ AWS Lambda environment variables can have a maximum size of 4 KB. Additionally, 
 
 https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-limits.html
 https://aws.amazon.com/kms/faqs/
+
+The development team at a company wants to encrypt a 111 GB object using AWS KMS.
+Which of the following represents the best solution?
+Make a GenerateDataKey API call that returns a plaintext key and an encrypted copy of a data key. Use a plaintext key to encrypt the data - GenerateDataKey API, generates a unique symmetric data key for client-side encryption. This operation returns a plaintext copy of the data key and a copy that is encrypted under a customer master key (CMK) that you specify. You can use the plaintext key to encrypt your data outside of AWS KMS and store the encrypted data key with the encrypted data.
+GenerateDataKey returns a unique data key for each request. The bytes in the plaintext key are not related to the caller or the CMK.
+To encrypt data outside of AWS KMS:
+1. Use the GenerateDataKey operation to get a data key.
+2. Use the plaintext data key (in the Plaintext field of the response) to encrypt your data outside of AWS KMS. Then erase the plaintext data key from memory.
+3. Store the encrypted data key (in the CiphertextBlob field of the response) with the encrypted data.
+To decrypt data outside of AWS KMS:
+1. Use the Decrypt operation to decrypt the encrypted data key. The operation returns a plaintext copy of the data key.
+2. Use the plaintext data key to decrypt data outside of AWS KMS, then erase the plaintext data key from memory.
+
+Encrypt API is used to encrypt plaintext into ciphertext by using a customer master key (CMK). The Encrypt operation has two primary use cases:
+- To encrypt small amounts of arbitrary data, such as a personal identifier or database password, or other sensitive information.
+- To move encrypted data from one AWS Region to another.
+https://docs.aws.amazon.com/kms/latest/APIReference/API_GenerateDataKey.html
+https://docs.aws.amazon.com/kms/latest/APIReference/API_Encrypt.html
+https://docs.aws.amazon.com/kms/latest/APIReference/API_GenerateDataKeyWithoutPlaintext.html
 
 =======================================================================================================
 -- Elastic Beanstalk / -- AWS Elastic Beanstalk / -- Amazon Elastic Beanstalk
@@ -750,7 +849,19 @@ Please see this note for more details on provisioned concurrency:
 https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q3-i1.jpg
 via - https://docs.aws.amazon.com/lambda/latest/dg/configuration-concurrency.html
 
+The CodeDeploy agent is a software package that, when installed and configured on an instance, makes it possible for that instance to be used in CodeDeploy deployments. The CodeDeploy agent archives revisions and log files on instances. The CodeDeploy agent cleans up these artifacts to conserve disk space. You can use the :max_revisions: option in the agent configuration file to specify the number of application revisions to the archive by entering any positive integer. CodeDeploy also archives the log files for those revisions. All others are deleted, except for the log file of the last successful deployment.
+More info here:  
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q48-i1.jpg
+via - https://docs.aws.amazon.com/codedeploy/latest/userguide/codedeploy-agent.html
+https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/AgentReference.html
+https://docs.aws.amazon.com/codedeploy/latest/userguide/deployments.html
+https://aws.amazon.com/blogs/publicsector/rapidly-recover-mission-critical-systems-in-a-disaster/
+
 -- AWS CodePipeline / -- Amazon CodePipeline / -- CodePipeline
+
+https://docs.aws.amazon.com/codepipeline/latest/userguide/approvals-action-add.html
+https://docs.aws.amazon.com/codepipeline/latest/userguide/vpc-support.html
+
 -- AWS CodeBuild / -- CodeBuild
 
 https://docs.aws.amazon.com/codebuild/latest/userguide/welcome.html
@@ -800,6 +911,10 @@ AWS access keys - You can use these keys with the credential helper included wit
 
 https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_ssh-keys.html
 https://docs.aws.amazon.com/codebuild/latest/userguide/stop-build.html
+
+Data in AWS CodeCommit repositories is encrypted in transit and at rest. When data is pushed into an AWS CodeCommit repository (for example, by calling git push), AWS CodeCommit encrypts the received data as it is stored in the repository.
+
+https://docs.aws.amazon.com/codecommit/latest/userguide/encryption.html
 
 =======================================================================================================
 Infrastructure as Code
@@ -1157,9 +1272,22 @@ via - https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide
 
 Visibility timeout is a period during which Amazon SQS prevents other consumers from receiving and processing a given message. The default visibility timeout for a message is 30 seconds. The minimum is 0 seconds. 
 
-You can use message timers to set an initial invisibility period for a message added to a queue. So, if you send a message with a 60-second timer, the message isn't visible to consumers for its first 60 seconds in the queue. The default (minimum) delay for a message is 0 seconds. The maximum is 15 minutes. 
+You can use message timers to set an initial invisibility period for a message added to a queue. So, if you send a message with a 60-second timer, the message isn't visible to consumers for its first 60 seconds in the queue. The default (minimum) delay for a message is 0 seconds. The maximum is 15 minutes.
+
+Server-side encryption (SSE) lets you transmit sensitive data in encrypted queues. SSE protects the contents of messages in queues using keys managed in AWS Key Management Service (AWS KMS).
+AWS KMS combines secure, highly available hardware and software to provide a key management system scaled for the cloud. When you use Amazon SQS with AWS KMS, the data keys that encrypt your message data are also encrypted and stored with the data they protect.
+You can choose to have SQS encrypt messages stored in both Standard and FIFO queues using an encryption key provided by AWS Key Management Service (KMS).
+https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-server-side-encryption.html
 
 -- Amazon SNS / -- SNS
+
+
+Amazon SNS enables message filtering and fanout to a large number of subscribers, including serverless functions, queues, and distributed systems. Additionally, Amazon SNS fans out notifications to end users via mobile push messages, SMS, and email.
+
+How SNS Works:
+https://d1.awsstatic.com/product-marketing/SNS/product-page-diagram_SNS_how-it-works_1.53a464980bf0d5a868b141e9a8b2acf12abc503f.png
+via - https://aws.amazon.com/sns/
+
 -- Amazon Kinesis / -- Kinesis
 
 AWS Kinesis Data Streams
@@ -1229,6 +1357,9 @@ When a ProvisionedThroughputExceeded exception is thrown we can do the following
 The capacity limits of an Amazon Kinesis data stream are defined by the number of shards within the data stream. The limits can be exceeded by either data throughput or the number of PUT records. While the capacity limits are exceeded, the put data call will be rejected with a ProvisionedThroughputExceeded exception.
 
 https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q6-i1.jpg
+
+SNS and SQS can be used to create a fanout messaging scenario in which messages are "pushed" to multiple subscribers, which eliminates the need to periodically check or poll for updates and enables parallel asynchronous processing of the message by the subscribers. SQS can allow for later re-processing and dead letter queues. This is called the fan-out pattern.
+https://aws.amazon.com/getting-started/hands-on/send-fanout-event-notifications/
 
 -- CloudFront / -- AWS CloudFront
 
@@ -1327,6 +1458,25 @@ Please see this note for more details:
 https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q9-i1.jpg
 via - https://docs.aws.amazon.com/lambda/latest/dg/monitoring-cloudwatchlogs.html
 
+Which of the following should you implement to connect AWS Lambda function to an RDS instance?
+Configure Lambda to connect to VPC with private subnet and Security Group needed to access RDS - You can configure a Lambda function to connect to private subnets in a virtual private cloud (VPC) in your account. Use Amazon Virtual Private Cloud (Amazon VPC) to create a private network for resources such as databases, cache instances, or internal services. Connect your lambda function to the VPC to access private resources during execution. When you connect a function to a VPC, Lambda creates an elastic network interface for each combination of the security group and subnet in your function's VPC configuration. This is the right way of giving RDS access to Lambda.
+
+Lambda VPC Config:  
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q39-i1.jpg
+via - https://docs.aws.amazon.com/lambda/latest/dg/configuration-vpc.html
+
+You can configure your Lambda function to pull in additional code and content in the form of layers. A layer is a ZIP archive that contains libraries, a custom runtime, or other dependencies. 
+
+https://docs.aws.amazon.com/lambda/latest/dg/configuration-vpc.html
+https://docs.aws.amazon.com/lambda/latest/dg/configuration-layers.html
+https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html
+https://aws.amazon.com/premiumsupport/knowledge-center/internet-access-lambda-function/
+
+which are the use cases, wherein AWS Lambda will add a message into a DLQ after being processed?
+1. The Lambda function invocation is asynchronous - When an asynchronous invocation event exceeds the maximum age or fails all retry attempts, Lambda discards it. Or sends it to dead-letter queue if you have configured one.
+2. The event fails all processing attempt - A dead-letter queue acts the same as an on-failure destination in that it is used when an event fails all processing attempts or expires without being processed.
+https://docs.aws.amazon.com/lambda/latest/dg/invocation-async.html
+
 -- Amazon Step Functions / -- Step Functions
 
 How step functions work:
@@ -1401,7 +1551,11 @@ https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-caching
 
  A mapping template is a script expressed in Velocity Template Language (VTL) and applied to the payload using JSONPath expressions. Mapping templates help format/structure the data in a way that it is easily readable, unlike a server response that might always be easy to ready. Mapping Templates do not help in latency issues of the APIs.
 
+Cross-origin resource sharing (CORS) defines a way for client web applications that are loaded in one domain to interact with resources in a different domain. When your API's resources receive requests from a domain other than the API's own domain and you want to restrict servicing these requests, you must disable cross-origin resource sharing (CORS) for selected methods on the resource.
 
+https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-protect.html
+https://docs.aws.amazon.com/apigateway/latest/developerguide/rest-api-data-transformations.html
+https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-caching.html#invalidate-method-caching
 
 =======================================================================================================
 Serverless Applications
@@ -1440,17 +1594,45 @@ https://aws.amazon.com/about-aws/whats-new/2016/11/aws-cloudtrail-supports-s3-da
 
 By default, CloudTrail event log files are encrypted using Amazon S3 server-side encryption (SSE).
 
+For CloudTrail to work with S3 buckets and the bucket owner to receive logs, he must be object owner, as well.
+Otherwise, the bucket owner must get permissions, through the object ACL, for the same object API to get the same object-access API logs.
+https://docs.aws.amazon.com/AmazonS3/latest/userguide/cloudtrail-logging-s3-info.html#cloudtrail-object-level-crossaccount
+
 -- AWS CloudWatch / -- CloudWatch / -- Amazon CloudWatch
 
 https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-cloudwatch-new.html
+https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch_concepts.html
+
+As part of basic monitoring, Amazon EC2 sends metric data to CloudWatch in 5-minute periods. To send metric data for your instance to CloudWatch in 1-minute periods, you can enable detailed monitoring on the instance, however, this comes at an additional cost.
+The basic monitoring data is available automatically in a 5-minute interval and detailed monitoring data is available in a 1-minute interval.
 
 You can publish your own metrics to CloudWatch using the AWS CLI or an API. Metrics produced by AWS services are standard resolution by default. When you publish a custom metric, you can define it as either standard resolution or high resolution. When you publish a high-resolution metric, CloudWatch stores it with a resolution of 1 second, and you can read and retrieve it with a period of 1 second, 5 seconds, 10 seconds, 30 seconds, or any multiple of 60 seconds.
 
 High-resolution metrics can give you more immediate insight into your application's sub-minute activity. But, every PutMetricData call for a custom metric is charged, so calling PutMetricData more often on a high-resolution metric can lead to higher charges.
 https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/publishingMetrics.html
 
+Using high-resolution custom metric, your applications can publish metrics to CloudWatch with 1-second resolution. You can watch the metrics scroll across your screen seconds after they are published and you can set up high-resolution CloudWatch Alarms that evaluate as frequently as every 10 seconds. You can alert with High-Resolution Alarms, as frequently as 10-second periods. High-Resolution Alarms allow you to react and take actions faster and support the same actions available today with standard 1-minute alarms.
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q11-i1.jpg
+via - https://aws.amazon.com/blogs/aws/new-high-resolution-custom-metrics-and-alarms-for-amazon-cloudwatch/
+
+The Amazon CloudWatch Monitoring Scripts for Amazon Elastic Compute Cloud (Amazon EC2) Linux-based instances demonstrate how to produce and consume Amazon CloudWatch custom metrics. These Perl scripts comprise a fully functional example that reports memory, swap, and disk space utilization metrics for a Linux instance. You can set a cron schedule for metrics reported to CloudWatch and report memory utilization to CloudWatch every x minutes.
+
 -- AWS CloudWatch metrics and Amazon EventBridge
 -- Amazon X-Ray / -- X-ray / -- AWS XRay / -- Amazon XRay
+
+AWS X-Ray helps developers analyze and debug production, distributed applications, such as those built using a microservices architecture. With X-Ray, you can understand how your application and its underlying services are performing to identify and troubleshoot the root cause of performance issues and errors. X-Ray provides an end-to-end view of requests as they travel through your application, and shows a map of your application’s underlying components.
+
+How X-Ray Works:
+https://d1.awsstatic.com/Products/product-name/Images/product-page-diagram_AWS-X-Ray_how-it-works.2922edd4bfe011e997dbf32fdf8bd520bcbc85fb.png
+via - https://aws.amazon.com/xray/
+
+You can also customize the X-Ray sampling rules:  
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q13-i1.jpg
+via - https://docs.aws.amazon.com/xray/latest/devguide/xray-console-sampling.html
+
+Filter expression syntax:
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q13-i2.jpg
+via - https://docs.aws.amazon.com/xray/latest/devguide/xray-console-filters.html
 
 You can use AWS X-Ray to visualize the components of your application, identify performance bottlenecks, and troubleshoot requests that resulted in an error. Your Lambda functions send trace data to X-Ray, and X-Ray processes the data to generate a service map and searchable trace summaries. This is a useful tool for troubleshooting. But, for the current use-case, we already know the bottleneck that needs to be fixed and that is the context reuse.
 
@@ -1467,6 +1649,7 @@ By customizing sampling rules, you can control the amount of data that you recor
 
 https://docs.aws.amazon.com/xray/latest/devguide/xray-console-sampling.html
 https://docs.aws.amazon.com/xray/latest/devguide/xray-console-deeplinks.html
+
 
 =======================================================================================================
 Optimization
