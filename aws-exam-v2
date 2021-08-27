@@ -32,6 +32,18 @@ AWS requires approximately 5 weeks of usage data to generate budget forecasts - 
  Budget best practices:
  https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/budgets-best-practices.html
 
+If your application creates an AWS client using the default constructor, then the client will search for credentials using the default credentials provider chain, in the following order:
+1. In the Java system properties: aws.accessKeyId and aws.secretKey.
+2. In system environment variables: AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY.
+3. In the default credentials file (the location of this file varies by platform).
+4. Credentials delivered through the Amazon EC2 container service if the AWS_CONTAINER_CREDENTIALS_RELATIVE_URI environment variable is set and security manager has permission to access the variable.
+5. In the instance profile credentials, which exist within the instance metadata associated with the IAM role for the EC2 instance.
+6. Web Identity Token credentials from the environment or container.
+
+The default provider chain and EC2 instance profiles:
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt6-q36-i1.jpg
+via - https://docs.aws.amazon.com/sdk-for-java/v1/developer-guide/java-dg-roles.html
+
 =======================================================================================================
 -- IAM and access control
 
@@ -106,6 +118,8 @@ IAM roles have been incorporated so that your applications can securely make API
 Amazon EC2 uses an instance profile as a container for an IAM role. When you create an IAM role using the IAM console, the console creates an instance profile automatically and gives it the same name as the role to which it corresponds.
 This is the most secure option as the role assigned to EC2 can be used to access S3 without storing any credentials onto the EC2 instance.
 https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-roles-for-amazon-ec2.html
+
+https://docs.aws.amazon.com/IAM/latest/UserGuide/id.html
 
 =======================================================================================================
 Compute and Networking
@@ -432,6 +446,7 @@ https://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html
 https://docs.aws.amazon.com/AmazonS3/latest/user-guide/add-bucket-policy.html
 https://docs.aws.amazon.com/AmazonS3/latest/userguide/security-best-practices.html
 https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingEncryption.html
+https://docs.aws.amazon.com/AmazonS3/latest/dev/ServerSideEncryptionCustomerKeys.html
 
 S3 lifecycle actions are not replicated with S3 replication - With S3 Replication (CRR and SRR), you can establish replication rules to make copies of your objects into another storage class, in the same or a different region. Lifecycle actions are not replicated, and if you want the same lifecycle configuration applied to both source and destination buckets, enable the same lifecycle configuration on both.
 Amazon S3 Replication (CRR and SRR) is configured at the S3 bucket level, a shared prefix level, or an object level using S3 object tags. You add a replication configuration on your source bucket by specifying a destination bucket in the same or different AWS region for replication.
@@ -464,6 +479,14 @@ You can protect data at rest in Amazon S3 by using three different modes of serv
 An IAM user or role needing to perform those actions needs the kms:GenerateDataKey action enabled.
 https://aws.amazon.com/premiumsupport/knowledge-center/s3-access-denied-error-kms/
 https://docs.aws.amazon.com/kms/latest/developerguide/services-s3.html
+
+SSE-S3 Overview:  
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt4-q21-i1.jpg
+via - https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingServerSideEncryption.html
+
+https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingClientSideEncryption.html
+https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingEncryption.html
+https://docs.aws.amazon.com/AmazonS3/latest/dev/NotificationHowTo.html
 
 -- Amazon Elastic Block Store (EBS) / -- EBS / -- AWS EBS / -- Amazon EBS
 
@@ -596,6 +619,16 @@ https://aws.amazon.com/elasticache/redis-vs-memcached/
 
 https://aws.amazon.com/caching/database-caching/
 
+Geospatial on Amazon ElastiCache for Redis:
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt6-q38-i1.jpg
+via - https://aws.amazon.com/blogs/database/work-with-cluster-mode-on-amazon-elasticache-for-redis/
+
+You can leverage ElastiCache for Redis with cluster mode enabled to enhance reliability and availability with little change to your existing workload. Cluster Mode comes with the primary benefit of horizontal scaling up and down of your Redis cluster, with almost zero impact on the performance of the cluster.
+
+Enabling Cluster Mode provides a number of additional benefits in scaling your cluster. In short, it allows you to scale in or out the number of shards (horizontal scaling) versus scaling up or down the node type (vertical scaling). This means that Cluster Mode can scale to very large amounts of storage (potentially 100s of terabytes) across up to 90 shards, whereas a single node can only store as much data in memory as the instance type has capacity for.
+
+https://aws.amazon.com/blogs/database/amazon-elasticache-utilizing-redis-geospatial-capabilities/
+
 -- Other
 -- Amazon DynamoDB / -- DynamoDB / -- AWS DynamoDB
 
@@ -669,6 +702,13 @@ The most efficient way to truncate a dynamodb table is by deleting it and then r
 the delete-table CLI operation (DeleteTable API operation).
 Scanning and deleting each item is a too expensive operation.
 https://docs.aws.amazon.com/cli/latest/reference/dynamodb/delete-table.html
+
+Streams:
+https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Streams.html
+
+Differences between GSI and LSI:
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt4-q24-i1.jpg
+via - https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/SecondaryIndexes.html
 
 =======================================================================================================
 Route 53 and DNS
@@ -809,6 +849,8 @@ Deploy using 'Rolling' deployment policy - With this method, your application is
 
 SSM parameter store is still not supported by beanstalk.
 
+https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/using-features.rolling-version-deploy.html#environments-cfg-rollingdeployments-method
+
 =======================================================================================================
 Deployment as Code
 
@@ -857,10 +899,15 @@ https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/AgentReference.html
 https://docs.aws.amazon.com/codedeploy/latest/userguide/deployments.html
 https://aws.amazon.com/blogs/publicsector/rapidly-recover-mission-critical-systems-in-a-disaster/
 
+ if the deployment of the new version fails a new deployment of the last known working version
+ of the application is deployed with a new deployment ID
+https://docs.aws.amazon.com/codedeploy/latest/userguide/deployments-rollback-and-redeploy.html
+
 -- AWS CodePipeline / -- Amazon CodePipeline / -- CodePipeline
 
 https://docs.aws.amazon.com/codepipeline/latest/userguide/approvals-action-add.html
 https://docs.aws.amazon.com/codepipeline/latest/userguide/vpc-support.html
+https://docs.aws.amazon.com/codepipeline/latest/userguide/pipelines-about-starting.html
 
 -- AWS CodeBuild / -- CodeBuild
 
@@ -902,6 +949,12 @@ https://docs.aws.amazon.com/codebuild/latest/userguide/monitoring-metrics.html
 https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/S3Export.html
 https://docs.aws.amazon.com/codebuild/latest/userguide/getting-started-input-bucket-console.html
 
+Best Practices for Caching Dependencies:
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt4-q7-i1.jpg
+via - https://aws.amazon.com/blogs/devops/how-to-enable-caching-for-aws-codebuild/
+
+https://docs.aws.amazon.com/codebuild/latest/userguide/create-project.html#create-project-cli
+
 -- AWS CodeCommit / -- CodeCommit
 
 The following can be used for authentication against CodeCommit:
@@ -915,6 +968,13 @@ https://docs.aws.amazon.com/codebuild/latest/userguide/stop-build.html
 Data in AWS CodeCommit repositories is encrypted in transit and at rest. When data is pushed into an AWS CodeCommit repository (for example, by calling git push), AWS CodeCommit encrypts the received data as it is stored in the repository.
 
 https://docs.aws.amazon.com/codecommit/latest/userguide/encryption.html
+
+The simplest way to set up connections to AWS CodeCommit repositories is to configure Git credentials for CodeCommit in the IAM console, and then use those credentials for HTTPS connections. You can also use these same credentials with any third-party tool or individual development environment (IDE) that supports HTTPS authentication using a static user name and password.
+An IAM user is an identity within your Amazon Web Services account that has specific custom permissions. For example, an IAM user can have permissions to create and manage Git credentials for accessing CodeCommit repositories. This is the recommended user type for working with CodeCommit. You can use an IAM user name and password to sign in to secure AWS webpages like the AWS Management Console, AWS Discussion Forums, or the AWS Support Center.
+Authentication and access control for AWS CodeCommit:
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt6-q52-i1.jpg
+via - https://docs.aws.amazon.com/codecommit/latest/userguide/auth-and-access-control.html
+https://docs.aws.amazon.com/codecommit/latest/userguide/setting-up-gc.html
 
 =======================================================================================================
 Infrastructure as Code
@@ -1095,6 +1155,14 @@ via - https://docs.aws.amazon.com/serverless-application-model/latest/developerg
 
 https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification.html
 
+In order to use the output value of a template into another stack the following must be done:
+Use 'Export' field in the Output section of the stack's template
+To share information between stacks, export a stack's output values. Other stacks that are in the same AWS account and region can import the exported values.
+To export a stack's output value, use the Export field in the Output section of the stack's template. To import those values, use the Fn::ImportValue function in the template for the other stacks.
+https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-stack-exports.html
+
+
+
 =======================================================================================================
 Configuration as Code
 
@@ -1131,7 +1199,14 @@ https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_mfa_enable_sms.h
 AWS Security Token Service (STS) - AWS Security Token Service (AWS STS) is a web service that enables you to request temporary, limited-privilege credentials for AWS Identity and Access Management (IAM) users or for users that you authenticate (federated users). However, it is not supported by API Gateway.
 https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp.html
 
+Use decode-authorization-message to decode additional information about the authorization status of a request from an encoded message returned in response to an AWS request. If a user is not authorized to perform an action that was requested, the request returns a Client.UnauthorizedOperation response (an HTTP 403 response). The message is encoded because the details of the authorization status can constitute privileged information that the user who requested the operation should not see. To decode an authorization status message, a user must be granted permissions via an IAM policy to request the DecodeAuthorizationMessage (sts:DecodeAuthorizationMessage) action.
+https://docs.aws.amazon.com/cli/latest/reference/sts/decode-authorization-message.html
+
 -- Cognito
+
+Cognito Overview:
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt4-q58-i1.jpg
+via - https://docs.aws.amazon.com/cognito/latest/developerguide/what-is-amazon-cognito.html
 
 After successful authentication, Amazon Cognito returns user pool tokens to your app. You can use the tokens to grant your users access to your own server-side resources, or to the Amazon API Gateway.
 
@@ -1279,6 +1354,10 @@ AWS KMS combines secure, highly available hardware and software to provide a key
 You can choose to have SQS encrypt messages stored in both Standard and FIFO queues using an encryption key provided by AWS Key Management Service (KMS).
 https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-server-side-encryption.html
 
+Sample SNS-SQS Fanout message:
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt6-q35-i1.jpg
+via - https://docs.aws.amazon.com/sns/latest/dg/sns-sqs-as-subscriber.html
+
 -- Amazon SNS / -- SNS
 
 
@@ -1287,6 +1366,10 @@ Amazon SNS enables message filtering and fanout to a large number of subscribers
 How SNS Works:
 https://d1.awsstatic.com/product-marketing/SNS/product-page-diagram_SNS_how-it-works_1.53a464980bf0d5a868b141e9a8b2acf12abc503f.png
 via - https://aws.amazon.com/sns/
+
+https://docs.aws.amazon.com/sns/latest/dg/sns-sqs-as-subscriber.html
+https://docs.aws.amazon.com/sns/latest/dg/sns-lambda-as-subscriber.html
+https://docs.aws.amazon.com/sns/latest/dg/sns-firehose-as-subscriber.html
 
 -- Amazon Kinesis / -- Kinesis
 
@@ -1314,6 +1397,14 @@ Amazon Kinesis Data Streams is useful for rapidly moving data off data producers
 
 Kinesis Data stream overview:
 https://d1.awsstatic.com/Products/product-name/diagrams/product-page-diagram_Amazon-Kinesis-Data-Streams.074de94302fd60948e1ad070e425eeda73d350e7.png
+https://docs.aws.amazon.com/streams/latest/dev/key-concepts.html
+
+The partition key is used by Kinesis Data Streams to distribute data across shards. Kinesis Data Streams segregates the data records that belong to a 
+stream into multiple shards, using the partition key associated with each data record to determine the shard to which a given data record belongs.
+You can also use metrics to determine which are your "hot" or "cold" shards, that is, shards that are receiving much more data, or much less data, than expected. You could then selectively split the hot shards to increase capacity for the hash keys that target those shards. Similarly, you could merge cold shards to make better use of their unused capacity.
+https://docs.aws.amazon.com/streams/latest/dev/key-concepts.html
+https://docs.aws.amazon.com/streams/latest/dev/kinesis-using-sdk-java-resharding-strategies.html
+https://docs.aws.amazon.com/streams/latest/dev/writing-with-agents.html
 
 AWS Kinesis Data Firehose - Amazon Kinesis Data Firehose is the easiest way to load streaming data into data stores and analytics tools. It can capture, transform, and load streaming data into Amazon S3, Amazon Redshift, Amazon Elasticsearch Service, and Splunk, enabling near real-time analytics with existing business intelligence tools and dashboards you’re already using today. It is a fully managed service that automatically scales to match the throughput of your data and requires no ongoing administration. It can also batch, compress, and encrypt the data before loading it, minimizing the amount of storage used at the destination and increasing security.
 
@@ -1360,6 +1451,9 @@ https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q6-i1.jpg
 
 SNS and SQS can be used to create a fanout messaging scenario in which messages are "pushed" to multiple subscribers, which eliminates the need to periodically check or poll for updates and enables parallel asynchronous processing of the message by the subscribers. SQS can allow for later re-processing and dead letter queues. This is called the fan-out pattern.
 https://aws.amazon.com/getting-started/hands-on/send-fanout-event-notifications/
+
+Stream data to an RDS with Kinesis:
+https://aws.amazon.com/blogs/database/streaming-changes-in-a-database-with-amazon-kinesis/
 
 -- CloudFront / -- AWS CloudFront
 
@@ -1477,6 +1571,9 @@ which are the use cases, wherein AWS Lambda will add a message into a DLQ after 
 2. The event fails all processing attempt - A dead-letter queue acts the same as an on-failure destination in that it is used when an event fails all processing attempts or expires without being processed.
 https://docs.aws.amazon.com/lambda/latest/dg/invocation-async.html
 
+https://docs.aws.amazon.com/lambda/latest/dg/services-xray.html
+https://docs.aws.amazon.com/lambda/latest/dg/best-practices.html
+
 -- Amazon Step Functions / -- Step Functions
 
 How step functions work:
@@ -1557,6 +1654,20 @@ https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-protect.ht
 https://docs.aws.amazon.com/apigateway/latest/developerguide/rest-api-data-transformations.html
 https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-caching.html#invalidate-method-caching
 
+ALB routing options:
+Path based
+
+You can create a listener with rules to forward requests based on the URL path. This is known as path-based routing. If you are running microservices, you can route traffic to multiple back-end services using path-based routing. For example, you can route general requests to one target group and request to render images to another target group.
+
+This path-based routing allows you to route requests to, for example, /api to one set of servers (also known as target groups) and /mobile to another set. Segmenting your traffic in this way gives you the ability to control the processing environment for each category of requests. Perhaps /api requests are best processed on Compute Optimized instances, while /mobile requests are best handled by Memory Optimized instances.
+
+Host based
+
+You can create Application Load Balancer rules that route incoming traffic based on the domain name specified in the Host header. Requests to api.example.com can be sent to one target group, requests to mobile.example.com to another, and all others (by way of a default rule) can be sent to a third. You can also create rules that combine host-based routing and path-based routing. This would allow you to route requests to api.example.com/production and api.example.com/sandbox to distinct target groups.
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt4-q54-i1.jpg
+via - https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-listeners.html#rule-condition-types
+https://aws.amazon.com/blogs/aws/new-host-based-routing-support-for-aws-application-load-balancers/
+
 =======================================================================================================
 Serverless Applications
 
@@ -1616,6 +1727,17 @@ https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q11-i1.jpg
 via - https://aws.amazon.com/blogs/aws/new-high-resolution-custom-metrics-and-alarms-for-amazon-cloudwatch/
 
 The Amazon CloudWatch Monitoring Scripts for Amazon Elastic Compute Cloud (Amazon EC2) Linux-based instances demonstrate how to produce and consume Amazon CloudWatch custom metrics. These Perl scripts comprise a fully functional example that reports memory, swap, and disk space utilization metrics for a Linux instance. You can set a cron schedule for metrics reported to CloudWatch and report memory utilization to CloudWatch every x minutes.
+https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/mon-scripts.html
+
+Encrypt logs using KMS:
+https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/encrypt-log-data-kms.html
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt4-q10-i1.jpg
+
+By default, your instance is enabled for basic monitoring and Amazon EC2 sends metric data to CloudWatch in 5-minute periods. You can optionally enable detailed monitoring. After you enable detailed monitoring, the Amazon EC2 console displays monitoring graphs with a 1-minute period for the instance.
+The following describes the data interval and charge for basic and detailed monitoring for instances.
+- Basic monitoring Data is available automatically in 5-minute periods at no charge.
+- Detailed monitoring Data is available in 1-minute periods for an additional charge.
+https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-cloudwatch.html
 
 -- AWS CloudWatch metrics and Amazon EventBridge
 -- Amazon X-Ray / -- X-ray / -- AWS XRay / -- Amazon XRay
@@ -1662,10 +1784,16 @@ Other
 AWS Systems Manager gives you visibility and control of your infrastructure on AWS. Systems Manager provides a unified user interface so you can view operational data from multiple AWS services and allows you to automate operational tasks across your AWS resources.
 https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-paramstore.html
 
--- AWS SSM Parameter Store / -- SSM / -- Parameter store / -- SSM Parameter store
+
+-- AWS SSM Parameter Store / -- SSM / -- Parameter store / -- SSM Parameter store / -- Systems Manager Parameter store
+
+With AWS Systems Manager Parameter Store, you can create SecureString parameters, which are parameters that have a plaintext parameter name and an encrypted parameter value. Parameter Store uses AWS KMS to encrypt and decrypt the parameter values of Secure String parameters. Also, if you are using customer-managed CMKs, you can use IAM policies and key policies to manage to encrypt and decrypt permissions. To retrieve the decrypted value you only need to do one API call.
 
 AWS Systems Manager Parameter Store provides secure, hierarchical storage for configuration data management and secrets management. You can store data such as passwords, database strings, and license codes as parameter values.
 
 AWS Systems Manager Parameter Store provides secure, hierarchical storage for configuration data management and secrets management. You can store data such as passwords, database strings, and license codes as parameter values. For the given use-case, as the DevOps team does not want to re-deploy the application every time there are configuration changes, so they can use the SSM Parameter Store to store the configuration externally.
+
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt4-q47-i1.jpg
+ via - https://docs.aws.amazon.com/kms/latest/developerguide/services-parameter-store.html
 
 -- AWS IoT Core service
