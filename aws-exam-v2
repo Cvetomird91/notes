@@ -2,8 +2,8 @@
 -- AWS Cloud API and CLI / -- CLI / -- AWS CLI / -- AWS API / -- API
 
 Cli options:
-https://media.datacumulus.com/aws-dva-pt/assets/pt1-q62-i1.jpg
- via - https://docs.aws.amazon.com/cli/latest/topic/config-vars.html#general-options
+https://media.datacumulus.com/aws-dva-pt/assets/pt1-q62-i1.jpg +
+ via - https://docs.aws.amazon.com/cli/latest/topic/config-vars.html#general-options +
 
  The --dry-run option checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is DryRunOperation, otherwise, it is UnauthorizedOperation.
 
@@ -30,7 +30,7 @@ AWS requires approximately 5 weeks of usage data to generate budget forecasts - 
  Stand-alone accounts too can create budgets and being part of an Organization is not mandatory to use AWS Budgets.
 
  Budget best practices:
- https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/budgets-best-practices.html
+ https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/budgets-best-practices.html +
 
 If your application creates an AWS client using the default constructor, then the client will search for credentials using the default credentials provider chain, in the following order:
 1. In the Java system properties: aws.accessKeyId and aws.secretKey.
@@ -41,8 +41,8 @@ If your application creates an AWS client using the default constructor, then th
 6. Web Identity Token credentials from the environment or container.
 
 The default provider chain and EC2 instance profiles:
-https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt6-q36-i1.jpg
-via - https://docs.aws.amazon.com/sdk-for-java/v1/developer-guide/java-dg-roles.html
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt6-q36-i1.jpg +
+via - https://docs.aws.amazon.com/sdk-for-java/v1/developer-guide/java-dg-roles.html +
 
 =======================================================================================================
 -- IAM and access control
@@ -56,8 +56,8 @@ AWS Organizations Service Control Policy (SCP) – Use an AWS Organizations Serv
 Permissions boundary - Permissions boundary is a managed policy that is used for an IAM entity (user or role). The policy defines the maximum permissions that the identity-based policies can grant to an entity, but does not grant permissions.
 
 Overview of Policy Types:  
-https://media.datacumulus.com/aws-dva-pt/assets/pt1-q59-i1.jpg
-via - https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html
+https://media.datacumulus.com/aws-dva-pt/assets/pt1-q59-i1.jpg +
+via - https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html +
 
 IAM policy principal - You can use the Principal element in a policy to specify the principal that is allowed or denied access to a resource (In IAM, a principal is a person or application that can make a request for an action or operation on an AWS resource. The principal is authenticated as the AWS account root user or an IAM entity to make requests to AWS). You cannot use the Principal element in an IAM identity-based policy. You can use it in the trust policies for IAM roles and in resource-based policies.
 
@@ -86,8 +86,8 @@ via - https://aws.amazon.com/premiumsupport/knowledge-center/lambda-function-ass
 
 You cannot attach a resource policy to a DynamoDB
 
-https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html
-https://docs.aws.amazon.com/IAM/latest/UserGuide/what-is-access-analyzer.html
+https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html +
+https://docs.aws.amazon.com/IAM/latest/UserGuide/what-is-access-analyzer.html +
 
 The development team has just configured and attached the IAM policy needed to access AWS Billing and Cost Management for all users under the Finance department. But, the users are unable to see AWS Billing and Cost Management service in the AWS console. What could be the reason for this issue?
 
@@ -135,20 +135,20 @@ When you first configure the CLI you may run "aws configure", afterward you shou
 0 seconds - AWS states that, if your AWS account is less than 12 months old, you can use a t2.micro instance for free within certain usage limits.
 Reference:
 
-https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/burstable-performance-instances.html
+https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/burstable-performance-instances.html +
 
 Dedicated Instances - Dedicated Instances are Amazon EC2 instances that run in a virtual private cloud (VPC) on hardware that's dedicated to a single customer. Dedicated Instances that belong to different AWS accounts are physically isolated at a hardware level, even if those accounts are linked to a single-payer account. However, Dedicated Instances may share hardware with other instances from the same AWS account that are not Dedicated Instances.
 
 A Dedicated Host is also a physical server that's dedicated for your use. With a Dedicated Host, you have visibility and control over how instances are placed on the server.
 
 Differences between Dedicated Hosts and Dedicated Instances:
-https://media.datacumulus.com/aws-dva-pt/assets/pt1-q21-i1.jpg
-via - https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/dedicated-hosts-overview.html#dedicated-hosts-dedicated-instances
-https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-purchasing-options.html
+https://media.datacumulus.com/aws-dva-pt/assets/pt1-q21-i1.jpg +
+via - https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/dedicated-hosts-overview.html#dedicated-hosts-dedicated-instances +
+https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-purchasing-options.html +
 
 High Level Overview of EC2 Instance Purchase Options:  
-https://media.datacumulus.com/aws-dva-pt/assets/pt1-q21-i2.jpg
-via - https://aws.amazon.com/ec2/pricing/
+https://media.datacumulus.com/aws-dva-pt/assets/pt1-q21-i2.jpg +
+via - https://aws.amazon.com/ec2/pricing/ +
 
 Spot Instances - A Spot Instance is an unused EC2 instance that is available for less than the On-Demand price. Your Spot Instance runs whenever capacity is available and the maximum price per hour for your request exceeds the Spot price. Any instance present with unused capacity will be allocated.
 
@@ -157,7 +157,7 @@ Stop the Spot Instance
 Hibernate the Spot Instance
 Terminate the Spot Instance
 The default is to terminate Spot Instances when they are interrupted.
-https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-interruptions.html
+https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-interruptions.html +
 
 Dedicated Hosts - An Amazon EC2 Dedicated Host is a physical server with EC2 instance capacity fully dedicated to your use. Dedicated Hosts allow you to use your existing software licenses on EC2 instances. With a Dedicated Host, you have visibility and control over how instances are placed on the server. This option is costlier than the Dedicated Instance and hence is not the right choice for the current requirement.
 
@@ -166,22 +166,12 @@ On-Demand Instances - With On-Demand Instances, you pay for compute capacity by 
 We can decrease EC2 instance load in case of secure traffic via HTTPS in the following way:
 "Configure an SSL/TLS certificate on an Application Load Balancer via AWS Certificate Manager (ACM)"
 
-"Create an HTTPS listener on the Application Load Balancer with SSL termination"
-
-An Application load balancer distributes incoming application traffic across multiple targets, such as EC2 instances, in multiple Availability Zones. A listener checks for connection requests from clients, using the protocol and port that you configure. The rules that you define for a listener determine how the load balancer routes requests to its registered targets. Each rule consists of a priority, one or more actions, and one or more conditions.
-https://docs.aws.amazon.com/elasticloadbalancing/latest/application/images/component_architecture.png
-https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html
-
-To use an HTTPS listener, you must deploy at least one SSL/TLS server certificate on your load balancer. You can create an HTTPS listener, which uses encrypted connections (also known as SSL offload). This feature enables traffic encryption between your load balancer and the clients that initiate SSL or TLS sessions. As the EC2 instances are under heavy CPU load, the load balancer will use the server certificate to terminate the front-end connection and then decrypt requests from clients before sending them to the EC2 instances.
-https://aws.amazon.com/premiumsupport/knowledge-center/associate-acm-certificate-alb-nlb/
-
 EC2 reserved instance types:
-https://media.datacumulus.com/aws-dva-pt/assets/pt1-q19-i1.jpg
-via - https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/reserved-instances-types.html
+https://media.datacumulus.com/aws-dva-pt/assets/pt1-q19-i1.jpg +
+via - https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/reserved-instances-types.html +
 
 High Level Overview of EC2 Instance Purchase Options:
-https://media.datacumulus.com/aws-dva-pt/assets/pt1-q19-i2.jpg
-via - https://aws.amazon.com/ec2/pricing/
+https://media.datacumulus.com/aws-dva-pt/assets/pt1-q19-i2.jpg +
 
 Elastic Reserved instances - This option has been added as a distractor. There are no Elastic Reserved Instance types.
 
@@ -195,16 +185,16 @@ Convertible Reserved instances - A Convertible Reserved Instance can be exchange
 
 Zonal Reserved Instances - A zonal Reserved Instance provides a capacity reservation in the specified Availability Zone. Capacity Reservations enable you to reserve capacity for your Amazon EC2 instances in a specific Availability Zone for any duration. This gives you the ability to create and manage Capacity Reservations independently from the billing discounts offered by Savings Plans or regional Reserved Instances.
 
-https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-reserved-instances.html
+https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-reserved-instances.html +
 
-https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q31-i1.jpg
-via - https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/reserved-instances-scope.html
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q31-i1.jpg +
+via - https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/reserved-instances-scope.html +
 
 Reserved instance types:
-https://media.datacumulus.com/aws-dva-pt/assets/pt1-q19-i1.jpg
+https://media.datacumulus.com/aws-dva-pt/assets/pt1-q19-i1.jpg +
 
-https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-purchasing-options.html
-https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/reserved-instances-types.html
+https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-purchasing-options.html +
+https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/reserved-instances-types.html +
 
 Auto Scaling groups cannot span across multiple Regions.
 Auto Scaling groups can span across the availability Zones of a Region.
@@ -213,32 +203,31 @@ An Auto Scaling group can contain EC2 instances in one or more Availability Zone
 For Auto Scaling groups in a VPC, the EC2 instances are launched in subnets. Customers can select the subnets for your EC2 instances when you create or update the Auto Scaling group.
 
 Amazon EC2 Auto Scaling Overview:
-https://media.datacumulus.com/aws-dva-pt/assets/pt1-q27-i1.jpg
-via - https://docs.aws.amazon.com/autoscaling/ec2/userguide/what-is-amazon-ec2-auto-scaling.html
-https://docs.aws.amazon.com/autoscaling/ec2/userguide/auto-scaling-benefits.html
+https://media.datacumulus.com/aws-dva-pt/assets/pt1-q27-i1.jpg +
+via - https://docs.aws.amazon.com/autoscaling/ec2/userguide/what-is-amazon-ec2-auto-scaling.html +
+https://docs.aws.amazon.com/autoscaling/ec2/userguide/auto-scaling-benefits.html +
 
 By default, scripts entered as user data are executed with root user privileges - Scripts entered as user data are executed as the root user, hence do not need the sudo command in the script. Any files you create will be owned by root; if you need non-root users to have file access, you should modify the permissions accordingly in the script.
 
 By default, user data runs only during the boot cycle when you first launch an instance - By default, user data scripts and cloud-init directives run only during the boot cycle when you first launch an instance. You can update your configuration to ensure that your user data scripts and cloud-init directives run every time you restart your instance.
 
-https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/user-data.html
+https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/user-data.html +
 
 All Reserved Instances provide you with a discount compared to On-Demand pricing.
 
 A Reserved Instance billing benefit can apply to a maximum of 3600 seconds (one hour) of instance usage per clock-hour. You can run multiple instances concurrently, but can only receive the benefit of the Reserved Instance discount for a total of 3600 seconds per clock-hour; instance usage that exceeds 3600 seconds in a clock-hour is billed at the On-Demand rate.
-https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q34-i1.jpg
-via - https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/reserved-instances-types.html
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q34-i1.jpg +
+via - https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/reserved-instances-types.html +
 
 High Level Overview of EC2 Instance Purchase Options:
-https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q34-i2.jpg
-via - https://aws.amazon.com/ec2/pricing/
-https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/concepts-reserved-instances-application.html
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q34-i2.jpg +
+https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/concepts-reserved-instances-application.html +
 
 You configure monitoring for EC2 instances using a launch configuration or template. Monitoring is enabled whenever an instance is launched, either basic monitoring (5-minute granularity) or detailed monitoring (1-minute granularity).
 
 AWS Management Console might have been used to create the launch configuration - By default, basic monitoring is enabled when you create a launch template or when you use the AWS Management Console to create a launch configuration. This could be the reason behind only the basic monitoring taking place.
 https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q28-i1.jpg
-via - https://docs.aws.amazon.com/autoscaling/ec2/userguide/enable-as-instance-metrics.html
+via - https://docs.aws.amazon.com/autoscaling/ec2/userguide/enable-as-instance-metrics.html +
 Detailed monitoring is enabled by default when you create a launch configuration using the AWS CLI or an SDK.
 
 ASGAverageCPUUtilization - This is a predefined metric for target tracking scaling policy. This represents the Average CPU utilization of the Auto Scaling group.
@@ -255,16 +244,16 @@ Here is the correct way of reusing SSH keys in your AWS Regions:
 2. Set the AWS Region you wish to import to.
 3. Import the public SSH key into the new Region.
 
-https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html
-https://docs.aws.amazon.com/cli/latest/reference/ec2/run-instances.html
-https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-instance-monitoring.html
+https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html +
+https://docs.aws.amazon.com/cli/latest/reference/ec2/run-instances.html +
+https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-instance-monitoring.html +
 
 Policy Evaluation explained:
-https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q43-i1.jpg
-via - https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic.html
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q43-i1.jpg +
+via - https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic.html +
 
-https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/using-features.managing.html
-https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/using-features.environments.html
+https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/using-features.managing.html +
+https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/using-features.environments.html +
 
 -- AWS VPC / -- Amazon VPC / Networking & VPC / -- VPC
 
@@ -294,7 +283,7 @@ You configure the size of your Auto Scaling group by setting the minimum, maximu
 
 Since a minimum capacity of 1 was defined, an instance was launched in only one AZ. This AZ went down, taking the application with it. If the minimum capacity is set to 2. As per Auto Scale AZ configuration, it would have launched 2 instances- one in each AZ, making the architecture disaster-proof and hence highly available.
 https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q65-i1.jpg
-via - https://docs.aws.amazon.com/autoscaling/ec2/userguide/auto-scaling-benefits.html
+via - https://docs.aws.amazon.com/autoscaling/ec2/userguide/auto-scaling-benefits.html +
 
 With target tracking scaling policies, you select a scaling metric and set a target value. You can use predefined customized metrics.
 
@@ -373,6 +362,14 @@ An Application Load Balancer functions at the application layer, the seventh lay
 One of many benefits of the Application Load Balancer is its support for path-based routing. You can configure rules for your listener that forward requests based on the URL in the request. This enables you to structure your application as smaller services, and route requests to the correct service based on the content of the URL. For needs relating to network traffic go with Network Load Balancer.
 
  It is a basic load balancer that distributes traffic. If your account was created before 2013-12-04, your account supports EC2-Classic instances and you will benefit in using this type of load balancer. The classic load balancer can be used regardless of when your account was created and whether you use EC2-Classic or whether your instances are in a VPC but just remember its the basic load balancer AWS offers and not advanced as the others.
+
+"Create an HTTPS listener on the Application Load Balancer with SSL termination"
+An Application load balancer distributes incoming application traffic across multiple targets, such as EC2 instances, in multiple Availability Zones. A listener checks for connection requests from clients, using the protocol and port that you configure. The rules that you define for a listener determine how the load balancer routes requests to its registered targets. Each rule consists of a priority, one or more actions, and one or more conditions.
+https://docs.aws.amazon.com/elasticloadbalancing/latest/application/images/component_architecture.png +
+https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html +
+
+To use an HTTPS listener, you must deploy at least one SSL/TLS server certificate on your load balancer. You can create an HTTPS listener, which uses encrypted connections (also known as SSL offload). This feature enables traffic encryption between your load balancer and the clients that initiate SSL or TLS sessions. As the EC2 instances are under heavy CPU load, the load balancer will use the server certificate to terminate the front-end connection and then decrypt requests from clients before sending them to the EC2 instances.
+https://aws.amazon.com/premiumsupport/knowledge-center/associate-acm-certificate-alb-nlb/ +
 
 =======================================================================================================
 Storage
@@ -536,42 +533,41 @@ https://aws.amazon.com/blogs/networking-and-content-delivery/amazon-s3-amazon-cl
 Docker in AWS (ECR, ECS)
 
 ECS Overview:
-https://docs.aws.amazon.com/AmazonECS/latest/developerguide/images/overview-fargate.png
-https://d1.awsstatic.com/diagrams/product-page-diagrams/product-page-diagram_ECS_1.86ebd8c223ec8b55aa1903c423fbe4e672f3daf7.png
-via - https://docs.aws.amazon.com/AmazonECS/latest/developerguide/Welcome.html
+https://docs.aws.amazon.com/AmazonECS/latest/developerguide/images/overview-fargate.png +
+https://d1.awsstatic.com/diagrams/product-page-diagrams/product-page-diagram_ECS_1.86ebd8c223ec8b55aa1903c423fbe4e672f3daf7.png +
+via - https://docs.aws.amazon.com/AmazonECS/latest/developerguide/Welcome.html +
 
 How ECR works:
-https://d1.awsstatic.com/diagrams/product-page-diagrams/Product-Page-Diagram_Amazon-ECR.bf2e7a03447ed3aba97a70e5f4aead46a5e04547.png
-via - https://aws.amazon.com/ecr/
+https://d1.awsstatic.com/diagrams/product-page-diagrams/Product-Page-Diagram_Amazon-ECR.bf2e7a03447ed3aba97a70e5f4aead46a5e04547.png +
+via - https://aws.amazon.com/ecr/ +
 
 Using a single task definition allows the two containers to share memory. 
 https://media.datacumulus.com/aws-dva-pt/assets/pt1-q2-i1.jpg
-via - https://docs.aws.amazon.com/AmazonECS/latest/developerguide/application_architecture.html
-https://aws.amazon.com/blogs/containers/how-amazon-ecs-manages-cpu-and-memory-resources/
+via - https://docs.aws.amazon.com/AmazonECS/latest/developerguide/application_architecture.html +
+https://aws.amazon.com/blogs/containers/how-amazon-ecs-manages-cpu-and-memory-resources/ +
 
-https://aws.amazon.com/premiumsupport/knowledge-center/dynamic-port-mapping-ecs
-https://docs.aws.amazon.com/elasticloadbalancing/latest/application/tutorial-target-ecs-containers.html
-https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/create_deploy_docker_ecs.html
+https://aws.amazon.com/premiumsupport/knowledge-center/dynamic-port-mapping-ecs +
+https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/create_deploy_docker_ecs.html +
 
 ECS_ENABLE_TASK_IAM_ROLE - This configuration item is used to enable IAM roles for tasks for containers with the bridge and default network modes.
 ECS_ENGINE_AUTH_DATA - This refers to the authentication data within a Docker configuration file, so this is not the correct option.
 ECS_AVAILABLE_LOGGING_DRIVERS - The Amazon ECS container agent running on a container instance must register the logging drivers available on that instance with this variable. This configuration item refers to the logging driver.
 ECS_CLUSTER - This refers to the ECS cluster that the ECS agent should check into. This is passed to the container instance at launch through Amazon EC2 user data.
-https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-agent-config.html
+https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-agent-config.html +
 
-https://aws.amazon.com/blogs/compute/microservice-delivery-with-amazon-ecs-and-application-load-balancers/
+https://aws.amazon.com/blogs/compute/microservice-delivery-with-amazon-ecs-and-application-load-balancers/ +
 
 If you terminate a container instance while it is in the STOPPED state, that container instance isn't automatically removed from the cluster. You will need to deregister your container instance in the STOPPED state by using the Amazon ECS console or AWS Command Line Interface. Once deregistered, the container instance will no longer appear as a resource in your Amazon ECS cluster.
 
-https://aws.amazon.com/premiumsupport/knowledge-center/deregister-ecs-instance/
-https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ECS_instances.html
+https://aws.amazon.com/premiumsupport/knowledge-center/deregister-ecs-instance/ +
+https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ECS_instances.html +
 
 In the ecs.config file you have to configure the parameter ECS_CLUSTER='your_cluster_name' to register the container instance with a cluster named 'your_cluster_name'.
 
 Sample config for ECS Container Agent:
-https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q35-i1.jpg
-via - https://docs.aws.amazon.com/AmazonECS/latest/developerguide/bootstrap_container_instance.html
-https://docs.aws.amazon.com/AmazonECS/latest/developerguide/launch_container_instance.html
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q35-i1.jpg +
+via - https://docs.aws.amazon.com/AmazonECS/latest/developerguide/bootstrap_container_instance.html +
+https://docs.aws.amazon.com/AmazonECS/latest/developerguide/launch_container_instance.html +
 
 =======================================================================================================
 Databases
@@ -585,49 +581,46 @@ The following two actions can help to establish a resilience RDS setup:
 - use cross-region read replicas
 - Enable the automated backup feature of Amazon RDS in a multi-AZ deployment that creates backups in a single AWS Region
 
-https://aws.amazon.com/rds/features/
-https://aws.amazon.com/blogs/database/implementing-a-disaster-recovery-strategy-with-amazon-rds/
+https://aws.amazon.com/rds/features/ +
+https://aws.amazon.com/blogs/database/implementing-a-disaster-recovery-strategy-with-amazon-rds/ +
 
 You can enable automatic backups but as of 2020, the retention period is 0 to 35 days.
-https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_CreateSnapshot.html
+https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_CreateSnapshot.html +
 
 
 -- AWS Aurora
 -- AWS ElastiCache / -- ElastiCache
 
-https://docs.aws.amazon.com/AmazonElastiCache/latest/mem-ug/images/ElastiCache-Caching.png
-via - https://docs.aws.amazon.com/AmazonElastiCache/latest/mem-ug/elasticache-use-cases.html
+https://docs.aws.amazon.com/AmazonElastiCache/latest/mem-ug/images/ElastiCache-Caching.png +
+via - https://docs.aws.amazon.com/AmazonElastiCache/latest/mem-ug/elasticache-use-cases.html +
 
 Overview of Amazon ElastiCache features:  
 https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q3-i1.jpg
-via - https://aws.amazon.com/elasticache/features/
-https://docs.aws.amazon.com/AmazonElastiCache/latest/mem-ug/elasticache-use-cases.html
+via - https://aws.amazon.com/elasticache/features/ +
 
-https://aws.amazon.com/caching/session-management/
+https://aws.amazon.com/caching/session-management/ +
 
 One can leverage ElastiCache for Redis with cluster mode enabled to enhance reliability and availability with little change to your existing workload. Cluster mode comes with the primary benefit of horizontal scaling of your Redis cluster, with almost zero impact on the performance of the cluster.
 
 When building production workloads, you should consider using a configuration with replication, unless you can easily recreate your data. Enabling Cluster-Mode provides a number of additional benefits in scaling your cluster. In short, it allows you to scale in or out the number of shards (horizontal scaling) versus scaling up or down the node type (vertical scaling). This means that Cluster-Mode can scale to very large amounts of storage (potentially 100s of terabytes) across up to 90 shards, whereas a single node can only store as much data in memory as the instance type has capacity for.
 
 Redis Cluster config:  
-https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q14-i1.jpg
-via - https://aws.amazon.com/blogs/database/work-with-cluster-mode-on-amazon-elasticache-for-redis/
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q14-i1.jpg +
+via - https://aws.amazon.com/blogs/database/work-with-cluster-mode-on-amazon-elasticache-for-redis/ +
 
 Redis offers snapshots facility, replication, and supports transactions, which Memcached cannot
-https://aws.amazon.com/blogs/database/work-with-cluster-mode-on-amazon-elasticache-for-redis/
-https://aws.amazon.com/elasticache/redis-vs-memcached/
+https://aws.amazon.com/elasticache/redis-vs-memcached/ +
 
-https://aws.amazon.com/caching/database-caching/
+https://aws.amazon.com/caching/database-caching/ +
 
 Geospatial on Amazon ElastiCache for Redis:
-https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt6-q38-i1.jpg
-via - https://aws.amazon.com/blogs/database/work-with-cluster-mode-on-amazon-elasticache-for-redis/
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt6-q38-i1.jpg +
 
 You can leverage ElastiCache for Redis with cluster mode enabled to enhance reliability and availability with little change to your existing workload. Cluster Mode comes with the primary benefit of horizontal scaling up and down of your Redis cluster, with almost zero impact on the performance of the cluster.
 
 Enabling Cluster Mode provides a number of additional benefits in scaling your cluster. In short, it allows you to scale in or out the number of shards (horizontal scaling) versus scaling up or down the node type (vertical scaling). This means that Cluster Mode can scale to very large amounts of storage (potentially 100s of terabytes) across up to 90 shards, whereas a single node can only store as much data in memory as the instance type has capacity for.
 
-https://aws.amazon.com/blogs/database/amazon-elasticache-utilizing-redis-geospatial-capabilities/
+https://aws.amazon.com/blogs/database/amazon-elasticache-utilizing-redis-geospatial-capabilities/ +
 
 -- Other
 -- Amazon DynamoDB / -- DynamoDB / -- AWS DynamoDB
@@ -637,32 +630,32 @@ DynamoDB stores data as groups of attributes, known as items. Items are similar 
 DynamoDB uses the partition key’s value as an input to an internal hash function. The output from the hash function determines the partition in which the item is stored. Each item’s location is determined by the hash value of its partition key.
 
 Please see these details for the DynamoDB Partition Keys:
-https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q11-i1.jpg
-via - https://aws.amazon.com/blogs/database/choosing-the-right-dynamodb-partition-key/
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q11-i1.jpg +
+via - https://aws.amazon.com/blogs/database/choosing-the-right-dynamodb-partition-key/ +
 
-https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q11-i2.jpg
-via - https://aws.amazon.com/blogs/database/choosing-the-right-dynamodb-partition-key/
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q11-i2.jpg +
+via - https://aws.amazon.com/blogs/database/choosing-the-right-dynamodb-partition-key/ +
 
-https://aws.amazon.com/blogs/database/choosing-the-right-dynamodb-partition-key/
+https://aws.amazon.com/blogs/database/choosing-the-right-dynamodb-partition-key/ +
 
 Use the DynamoDB on-demand backup capability to write to Amazon S3 and download locally
-https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q58-i1.jpg
-via - https://aws.amazon.com/premiumsupport/knowledge-center/back-up-dynamodb-s3/
-https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/BackupRestore.html
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q58-i1.jpg +
+via - https://aws.amazon.com/premiumsupport/knowledge-center/back-up-dynamodb-s3/ +
+https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/BackupRestore.html +
 https://docs.aws.amazon.com/datapipeline/latest/DeveloperGuide/dp-importexport-ddb-part1.html
-https://docs.aws.amazon.com/emr/latest/ReleaseGuide/EMR_Hive_Commands.html#EMR_Hive_Commands_exporting
-https://aws.amazon.com/blogs/big-data/how-to-export-an-amazon-dynamodb-table-to-amazon-s3-using-aws-step-functions-and-aws-glue/
+https://docs.aws.amazon.com/emr/latest/ReleaseGuide/EMR_Hive_Commands.html#EMR_Hive_Commands_exporting +
+https://aws.amazon.com/blogs/big-data/how-to-export-an-amazon-dynamodb-table-to-amazon-s3-using-aws-step-functions-and-aws-glue/ +
 
-https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q44-i1.jpg
-https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q44-i2.jpg
-via - https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/ProvisionedThroughput.html
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q44-i1.jpg +
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q44-i2.jpg +
+via - https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/ProvisionedThroughput.html +
 
 DynamoDB Transactions Overview:  
-https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q8-i1.jpg
-via - https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/transactions.html
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q8-i1.jpg +
+via - https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/transactions.html +
 
 DynamoDB optionally supports conditional writes for write operations (PutItem, UpdateItem, DeleteItem). A conditional write succeeds only if the item attributes meet one or more expected conditions. Otherwise, it returns an error.
-https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/WorkingWithItems.html#WorkingWithItems.ConditionalUpdate
+https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/WorkingWithItems.html#WorkingWithItems.ConditionalUpdate +
 
 DynamoDB supports eventually consistent and strongly consistent reads.
 
@@ -675,12 +668,12 @@ Strongly Consistent Reads
 When you request a strongly consistent read, DynamoDB returns a response with the most up-to-date data, reflecting the updates from all prior write operations that were successful.
 
 DynamoDB uses eventually consistent reads by default. Read operations (such as GetItem, Query, and Scan) provide a ConsistentRead parameter. If you set this parameter to true, DynamoDB uses strongly consistent reads during the operation. As per the given use-case, to make sure that only the last updated value of any item is used in the application, you should use strongly consistent reads by setting ConsistentRead = true for GetItem operation.
-https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q9-i1.jpg
-via - https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.ReadConsistency.html
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q9-i1.jpg +
+via - https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.ReadConsistency.html +
 
  a ProjectionExpression: A projection expression is a string that identifies the attributes you want. To retrieve a single attribute, specify its name. For multiple attributes, the names must be comma-separated.
-https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q19-i1.jpg
- via - https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.ProjectionExpressions.html
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q19-i1.jpg +
+ via - https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.ProjectionExpressions.html +
 
 A Scan operation in Amazon DynamoDB reads every item in a table or a secondary index. By default, a Scan operation returns all of the data attributes for every item in the table or index. You can also use the ProjectionExpression parameter so that Scan only returns some of the attributes, rather than all of them.
 
@@ -690,25 +683,25 @@ The Query operation in Amazon DynamoDB finds items based on primary key values. 
 
  It's not always possible to distribute read and write activity evenly. When data access is imbalanced, a "hot" partition can receive a higher volume of read and write traffic compared to other partitions. To better accommodate uneven access patterns, DynamoDB adaptive capacity enables your application to continue reading and writing to hot partitions without being throttled, provided that traffic does not exceed your table’s total provisioned capacity or the partition maximum capacity.
 
-ProvisionedThroughputExceededException explained:  
-https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q41-i1.jpg
-via - https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/ProvisionedThroughput.html
+ProvisionedThroughputExceededException explained:
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q41-i1.jpg +
+via - https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/ProvisionedThroughput.html +
 
 Hot partition explained:  
-https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q41-i2.jpg
-via - https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-partition-key-design.html
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q41-i2.jpg +
+via - https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-partition-key-design.html +
 
 The most efficient way to truncate a dynamodb table is by deleting it and then recreating it using
 the delete-table CLI operation (DeleteTable API operation).
 Scanning and deleting each item is a too expensive operation.
-https://docs.aws.amazon.com/cli/latest/reference/dynamodb/delete-table.html
+https://docs.aws.amazon.com/cli/latest/reference/dynamodb/delete-table.html +
 
 Streams:
-https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Streams.html
+https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Streams.html +
 
 Differences between GSI and LSI:
-https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt4-q24-i1.jpg
-via - https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/SecondaryIndexes.html
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt4-q24-i1.jpg +
+via - https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/SecondaryIndexes.html +
 
 =======================================================================================================
 Route 53 and DNS
@@ -717,16 +710,16 @@ Route 53 and DNS
 the DNS protocol does not allow you to create a CNAME record for the top node of a DNS namespace, also known as the zone apex. For example, if you register the DNS name example.com, the zone apex is example.com. You cannot create a CNAME record for example.com, but you can create CNAME records for www.example.com, newproduct.example.com, and so on.
 
 Comparison between CNAME and Alias record:
-https://media.datacumulus.com/aws-dva-pt/assets/pt1-q34-i1.jpg
-via - https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resource-record-sets-choosing-alias-non-alias.html
+https://media.datacumulus.com/aws-dva-pt/assets/pt1-q34-i1.jpg +
+via - https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resource-record-sets-choosing-alias-non-alias.html +
 
 Alias records let you route traffic to selected AWS resources, such as CloudFront distributions and Amazon S3 buckets. They also let you route traffic from one record in a hosted zone to another record. 3rd party websites do not qualify for these as we have no control over those.
-https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resource-record-sets-choosing-alias-non-alias.html
+https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resource-record-sets-choosing-alias-non-alias.html +
 
-https://media.datacumulus.com/aws-dva-pt/assets/pt1-q38-i1.jpg
-https://media.datacumulus.com/aws-dva-pt/assets/pt1-q38-i2.jpg
+https://media.datacumulus.com/aws-dva-pt/assets/pt1-q38-i1.jpg +
+https://media.datacumulus.com/aws-dva-pt/assets/pt1-q38-i2.jpg +
 
-https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/routing-policy.html
+https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/routing-policy.html +
 
 =======================================================================================================
 -- Encryption / -- AWS KMS / -- KMS / -- CloudHSM / -- AWS CloudHSM
@@ -789,25 +782,25 @@ https://docs.aws.amazon.com/kms/latest/APIReference/API_GenerateDataKeyWithoutPl
 -- Elastic Beanstalk / -- AWS Elastic Beanstalk / -- Amazon Elastic Beanstalk
 
 .ebextensions/<mysettings>.config : You can add AWS Elastic Beanstalk configuration files (.ebextensions) to your web application's source code to configure your environment and customize the AWS resources that it contains. Configuration files are YAML or JSON formatted documents with a .config file extension that you place in a folder named .ebextensions and deploy in your application source bundle.
-https://media.datacumulus.com/aws-dva-pt/assets/pt1-q64-i1.jpg
-via - https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/ebextensions.html
-https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/ebextensions.html
-https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/ebextensions-optionsettings.html
+https://media.datacumulus.com/aws-dva-pt/assets/pt1-q64-i1.jpg +
+via - https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/ebextensions.html +
+https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/ebextensions.html +
+https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/ebextensions-optionsettings.html +
 
 Elastic BeanStalk Key Concepts:  
-https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q59-i1.jpg
-via - https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/concepts.html
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q59-i1.jpg +
+via - https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/concepts.html +
 
-https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/images/clearbox-flow-00.png
-https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/Welcome.html
-https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/using-features-managing-env-tiers.html
+https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/images/clearbox-flow-00.png +
+https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/Welcome.html +
+https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/using-features-managing-env-tiers.html +
 
 
 With deployment policies such as 'All at once', AWS Elastic Beanstalk performs an in-place update when you update your application versions and your application can become unavailable to users for a short period of time. You can avoid this downtime by performing a blue/green deployment, where you deploy the new version to a separate environment, and then swap CNAMEs (via Route 53) of the two environments to redirect traffic to the new version instantly. In case of any deployment issues, the rollback process is very quick via swapping the URLs for the two environments.
 
 Overview of Elastic Beanstalk Deployment Policies:
 https://media.datacumulus.com/aws-dva-pt/assets/pt1-q10-i1.jpg
-via - https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/using-features.deploy-existing-version.html
+via - https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/using-features.deploy-existing-version.html +
 
 'All at once' deployment policy - Although 'All at once' is the quickest deployment method, but the application may become unavailable to users (or have low availability) for a short time. 
 
@@ -817,27 +810,25 @@ Deploy the new application version using 'Rolling with additional batch' deploym
 
 Any resources created as part of your .ebextensions is part of your Elastic Beanstalk template and will get deleted if the environment is terminated.
 
-https://media.datacumulus.com/aws-dva-pt/assets/pt1-q23-i1.jpg
- via - https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/ebextensions.html
+https://media.datacumulus.com/aws-dva-pt/assets/pt1-q23-i1.jpg +
+ via - https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/ebextensions.html +
 
   To decouple your database instance from your environment, you can run a database instance in Amazon RDS and configure your application to connect to it on launch. This enables you to connect multiple environments to a database, terminate an environment without affecting the database, and perform seamless updates with blue-green deployments. To allow the Amazon EC2 instances in your environment to connect to an outside database, you can configure the environment's Auto Scaling group with an additional security group.
 
 
 Using Elastic Beanstalk with Amazon RDS:
-https://media.datacumulus.com/aws-dva-pt/assets/pt1-q23-i2.jpg
- via - https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/AWSHowTo.RDS.html
+https://media.datacumulus.com/aws-dva-pt/assets/pt1-q23-i2.jpg +
+ via - https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/AWSHowTo.RDS.html +
 
-https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/customize-environment-resources-elasticache.html
+https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/customize-environment-resources-elasticache.html +
 
 The rolling deployment policy deploys the new version in batches. Each batch is taken out of service during the deployment phase, reducing your environment's capacity by the number of instances in a batch. The cost remains the same as the number of EC2 instances does not increase. This policy avoids downtime and minimizes reduced availability, at a cost of a longer deployment time.
 
 Overview of Elastic Beanstalk Deployment Policies:
 
-https://media.datacumulus.com/aws-dva-pt/assets/pt1-q15-i1.jpg
-https://media.datacumulus.com/aws-dva-pt/assets/pt1-q61-i1.jpg
-via - https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/using-features.deploy-existing-version.html
-
-https://media.datacumulus.com/aws-dva-pt/assets/pt1-q22-i1.jpg
+https://media.datacumulus.com/aws-dva-pt/assets/pt1-q15-i1.jpg +
+https://media.datacumulus.com/aws-dva-pt/assets/pt1-q61-i1.jpg +
+via - https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/using-features.deploy-existing-version.html +
 
 Deploy using 'Rolling with additional batch' deployment policy - With this method, Elastic Beanstalk launches an extra batch of instances, then performs a rolling deployment. Launching the extra batch takes time, and ensures that the same bandwidth is retained throughout the deployment. This policy also avoids any reduced availability, although at a cost of an even longer deployment time compared to the Rolling method. Finally, this option is suitable if you must maintain the same bandwidth throughout the deployment.
 
@@ -849,17 +840,17 @@ Deploy using 'Rolling' deployment policy - With this method, your application is
 
 SSM parameter store is still not supported by beanstalk.
 
-https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/using-features.rolling-version-deploy.html#environments-cfg-rollingdeployments-method
+https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/using-features.rolling-version-deploy.html#environments-cfg-rollingdeployments-method +
 
 =======================================================================================================
 Deployment as Code
 
 -- AWS CodeDeploy / -- CodeDeploy
 
-https://media.datacumulus.com/aws-dva-pt/assets/pt1-q58-i1.jpg
- via - https://aws.amazon.com/about-aws/whats-new/2017/01/aws-codedeploy-introduces-blue-green-deployments/
+https://media.datacumulus.com/aws-dva-pt/assets/pt1-q58-i1.jpg +
+ via - https://aws.amazon.com/about-aws/whats-new/2017/01/aws-codedeploy-introduces-blue-green-deployments/ +
 https://docs.aws.amazon.com/codedeploy/latest/userguide/welcome.html#welcome-deployment-overview-blue-green
-https://docs.aws.amazon.com/codedeploy/latest/userguide/deployments.html
+https://docs.aws.amazon.com/codedeploy/latest/userguide/deployments.html +
 
 An AppSpec file must be a YAML-formatted file named appspec.yml and it must be placed in the root of the directory structure of an application's source code.
 
@@ -872,11 +863,11 @@ During deployment, the CodeDeploy agent looks up the name of the current event i
 
 If a script runs successfully, it returns an exit code of 0 (zero). If the CodeDeploy agent installed on the operating system doesn't match what's listed in the AppSpec file, the deployment fails.
 
-https://docs.aws.amazon.com/codedeploy/latest/userguide/application-specification-files.html
+https://docs.aws.amazon.com/codedeploy/latest/userguide/application-specification-files.html +
 
 An EC2/On-Premises deployment hook is executed once per deployment to an instance. You can specify one or more scripts to run in a hook.
-https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q56-i1.jpg
- via - https://docs.aws.amazon.com/codedeploy/latest/userguide/reference-appspec-file-structure-hooks.html#reference-appspec-file-structure-hooks-run-order
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q56-i1.jpg +
+ via - https://docs.aws.amazon.com/codedeploy/latest/userguide/reference-appspec-file-structure-hooks.html#reference-appspec-file-structure-hooks-run-order +
 
 ValidateService: ValidateService is the last deployment lifecycle event. It is used to verify the deployment was completed successfully.
 AfterInstall - You can use this deployment lifecycle event for tasks such as configuring your application or changing file permissions
@@ -887,32 +878,27 @@ Due to a spike in traffic, when Lambda functions scale, this causes the portion 
 
 You can configure Application Auto Scaling to manage provisioned concurrency on a schedule or based on utilization. Use scheduled scaling to increase provisioned concurrency in anticipation of peak traffic. To increase provisioned concurrency automatically as needed, use the Application Auto Scaling API to register a target and create a scaling policy.
 
-Please see this note for more details on provisioned concurrency:
-https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q3-i1.jpg
-via - https://docs.aws.amazon.com/lambda/latest/dg/configuration-concurrency.html
-
 The CodeDeploy agent is a software package that, when installed and configured on an instance, makes it possible for that instance to be used in CodeDeploy deployments. The CodeDeploy agent archives revisions and log files on instances. The CodeDeploy agent cleans up these artifacts to conserve disk space. You can use the :max_revisions: option in the agent configuration file to specify the number of application revisions to the archive by entering any positive integer. CodeDeploy also archives the log files for those revisions. All others are deleted, except for the log file of the last successful deployment.
 More info here:  
-https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q48-i1.jpg
-via - https://docs.aws.amazon.com/codedeploy/latest/userguide/codedeploy-agent.html
-https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/AgentReference.html
-https://docs.aws.amazon.com/codedeploy/latest/userguide/deployments.html
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q48-i1.jpg +
+via - https://docs.aws.amazon.com/codedeploy/latest/userguide/codedeploy-agent.html +
+https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/AgentReference.html +
 https://aws.amazon.com/blogs/publicsector/rapidly-recover-mission-critical-systems-in-a-disaster/
 
  if the deployment of the new version fails a new deployment of the last known working version
  of the application is deployed with a new deployment ID
-https://docs.aws.amazon.com/codedeploy/latest/userguide/deployments-rollback-and-redeploy.html
+https://docs.aws.amazon.com/codedeploy/latest/userguide/deployments-rollback-and-redeploy.html +
 
 -- AWS CodePipeline / -- Amazon CodePipeline / -- CodePipeline
 
-https://docs.aws.amazon.com/codepipeline/latest/userguide/approvals-action-add.html
-https://docs.aws.amazon.com/codepipeline/latest/userguide/vpc-support.html
-https://docs.aws.amazon.com/codepipeline/latest/userguide/pipelines-about-starting.html
+https://docs.aws.amazon.com/codepipeline/latest/userguide/approvals-action-add.html +
+https://docs.aws.amazon.com/codepipeline/latest/userguide/vpc-support.html +
+https://docs.aws.amazon.com/codepipeline/latest/userguide/pipelines-about-starting.html +
 
 -- AWS CodeBuild / -- CodeBuild
 
-https://docs.aws.amazon.com/codebuild/latest/userguide/welcome.html
-https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-compute-types.html
+https://docs.aws.amazon.com/codebuild/latest/userguide/welcome.html +
+https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-compute-types.html +
 
 To prevent a build running for too long, we need to enable CodeBuild timeouts.
 CodeBuild scales automatically, the organization does not have to do anything for scaling or for parallel builds
@@ -936,22 +922,22 @@ Identify and fix errors quickly from your local development environment.
 AWS CodeBuild is integrated with AWS CloudTrail.
 CloudTrail captures all API calls for CodeBuild as events, including calls from the CodeBuild console and from code calls to the CodeBuild APIs.
 
-https://aws.amazon.com/blogs/devops/how-to-enable-caching-for-aws-codebuild/
+https://aws.amazon.com/blogs/devops/how-to-enable-caching-for-aws-codebuild/ +
 
 During rollbacks codedeploy first deploys to the failed instances.
 AWS CodeDeploy rolls back deployments by redeploying a previously deployed revision of an application as a new deployment on the failed instances.
-https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q22-i1.jpg
-via - https://docs.aws.amazon.com/codedeploy/latest/userguide/deployments-rollback-and-redeploy.html
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q22-i1.jpg +
+via - https://docs.aws.amazon.com/codedeploy/latest/userguide/deployments-rollback-and-redeploy.html +
 
 AWS CodeBuild monitors functions on your behalf and reports metrics through Amazon CloudWatch. These metrics include the number of total builds, failed builds, successful builds, and the duration of builds. You can monitor your builds at two levels: Project level, AWS account level. You can export log data from your log groups to an Amazon S3 bucket and use this data in custom processing and analysis, or to load onto other systems.
 
-https://docs.aws.amazon.com/codebuild/latest/userguide/monitoring-metrics.html
-https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/S3Export.html
-https://docs.aws.amazon.com/codebuild/latest/userguide/getting-started-input-bucket-console.html
+https://docs.aws.amazon.com/codebuild/latest/userguide/monitoring-metrics.html +
+https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/S3Export.html +
+https://docs.aws.amazon.com/codebuild/latest/userguide/getting-started-input-bucket-console.html +
 
 Best Practices for Caching Dependencies:
-https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt4-q7-i1.jpg
-via - https://aws.amazon.com/blogs/devops/how-to-enable-caching-for-aws-codebuild/
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt4-q7-i1.jpg +
+via - https://aws.amazon.com/blogs/devops/how-to-enable-caching-for-aws-codebuild/ +
 
 https://docs.aws.amazon.com/codebuild/latest/userguide/create-project.html#create-project-cli
 
@@ -1355,8 +1341,8 @@ You can choose to have SQS encrypt messages stored in both Standard and FIFO que
 https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-server-side-encryption.html
 
 Sample SNS-SQS Fanout message:
-https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt6-q35-i1.jpg
-via - https://docs.aws.amazon.com/sns/latest/dg/sns-sqs-as-subscriber.html
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt6-q35-i1.jpg +
+via - https://docs.aws.amazon.com/sns/latest/dg/sns-sqs-as-subscriber.html +
 
 -- Amazon SNS / -- SNS
 
@@ -1364,12 +1350,11 @@ via - https://docs.aws.amazon.com/sns/latest/dg/sns-sqs-as-subscriber.html
 Amazon SNS enables message filtering and fanout to a large number of subscribers, including serverless functions, queues, and distributed systems. Additionally, Amazon SNS fans out notifications to end users via mobile push messages, SMS, and email.
 
 How SNS Works:
-https://d1.awsstatic.com/product-marketing/SNS/product-page-diagram_SNS_how-it-works_1.53a464980bf0d5a868b141e9a8b2acf12abc503f.png
+https://d1.awsstatic.com/product-marketing/SNS/product-page-diagram_SNS_how-it-works_1.53a464980bf0d5a868b141e9a8b2acf12abc503f.png +
 via - https://aws.amazon.com/sns/
 
-https://docs.aws.amazon.com/sns/latest/dg/sns-sqs-as-subscriber.html
-https://docs.aws.amazon.com/sns/latest/dg/sns-lambda-as-subscriber.html
-https://docs.aws.amazon.com/sns/latest/dg/sns-firehose-as-subscriber.html
+https://docs.aws.amazon.com/sns/latest/dg/sns-lambda-as-subscriber.html +
+https://docs.aws.amazon.com/sns/latest/dg/sns-firehose-as-subscriber.html +
 
 -- Amazon Kinesis / -- Kinesis
 
@@ -1397,39 +1382,43 @@ Amazon Kinesis Data Streams is useful for rapidly moving data off data producers
 
 Kinesis Data stream overview:
 https://d1.awsstatic.com/Products/product-name/diagrams/product-page-diagram_Amazon-Kinesis-Data-Streams.074de94302fd60948e1ad070e425eeda73d350e7.png
-https://docs.aws.amazon.com/streams/latest/dev/key-concepts.html
 
 The partition key is used by Kinesis Data Streams to distribute data across shards. Kinesis Data Streams segregates the data records that belong to a 
 stream into multiple shards, using the partition key associated with each data record to determine the shard to which a given data record belongs.
 You can also use metrics to determine which are your "hot" or "cold" shards, that is, shards that are receiving much more data, or much less data, than expected. You could then selectively split the hot shards to increase capacity for the hash keys that target those shards. Similarly, you could merge cold shards to make better use of their unused capacity.
-https://docs.aws.amazon.com/streams/latest/dev/key-concepts.html
-https://docs.aws.amazon.com/streams/latest/dev/kinesis-using-sdk-java-resharding-strategies.html
-https://docs.aws.amazon.com/streams/latest/dev/writing-with-agents.html
+https://docs.aws.amazon.com/streams/latest/dev/key-concepts.html +
+https://docs.aws.amazon.com/streams/latest/dev/kinesis-using-sdk-java-resharding-strategies.html +
+https://docs.aws.amazon.com/streams/latest/dev/writing-with-agents.html +
+
+Which of the following is the most optimal way of sending log data from the EC2 instances to KDS?
+Install and configure Kinesis Agent on each of the instances
+
+Kinesis Agent is a stand-alone Java software application that offers an easy way to collect and send data to Kinesis Data Streams. The agent continuously monitors a set of files and sends new data to your stream. The agent handles file rotation, checkpointing, and retry upon failures. It delivers all of your data in a reliable, timely, and simple manner. It also emits Amazon CloudWatch metrics to help you better monitor and troubleshoot the streaming process.
+You can install the agent on Linux-based server environments such as web servers, log servers, and database servers. After installing the agent, configure it by specifying the files to monitor and the stream for the data. After the agent is configured, it durably collects data from the files and reliably sends it to the stream.
+The agent can also pre-process the records parsed from monitored files before sending them to your stream. You can enable this feature by adding the dataProcessingOptions configuration setting to your file flow. One or more processing options can be added and they will be performed in the specified order.
 
 AWS Kinesis Data Firehose - Amazon Kinesis Data Firehose is the easiest way to load streaming data into data stores and analytics tools. It can capture, transform, and load streaming data into Amazon S3, Amazon Redshift, Amazon Elasticsearch Service, and Splunk, enabling near real-time analytics with existing business intelligence tools and dashboards you’re already using today. It is a fully managed service that automatically scales to match the throughput of your data and requires no ongoing administration. It can also batch, compress, and encrypt the data before loading it, minimizing the amount of storage used at the destination and increasing security.
 
 Firehose overview:
-https://d1.awsstatic.com/Products/product-name/diagrams/product-page-diagram_Amazon-Kinesis-Data-Firehose.9340b812ab86518341c47b24316995b3792bf6e1.png
+https://d1.awsstatic.com/Products/product-name/diagrams/product-page-diagram_Amazon-Kinesis-Data-Firehose.9340b812ab86518341c47b24316995b3792bf6e1.png +
 
 Amazon Kinesis Data Firehose is a fully managed service for delivering real-time streaming data to destinations such as Amazon Simple Storage Service (Amazon S3), Amazon Redshift, Amazon Elasticsearch Service (Amazon ES), and Splunk. With Kinesis Data Firehose, you don't need to write applications or manage resources. You configure your data producers to send data to Kinesis Data Firehose, and it automatically delivers the data to the destination that you specified.
 
 Amazon Elasticsearch Service (Amazon ES) with optionally backing up data to Amazon S3 - Amazon ES is a supported destination type for Kinesis Firehose. Streaming data is delivered to your Amazon ES cluster, and can optionally be backed up to your S3 bucket concurrently.
 
 Data Flow for ES:
-https://docs.aws.amazon.com/firehose/latest/dev/images/fh-flow-es.png
-via - https://docs.aws.amazon.com/firehose/latest/dev/what-is-this-service.html
+https://docs.aws.amazon.com/firehose/latest/dev/images/fh-flow-es.png +
+via - https://docs.aws.amazon.com/firehose/latest/dev/what-is-this-service.html +
 
 Amazon Simple Storage Service (Amazon S3) as a direct Firehose destination - For Amazon S3 destinations, streaming data is delivered to your S3 bucket. If data transformation is enabled, you can optionally back up source data to another Amazon S3 bucket.
 
 Data Flow for S3:
-https://docs.aws.amazon.com/firehose/latest/dev/images/fh-flow-s3.png
-via - https://docs.aws.amazon.com/firehose/latest/dev/what-is-this-service.html
+https://docs.aws.amazon.com/firehose/latest/dev/images/fh-flow-s3.png +
 
 Amazon Redshift with Amazon S3 - For Amazon Redshift destinations, streaming data is delivered to your S3 bucket first. Kinesis Data Firehose then issues an Amazon Redshift COPY command to load data from your S3 bucket to your Amazon Redshift cluster. If data transformation is enabled, you can optionally back up source data to another Amazon S3 bucket.
 
 Data Flow for Redshift:
-https://docs.aws.amazon.com/firehose/latest/dev/images/fh-flow-rs.png
-via - https://docs.aws.amazon.com/firehose/latest/dev/what-is-this-service.html
+https://docs.aws.amazon.com/firehose/latest/dev/images/fh-flow-rs.png +
 
 AWS Kinesis Data Analytics - Amazon Kinesis Data Analytics is the easiest way to analyze streaming data in real-time. You can quickly build SQL queries and sophisticated Java applications using built-in templates and operators for common processing functions to organize, transform, aggregate, and analyze data at any scale. Kinesis Data Analytics enables you to easily and quickly build queries and sophisticated streaming applications in three simple steps: setup your streaming data sources, write your queries or streaming applications and set up your destination for processed data.
 
@@ -1523,8 +1512,8 @@ Due to a spike in traffic, when Lambda functions scale, this causes the portion 
 You can configure Application Auto Scaling to manage provisioned concurrency on a schedule or based on utilization. Use scheduled scaling to increase provisioned concurrency in anticipation of peak traffic. To increase provisioned concurrency automatically as needed, use the Application Auto Scaling API to register a target and create a scaling policy.
 
 Please see this note for more details on provisioned concurrency:
-https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q3-i1.jpg
-via - https://docs.aws.amazon.com/lambda/latest/dg/configuration-concurrency.html
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q3-i1.jpg +
+via - https://docs.aws.amazon.com/lambda/latest/dg/configuration-concurrency.html +
 
 Configure Application Auto Scaling to manage Lambda reserved concurrency on a schedule - To ensure that a function can always reach a certain level of concurrency, you can configure the function with reserved concurrency. When a function has reserved concurrency, no other function can use that concurrency. More importantly, reserved concurrency also limits the maximum concurrency for the function, and applies to the function as a whole, including versions and aliases.
 
@@ -1588,8 +1577,8 @@ Standard Workflows on AWS Step Functions are more suitable for long-running, dur
 
 You should use Express Workflows for workloads with high event rates and short durations. Express Workflows support event rates of more than 100,000 per second.
 
-https://aws.amazon.com/step-functions/features/
-https://aws.amazon.com/blogs/compute/implementing-serverless-manual-approval-steps-in-aws-step-functions-and-amazon-api-gateway/
+https://aws.amazon.com/step-functions/features/ +
+https://aws.amazon.com/blogs/compute/implementing-serverless-manual-approval-steps-in-aws-step-functions-and-amazon-api-gateway/ +
 
 -- AppSync - managed service that uses GraphQL.
 -- API Gateway / -- AWS API Gateway / -- Amazon API Gateway
@@ -1617,12 +1606,12 @@ A stage is a logical reference to a lifecycle state of your API (for example, de
 
 https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-use-lambda-authorizer.html
 https://docs.aws.amazon.com/apigateway/latest/developerguide/permissions.html
-https://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-deploy-api.html
+https://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-deploy-api.html +
 
 API Gateway supports the following mechanisms for authentication and authorization:
-https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q55-i1.jpg
-via - https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-control-access-to-api.html
-https://docs.aws.amazon.com/STS/latest/APIReference/welcome.html
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q55-i1.jpg +
+via - https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-control-access-to-api.html +
+https://docs.aws.amazon.com/STS/latest/APIReference/welcome.html +
 
 Mock - This type of integration lets API Gateway return a response without sending the request further to the backend. This is useful for API testing because it can be used to test the integration setup without incurring charges for using the backend and to enable collaborative development of an API.
 It is also used to return CORS-related headers to ensure that the API method permits CORS access. In fact, the API Gateway console integrates the OPTIONS method to support CORS with a mock integration.
@@ -1632,7 +1621,7 @@ AWS_PROXY - This type of integration lets an API method be integrated with the L
 HTTP_PROXY - The HTTP proxy integration allows a client to access the backend HTTP endpoints with a streamlined integration setup on single API method. You do not set the integration request or the integration response. API Gateway passes the incoming request from the client to the HTTP endpoint and passes the outgoing response from the HTTP endpoint to the client.
 
 HTTP - This type of integration lets an API expose HTTP endpoints in the backend. With the HTTP integration, you must configure both the integration request and integration response. You must set up necessary data mappings from the method request to the integration request, and from the integration response to the method response.
-https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-api-integration-types.html
+https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-api-integration-types.html +
 
 After creating your API, you must deploy it to make it callable by your users. To deploy an API, you create an API deployment and associate it with a stage. A stage is a logical reference to a lifecycle state of your API (for example, dev, prod, beta, v2). API stages are identified by the API ID and stage name. They're included in the URL that you use to invoke the API. Each stage is a named reference to a deployment of the API and is made available for client applications to call.
 
@@ -1640,19 +1629,21 @@ Stages enable robust version control of your API. In our current use-case, after
  it is not possible to deploy an API without choosing a stage.
 
 For each stage, you can optimize API performance by adjusting the default account-level request throttling limits and enabling API caching. And these settings can be changed/updated at any time.
-https://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-deploy-api.html
+https://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-deploy-api.html +
 
 You can enable API caching in Amazon API Gateway to cache your endpoint's responses. With caching, you can reduce the number of calls made to your endpoint and also improve the latency of requests to your API. When you enable caching for a stage, API Gateway caches responses from your endpoint for a specified time-to-live (TTL) period, in seconds. API Gateway then responds to the request by looking up the endpoint response from the cache instead of making a request to your endpoint. The default TTL value for API caching is 300 seconds. The maximum TTL value is 3600 seconds. TTL=0 means caching is disabled.
 
-https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-caching.html
+https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-caching.html +
 
  A mapping template is a script expressed in Velocity Template Language (VTL) and applied to the payload using JSONPath expressions. Mapping templates help format/structure the data in a way that it is easily readable, unlike a server response that might always be easy to ready. Mapping Templates do not help in latency issues of the APIs.
 
 Cross-origin resource sharing (CORS) defines a way for client web applications that are loaded in one domain to interact with resources in a different domain. When your API's resources receive requests from a domain other than the API's own domain and you want to restrict servicing these requests, you must disable cross-origin resource sharing (CORS) for selected methods on the resource.
 
-https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-protect.html
+https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-protect.html +
+https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-throttling.html +
+https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-mutual-tls.html +
 https://docs.aws.amazon.com/apigateway/latest/developerguide/rest-api-data-transformations.html
-https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-caching.html#invalidate-method-caching
+https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-caching.html#invalidate-method-caching +
 
 ALB routing options:
 Path based
@@ -1677,14 +1668,15 @@ Serverless Application Patterns
 =======================================================================================================
 Monitoring and Troubleshooting
 
-https://aws.amazon.com/config/
+https://aws.amazon.com/config/faq/ +
 https://aws.amazon.com/cloudwatch/
 https://aws.amazon.com/cloudtrail/
 
 -- AWS CloudTrail / -- CloudTrail
 How cloudtrail works:
-https://d1.awsstatic.com/product-marketing/CloudTrail/Product-Page-Diagram-AWSX-CloudTrail_How-it-Works.d2f51f6e3ec3ea3b33d0c48d472f0e0b59b46e59.png
+https://d1.awsstatic.com/product-marketing/CloudTrail/Product-Page-Diagram-AWSX-CloudTrail_How-it-Works.d2f51f6e3ec3ea3b33d0c48d472f0e0b59b46e59.png +
 via - https://aws.amazon.com/cloudtrail/
+https://aws.amazon.com/cloudtrail/faqs/ +
 
 Exam Alert:
 You may see scenario-based questions asking you to select one of CloudWatch vs CloudTrail vs Config. Just remember this thumb rule -
@@ -1695,13 +1687,13 @@ Think resource-specific history, audit, and compliance; think Config.
 AWS CloudTrail can be used to track who and when retrieved a var from SSM parameter store.
 
 Organization trail:
-https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q32-i1.jpg
-via - https://docs.aws.amazon.com/awscloudtrail/latest/userguide/how-cloudtrail-works.html
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q32-i1.jpg +
+via - https://docs.aws.amazon.com/awscloudtrail/latest/userguide/how-cloudtrail-works.html +
 Member accounts will be able to see the organization trail, but cannot modify or delete it. By default, member accounts will not have access to the log files for the organization trail in the Amazon S3 bucket.
 AWS CloudTrail supports Amazon S3 Data Events, apart from bucket Events. You can record all API actions on S3 Objects and receive detailed information such as the AWS account of the caller, IAM user role of the caller, time of the API call, IP address of the API, and other details. All events are delivered to an S3 bucket and CloudWatch Events, allowing you to take programmatic actions on the events.
 Organization trails must be created in the master account, and when specified as applying to an organization, are automatically applied to all member accounts in the organization. Member accounts will be able to see the organization trail, but cannot modify or delete it. By default, member accounts will not have access to the log files for the organization trail in the Amazon S3 bucket.
 
-https://aws.amazon.com/about-aws/whats-new/2016/11/aws-cloudtrail-supports-s3-data-events/
+https://aws.amazon.com/about-aws/whats-new/2016/11/aws-cloudtrail-supports-s3-data-events/ +
 
 By default, CloudTrail event log files are encrypted using Amazon S3 server-side encryption (SSE).
 
@@ -1711,8 +1703,8 @@ https://docs.aws.amazon.com/AmazonS3/latest/userguide/cloudtrail-logging-s3-info
 
 -- AWS CloudWatch / -- CloudWatch / -- Amazon CloudWatch
 
-https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-cloudwatch-new.html
-https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch_concepts.html
+https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-cloudwatch-new.html +
+https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch_concepts.html +
 
 As part of basic monitoring, Amazon EC2 sends metric data to CloudWatch in 5-minute periods. To send metric data for your instance to CloudWatch in 1-minute periods, you can enable detailed monitoring on the instance, however, this comes at an additional cost.
 The basic monitoring data is available automatically in a 5-minute interval and detailed monitoring data is available in a 1-minute interval.
@@ -1723,15 +1715,15 @@ High-resolution metrics can give you more immediate insight into your applicatio
 https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/publishingMetrics.html
 
 Using high-resolution custom metric, your applications can publish metrics to CloudWatch with 1-second resolution. You can watch the metrics scroll across your screen seconds after they are published and you can set up high-resolution CloudWatch Alarms that evaluate as frequently as every 10 seconds. You can alert with High-Resolution Alarms, as frequently as 10-second periods. High-Resolution Alarms allow you to react and take actions faster and support the same actions available today with standard 1-minute alarms.
-https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q11-i1.jpg
-via - https://aws.amazon.com/blogs/aws/new-high-resolution-custom-metrics-and-alarms-for-amazon-cloudwatch/
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q11-i1.jpg +
+via - https://aws.amazon.com/blogs/aws/new-high-resolution-custom-metrics-and-alarms-for-amazon-cloudwatch/ +
 
 The Amazon CloudWatch Monitoring Scripts for Amazon Elastic Compute Cloud (Amazon EC2) Linux-based instances demonstrate how to produce and consume Amazon CloudWatch custom metrics. These Perl scripts comprise a fully functional example that reports memory, swap, and disk space utilization metrics for a Linux instance. You can set a cron schedule for metrics reported to CloudWatch and report memory utilization to CloudWatch every x minutes.
-https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/mon-scripts.html
+https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/mon-scripts.html +
 
 Encrypt logs using KMS:
-https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/encrypt-log-data-kms.html
-https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt4-q10-i1.jpg
+https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/encrypt-log-data-kms.html +
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt4-q10-i1.jpg +
 
 By default, your instance is enabled for basic monitoring and Amazon EC2 sends metric data to CloudWatch in 5-minute periods. You can optionally enable detailed monitoring. After you enable detailed monitoring, the Amazon EC2 console displays monitoring graphs with a 1-minute period for the instance.
 The following describes the data interval and charge for basic and detailed monitoring for instances.
@@ -1745,22 +1737,22 @@ https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-cloudwatch.html
 AWS X-Ray helps developers analyze and debug production, distributed applications, such as those built using a microservices architecture. With X-Ray, you can understand how your application and its underlying services are performing to identify and troubleshoot the root cause of performance issues and errors. X-Ray provides an end-to-end view of requests as they travel through your application, and shows a map of your application’s underlying components.
 
 How X-Ray Works:
-https://d1.awsstatic.com/Products/product-name/Images/product-page-diagram_AWS-X-Ray_how-it-works.2922edd4bfe011e997dbf32fdf8bd520bcbc85fb.png
+https://d1.awsstatic.com/Products/product-name/Images/product-page-diagram_AWS-X-Ray_how-it-works.2922edd4bfe011e997dbf32fdf8bd520bcbc85fb.png +
 via - https://aws.amazon.com/xray/
 
 You can also customize the X-Ray sampling rules:  
-https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q13-i1.jpg
-via - https://docs.aws.amazon.com/xray/latest/devguide/xray-console-sampling.html
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q13-i1.jpg +
+via - https://docs.aws.amazon.com/xray/latest/devguide/xray-console-sampling.html +
 
 Filter expression syntax:
-https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q13-i2.jpg
-via - https://docs.aws.amazon.com/xray/latest/devguide/xray-console-filters.html
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q13-i2.jpg +
+via - https://docs.aws.amazon.com/xray/latest/devguide/xray-console-filters.html +
 
 You can use AWS X-Ray to visualize the components of your application, identify performance bottlenecks, and troubleshoot requests that resulted in an error. Your Lambda functions send trace data to X-Ray, and X-Ray processes the data to generate a service map and searchable trace summaries. This is a useful tool for troubleshooting. But, for the current use-case, we already know the bottleneck that needs to be fixed and that is the context reuse.
 
 X-Ray overview:
-https://docs.aws.amazon.com/xray/latest/devguide/images/architecture-dataflow.png
-via - https://docs.aws.amazon.com/xray/latest/devguide/aws-xray.html
+https://docs.aws.amazon.com/xray/latest/devguide/images/architecture-dataflow.png +
+via - https://docs.aws.amazon.com/xray/latest/devguide/aws-xray.html +
 
 EC2 X-Ray Daemon - The AWS X-Ray daemon is a software application that listens for traffic on UDP port 2000, gathers raw segment data, and relays it to the AWS X-Ray API. The daemon logs could help with figuring out the problem.
 The X-Ray daemon uses the AWS SDK to upload trace data to X-Ray, and it needs AWS credentials with permission to do that. On Amazon EC2, the daemon uses the instance's instance profile role automatically. Eliminates API permission issues (in case the role doesn't have IAM permissions to write data to the X-Ray service)
@@ -1769,9 +1761,8 @@ You can use X-Ray to collect data across AWS Accounts. The X-Ray agent can assum
 
 By customizing sampling rules, you can control the amount of data that you record, and modify sampling behavior on the fly without modifying or redeploying your code. Sampling rules tell the X-Ray SDK how many requests to record for a set of criteria. By default, the X-Ray SDK records the first request each second, and five percent of any additional requests.
 
-https://docs.aws.amazon.com/xray/latest/devguide/xray-console-sampling.html
-https://docs.aws.amazon.com/xray/latest/devguide/xray-console-deeplinks.html
-
+https://docs.aws.amazon.com/xray/latest/devguide/xray-console-sampling.html +
+https://docs.aws.amazon.com/xray/latest/devguide/xray-console-deeplinks.html +
 
 =======================================================================================================
 Optimization
@@ -1782,7 +1773,7 @@ Other
 -- Amazon Systems Manager
 
 AWS Systems Manager gives you visibility and control of your infrastructure on AWS. Systems Manager provides a unified user interface so you can view operational data from multiple AWS services and allows you to automate operational tasks across your AWS resources.
-https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-paramstore.html
+https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-paramstore.html +
 
 
 -- AWS SSM Parameter Store / -- SSM / -- Parameter store / -- SSM Parameter store / -- Systems Manager Parameter store
@@ -1793,7 +1784,7 @@ AWS Systems Manager Parameter Store provides secure, hierarchical storage for co
 
 AWS Systems Manager Parameter Store provides secure, hierarchical storage for configuration data management and secrets management. You can store data such as passwords, database strings, and license codes as parameter values. For the given use-case, as the DevOps team does not want to re-deploy the application every time there are configuration changes, so they can use the SSM Parameter Store to store the configuration externally.
 
-https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt4-q47-i1.jpg
- via - https://docs.aws.amazon.com/kms/latest/developerguide/services-parameter-store.html
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt4-q47-i1.jpg +
+ via - https://docs.aws.amazon.com/kms/latest/developerguide/services-parameter-store.html +
 
 -- AWS IoT Core service
