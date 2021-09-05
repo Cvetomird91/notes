@@ -70,8 +70,8 @@ IAM policy variables
 Instead of creating individual policies for each user, you can use policy variables and create a single policy that applies to multiple users (a group policy). Policy variables act as placeholders. When you make a request to AWS, the placeholder is replaced by a value from the request when the policy is evaluated.
 
 As an example, the following policy gives each of the users in the group full programmatic access to a user-specific object (their own "home directory") in Amazon S3.
-https://media.datacumulus.com/aws-dva-pt/assets/pt1-q40-i1.jpg
-via - https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_variables.html
+https://media.datacumulus.com/aws-dva-pt/assets/pt1-q40-i1.jpg +
+via - https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_variables.html +
 
 Access Advisor feature on IAM console - To help identify the unused roles, IAM reports the last-used timestamp that represents when a role was last used to make an AWS request. Your security team can use this information to identify, analyze, and then confidently remove unused roles. This helps improve the security posture of your AWS environments
 
@@ -81,8 +81,8 @@ In case you want to give permissions for a resource in one account to a resource
 You can give a Lambda function created in one account ("account A") permissions to assume a role from another account ("account B") to access resources such as DynamoDB or S3 bucket. You need to create an execution role in Account A that gives the Lambda function permission to do its work. Then you need to create a role in account B that the Lambda function in account A assumes to gain access to the cross-account DynamoDB table. Make sure that you modify the trust policy of the role in Account B to allow the execution role of Lambda to assume this role. Finally, update the Lambda function code to add the AssumeRole API call.
 
 Sample use-case to configure a Lambda function to assume a role from another AWS account:
-https://media.datacumulus.com/aws-dva-pt/assets/pt1-q1-i1.jpg
-via - https://aws.amazon.com/premiumsupport/knowledge-center/lambda-function-assume-iam-role/
+https://media.datacumulus.com/aws-dva-pt/assets/pt1-q1-i1.jpg +
+via - https://aws.amazon.com/premiumsupport/knowledge-center/lambda-function-assume-iam-role/ +
 
 You cannot attach a resource policy to a DynamoDB
 
@@ -104,22 +104,22 @@ Access control list (ACL) - Access control lists (ACLs) are service policies tha
 
 Permissions boundary - AWS supports permissions boundaries for IAM entities (users or roles). A permissions boundary is an advanced feature for using a managed policy to set the maximum permissions that an identity-based policy can grant to an IAM entity. An entity's permissions boundary allows it to perform only the actions that are allowed by both its identity-based policies and its permissions boundaries.
 
-https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html#policies_resource-based
-https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html
+https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html#policies_resource-based +
+https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html +
 
 Access Advisor feature on IAM console- To help identify the unused roles, IAM reports the last-used timestamp that represents when a role was last used to make an AWS request. Your security team can use this information to identify, analyze, and then confidently remove unused roles. This helps improve the security posture of your AWS environments. Additionally, by removing unused roles, you can simplify your monitoring and auditing efforts by focusing only on roles that are in use. This feature can help us identify unused IAM roles and remove them without disrupting any service.
 
 how to enable cross-account resource access (for example, with an S3 bucket in one account and EC2 instance in another):
 Create an IAM role with S3 access in Account B and set Account A as a trusted entity. Create another role (instance profile) in Account A and attach it to the EC2 instances in Account A and add an inline policy to this role to assume the role from Account B
 
-https://docs.aws.amazon.com/xray/latest/devguide/security_iam_troubleshoot.html
+https://docs.aws.amazon.com/xray/latest/devguide/security_iam_troubleshoot.html +
 
 IAM roles have been incorporated so that your applications can securely make API requests from your instances, without requiring you to manage the security credentials that the applications use. Instead of creating and distributing your AWS credentials, you can delegate permission to make API requests using IAM roles.
 Amazon EC2 uses an instance profile as a container for an IAM role. When you create an IAM role using the IAM console, the console creates an instance profile automatically and gives it the same name as the role to which it corresponds.
 This is the most secure option as the role assigned to EC2 can be used to access S3 without storing any credentials onto the EC2 instance.
-https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-roles-for-amazon-ec2.html
+https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-roles-for-amazon-ec2.html +
 
-https://docs.aws.amazon.com/IAM/latest/UserGuide/id.html
+https://docs.aws.amazon.com/IAM/latest/UserGuide/id.html +
 
 =======================================================================================================
 Compute and Networking
@@ -268,11 +268,11 @@ A subnet can only be associated with one route table at a time.
 
 Public subnets have access to the internet via Internet Gateway.
 
-https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Route_Tables.html
+https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Route_Tables.html +
 
 -- ASG / -- Auto Scaling Group
 
-https://docs.aws.amazon.com/autoscaling/ec2/userguide/AutoScalingGroup.html
+https://docs.aws.amazon.com/autoscaling/ec2/userguide/AutoScalingGroup.html +
 
 How scaling policies work:
 https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q21-i1.jpg
@@ -1272,49 +1272,48 @@ Integration
 
 Amazon SQS uses a visibility timeout to prevent other consumers from receiving and processing the same message. The default visibility timeout for a message is 30 seconds. The minimum is 0 seconds. The maximum is 12 hours.
 
-https://media.datacumulus.com/aws-dva-pt/assets/pt1-q5-i1.jpg
+https://media.datacumulus.com/aws-dva-pt/assets/pt1-q5-i1.jpg +
 
 For example, you have a message with a visibility timeout of 5 minutes. After 3 minutes, you call ChangeMessageVisibility with a timeout of 10 minutes. You can continue to call ChangeMessageVisibility to extend the visibility timeout to the maximum allowed time. If you try to extend the visibility timeout beyond the maximum, your request is rejected. So, for the given use-case, the application can set the initial visibility timeout to 1 minute and then continue to update the ChangeMessageVisibility value if required.
 
-https://media.datacumulus.com/aws-dva-pt/assets/pt1-q5-i2.jpg
-via - https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-visibility-timeout.html
+https://media.datacumulus.com/aws-dva-pt/assets/pt1-q5-i2.jpg +
+via - https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-visibility-timeout.html +
 
-https://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/API_ChangeMessageVisibility.html
+https://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/API_ChangeMessageVisibility.html +
 
 There are no message limits for storing in SQS, but 'in-flight messages' do have limits. Make sure to delete messages after you have processed them. There can be a maximum of approximately 120,000 inflight messages (received from a queue by a consumer, but not yet deleted from the queue).
-https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-limits.html
+https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-limits.html +
 
-https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q59-i1.jpg
-https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-dead-letter-queues.html
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q59-i1.jpg +
+https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-dead-letter-queues.html +
 
 ApproximateNumberOfMessagesVisible - This is a CloudWatch Amazon SQS queue metric. The number of messages in a queue might not change proportionally to the size of the Auto Scaling group that processes messages from the queue. Hence, this metric does not work for target tracking.
 
 
 Delay queues let you postpone the delivery of new messages to a queue for several seconds, for example, when your consumer application needs additional time to process messages. If you create a delay queue, any messages that you send to the queue remain invisible to consumers for the duration of the delay period. The default (minimum) delay for a queue is 0 seconds. The maximum is 15 minutes.
-https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q4-i1.jpg
- via - https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-delay-queues.html
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q4-i1.jpg +
+ via - https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-delay-queues.html +
 
  SQS FIFO queues are designed to guarantee that messages are processed exactly once, in the exact order that they are sent.
 
  Quotas:
- https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/quotas-queues.html
- https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/quotas-messages.html
- https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/quotas-policies.html
+ https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/quotas-queues.html +
+ https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/quotas-messages.html +
+ https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/quotas-policies.html +
 
 To manage large Amazon Simple Queue Service (Amazon SQS) messages, you can use Amazon Simple Storage Service (Amazon S3) and the Amazon SQS Extended Client Library for Java. This is especially useful for storing and consuming messages up to 2 GB. Unless your application requires repeatedly creating queues and leaving them inactive or storing large amounts of data in your queues, consider using Amazon S3 for storing your data.
-https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-s3-messages.html
+https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-s3-messages.html +
 
 Amazon SQS leverages the AWS cloud to dynamically scale, based on demand. SQS scales elastically with your application so you don't have to worry about capacity planning and pre-provisioning. For most standard queues (depending on queue traffic and message backlog), there can be a maximum of approximately 120,000 inflight messages (received from a queue by a consumer, but not yet deleted from the queue).
-https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-quotas.html
+https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-quotas.html +
 
- https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/FIFO-queues.html
- https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-quotas.html
- https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/quotas-queues.html
- https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/quotas-messages.html
- https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/quotas-policies.html
+ https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/FIFO-queues.html +
+ https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-quotas.html +
+ https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/quotas-queues.html +
+ https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/quotas-messages.html +
+ https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/quotas-policies.html +
 
-https://aws.amazon.com/sqs/
-https://aws.amazon.com/kinesis/data-firehose/
+https://aws.amazon.com/sqs/faqs/ +
 
 Good practise to minimize SQS costs:
 Amazon SQS provides short polling and long polling to receive messages from a queue. By default, queues use short polling. With short polling, Amazon SQS sends the response right away, even if the query found no messages. With long polling, Amazon SQS sends a response after it collects at least one available message, up to the maximum number of messages specified in the request. Amazon SQS sends an empty response only if the polling wait time expires.
@@ -1324,12 +1323,12 @@ Long polling makes it inexpensive to retrieve messages from your Amazon SQS queu
 Exam Alert:
 
 Please review the differences between Short Polling vs Long Polling:
-https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q1-i1.jpg
-via - https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-short-and-long-polling.html
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q1-i1.jpg +
+via - https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-short-and-long-polling.html +
 
 Consuming messages using long polling:
-https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q1-i2.jpg
-via - https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-short-and-long-polling.html
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q1-i2.jpg +
+via - https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-short-and-long-polling.html +
 
 Visibility timeout is a period during which Amazon SQS prevents other consumers from receiving and processing a given message. The default visibility timeout for a message is 30 seconds. The minimum is 0 seconds. 
 
@@ -1338,7 +1337,7 @@ You can use message timers to set an initial invisibility period for a message a
 Server-side encryption (SSE) lets you transmit sensitive data in encrypted queues. SSE protects the contents of messages in queues using keys managed in AWS Key Management Service (AWS KMS).
 AWS KMS combines secure, highly available hardware and software to provide a key management system scaled for the cloud. When you use Amazon SQS with AWS KMS, the data keys that encrypt your message data are also encrypted and stored with the data they protect.
 You can choose to have SQS encrypt messages stored in both Standard and FIFO queues using an encryption key provided by AWS Key Management Service (KMS).
-https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-server-side-encryption.html
+https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-server-side-encryption.html +
 
 Sample SNS-SQS Fanout message:
 https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt6-q35-i1.jpg +
@@ -1351,7 +1350,7 @@ Amazon SNS enables message filtering and fanout to a large number of subscribers
 
 How SNS Works:
 https://d1.awsstatic.com/product-marketing/SNS/product-page-diagram_SNS_how-it-works_1.53a464980bf0d5a868b141e9a8b2acf12abc503f.png +
-via - https://aws.amazon.com/sns/
+via - https://aws.amazon.com/sns/faqs/ +
 
 https://docs.aws.amazon.com/sns/latest/dg/sns-lambda-as-subscriber.html +
 https://docs.aws.amazon.com/sns/latest/dg/sns-firehose-as-subscriber.html +
@@ -1373,7 +1372,7 @@ via - https://aws.amazon.com/kinesis/data-streams/faqs/
 KDS provides the ability for multiple applications to consume the same stream concurrently
 https://media.datacumulus.com/aws-dva-pt/assets/pt1-q9-i1.jpg
 via - https://aws.amazon.com/kinesis/data-streams/faqs/
-https://aws.amazon.com/kinesis/data-firehose/faqs/
+https://aws.amazon.com/kinesis/data-firehose/faqs/ +
 https://aws.amazon.com/kinesis/data-analytics/faqs/
 https://aws.amazon.com/kinesis/data-streams/
 https://aws.amazon.com/kinesis/data-firehose/
@@ -1450,8 +1449,8 @@ https://aws.amazon.com/blogs/database/streaming-changes-in-a-database-with-amazo
 =======================================================================================================
 Serverless Compute
 
-https://d1.awsstatic.com/serverless/New-API-GW-Diagram.c9fc9835d2a9aa00ef90d0ddc4c6402a2536de0d.png
-https://d1.awsstatic.com/product-marketing/Lambda/Diagrams/product-page-diagram_Lambda-HowItWorks.68a0bcacfcf46fccf04b97f16b686ea44494303f.png
+https://d1.awsstatic.com/serverless/New-API-GW-Diagram.c9fc9835d2a9aa00ef90d0ddc4c6402a2536de0d.png +
+https://d1.awsstatic.com/product-marketing/Lambda/Diagrams/product-page-diagram_Lambda-HowItWorks.68a0bcacfcf46fccf04b97f16b686ea44494303f.png +
 
 -- AWS Lambda / -- Lambda / -- Amazon Lambda
 
@@ -1462,30 +1461,30 @@ Concurrency is the number of requests that a Lambda function is serving at any g
 To ensure that a function can always reach a certain level of concurrency, you can configure the function with reserved concurrency. When a function has reserved concurrency, no other function can use that concurrency. More importantly, reserved concurrency also limits the maximum concurrency for the function, and applies to the function as a whole, including versions and aliases.
 
 How lambda concurrency works:
-https://media.datacumulus.com/aws-dva-pt/assets/pt1-q6-i1.jpg
-via - https://docs.aws.amazon.com/lambda/latest/dg/configuration-concurrency.html#configuration-concurrency-reserved
+https://media.datacumulus.com/aws-dva-pt/assets/pt1-q6-i1.jpg +
+via - https://docs.aws.amazon.com/lambda/latest/dg/configuration-concurrency.html#configuration-concurrency-reserved +
 
 You should use provisioned concurrency to enable your function to scale without fluctuations in latency. By allocating provisioned concurrency before an increase in invocations, you can ensure that all requests are served by initialized instances with very low latency. Provisioned concurrency is not used to limit the maximum concurrency for a given Lambda function
 
-https://docs.aws.amazon.com/lambda/latest/dg/configuration-concurrency.html#configuration-concurrency-reserved
-https://aws.amazon.com/blogs/networking-and-content-delivery/lambda-functions-as-targets-for-application-load-balancers/
+https://docs.aws.amazon.com/lambda/latest/dg/configuration-concurrency.html#configuration-concurrency-reserved +
+https://aws.amazon.com/blogs/networking-and-content-delivery/lambda-functions-as-targets-for-application-load-balancers/ +
 
 You can use versions to manage the deployment of your AWS Lambda functions. For example, you can publish a new version of a function for beta testing without affecting users of the stable production version. You can change the function code and settings only on the unpublished version of a function. When you publish a version, the code and most of the settings are locked to ensure a consistent experience for users of that version.
 
 You can create one or more aliases for your AWS Lambda function. A Lambda alias is like a pointer to a specific Lambda function version. You can use routing configuration on an alias to send a portion of traffic to a Lambda function version. For example, you can reduce the risk of deploying a new version by configuring the alias to send most of the traffic to the existing version, and only a small percentage of traffic to the new version.
 
-https://media.datacumulus.com/aws-dva-pt/assets/pt1-q13-i1.jpg
- via - https://docs.aws.amazon.com/lambda/latest/dg/configuration-versions.html
+https://media.datacumulus.com/aws-dva-pt/assets/pt1-q13-i1.jpg +
+ via - https://docs.aws.amazon.com/lambda/latest/dg/configuration-versions.html +
 
- https://media.datacumulus.com/aws-dva-pt/assets/pt1-q13-i2.jpg
+ https://media.datacumulus.com/aws-dva-pt/assets/pt1-q13-i2.jpg +
 
-https://media.datacumulus.com/aws-dva-pt/assets/pt1-q13-i3.jpg
-via - https://docs.aws.amazon.com/lambda/latest/dg/configuration-aliases.html
+https://media.datacumulus.com/aws-dva-pt/assets/pt1-q13-i3.jpg +
+via - https://docs.aws.amazon.com/lambda/latest/dg/configuration-aliases.html +
 
 API Gateway lets you use mapping templates to map the payload from a method request to the corresponding integration request and from an integration response to the corresponding method response.
 
-https://docs.aws.amazon.com/apigateway/latest/developerguide/rest-api-data-transformations.html
-https://docs.aws.amazon.com/apigateway/latest/developerguide/stage-variables.html
+https://docs.aws.amazon.com/apigateway/latest/developerguide/rest-api-data-transformations.html +
+https://docs.aws.amazon.com/apigateway/latest/developerguide/stage-variables.html +
 
 To set up lambda environments you need:
 - lambda aliases
@@ -1525,7 +1524,7 @@ https://docs.aws.amazon.com/lambda/latest/dg/with-scheduled-events.html
 
 A Lambda alias is like a pointer to a specific Lambda function version. You can create one or more aliases for your AWS Lambda function. Users can access the function version using the alias ARN. An alias can only point to a function version, not to another alias. You can update an alias to point to a new version of the function. Event sources such as Amazon S3 invoke your Lambda function. These event sources maintain a mapping that identifies the function to invoke when events occur. If you specify a Lambda function alias in the mapping configuration, you don't need to update the mapping when the function version changes. This is the right choice for the current requirement.
 
-https://docs.aws.amazon.com/lambda/latest/dg/configuration-aliases.html
+https://docs.aws.amazon.com/lambda/latest/dg/configuration-aliases.html +
 https://docs.aws.amazon.com/lambda/latest/dg/configuration-tags.html
 
 The Lambda runtime makes environment variables available to your code and sets additional environment variables that contain information about the function and invocation request. The total size of all environment variables doesn't exceed 4 KB. There is no limit defined on the number of variables that can be used.
@@ -1583,15 +1582,15 @@ https://aws.amazon.com/blogs/compute/implementing-serverless-manual-approval-ste
 -- AppSync - managed service that uses GraphQL.
 -- API Gateway / -- AWS API Gateway / -- Amazon API Gateway
 
-https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-overview-developer-experience.html
+https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-overview-developer-experience.html +
 
 API Gateway REST APIs: A collection of HTTP resources and methods that are integrated with backend HTTP endpoints, Lambda functions, or other AWS services. You can deploy this collection in one or more stages. Typically, API resources are organized in a resource tree according to the application logic. Each API resource can expose one or more API methods that have unique HTTP verbs supported by API Gateway.
 API Gateway HTTP API: A collection of routes and methods that are integrated with backend HTTP endpoints or Lambda functions. You can deploy this collection in one or more stages. Each route can expose one or more API methods that have unique HTTP verbs supported by API Gateway.
 AWS Lambda, AWS Identity and Access Management (IAM) and Amazon Cognito services are all available as HTTP APIs. AWS Web Application Firewall (AWS WAF) however, is only available in REST APIs.
 
 Choosing between HTTP API or REST API:  
-https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt6-q26-i1.jpg
-via - https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-vs-rest.html
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt6-q26-i1.jpg +
+via - https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-vs-rest.html +
 
 A usage plan specifies who can access one or more deployed API stages and methods—and also how much and how fast they can access them. The plan uses API keys to identify API clients and meters access to the associated API stages for each key.
 
@@ -1599,13 +1598,13 @@ You can configure usage plans and API keys to allow customers to access selected
 
 
 Overview of API Gateway Usage Plans and API keys:
-https://media.datacumulus.com/aws-dva-pt/assets/pt1-q18-i1.jpg
-via - https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-api-usage-plans.html
+https://media.datacumulus.com/aws-dva-pt/assets/pt1-q18-i1.jpg +
+via - https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-api-usage-plans.html +
 
 A stage is a logical reference to a lifecycle state of your API (for example, dev, prod, beta, v2). API stages are identified by the API ID and stage name. Every time you update an API, you must redeploy the API to an existing stage or to a new stage. Updating an API includes modifying routes, methods, integrations, authorizers, and anything else other than stage settings.
 
-https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-use-lambda-authorizer.html
-https://docs.aws.amazon.com/apigateway/latest/developerguide/permissions.html
+https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-use-lambda-authorizer.html +
+https://docs.aws.amazon.com/apigateway/latest/developerguide/permissions.html +
 https://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-deploy-api.html +
 
 API Gateway supports the following mechanisms for authentication and authorization:
@@ -1642,7 +1641,7 @@ Cross-origin resource sharing (CORS) defines a way for client web applications t
 https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-protect.html +
 https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-throttling.html +
 https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-mutual-tls.html +
-https://docs.aws.amazon.com/apigateway/latest/developerguide/rest-api-data-transformations.html
+https://docs.aws.amazon.com/apigateway/latest/developerguide/rest-api-data-transformations.html +
 https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-caching.html#invalidate-method-caching +
 
 ALB routing options:
@@ -1655,9 +1654,9 @@ This path-based routing allows you to route requests to, for example, /api to on
 Host based
 
 You can create Application Load Balancer rules that route incoming traffic based on the domain name specified in the Host header. Requests to api.example.com can be sent to one target group, requests to mobile.example.com to another, and all others (by way of a default rule) can be sent to a third. You can also create rules that combine host-based routing and path-based routing. This would allow you to route requests to api.example.com/production and api.example.com/sandbox to distinct target groups.
-https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt4-q54-i1.jpg
-via - https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-listeners.html#rule-condition-types
-https://aws.amazon.com/blogs/aws/new-host-based-routing-support-for-aws-application-load-balancers/
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt4-q54-i1.jpg +
+via - https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-listeners.html#rule-condition-types +
+https://aws.amazon.com/blogs/aws/new-host-based-routing-support-for-aws-application-load-balancers/ +
 
 =======================================================================================================
 Serverless Applications
@@ -1669,13 +1668,13 @@ Serverless Application Patterns
 Monitoring and Troubleshooting
 
 https://aws.amazon.com/config/faq/ +
-https://aws.amazon.com/cloudwatch/
-https://aws.amazon.com/cloudtrail/
+https://aws.amazon.com/cloudwatch/faqs/ +
+https://aws.amazon.com/cloudtrail/ +
 
 -- AWS CloudTrail / -- CloudTrail
 How cloudtrail works:
 https://d1.awsstatic.com/product-marketing/CloudTrail/Product-Page-Diagram-AWSX-CloudTrail_How-it-Works.d2f51f6e3ec3ea3b33d0c48d472f0e0b59b46e59.png +
-via - https://aws.amazon.com/cloudtrail/
+via - https://aws.amazon.com/cloudtrail/ +
 https://aws.amazon.com/cloudtrail/faqs/ +
 
 Exam Alert:
@@ -1699,7 +1698,7 @@ By default, CloudTrail event log files are encrypted using Amazon S3 server-side
 
 For CloudTrail to work with S3 buckets and the bucket owner to receive logs, he must be object owner, as well.
 Otherwise, the bucket owner must get permissions, through the object ACL, for the same object API to get the same object-access API logs.
-https://docs.aws.amazon.com/AmazonS3/latest/userguide/cloudtrail-logging-s3-info.html#cloudtrail-object-level-crossaccount
+https://docs.aws.amazon.com/AmazonS3/latest/userguide/cloudtrail-logging-s3-info.html#cloudtrail-object-level-crossaccount +
 
 -- AWS CloudWatch / -- CloudWatch / -- Amazon CloudWatch
 
