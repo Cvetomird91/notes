@@ -236,7 +236,7 @@ ASGAverageNetworkOut - This is a predefined metric for target tracking scaling p
 
 ALBRequestCountPerTarget - This is a predefined metric for target tracking scaling policy. This represents the Number of requests completed per target in an Application Load Balancer target group.
 
-https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-scaling-target-tracking.html
+https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-scaling-target-tracking.html +
 
 It is possible to reuse SSH keys across regions.
 Here is the correct way of reusing SSH keys in your AWS Regions:
@@ -275,34 +275,34 @@ https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Route_Tables.html +
 https://docs.aws.amazon.com/autoscaling/ec2/userguide/AutoScalingGroup.html +
 
 How scaling policies work:
-https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q21-i1.jpg
-via - https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-scale-based-on-demand.html
-https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-scale-based-on-demand.html
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q21-i1.jpg +
+via - https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-scale-based-on-demand.html +
+https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-scale-based-on-demand.html +
 
 You configure the size of your Auto Scaling group by setting the minimum, maximum, and desired capacity. The minimum and maximum capacity are required to create an Auto Scaling group, while the desired capacity is optional. If you do not define your desired capacity upfront, it defaults to your minimum capacity.
 
 Since a minimum capacity of 1 was defined, an instance was launched in only one AZ. This AZ went down, taking the application with it. If the minimum capacity is set to 2. As per Auto Scale AZ configuration, it would have launched 2 instances- one in each AZ, making the architecture disaster-proof and hence highly available.
-https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q65-i1.jpg
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q65-i1.jpg +
 via - https://docs.aws.amazon.com/autoscaling/ec2/userguide/auto-scaling-benefits.html +
 
 With target tracking scaling policies, you select a scaling metric and set a target value. You can use predefined customized metrics.
 
-https://docs.aws.amazon.com/autoscaling/ec2/userguide/asg-capacity-limits.html
-https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-maintain-instance-levels.html
-https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-scaling-target-tracking.html
+https://docs.aws.amazon.com/autoscaling/ec2/userguide/asg-capacity-limits.html +
+https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-maintain-instance-levels.html +
+https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-scaling-target-tracking.html +
 
 =======================================================================================================
 -- ELB - Elastic Load balancer / -- Elastic Load Balancer
 
 ALB access logs - Elastic Load Balancing provides access logs that capture detailed information about requests sent to your load balancer. Each log contains information such as the time the request was received, the client's IP address, latencies, request paths, and server responses. You can use these access logs to analyze traffic patterns and troubleshoot issues. Access logging is an optional feature of Elastic Load Balancing that is disabled by default.
-https://media.datacumulus.com/aws-dva-pt/assets/pt1-q29-i1.jpg
-via - https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-access-logs.html
+https://media.datacumulus.com/aws-dva-pt/assets/pt1-q29-i1.jpg +
+via - https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-access-logs.html +
 
 Elastic Load Balancers can connect with Auto Scale groups to provide horizontal scaling.
 A Load Balancer can target EC2 instances only within an AWS Region.
 
-https://aws.amazon.com/elasticloadbalancing/
-https://docs.aws.amazon.com/elasticloadbalancing/latest/userguide/how-elastic-load-balancing-works.html
+https://aws.amazon.com/elasticloadbalancing/faqs/ +
+https://docs.aws.amazon.com/elasticloadbalancing/latest/userguide/how-elastic-load-balancing-works.html +
 
 ALB request tracing - You can use request tracing to track HTTP requests. The load balancer adds a header with a trace identifier to each request it receives. Request tracing will not help you to analyze latency specific data.
 
@@ -315,19 +315,19 @@ HTTP 504 - HTTP 504 is 'Gateway timeout' error. Several reasons for this error, 
 
 HTTP 403 - HTTP 403 is 'Forbidden' error. You configured an AWS WAF web access control list (web ACL) to monitor requests to your Application Load Balancer and it blocked a request.
 
-https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-monitoring.html
-https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-access-logs.html
-https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-troubleshooting.html
+https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-monitoring.html +
+https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-access-logs.html +
+https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-troubleshooting.html +
 
 You must ensure that your load balancer can communicate with registered targets on both the listener port and the health check port. Whenever you add a listener to your load balancer or update the health check port for a target group used by the load balancer to route requests, you must verify that the security groups associated with the load balancer allow traffic on the new port in both directions.
 
 Application Load Balancer Configuration for Security Groups and Health Check Routes:
-https://media.datacumulus.com/aws-dva-pt/assets/pt1-q28-i1.jpg
-via - https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-update-security-groups.html
+https://media.datacumulus.com/aws-dva-pt/assets/pt1-q28-i1.jpg +
+via - https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-update-security-groups.html +
 
 Cross-Zone Load Balancing Overview:
-https://media.datacumulus.com/aws-dva-pt/assets/pt1-q30-i1.jpg
-via - https://docs.aws.amazon.com/elasticloadbalancing/latest/userguide/how-elastic-load-balancing-works.html
+https://media.datacumulus.com/aws-dva-pt/assets/pt1-q30-i1.jpg +
+via - https://docs.aws.amazon.com/elasticloadbalancing/latest/userguide/how-elastic-load-balancing-works.html +
 
 X-Forwarded-For - The X-Forwarded-For request header helps you identify the IP address of a client when you use an HTTP or HTTPS load balancer. Because load balancers intercept traffic between clients and servers, your server access logs contain only the IP address of the load balancer. To see the IP address of the client, use the X-Forwarded-For request header.
 
@@ -337,26 +337,27 @@ X-Forwarded-Proto - The X-Forwarded-Proto request header helps you identify the 
 
 X-Forwarded-Port - The X-Forwarded-Port request header helps you identify the destination port that the client used to connect to the load balancer.
 
-https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/x-forwarded-headers.html#x-forwarded-for
+https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/x-forwarded-headers.html#x-forwarded-for +
 
-https://aws.amazon.com/premiumsupport/knowledge-center/auto-scaling-terminate-instance
-https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-maintain-instance-levels.html#replace-unhealthy-instance
+https://aws.amazon.com/premiumsupport/knowledge-center/auto-scaling-terminate-instance +
+https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-maintain-instance-levels.html#replace-unhealthy-instance +
 
 Sticky sessions:
-https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q58-i1.jpg
-via - https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-target-groups.html#sticky-sessions
-https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-target-groups.html#slow-start-mode
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q58-i1.jpg +
+https://docs.aws.amazon.com/elasticloadbalancing/latest/application/sticky-sessions.html +
+via - https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-target-groups.html#sticky-sessions +
+https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-target-groups.html#slow-start-mode +
 
 A Classic Load Balancer with HTTP or HTTPS listeners might route more traffic to higher-capacity instance types. This distribution aims to prevent lower-capacity instance types from having too many outstanding requests. It’s a best practice to use similar instance types and configurations to reduce the likelihood of capacity gaps and traffic imbalances.
 A traffic imbalance might also occur if you have instances of similar capacities running on different Amazon Machine Images (AMIs). In this scenario, the imbalance of the traffic in favor of higher-capacity instance types is desirable.
 
-https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-target-groups.html#sticky-sessions
-https://aws.amazon.com/premiumsupport/knowledge-center/elb-fix-unequal-traffic-routing/
-https://docs.aws.amazon.com/elasticloadbalancing/latest/userguide/how-elastic-load-balancing-works.html#availability-zones
+https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-target-groups.html#sticky-sessions +
+https://aws.amazon.com/premiumsupport/knowledge-center/elb-fix-unequal-traffic-routing/ +
+https://docs.aws.amazon.com/elasticloadbalancing/latest/userguide/how-elastic-load-balancing-works.html#availability-zones +
 
 A Network Load Balancer functions at the fourth layer of the Open Systems Interconnection (OSI) model. It can handle millions of requests per second. After the load balancer receives a connection request, it selects a target from the target group for the default rule. It attempts to open a TCP connection to the selected target on the port specified in the listener configuration. Incoming connections remain unmodified, so application software need not support X-Forwarded-For.
-https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt4-q50-i1.jpg
-via - https://docs.aws.amazon.com/elasticloadbalancing/latest/network/introduction.html
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt4-q50-i1.jpg +
+via - https://docs.aws.amazon.com/elasticloadbalancing/latest/network/introduction.html +
 
 An Application Load Balancer functions at the application layer, the seventh layer of the Open Systems Interconnection (OSI) model. After the load balancer receives a request, it evaluates the listener rules in priority order to determine which rule to apply and then selects a target from the target group for the rule action.
 One of many benefits of the Application Load Balancer is its support for path-based routing. You can configure rules for your listener that forward requests based on the URL in the request. This enables you to structure your application as smaller services, and route requests to the correct service based on the content of the URL. For needs relating to network traffic go with Network Load Balancer.
@@ -378,25 +379,25 @@ Storage
 
 S3 Analytics - By using Amazon S3 analytics Storage Class Analysis you can analyze storage access patterns to help you decide when to transition the right data to the right storage class.
 
-https://aws.amazon.com/blogs/security/writing-iam-policies-grant-access-to-user-specific-folders-in-an-amazon-s3-bucket/
+https://aws.amazon.com/blogs/security/writing-iam-policies-grant-access-to-user-specific-folders-in-an-amazon-s3-bucket/ +
 
 S3 security best practices:
-https://docs.aws.amazon.com/AmazonS3/latest/dev/security-best-practices.html
+https://docs.aws.amazon.com/AmazonS3/latest/dev/security-best-practices.html +
 
-https://media.datacumulus.com/aws-dva-pt/assets/pt1-q8-i1.jpg
- via - https://docs.aws.amazon.com/AmazonS3/latest/dev/serv-side-encryption.html
+https://media.datacumulus.com/aws-dva-pt/assets/pt1-q8-i1.jpg +
+ via - https://docs.aws.amazon.com/AmazonS3/latest/dev/serv-side-encryption.html +
 
- https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingKMSEncryption.html
+ https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingKMSEncryption.html +
 
-https://docs.aws.amazon.com/streams/latest/dev/what-is-sse.html
+https://docs.aws.amazon.com/streams/latest/dev/what-is-sse.html +
 
 You need to use multi-part upload for large files: In general, when your object size reaches 100 MB, you should consider using multipart uploads instead of uploading the object in a single operation.
-https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q30-i1.jpg
- via - https://docs.aws.amazon.com/AmazonS3/latest/dev/UploadingObjects.html
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q30-i1.jpg +
+ via - https://docs.aws.amazon.com/AmazonS3/latest/dev/UploadingObjects.html +
  With a single PUT operation, you can upload objects up to 5 GB in size.
 
 https://docs.aws.amazon.com/AmazonS3/latest/dev/Versioning.html
-https://docs.aws.amazon.com/AmazonS3/latest/dev/ShareObjectPreSignedURL.html
+https://docs.aws.amazon.com/AmazonS3/latest/dev/ShareObjectPreSignedURL.html +
 https://docs.aws.amazon.com/AmazonS3/latest/user-guide/add-bucket-policy.html
 
 When your source bucket and target bucket are the same bucket, additional logs are created for the logs that are written to the bucket. The extra logs about logs might make it harder to find the log that you are looking for. This configuration would drastically increase the size of the S3 bucket.
@@ -437,11 +438,11 @@ https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-control-overview.ht
 Allows full S3 access, but explicitly denies access to the Production bucket if the user has not signed in using MFA within the last thirty minutes - This example shows how you might create a policy that allows an Amazon S3 user to access any bucket, including updating, adding, and deleting objects. However, it explicitly denies access to the Production bucket if the user has not signed in using multi-factor authentication (MFA) within the last thirty minutes. This policy grants the permissions necessary to perform this action in the console or programmatically using the AWS CLI or AWS API.
 This policy never allows programmatic access to the Production bucket using long-term user access keys. This is accomplished using the aws:MultiFactorAuthAge condition key with the NumericGreaterThanIfExists condition operator. This policy condition returns true if MFA is not present or if the age of the MFA is greater than 30 minutes. In those situations, access is denied. To access the Production bucket programmatically, the S3 user must use temporary credentials that were generated in the last 30 minutes using the GetSessionToken API operation.
 https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_examples_s3_full-access-except-production.html
-https://docs.aws.amazon.com/AmazonS3/latest/dev/security-best-practices.html
+https://docs.aws.amazon.com/AmazonS3/latest/dev/security-best-practices.html +
 https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-access-control.html
 https://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html
 https://docs.aws.amazon.com/AmazonS3/latest/user-guide/add-bucket-policy.html
-https://docs.aws.amazon.com/AmazonS3/latest/userguide/security-best-practices.html
+https://docs.aws.amazon.com/AmazonS3/latest/userguide/security-best-practices.html +
 https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingEncryption.html
 https://docs.aws.amazon.com/AmazonS3/latest/dev/ServerSideEncryptionCustomerKeys.html
 
