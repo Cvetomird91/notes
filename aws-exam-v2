@@ -396,23 +396,23 @@ https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q30-i1.jpg +
  via - https://docs.aws.amazon.com/AmazonS3/latest/dev/UploadingObjects.html +
  With a single PUT operation, you can upload objects up to 5 GB in size.
 
-https://docs.aws.amazon.com/AmazonS3/latest/dev/Versioning.html
+https://docs.aws.amazon.com/AmazonS3/latest/dev/Versioning.html +
 https://docs.aws.amazon.com/AmazonS3/latest/dev/ShareObjectPreSignedURL.html +
-https://docs.aws.amazon.com/AmazonS3/latest/user-guide/add-bucket-policy.html
+https://docs.aws.amazon.com/AmazonS3/latest/user-guide/add-bucket-policy.html +
 
 When your source bucket and target bucket are the same bucket, additional logs are created for the logs that are written to the bucket. The extra logs about logs might make it harder to find the log that you are looking for. This configuration would drastically increase the size of the S3 bucket.
-https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q57-i1.jpg
- via - https://aws.amazon.com/premiumsupport/knowledge-center/s3-server-access-logs-same-bucket/
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt2-q57-i1.jpg +
+ via - https://aws.amazon.com/premiumsupport/knowledge-center/s3-server-access-logs-same-bucket/ +
  https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-access-control.html
 
 On Amazon S3, all objects by default are private. Only the object owner has permission to access these objects. However, the object owner can optionally share objects with others by creating a pre-signed URL, using their own security credentials, to grant time-limited permission to download the objects.
 You can also use an IAM instance profile to create a pre-signed URL. When you create a pre-signed URL for your object, you must provide your security credentials, specify a bucket name, an object key, specify the HTTP method (GET to download the object), and expiration date and time. The pre-signed URLs are valid only for the specified duration. So for the given use-case, the object key can be retrieved from the DynamoDB table, and then the application can generate the pre-signed URL using the IAM instance profile.
 
 Please see this note for more details:
-https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q5-i1.jpg
-via - https://docs.aws.amazon.com/AmazonS3/latest/dev/ShareObjectPreSignedURL.html
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q5-i1.jpg +
+via - https://docs.aws.amazon.com/AmazonS3/latest/dev/ShareObjectPreSignedURL.html +
 
-https://aws.amazon.com/premiumsupport/knowledge-center/secure-s3-resources/
+https://aws.amazon.com/premiumsupport/knowledge-center/secure-s3-resources/ +
 
 which of the following would you suggest to automatically make the S3 bucket owner, also the owner of all objects in the bucket, irrespective of the AWS account used for uploading the objects?
 Use S3 Object Ownership to default bucket owner to be the owner of all objects in the bucket
@@ -422,13 +422,13 @@ S3 Object Ownership has two settings: 1. Object writer – The uploading account
 Amazon S3 access control lists (ACLs) enable you to manage access to buckets and objects. Each bucket and object has an ACL attached to it as a subresource. A bucket ACLs allow you to control access at bucket level.
 
 https://docs.aws.amazon.com/AmazonS3/latest/userguide/about-object-ownership.html
-https://docs.aws.amazon.com/AmazonS3/latest/userguide/cors.html
+https://docs.aws.amazon.com/AmazonS3/latest/userguide/cors.html +
 
 Amazon S3 Transfer Acceleration enables fast, easy, and secure transfers of files over long distances between your client and your Amazon S3 bucket. However, S3 Transfer Acceleration leverages Amazon CloudFront’s globally distributed AWS Edge Locations. Each time S3 Transfer Acceleration is used to upload an object, AWS checks whether S3 Transfer Acceleration is likely to be faster than a regular Amazon S3 transfer. If it finds that S3 Transfer Acceleration might not be significantly faster, AWS shifts back to normal Amazon S3 transfer mode.
 
 Creating a CORS rule for an S3 bucket:
-https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q4-i1.jpg
-via - https://docs.aws.amazon.com/AmazonS3/latest/dev/cors.html
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt3-q4-i1.jpg +
+via - https://docs.aws.amazon.com/AmazonS3/latest/dev/cors.html +
 
 Which of the following options can be used to control access to data stored on Amazon S3? 
 Bucket policies, Identity and Access Management (IAM) policies
@@ -441,7 +441,7 @@ https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_examples_s3_
 https://docs.aws.amazon.com/AmazonS3/latest/dev/security-best-practices.html +
 https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-access-control.html
 https://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html
-https://docs.aws.amazon.com/AmazonS3/latest/user-guide/add-bucket-policy.html
+https://docs.aws.amazon.com/AmazonS3/latest/user-guide/add-bucket-policy.html +
 https://docs.aws.amazon.com/AmazonS3/latest/userguide/security-best-practices.html +
 https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingEncryption.html
 https://docs.aws.amazon.com/AmazonS3/latest/dev/ServerSideEncryptionCustomerKeys.html
@@ -932,6 +932,8 @@ via - https://docs.aws.amazon.com/codedeploy/latest/userguide/deployments-rollba
 
 AWS CodeBuild monitors functions on your behalf and reports metrics through Amazon CloudWatch. These metrics include the number of total builds, failed builds, successful builds, and the duration of builds. You can monitor your builds at two levels: Project level, AWS account level. You can export log data from your log groups to an Amazon S3 bucket and use this data in custom processing and analysis, or to load onto other systems.
 
+You can export log data from your CloudWatch log groups to an Amazon S3 bucket and use this data in custom processing and analysis, or to load onto other systems.
+
 https://docs.aws.amazon.com/codebuild/latest/userguide/monitoring-metrics.html +
 https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/S3Export.html +
 https://docs.aws.amazon.com/codebuild/latest/userguide/getting-started-input-bucket-console.html +
@@ -1265,6 +1267,8 @@ https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-integrat
 
 Signature Version 4 is the process to add authentication information to AWS requests sent by HTTP. For security, most requests to AWS must be signed with an access key, which consists of an access key ID and secret access key. These two keys are commonly referred to as your security credentials
 https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html
+
+AWS Glue is a fully managed extract, transform, and load (ETL) service that makes it easy for customers to prepare and load their data for analytics.
 
 =======================================================================================================
 Integration
