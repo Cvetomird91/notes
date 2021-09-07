@@ -121,6 +121,22 @@ https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-roles-for-amazon-ec2.htm
 
 https://docs.aws.amazon.com/IAM/latest/UserGuide/id.html +
 
+A user has an IAM policy as well as an Amazon SQS policy that apply to his account. The IAM policy grants his account permission for the ReceiveMessage action on example_queue, whereas the Amazon SQS policy gives his account permission for the SendMessage action on the same queue.
+Correct options:
+- The user can send a ReceiveMessage request to example_queue, the IAM policy allows this action
+The user has both an IAM policy and an Amazon SQS policy that apply to his account. The IAM policy grants his account permission for the ReceiveMessage action on example_queue, whereas the Amazon SQS policy gives his account permission for the SendMessage action on the same queue.
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt6-q34-i1.jpg
+via - https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-using-identity-based-policies.html
+- If you add a policy that denies the user access to all actions for the queue, the policy will override the other two policies and the user will not have access to example_queue
+To remove the user's full access to the queue, the easiest thing to do is to add a policy that denies him access to all actions for the queue. This policy overrides the other two because an explicit deny always overrides an allow.
+You can also add an additional statement to the Amazon SQS policy that denies the user any type of access to the queue. It has the same effect as adding an IAM policy that denies the user access to the queue.
+How IAM policy and SQS policy work in tandem:  
+https://assets-pt.media.datacumulus.com/aws-dva-pt/assets/pt6-q34-i2.jpg
+via - https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-using-identity-based-policies.html
+
+An instance profile is a container for an IAM role that you can use to pass role information to an EC2 instance when the instance starts. The AWS SDK will use the EC2 metadata service to obtain temporary credentials thanks to the IAM instance role. This is the most secure and common setup when deploying any kind of applications onto an EC2 instance.
+https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_switch-role-ec2_instance-profiles.html
+
 =======================================================================================================
 Compute and Networking
 
