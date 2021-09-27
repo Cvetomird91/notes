@@ -105,6 +105,9 @@ git push origin :old-name new-name
 Porcelain v2 output:
 git status --porcelain=v2 --branch
 
+Create a branch from a commit:
+git branch branch_name <commit-hash>
+
 =======================================================================================================
 
 Git pull
