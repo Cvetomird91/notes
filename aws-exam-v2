@@ -271,6 +271,9 @@ via - https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evalua
 https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/using-features.managing.html +
 https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/using-features.environments.html +
 
+EC2 dedicated instances:
+https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/dedicated-instance.html
+
 -- AWS VPC / -- Amazon VPC / Networking & VPC / -- VPC
 
 Which conditions should be met for Internet connectivity to be established in EC2?
@@ -997,6 +1000,8 @@ The optional Conditions section contains statements that define the circumstance
 You might use conditions when you want to reuse a template that can create resources in different contexts, such as a test environment versus a production environment. In your template, you can add an EnvironmentType input parameter, which accepts either prod or test as inputs. For the production environment, you might include Amazon EC2 instances with certain capabilities; however, for the test environment, you want to use reduced capabilities to save money.
 Conditions cannot be used within the Parameters section. After you define all your conditions, you can associate them with resources and resource properties only in the Resources and Outputs sections of a template.
 
+https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/CHAP_TemplateQuickRef.html
+https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cfn-sample-templates.html
 
 'Resources' section of the template - This is the only required section and specifies the stack resources and their properties, such as an Amazon Elastic Compute Cloud instance or an Amazon Simple Storage Service bucket. You can refer to resources in the Resources and Outputs sections of the template.
 
