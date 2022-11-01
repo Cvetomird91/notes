@@ -1,6 +1,5 @@
 https://github.com/piotrwitek/react-redux-typescript-guide
 https://www.youtube.com/watch?v=udr2rx_B99w
-https://redux.js.org/tutorials/index
 
 Typescript
 
@@ -15,8 +14,12 @@ https://www.typescriptlang.org/docs/
 
 React
 
+https://reactjs.org/docs/getting-started.html
+https://reactjs.org/tutorial/tutorial.html
+
 Redux
 
 https://reactjs.org/tutorial/tutorial.html
 https://www.freecodecamp.org/news/redux-for-beginners-the-brain-friendly-guide-to-redux/
 https://react-redux.js.org/tutorials/typescript-quick-start
+https://redux.js.org/tutorials/index
