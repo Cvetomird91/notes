@@ -312,6 +312,11 @@ successor, internal node, leaf, depth, height, subtree
 
 Access, insert, delete, find, sort - most common operations for data structures
 
+Complexity - what makes a solution better is when it has better complexity
+time complexity - how fast an algorithm is
+space complexity - how much memory an algorithm uses up
+space/time complexity
+
 edge - "ребро"
 sibling - nodes on the same "level", are on the same distance from the root
 ancestor
