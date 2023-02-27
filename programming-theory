@@ -313,9 +313,19 @@ successor, internal node, leaf, depth, height, subtree
 Access, insert, delete, find, sort - most common operations for data structures
 
 Complexity - what makes a solution better is when it has better complexity
-time complexity - how fast an algorithm is
+time complexity - how fast an algorithm is - the change in speed in an algorithm with respect
+	to the input size
 space complexity - how much memory an algorithm uses up
 space/time complexity
+
+Asymptomic analysis
+
+The unit we use for time complexity is called an elementary operation. This operation usually
+represents an operation to access a single memory slot.
+
+O(1) - as the input increases, the speed of the algorithm doesn't increase
+O(N) - linear time complexity - as the size of the input increases, the speed increases linearly
+O(N^2) - 
 
 edge - "ребро"
 sibling - nodes on the same "level", are on the same distance from the root
