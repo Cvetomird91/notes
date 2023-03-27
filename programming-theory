@@ -367,6 +367,7 @@ Stack - "купчина" - push and pop operations off the end of the data struc
 
 	Returning to the last pages opened by modern-day web browsers is implemented with a stack structure.
 	Another application are "undo" operations in text editors.
+min stack, max stack - стекове, които следят за най - големия или най-малкия елемент
 
 Queue - "опашка" - first-in, first-out. The methods for removing elements off a queue are usually named
 	enqueue and dequeue. A queue is a linear collection. (Array.prototype.shift and Array.prototype.unshift)
@@ -430,6 +431,15 @@ Trees
 
 	Rope - type of balanced tree
 
+	BST insertion, deletion and addition operations can be implemented in two ways:
+	- recursive
+	- iterative - this requiress less space
+
+	Three types of BST traversal:
+	- in-order
+	- pre-order
+	- post-order
+
 Two algorithms for traversing trees and graphs:
 BFS - Breadth-first Search
 DFS - Depth-first search
@@ -443,6 +453,9 @@ Graphs
 	които се обхождат само в една посока.
 
 	Linked lists, trees , heaps - types of graphs, but highly restricted
+	Connected and disconnected graphs - disconnected graphs contain some nodes that are
+		unreachable from the rest of them
+	Cyclic graph - when you have 3 or more nodes or verteces that go into an inifinite loop
 
 Hash table
 

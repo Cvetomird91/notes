@@ -3003,6 +3003,8 @@ your devices to other apps and services.
 =======================================================================================================
 Optimization
 
+https://www.youtube.com/watch?v=XHwFJDw9Mec
+
 Multi availability zone is used for fault tolerance.
 In case of slow reads from AWS RDS we can create a read replica and routing calls to it.
 
