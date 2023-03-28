@@ -396,6 +396,20 @@ heapq - python heap implementation in the standard library
 
 Linked list
 
+	A linked list is a type of graph
+	head - first element
+	tail - last element
+
+	operations in doubly linked list:
+	- setHead
+	- setTail
+	- insertBefore
+	- insertAfter
+	- insertAtPosition
+	- removeNodesWithValue
+	- remove
+	- containsNodeWithValue
+
 Trees
 
 	The root doesn't have child nodes. Each node carries information for their child node.
@@ -431,6 +445,7 @@ Trees
 
 	Rope - type of balanced tree
 
+
 	BST insertion, deletion and addition operations can be implemented in two ways:
 	- recursive
 	- iterative - this requiress less space
@@ -439,6 +454,27 @@ Trees
 	- in-order
 	- pre-order
 	- post-order
+
+	Complete binary tree
+	full binary tree
+
+	Heap - a type of binary tree in which each level is complete, e.g. each node has 2
+	child nodes. The last level may not be complete, but the nodes that have children are
+	complete, e.g. have two children. Another property it satisfies is the heap property.
+	It determines wether a heap is a min heap or a max heap. In a min heap, the root
+	node is the smallest. All child nodes are bigger than their parent. In a max heap,
+	it's the reverse.
+
+	Heaps are oftenly represented as integer arrays. This is the formula to retrieve the elements:
+	i - node index
+	2i + 1 - left node
+	2i + 2 - right node
+	(i - 1) / 2 - parent node
+
+	The easiest operation for a heap is adding the root node. This is why it's preferred when we
+	need to change the root node.
+
+	sift down, sift up, insert, remove, build heap - heap operations
 
 Two algorithms for traversing trees and graphs:
 BFS - Breadth-first Search
