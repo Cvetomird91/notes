@@ -1,0 +1,193 @@
+Supports both Kotlin and Groovy DSLs for configuration
+settings.gradle -> Groovy DSL file
+settings.gradle.kts -> Kotlin DSL file
+
+Everything in gradle is essentially a plugin
+
+gradle clean - removes build/
+gradle test
+gradle test -p submodule/ - run only the unit tests in submodule/
+
+Directories:
+build/ - equivalent to target/ in maven
+build/lib/ - all exec jars and target jars are placed here after build
+.gradle - local cache directory that should be included in .gitignore
+.gradle/init.d - directory we can create to add initialization scripts for the initialization phase
+
+build.gradle syntax:
+include a module from the project as dependency in another module:
+dependencies {
+	implementation project(':my-backend')
+}
+
+This is needed in versions older than 7:
+buildscript {
+ ...
+}
+
+NB!!! At some point the Gradle developers changed compile scope to
+implementation and testCompile to testImplementation.
+
+dependency scopes:
+implementation (or compile) - the current module can use this dependency but other modules that include my module will not include it as
+transient dependency
+testImplementation (or testCompile)
+api - the current module will use the dependency, as well as every other module that includes my module will have it as transient dependency
+	we need to add the 'java-library' plugin to use this scope
+
+use different maven repositories:
+repositories {
+	mavenCentral()
+	mavenLocal()
+	google()
+}
+
+specify test runner:
+test {
+	useJUnitPlatform()
+}
+
+gradle wrapper distributions:
+- all - binary + sources
+- binary - only binary
+./gradlew wrapper --gradle-version=8.12 --distribution-type=bin
+
+plugins are "applied". We can apply plugins to settings.gradle and the build.gradle subfiles.
+We can apply them using the "apply" function which takes in a closure
+They can contribute with the following:
+- initialize configuration
+- add new configuration model
+- add tasks
+
+plugin types:
+- core - shipped with gradle binary
+- community
+- local
+
+Core java plugins:
+- java
+- java library - also applies "java" plugin. Adds "api" dependency configuration
+- application - also applies "java" plugin. Additional configuration options to run the application
+
+gradle.properties properties:
+org.gradle.console=verbose
+
+We can place gradle.properties in ~/.gradle , as well, to apply the properties globally.
+
+Command line options:
+--console=plain or --console=verbose
+-q - hide log messages, only task output is shown
+--dry-run
+-i - print more information
+
+Tasks concept:
+Inputs -> Action -> outputs
+Task input types:
+- files
+- configuration properties
+- can be output from other tasks
+Outputs - mostly files
+- most often placed in build
+
+There are tasks that have no outcome, just dependent tasks. They're like aliases to call multiple tasks. They're called lifecycle tasks
+
+Useful community plugins:
+org.barfuin.gradle.taskinfo - displays tasks execution pipeline
+
+Dependencies:
+- modules
+- other gradle project
+- file (not recommended)
+
+Dependency grouping helps the build run faster (dependency configurations).
+./gradlew :app:dependencies - list dependency trees
+When we run this command on the root project, it runs it only on the root project which has no deps defined.
+
+Dependency configuration types:
+- bucket -> (n) - A dependency or dependency configuration that cannot be resolved.
+- resolved
+
+Specifying versions:
+implementation("org.company:some-lib:2.3") - this means atleast 2.3
+implementation("org.company:some-lib:2.3!!") - this means exactly version 2.3
+
+gradle/libs.versions.toml - version catalog. here we can specify global versions for dependencies we can reference using the "libs" object. Something
+like BOMs in maven
+
+Gradle lifecycle. Consists of three phases:
+- Initialization - we can use a separate init.gradle and settings.gradle file to configure this phase. Here gradle produces
+	project objects based on what projects are supposed to be built (single or multi module project). In a multi-project build each project
+	should have a build.gradle file and we should have a settings.gradle file. Otherwise, in a single-project build, settings.gradle is optional
+- Configuration - we can use a separate build.gradle file to configure this phase
+- Execution - this phase can be additionally configured in build.gradle, as well
+=======================================================================================================================================================
+Groovy notes
+
+Groovy performs all type checking at runtime, not compile time like Java & Kotlin.
+
+Variables are typed and untyped in Groovy.
+those defined with def are untyped. Using def is synonymous with using Object in java:
+Object date = new Date();
+def date = new Date();
+
+def s3 = """
+A
+String
+on
+multiple
+lines
+"""
+
+println s3
+
+def s4 = 'We can wrap strings in single quotes in Groovy, as well'
+def x = 4
+println "x is $x"
+
+def myCourse = "gradle"
+println "I'm training in: ${myCourse.toUpperCase()}"
+
+
+Groovy defines getters and setters automatically for us:
+class Person {
+    String name
+    Integer age
+
+    Person(name, age) {
+        this.name = name
+        this.age = age
+    }
+}
+
+def p1 = new Person("Fred", 35)
+println p1.getProperty("age")
+println p1.getAge()
+
+each closure implicitly takes up an unnamed parameter (called it)
+def echoIt = { println it }
+
+if the last expression in a method doesn't return anything - the method returns null
+
+We can pass closures to methods.
+
+NB!!!
+Parentheses when invoking a method in Groovy are optional
+
+logger - as in Java, we can use slf4j
+=======================================================================================================================================================
+Gradle API / Gradle object model
+
+each .gradle file implements the Script interface
+build.gradle - implements the Project Interface
+Gradle <Interface>
+Settings <Interface>
+
+=======================================================================================================================================================
+Resources:
+https://www.youtube.com/watch?v=R6Z-Sxb837I
+https://www.youtube.com/watch?v=gKPMKRnnbXU
+https://www.youtube.com/watch?v=-dtcEMLNmn0
+https://www.baeldung.com/gradle-series
+https://dpeuniversity.gradle.com/courses/012de84f-fcd3-45d4-9c4c-284382eb3f3f
+https://tomgregory.com/courses/get-going-with-gradle
+https://package-search.jetbrains.com/

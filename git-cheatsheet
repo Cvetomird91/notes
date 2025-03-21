@@ -236,6 +236,7 @@ to the upstream branch.
 Git diff
 
 git diff --staged - display a diff with the changes in the current staging area
+git diff {{branch1}} {{branch2}} - get the difference in file changes for two branches
 
 =======================================================================================================
 
@@ -436,6 +437,9 @@ git log --stat -c
 git log --stat --cc
 git log --stat -m
 
+Show the different commits in two branches:
+git log --oneline --cherry-pick <branch1>..<branch2>
+
 =======================================================================================================
 
 Git grep
@@ -493,7 +497,8 @@ Learn Git the Hard Way:
 https://gitorious.org/~easel/learn-x-the-hard-way/learn-git-the-hard-way
 
 Add a file to an already created commit (in case you've missed to add it with git add). Adding a file
-in such a way to an already pushed commit is not recommended.
+in such a way to an already pushed commit is not recommended, because we need to push with --force
+afterwards and it's not suitable if more than 1 people are working on the branch.
 git add omitted-file.py
 git commit --ammend --no-edit
 
@@ -504,7 +509,16 @@ Git reflog
 The reflog records information about the time when branches are updated.
 With this command we can manage the information recorded in the reflog.
 
-Without arguments it prints the reflog for the last 30 days
+Without arguments it prints the reflog for the last 30 days.
+This is only local information, useful for retrieving local branch history and viewing squashed
+commits.
+
+If you want to keep reflog history longer, increase the expiration period:
+git config --global gc.reflogExpire "365 days"
+git config --global gc.reflogExpireUnreachable "180 days"
+
+Mark all reflog items as expired:
+git reflog expire --expire=now
 
 =======================================================================================================
 

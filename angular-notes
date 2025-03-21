@@ -1,322 +1,61 @@
-Template
-Directive - they apply special behavior to attributes or elements in the HTML. E.g. the ng-app attribute is linked to a directive that
-	automatically initializes our application. In AngularJS, the only place where an application should access the DOM is
-	within directives. AngularJS also defines a directive for the input element that adds extra behavior to the element.
-	The ng-model directive stores/updates the value of the input field into/from a variable. It is the AngularJS directive which
-	provides the two-way data binding form the model to the view and vice versa.
+Standalone components vs module based components (older component format)
+zone.js - used by angular for change detection and state management
+Zone.js notifies angular about user events, expired timers etc. It combines components into invisible "zones".
+Signals - supported since Angular 16
+Components are directives. Custom directives with templates
+[(ngModel)] - two way binding
+Inputs in angular will always yield string values.
+Angular modules exist for historic reasons. In Angular 2 there were no standalone components.
+We can mix standalone components and modules
+Host element - Every angular component has a host element.
+:host - The :host CSS pseudo-class selects the shadow host of the shadow DOM containing the CSS it is used inside. This selector works with the default view encapsulation of Angular. If we use ViewEncapsulation.None there'll be no shadow dom encapsulating element.
+viewChild / viewChildren - only allows you to select content that is in the template (e.g. ng-content projected elements aren't included)
+contentChild / contentChildren -
 
-	As a rule of thumb only DOM manipulations are done in a directive.
+@for (ticket of tickets; track ticket.id) {
+	<li>
+		<app-ticket /> - {{ $first }}
+	</li>
+} @empty { //this renders in case the tickets collection is empty
+	<p>No tickets available.</p>
+}
 
-	Important directives:
+$first - special variable we can use in @for blocks which is a boolean and returns true if the element is first in the collection
+$last - special variable we can use in @for blocks which is a boolean and returns true if the element is last in the collection
+$odd - special variable we can use in @for blocks which is a boolean and returns true if the element has odd index in the collection
+$even - special variable we can use in @for blocks which is a boolean and returns true if the element is has even index in the collection
+$count - outputs element count
 
-    ngView - a directive that implements the $route service by including the rendered template of the current route into the main
-    layout (index.html) file. Every time the current route changes, the included view changes with it according to the configuration
-    of the $route service.
-    Requires the ngRoute module to be installed.
+There are two types of directives in Angular. Attribute directives modify the appearance or behavior of DOM elements. Structural directives add or remove elements from the DOM.
 
-    AngularJS normalizes an element's tag and attribute name to determine which elements match which directives. We typically refer to directives by their case-sensitive camelCase normalized name (e.g. ngModel). However, since HTML is case-insensitive, we refer to directives in the DOM by lower-case forms, typically using dash-delimited attributes on DOM elements (e.g. ng-model).
+*appAuth - syntactic sugar for structural directives. It amounts to:
+<ng-template appAuth="admin"> <!-- the value code here gets treated like TypeScript, not just a string --!>
 
-    The normalization process is as follows:
+</ng-template>
 
-    Strip x- and data- from the front of the element/attributes.
-    Convert the :, -, or _-delimited name to camelCase.
+pure setting in custom pipes - false by default. When set to true the output caching is disabled.
 
-	angular.module('docsTabsExample', [])
-	.directive('myTabs', function() {
-		return {
-			require: '^^myTabs',
-			restrict: 'E',
-			transclude: true,
-			scope: {
-			  title: '@'
-			},
-			link: function(scope, element, attrs, tabsCtrl) {
-			  tabsCtrl.addPane(scope);
-			},
-			templateUrl: 'my-pane.html'
-		  };
-	});
-    ng-show - shows or hides the given element depending on the expression provided
-    ng-if - removes or creates a portion of the DOM tree depending on the provided {expression}
-    
-	
-	The myPane directive has a require option with value ^^myTabs. When a directive uses this option, $compile will throw an error unless the specified controller is found. The ^^ prefix means that this directive searches for the controller on its parents. (A ^ prefix would make the directive look for the controller on its own element or its parents; without any prefix, the directive would look on its own element only.)
-	Link functions can interact with controllers using require.
-	transclude makes the contents of a directive with this option have access to the scope outside of the directive rather than inside.
-	Best Practice: use &attr in the scope option when you want your directive to expose an API for binding to behaviors.
+Services should be annotated with @Injectable
+providedIn - injectable scope
 
-Model
-Scope
-	When you create an application you need to set up the initial state for the AngularJS $scope.
-	You set up the initial state of a scope by attaching properties to the $scope object.
-	
-	Scopes provide APIs ($watch) to observe model mutations.
-	Scopes provide APIs ($apply) to propagate any model changes through the system into the view from outside
-    the "AngularJS realm" (controllers, services, AngularJS event handlers).
-    
-    Scopes can be nested to limit access to the properties of application components while providing access to shared model properties. Nested scopes
-    are either "child scopes" or "isolate scopes". A "child scope" (prototypically) inherits properties from its parent scope. An "isolate scope" does
-    not. See isolated scopes for more information.
+Angular supports multiple notes
+ElementInjector
+ModuleInjector
+Application root EnvironmentInjector
+Platform EnvironmentInjector
 
-    Scopes provide context against which expressions are evaluated. For example {{username}} expression is meaningless, unless it is evaluated against a
-    specific scope which defines the username property.
-    
-    Scope lifecycle:
-    1. Creation - the root scope is created during the application bootstrap by the $injector. During template linking, some directives create new
-        child scopes.
-    2. Watcher registration - During template linking, directives register watches on the scope. These watches will be used to propagate model values to 
-        the DOM.
-    3. Model mutation - for mutations to be properly observed, you should make them only within the scope.$apply(). AngularJS APIs do this
-        implicitly, so no extra $apply call is needed when doing synchronous work with controllers, or asynchronous work with $http, $timeout
-        or $interval services.
-    4. Mutation observation - at the end of $apply, AngularJS performs a $digest cycle on the root scope, which then propagates throughout all
-        the child scopes. During the $digest cycle, all $watch-ed expressions or functions are checked for model mutation and if a mutation is
-        detected, the $watch listener is called.
-    5. Scope destruction - when child scopes are no longer needed, it is the responsibility of the child scope creator to destroy them via scope.
-        $destroy() API. This will stop propagation of $digest calls into the child scope and allow for memory used by the child scope models to be
-        reclaimed by the garbage collector.
-        
-    Directives and scopes interact but they do not create new instances of scope. However, some directives, such as ng-controller and ng-repeat,
-    create mew child scopes and attach the child scope to the corresponding DOM element.
-    
-    Controllers and scopes interact with each other in the following situations:
-    - controllers use scopes to expose controller methods to templates (see ng-controllers).
-    - controllers define methods (behavior) that can mutate the model (properties on the scope).
-    - controllers may register watches on the model. These watches execute immediately after the controller behavior executes.
-    
-    Scope $watch performance considerations
-    Dirty checking the scope for property changes is a common operation in AngularJS and for this reason the dirty checking function
-    must be efficient. Care should be taken that the dirty checking function does not do any DOM access, as DOM access is orders of magnitude slower
-    than property access on JavaScript object.
-    Dirty checking can be done with three strategies: by reference, by collection contents and by value.
-    - watch by reference:
-        $scope.users = [
-            {name: "Mary", points: 310},
-            {name: "June", points: 290},
-            {name: "Bob", points: 300},
-        ];
-        $scope.watch(watchExpression, listener));
-        $scope.users = newUsers;        //true
-        $scope.users.push(newUser);     //false
-        $scope.users[0].points = 320;   //false
-        detects a change when the whole value returned by the watch expression switches to a new value. If the value is an array or an object, changes
-        inside it are not detected. This is the most efficient strategy.
+We can use the providers property of the @Component annotation to inject services. But in this case Angular IOC will provide a new instance for each component of the service.
 
-    - watch by collection contents
-    $scope.watchCollection(watchExpression, listener);
-    $scope.users = newUsers;        //true
-    $scope.users.push(newUser);     //true
-    $scope.users[0].points = 320;   //false
-    detects changes that occur inside an array or an object: When items are added, removed, or reordered. The detection is shallow - it does not reach
-    into nested collections. 
+In development mode Angular runs change detection twice to track unwanted changes.
+When a timer expires a change dection runs
+We can opt out of zones.js change detection:
+private zone = inject(NgZone);
+this.zone.runoutsideAngular(() => ... )
+This is also known as avoiding zone pollution
+OnPush change detection strategy - the component for which we have enabled it will only ever change because an event occured inside this subcomponent tree (in the current component or components we have imported in the 'imports' array )
+Signal changes also lead to the current component being changed.
 
-    - watch by value 
-    $scope.$watch("users", ..., true);
-    $scope.users = newUsers;        //true
-    $scope.users.push(newUser);     //true
-    $scope.users[0].points = 320;   //true
-    detects any change in an arbitrarily nested data structure. It is the most powerful change detection strategy, but also the most expensive.
-    
-    The restrict option is typically set to:
-
-    'A' - only matches attribute name
-    'E' - only matches element name
-    'C' - only matches class name
-    'M' - only matches comment
-
-    Note: These =attr attributes in the scope option of directives are normalized just like directive names. To bind to the attribute in <div bind-to-this="thing">, you'd
-    specify a binding of =bindToThis.
-
-Expressions
-
-    AngularJS expressions are like JavaScript expressions with the following differences:
-
-    Context: JavaScript expressions are evaluated against the global window. In AngularJS, expressions are evaluated against a scope object.
-    AngularJS expressions do not have direct access to global variables like window, document or location. This restriction is intentional. It prevents accidental access to the global state.
-    Forgiving: In JavaScript, trying to evaluate undefined properties generates ReferenceError or TypeError. In AngularJS, expression evaluation is forgiving to undefined and null.
-    Filters: You can use filters within expressions to format data before displaying it.
-    No Control Flow Statements: Apart from the ternary operator, uou cannot use the following in an AngularJS expression: conditionals, loops, or exceptions.
-    No Function Declarations: You cannot declare functions in an AngularJS expression, even inside ng-init directive.
-    No RegExp Creation With Literal Notation: You cannot create regular expressions in an AngularJS expression. An exception to this rule is ng-pattern which accepts valid RegExp.
-    No Object Creation With New Operator: You cannot use new operator in an AngularJS expression.
-    No Bitwise, Comma, And Void Operators: You cannot use Bitwise, , or void operators in an AngularJS expression.
-    If you want to run more complex JavaScript code, you should make it a controller method and call the method from your view. If you want to eval() an AngularJS expression yourself, use the $eval() method.
-    
-    One time binding - an expression that starts with :: is ocnisdered a one-time expression. One-time expressions will stop recalculating once
-    they are stable, which happens after the first digest if the expressoin result is a non-undefined value (see value stabilization algorithm
-    below). Unlike simple values, object-literals are watched until every key is defined.
-    
-    If the expression will not change once set, it is a candidate for one-time binding. Here are three example cases:
-    - when interpolating text or attributes
-    - when using a directive with bidirectional binding and parameters that will not change
-
-Compiler - when AngularJS starts the application it parses and processes this new markup from the template using the compiler
-Filter
-	{{ expression | filter }}
-	AngularJS provides live bindings. Whenever the input values change, the value of the expressions are automatically
-	recalculated and the DOM is updated with their values. The concept behind this is "two-way data binding".
-View
-Data Binding
-	Data-binding in angularjs apps is the automatic synchronization of data between the model and the view components. 
-	The way that AngularJS implements data-binding lets you treat the model as the single-source-of-truth in your application. The view is a projection of the model at all times. When 
-	the model changes, the view reflects the change, and vice versa.
-Controller
-	angular.module('invoice1', []).controller('InvoiceController', function InvoiceController() { ... });
-	The second function is the constructor of the controller. It will be used to instantiate the controller.
-	The InvoiceController is responsible for the element with the directive and all of the element's children.
-	The syntax InvoiceController as invoice tells AngularJS to instantiate the controller and save it in the variable invoice in the current scope.
-	<div ng-app="invoice1" ng-controller="InvoiceController as invoice"> ... </div>
-	ng-bind - this is an HTML class which angular places to each element which has a binding, either configured
-	with ng-binding or the curly braces.
-
-	Use controllers to:
-
-	Set up the initial state of the $scope object.
-	Add behavior to the $scope object.
-	A controller should contain only the business logic needed for a single view.
-	AngularJS automatically places ng-scope class on elements where scopes are attached.
-
-	Do not use controllers to:
-
-	Manipulate DOM — Controllers should contain only business logic. Putting any presentation logic into Controllers significantly affects its testability. AngularJS has
-	databinding for most cases and directives to encapsulate manual DOM manipulation.
-	Format input — Use AngularJS form controls instead.
-	Filter output — Use AngularJS filters instead.
-	Share code or state across controllers — Use AngularJS services instead.
-	Manage the life-cycle of other components (for example, to create service instances).
-
-	The most common way to keep Controllers slim is by encapsulating work that doesn't belong to controllers into services and then using these services in Controllers
-	via dependency injection.
-
-DI
-	Dependency Injection is pervasive throughout AngularJS. You can use it when defining components or when providing run and config blocks for a module.
-
-	Services, directives, filters, and animations are defined by an injectable factory method or constructor function, and can be injected with "services",
-	"values", and "constants" as dependencies.
-
-	Controllers are defined by a constructor function, which can be injected with any of the "service" and "value" as dependencies, but they can also be
-	provided with "special dependencies". See Controllers below for a list of these special dependencies.
-
-	The run method accepts a function, which can be injected with "services", "values" and, "constants" as dependencies. Note that you cannot inject
-	"providers" into run blocks.
-
-	The config method accepts a function, which can be injected with "providers" and "constants" as dependencies. Note that you cannot inject "services" or
-	"values" into configuration.
-
-	The provider method can only be injected with other "providers". However, only those that have been registered beforehand can be injected. This is
-	different from services, where the order of registration does not matter.
-	
-	Implicit annotation - we can use it to implicitly specify the names of the dependencies via the names of the function parameters when
-	registering the constructor:
-	someModule.controller('MyController', function($scope, greeter) { // ...  });
-	We can disable implicit annotations when registering functions via the ng-strict-di directive (<html ng-app="myApp" ng-strict-di> ... </html>).
-	
-	There are only three ways a component (object or function) can get a hold of its dependencies:
-
-    The component can create the dependency, typically using the new operator.
-    The component can look up the dependency, by referring to a global variable.
-    The component can have the dependency passed to it where it is needed.
-
-Injector
-Module
-    You can think of a module as a container for the different parts of your app - controllers, services, filters, directives, etc.
-
-	While it is recommended to register injectables directly with the module API, it is also possible to register services, directives etc. by injecting $provide or the individual service providers into the config function:
-
-		angular.module('myModule', []).
-		  value('a', 123).
-		  factory('a', function() { return 123; }).
-		  directive('directiveName', ...).
-		  filter('filterName', ...);
-
-		// is same as
-
-		angular.module('myModule', []).
-		  config(function($provide, $compileProvider, $filterProvider) {
-			$provide.value('a', 123);
-			$provide.factory('a', function() { return 123; });
-			$compileProvider.directive('directiveName', ...);
-			$filterProvider.register('filterName', ...);
-		  });
-
-	Run blocks are the closest thing in AngularJS to the main method.
-	It is executed after all of the services have been configured and the injector has been created. Run blocks typically contain code which is hard to unit-test, and for this reason should be declared in isolated modules, so that they can be ignored in the unit-tests.
-
-Service
-    - Angular services are singletons
-    - Angular services are lazily instantiated
-    - built-in services' names start with $ in Angular
-    Notable angular services:
-    $http
-    $window - represents the global window JS object
-    $interval - Angular.JS wrapper for window.setInterval
-    $log - Angular.js wrapper for console.log
-    $timeout - Angular.js wrapper for window.setTimeout
-    $digest - processes all the watchers of the current scope and its children.
-    The $digest loop is made up of two smaller loops which process $evalAsync queue and the $watch list.
-    $watch
-    $interpolate - service that checks if text nodes and element attributes contain interpolation markup
-        with embedded expressions. The Angular.JS compiler uses this service during the compilation process.
-	$filterProvider
-
-        If the interpolated value is not a String, it is computed as follows:
-
-        undefined and null are converted to ''
-        if the value is an object that is not a Number, Date or Array, $interpolate looks for a custom toString() function on the object, and uses that.
-        Custom means that myObject.toString !== Object.prototype.toString.
-        if the above doesn't apply, JSON.stringify is used.
-
-        We can use the ng-attr-* directives for interpolating Angular.JS expressions within attributes. Using Angular.JS expressions
-        within regular HTML attributes may not always work.
-
-        Why mixing interpolation and expressions is bad practice:
-        It increases the complexity of the markup
-        There is no guarantee that it works for every directive, because interpolation itself is a directive. If another directive accesses attribute data
-        before interpolation has run, it will get the raw interpolation markup and not data.
-        It impacts performance, as interpolation adds another watcher to the scope.
-        Since this is not recommended usage, we do not test for this, and changes to AngularJS core may break your code.
-    
-    We can register services via the .factory method from the Module API (angular.module()). With it we actually
-        declare a function that will instantiate the services.
-    We can also use the $provide service within a module's config method:
-    angular.module('myModule', []).config(['$provide', function($provide) {
-        $provide.factory('serviceId', function() {
-            var shinyNewServiceInstance;
-            // construct the service
-            return shinyNewServiceInstance;
-        });
-    }]);
-
-Components
-    Components are controllers, services, filters and directives. A component is a special kind of directive that uses a simpler configuration
-    which is suitable for component-based application structure.
-
-	It's also possible to add components via $compileProvider in a module's config phase.
-	Component-based architecture characteristics:
-	- components should never modify any data or DOM that is out of their own scope. in AngularJS it is possible to modify data anywhere in the application through scope inheritance and watches.
-	  This can lead to problems when it is not clear which part of the application is responsible for modifying the data.
-	   if you pass an object to a component like this - bindings: {item: '='}, and modify one of its properties, the change will be reflected in the parent component. For components however, only the component that owns the data should modify it, to make it easy to reason about what data is changed, and when. For that reason, components should follow a few simple conventions.
-	<, @, &, = - those symbols are used to manipulate bindings in components
-	Components have a well defined public API - inputs and outputs.
-	The < symbol denotes one way binding. The difference to '=' is that the bound properties to the component scope are not watched, which means if you assign
-	a new value to the property in the component scope, it will not update the parent scope.
-	Outputs are realized with & bindings, which function as callbacks to component events.
-	Components have a well-defined lifecycle. Each component can implement lifecycle hooks. These are methods which can be called at a certain
-	step in the call back. The following hooks exist:
-	$onInit
-	$onChange(changesObj)
-	$doCheck
-	$onDestroy
-	$postLink
-	An application is a tree of components: Ideally, the whole application should be a tree of components that implement clearly defined inputs and outputs and minimize two-way data binding.
-	That way, it's easier to predict when data changes and what the state of a component is.
-
-Events
-    AngularJS modifies the normal JS event flow by providing its own event loop. Only operations which are applied in the AngularJS execution context
-    will benefit from AngularJS data-binding, exception handling, property watching, etc... You can also use $apply() to enter the AngularJS execution
-    context from JavaScript.
-	There are a few special events that AngularJS emits. When a DOM node that has been compiled with AngularJS's compiler is destroyed, it emits a $destroy event. Similarly, when an AngularJS scope is destroyed, it broadcasts a $destroy event to listening scopes.
-	By listening to this event, you can remove event listeners that might cause memory leaks. Listeners registered to scopes and elements are automatically cleaned up when they are destroyed, but if you registered a listener on a service, or registered a listener on a DOM node that isn't being deleted, you'll have to clean it up yourself or you risk introducing a memory leak.
-
-Useful Links:
-https://www.ng-newsletter.com/
+Observables only start when you have atleast one subscriber
+Observables -> values over time
+Signals -> values in a container
+you can read the value in a signal at any point in time.
