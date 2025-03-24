@@ -101,7 +101,7 @@ Dependencies:
 
 Dependency grouping helps the build run faster (dependency configurations).
 ./gradlew :app:dependencies - list dependency trees
-When we run this command on the root project, it runs it only on the root project which has no deps defined.
+When we run this command on the root project in a multi-project build, it runs it only on the root project which has no deps defined.
 
 Dependency configuration types:
 - bucket -> (n) - A dependency or dependency configuration that cannot be resolved.
@@ -120,6 +120,12 @@ Gradle lifecycle. Consists of three phases:
 	should have a build.gradle file and we should have a settings.gradle file. Otherwise, in a single-project build, settings.gradle is optional
 - Configuration - we can use a separate build.gradle file to configure this phase
 - Execution - this phase can be additionally configured in build.gradle, as well
+
+The delegate object tends to be different depending on which lifecycle phase are we working on
+
+build.gradle (Configuration Phase) -> delegates to Project object
+settings.gradle (Initialization Phase) -> delegates to Settings object
+init.gradle (Initialization Phase) -> delegates to Gradle object
 =======================================================================================================================================================
 Groovy notes
 
@@ -174,6 +180,15 @@ NB!!!
 Parentheses when invoking a method in Groovy are optional
 
 logger - as in Java, we can use slf4j
+
+Understanding delegate in Groovy
+When a closure is executed, it has three important references:
+
+this – The class where the closure is defined.
+owner – The enclosing object (which may be different from this in nested closures).
+delegate – The object to which method/property calls are delegated if they are not found in owner.
+By default, delegate points to the same object as owner, but it can be explicitly changed.
+
 =======================================================================================================================================================
 Gradle API / Gradle object model
 
@@ -182,6 +197,7 @@ build.gradle - implements the Project Interface
 Gradle <Interface>
 Settings <Interface>
 
+each gradle object as an ext property which is a map, which we can use to store properties
 =======================================================================================================================================================
 Resources:
 https://www.youtube.com/watch?v=R6Z-Sxb837I
