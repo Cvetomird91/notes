@@ -82,12 +82,18 @@ Command line options:
 
 Tasks concept:
 Inputs -> Action -> outputs
+A task is a collection of actions
 Task input types:
 - files
 - configuration properties
 - can be output from other tasks
 Outputs - mostly files
 - most often placed in build
+
+Methods used for defining actions within a task:
+doFirst()
+doLast()
+They both return a task object. We can thus chain them.
 
 There are tasks that have no outcome, just dependent tasks. They're like aliases to call multiple tasks. They're called lifecycle tasks
 
@@ -118,8 +124,8 @@ Gradle lifecycle. Consists of three phases:
 - Initialization - we can use a separate init.gradle and settings.gradle file to configure this phase. Here gradle produces
 	project objects based on what projects are supposed to be built (single or multi module project). In a multi-project build each project
 	should have a build.gradle file and we should have a settings.gradle file. Otherwise, in a single-project build, settings.gradle is optional
-- Configuration - we can use a separate build.gradle file to configure this phase
-- Execution - this phase can be additionally configured in build.gradle, as well
+- Configuration - we can use a separate build.gradle file to configure this phase. Here we can define or configure tasks
+- Execution - this phase can be additionally configured in build.gradle, as well. Here we execute tasks
 
 The delegate object tends to be different depending on which lifecycle phase are we working on
 
