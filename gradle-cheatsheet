@@ -127,6 +127,8 @@ Gradle lifecycle. Consists of three phases:
 - Configuration - we can use a separate build.gradle file to configure this phase. Here we can define or configure tasks
 - Execution - this phase can be additionally configured in build.gradle, as well. Here we execute tasks
 
+Direct acyclic graph - the datastructure used in gradle to describe task dependencies
+
 The delegate object tends to be different depending on which lifecycle phase are we working on
 
 build.gradle (Configuration Phase) -> delegates to Project object
