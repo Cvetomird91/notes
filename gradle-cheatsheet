@@ -51,6 +51,12 @@ gradle wrapper distributions:
 - all - binary + sources
 - binary - only binary
 ./gradlew wrapper --gradle-version=8.12 --distribution-type=bin
+https://docs.gradle.org/current/userguide/gradle_wrapper.html
+
+We can configure the gradle wrapper with the wrapper method:
+wrapper {
+	gradleVersion = '8.3'
+}
 
 plugins are "applied". We can apply plugins to settings.gradle and the build.gradle subfiles.
 We can apply them using the "apply" function which takes in a closure
