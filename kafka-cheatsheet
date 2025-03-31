@@ -50,5 +50,14 @@ Common serializers:
 - Protobuf
 
 Message deserialization means transforming bytes into objects / data. We can deserialize both keys and values
-Common deserializers:
 
+Zookeeper:
+- manages brokers (keeps a list of them)
+- helps in performing leader election for partitions
+- sends notifications to Kafka in case of changes (e.g. new topic, broker dies, broker comes up, delete topics, etc ...)
+- Kafka 2.x cannot work without Zookeeper
+- Kafka 3.x can work without Zookeper (KIP-500) - using Kafka Raft instead
+- Kafka 4.x will not have Zookeeper
+- by design operates with an odd number of servers (1, 3, 5...)
+- zookeeper has a leader (writes) the rest of the servers are followers (reads)
+- (Zookeeper does not store consumer offsets with Kafka >v0.1)
