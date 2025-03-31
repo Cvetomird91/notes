@@ -1,0 +1,54 @@
+topic - it's like a table in a database (without all the constraints)
+	topic replication factor - this way if a broker is down another broker can serve the data
+data stream - the sequence of messages in a topic is called a data stream
+partition - topics are split into partitions. Messages within each partition are going to be ordered.
+	Kafka topics are immutable. Once data is written to a partition, it cannot be changed
+	Data is kept for a limited time.
+	A Kafka partitioner is a code logic that takes a record and determines to which partition to send it to.
+	Key hashing is the process of determining the mapping of a key to a partition
+producers - producers can choose to send a key with the message (string, number, binary, etc...)
+	if the key is not set data is sent round robin (partition 0, then 1, then 2...)
+	if the key is set then all messages for that key will always go to the same partition (hashing)
+	A key is typically set if you need message ordering for a specific field
+	Producer acknowledgements - producers can choose to receive acknowledgement of data writes
+	acks=0 - producer won't wait for acknowledgement (possible data loss)
+	acks=1 - producer will wait for leader acknowledgement (limited data loss)
+	acks=all - Leader + replicas acknowledgement (no data loss)
+offset - index of a message within a partition
+consumer - consumers automatically know which broker to read from
+	consumers are grouped in consumer groups
+	if you have more consumers than partitions, some consumers will be inactive
+	In kafka, it is possible to have multiple consumer groups on the same topic
+	To create distinct consumer groups, use the consumer property group.id
+	Kafka stores the offsets at which a consumer group has been reading in a topic named __consumer_offsets
+	When a consumer in a group has processed data received from Kafka, it should be periodically committing the
+	offsets (the Kafka broker will write to __consumer_offsets).
+	If a consumer dies, it will be able to read back from where it left off thanks to the committed consumer offsets
+	Since Kafka 2.4, it is possible to configure consumers to read from the closest replica
+	This may help improve latency, and also decrease network costs if using the cloud
+brokers - A Kafka cluster is composed of multiple brokers (servers). Each broker has its own id.
+	Each broker contains certain topic partitions
+	After connecting to any broker (called a bootstrap broker), you will be connected to the entire cluster (Kafka
+	clients have smart mechanics for that)
+	Every kafka broker is also called a bootstrap server
+	At any time only one broker can be a leader for a given partition
+	Producers can only send data to the broker that is the leader for a partition
+
+Kafka messages anatomy:
+- key - binary (can be null - zero or more bytes)
+- value - binary (can be null - zero or more bytes)
+- compression type - none, gzip, snappy, lz4, zstd
+- headers (optional) - they contain keys and values
+- partition + offset
+- timestamp - set by the system or by the user
+
+Message serialization means transforming objects / data into bytes. We can serialize both keys and values
+Common serializers:
+- String (incl. JSON)
+- int, float
+- Avro
+- Protobuf
+
+Message deserialization means transforming bytes into objects / data. We can deserialize both keys and values
+Common deserializers:
+
