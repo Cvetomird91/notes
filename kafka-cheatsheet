@@ -6,6 +6,12 @@ partition - topics are split into partitions. Messages within each partition are
 	Data is kept for a limited time.
 	A Kafka partitioner is a code logic that takes a record and determines to which partition to send it to.
 	Key hashing is the process of determining the mapping of a key to a partition
+	Partition rebalance - moving partitions between consumers
+	Reassignment of partitions happen when a consumer leaves or joins a group
+	it also happens if an administrator adds new partitions into a topic
+	Cooperative rebalance (incremental rebalance) - reassigning a small subset of the partitions from one consumer to another. Other
+		consumers that don't have reassigned partitions can still process uninterrupted. Can go through several iterations to find a
+		"stable" assignment (hence "incremental")
 producers - producers can choose to send a key with the message (string, number, binary, etc...)
 	if the key is not set data is sent round robin (partition 0, then 1, then 2...)
 	if the key is set then all messages for that key will always go to the same partition (hashing)
@@ -13,8 +19,10 @@ producers - producers can choose to send a key with the message (string, number,
 	Producer acknowledgements - producers can choose to receive acknowledgement of data writes
 	acks=0 - producer won't wait for acknowledgement (possible data loss)
 	acks=1 - producer will wait for leader acknowledgement (limited data loss)
-	acks=all - Leader + replicas acknowledgement (no data loss)
+	acks=all / acks=-1 - Leader + replicas acknowledgement (no data loss)
 offset - index of a message within a partition
+	Consumer offsets can be reset
+	No consumer should be running in order to reset
 consumer - consumers automatically know which broker to read from
 	consumers are grouped in consumer groups
 	if you have more consumers than partitions, some consumers will be inactive
@@ -26,6 +34,16 @@ consumer - consumers automatically know which broker to read from
 	If a consumer dies, it will be able to read back from where it left off thanks to the committed consumer offsets
 	Since Kafka 2.4, it is possible to configure consumers to read from the closest replica
 	This may help improve latency, and also decrease network costs if using the cloud
+
+	partition.assignment.strategy:
+	- RangeAssignor
+	- RoundRobin
+	- StickyAssignor
+	- CooperativeStickyAssignor
+	- default: RangeAssignor, CooperativeStickyAssignor
+
+	static group membership - if we specify a group.instance.id it makes the consumer a static member (it gets assigned
+		the same partition after disappearing and reappearing)
 brokers - A Kafka cluster is composed of multiple brokers (servers). Each broker has its own id.
 	Each broker contains certain topic partitions
 	After connecting to any broker (called a bootstrap broker), you will be connected to the entire cluster (Kafka
